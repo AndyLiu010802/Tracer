@@ -1,8 +1,8 @@
-# Tracer 0.3.1 桌面版
+# Tracer 0.3.2 桌面版
 
-Tracer 将任务管理、完成历史、番茄钟、音频、笔记和参考浏览器放在独立 Windows 应用中。0.3.1 默认以无边框全屏启动，使用黑底金色星月 Logo。
+Tracer 将任务管理、完成历史、番茄钟、音频、笔记和参考浏览器放在独立 Windows 应用中。0.3.2 默认以无边框全屏启动，使用黑底金色星月 Logo。
 
-**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/latest)**：在发布附件中选择 `Tracer-Setup-0.3.1-x64.exe`。安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置与完成历史。
+**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/latest)**：在发布附件中选择 `Tracer-Setup-0.3.2-x64.exe`。安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置与完成历史。
 
 应用依赖和打包配置统一放在**仓库根**的 `package.json` 中，包括 Electron、`uiohook-napi`、PDF/Word 提取依赖和 electron-builder。`desktop/main.js` 会加载上层目录的服务代码，因此构建必须从仓库根开始。本目录的 `package.json` 只是说明性指针，不是独立 npm 项目。
 
@@ -102,8 +102,8 @@ npm run dist    # electron-builder --win nsis --x64
 
 产物在仓库根的 `dist/`（该目录已进 `.gitignore`，不进版本库）：
 
-- `dist/Tracer-Setup-0.3.1-x64.exe` —— 安装程序本身，双击运行
-- `dist/Tracer-Setup-0.3.1-x64.exe.blockmap` —— electron-builder 生成的增量更新索引，当前没有配置自动更新
+- `dist/Tracer-Setup-0.3.2-x64.exe` —— 安装程序本身，双击运行
+- `dist/Tracer-Setup-0.3.2-x64.exe.blockmap` —— electron-builder 生成的增量更新索引，当前没有配置自动更新
 - `dist/win-unpacked/` —— 未打包的调试版应用，供本地核对用，不用来发给别人
 
 安装程序不是一路下一步：`oneClick: false` 会让你选安装目录，默认装到当前用户的
@@ -117,10 +117,10 @@ NSIS 卸载程序会清掉安装目录和开始菜单/桌面快捷方式，但**
 
 ### 发布文件与校验
 
-安装包目前未签名。正式下载附件提供 `SHA256SUMS-0.3.1.txt`，可用 PowerShell 的 `Get-FileHash` 核对文件 SHA-256。Windows 是否显示安装提示取决于系统配置和文件来源。
+安装包目前未签名。正式下载附件提供 `SHA256SUMS-0.3.2.txt`，可用 PowerShell 的 `Get-FileHash` 核对文件 SHA-256。Windows 是否显示安装提示取决于系统配置和文件来源。
 
 ```powershell
-Get-FileHash -Algorithm SHA256 .\Tracer-Setup-0.3.1-x64.exe
+Get-FileHash -Algorithm SHA256 .\Tracer-Setup-0.3.2-x64.exe
 ```
 
 共享安装包包含应用与音频，不包含开发机的工作区、登录令牌或 AI 服务密钥。用户数据和运行缓存不应加入源码仓库或安装程序。

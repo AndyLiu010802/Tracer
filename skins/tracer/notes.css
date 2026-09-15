@@ -2,9 +2,24 @@
 /* 高度按视口算：.main 是 grid 中列（overflow-y:auto），.sec 是 block 无固定高度，
    所以 height:100% 会塌成内容高度、textarea 撑不开。用 100vh 减去顶栏(48)+主区上下
    内边距(48)+分区标题区(约 60) 得到编辑区可用高度。 */
-.notes-wrap { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 16px; height: calc(100vh - 156px); }
-.note-list { overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+#sec-notes { container: notes / inline-size; }
+#sec-notes .sec-head { flex-wrap: wrap; align-items: center; }
+.notes-head-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.notes-head-actions .btn { white-space: nowrap; }
+.notes-wrap { display: grid; grid-template-columns: var(--notes-list-width, 240px) 18px minmax(0, 1fr); min-height: 360px; height: calc(100dvh - 180px); }
+.note-list { min-width: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+.note-list[hidden], .notes-grip[hidden] { display: none; }
+.notes-wrap[data-list-hidden="true"] { grid-template-columns: minmax(0, 1fr); }
+.notes-wrap[data-compact="true"]:not([data-list-hidden="true"]) { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(100px, 180px) minmax(320px, 1fr); gap: 14px; height: auto; }
+.notes-grip { position: relative; cursor: col-resize; touch-action: none; border-radius: 6px; }
+.notes-grip::before { content: ''; position: absolute; top: 0; bottom: 0; left: 8px; width: 2px; background: var(--border); transition: background .15s; }
+.notes-grip::after { content: '⋮'; position: absolute; top: 46%; left: 1px; width: 16px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 5px; color: var(--muted); }
+.notes-grip:hover::before, .notes-grip:focus-visible::before { background: var(--accent); }
+.notes-grip:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+body.notes-resizing, body.notes-resizing * { cursor: col-resize !important; user-select: none !important; }
+body.notes-resizing iframe { pointer-events: none; }
 .note-item {
+  width: 100%; flex-shrink: 0; text-align: left; font: inherit; background: transparent;
   padding: 9px 11px; border-radius: var(--radius); cursor: pointer;
   border: 1px solid transparent; position: relative;
 }
@@ -15,15 +30,16 @@
 .note-item-snip { font-size: 11.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .note-empty { color: var(--muted); font-size: 13px; padding: 24px 8px; text-align: center; }
 
-.note-editor { display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--border); padding-left: 16px; }
-.note-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.note-editor { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.note-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.note-toolbar .chip { flex-shrink: 0; }
 .note-title {
-  flex: 1; background: transparent; border: none; color: var(--fg);
+  flex: 1 1 200px; min-width: 0; width: 100%; background: transparent; border: none; color: var(--fg);
   font-size: 18px; font-weight: 650; font-family: inherit; padding: 4px 0;
 }
 .note-title:focus { outline: none; }
 .note-body {
-  flex: 1; width: 100%; box-sizing: border-box; resize: none;
+  flex: 1; min-height: 280px; min-width: 0; width: 100%; box-sizing: border-box; resize: none;
   background: var(--surface); color: var(--fg);
   border: 1px solid var(--border); border-radius: var(--radius);
   padding: 14px 16px; font-family: var(--font-mono); font-size: 13px; line-height: 1.7;
@@ -31,7 +47,10 @@
 .note-body:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 
 /* 渲染预览排版 */
-.note-rendered { flex: 1; overflow-y: auto; font-size: 14px; line-height: 1.7; }
+.note-rendered { flex: 1; min-width: 0; overflow-y: auto; overflow-wrap: anywhere; font-size: 14px; line-height: 1.7; }
+.note-rendered img { max-width: 100%; height: auto; }
+@container notes (max-width: 640px) { .note-title { flex-basis: 100%; } }
+@container notes (max-width: 380px) { .notes-head-actions { width: 100%; margin-left: 0; } #sec-notes .sec-sub { display: none; } }
 .note-rendered h1 { font-size: 22px; margin: 4px 0 12px; }
 .note-rendered h2 { font-size: 18px; margin: 20px 0 10px; }
 .note-rendered h3 { font-size: 15px; margin: 16px 0 8px; }
