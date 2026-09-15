@@ -23,6 +23,12 @@ Windows x64：`Tracer-Setup-0.3.2-x64.exe`。从系统托盘退出旧版后安�
 
 桌面原生浏览器在拖动分隔线期间让出鼠标事件，跨入参考面板后松开鼠标也能正常结束拖动并恢复页面。
 
+### 本机验证限制
+
+上述交互检查在隔离的源码运行环境中通过，安装包中的程序文件也已与源码逐字节核对。但打包后的 `Tracer.exe` 被本机 Windows Device Guard 应用控制策略阻止启动，因此安装版启动及本机升级尚未完成验证。需要设备管理员按应用信任策略批准程序运行后再验证；本机原有安装未替换。
+
 ## English
 
 The Notes page list can now collapse and resize. Drag the divider or use its arrow keys to adjust the width; double-click to reset. Your width and collapse preference persist. Narrow workspaces give the editor the full width, with the page list available above it when needed. Draft content is retained across layout changes.
+
+Validation limitation: interaction checks passed in an isolated source runtime and packaged files match the source, but this machine's Windows Device Guard policy blocked the packaged executable. Installed-app launch and the local upgrade remain unverified pending administrator approval under the device's application control policy.
