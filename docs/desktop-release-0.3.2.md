@@ -21,6 +21,8 @@ Windows x64：`Tracer-Setup-0.3.2-x64.exe`。从系统托盘退出旧版后安�
 
 隔离工作区验证了拖动、键盘调宽、收起与刷新后的偏好记忆、正文保存、Markdown 预览，以及 900–1920px 窗口下的中英文布局和窄宽切换。
 
+桌面原生浏览器在拖动分隔线期间让出鼠标事件，跨入参考面板后松开鼠标也能正常结束拖动并恢复页面。
+
 ## English
 
 The Notes page list can now collapse and resize. Drag the divider or use its arrow keys to adjust the width; double-click to reset. Your width and collapse preference persist. Narrow workspaces give the editor the full width, with the page list available above it when needed. Draft content is retained across layout changes.

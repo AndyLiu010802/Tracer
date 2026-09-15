@@ -45,14 +45,16 @@
       if (cancel) layout.width = drag.width;
       var pointer = drag.pointer; drag = null;
       if (grip.hasPointerCapture(pointer)) grip.releasePointerCapture(pointer);
-      document.body.classList.remove('notes-resizing');
+      document.body.classList.remove('notes-resizing', 'is-resizing');
       applyLayout(); saveLayout();
     }
     grip.onpointerdown = function (e) {
       if (e.button !== 0) return;
       e.preventDefault(); grip.focus();
       drag = { x: e.clientX, width: parseFloat(wrap.style.getPropertyValue('--notes-list-width')), pointer: e.pointerId };
-      grip.setPointerCapture(e.pointerId); document.body.classList.add('notes-resizing');
+      // The shared resize flag temporarily hides the native reference view,
+      // so it cannot swallow pointer-up while the divider is being dragged.
+      grip.setPointerCapture(e.pointerId); document.body.classList.add('notes-resizing', 'is-resizing');
     };
     grip.onpointermove = function (e) {
       if (!drag) return;
