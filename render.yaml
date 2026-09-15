@@ -1,0 +1,40 @@
+# Paid service: review Render's cost estimate before deploying this Blueprint.
+services:
+  - type: web
+    name: tracer-ai
+    runtime: docker
+    plan: "0.5c-512mb"
+    region: singapore
+    branch: main
+    dockerfilePath: ./ai-service/Dockerfile
+    dockerContext: .
+    numInstances: 1
+    autoDeployTrigger: "off"
+    healthCheckPath: /health
+    disk:
+      name: tracer-ai-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: "10000"
+      - key: DATA_DIR
+        value: /app/data
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: OPENAI_MODEL
+        value: gpt-5-mini
+      - key: DAILY_PLAN_LIMIT
+        value: "10"
+      - key: GLOBAL_DAILY_PLAN_LIMIT
+        value: "100"
+      - key: MAX_USERS
+        value: "100"
+      - key: INVITE_CODE
+        generateValue: true
+# Add OPENAI_API_KEY privately in Render Environment after opening your API account.
+# Without it, accounts work but AI generation is unavailable (health.configured=false).

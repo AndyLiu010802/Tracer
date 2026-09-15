@@ -1,0 +1,9 @@
+# The AI container needs only these runtime files. Exclude local data and secrets.
+**
+!ai-service/
+!ai-service/Dockerfile
+!ai-service/server.js
+!ai-service/provider.js
+!ai-service/admin.js
+!public/
+!public/ai-planner.js

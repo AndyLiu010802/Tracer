@@ -1,6 +1,6 @@
 FROM node:24-bookworm-slim
 WORKDIR /app
-COPY ai-service ./ai-service
+COPY ai-service/server.js ai-service/provider.js ai-service/admin.js ./ai-service/
 COPY public/ai-planner.js ./public/ai-planner.js
 RUN mkdir -p /app/data && chown -R node:node /app/data
 USER node
