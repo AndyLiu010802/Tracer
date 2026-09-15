@@ -2,18 +2,18 @@
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[下载 Windows 桌面版](https://github.com/AndyLiu010802/Tracer/releases/latest)** · [0.3.2 更新说明](docs/desktop-release-0.3.2.md) · [AI 服务开通指南](docs/ai-service-setup.md)
+**[下载 Windows 桌面版](https://github.com/AndyLiu010802/Tracer/releases/latest)** · [0.3.4 更新说明](docs/desktop-release-0.3.4.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-在 Releases 中下载 **`Tracer-Setup-0.3.2-x64.exe`**，运行后按提示安装。安装程序创建桌面和开始菜单快捷方式，不需要另装 Node.js。更新已有版本前，请先从系统托盘退出 Tracer，再安装到原来的位置。
+在 Releases 中下载 **`Tracer-Setup-0.3.4-x64.exe`**，运行后按提示安装。安装程序创建桌面和开始菜单快捷方式，不需要另装 Node.js 或 Codex。更新已有版本前，请先从系统托盘退出 Tracer，再安装到原来的位置。
 
 0.3.2 的源码交互检查及安装包内容核对已通过，但本机 Device Guard 阻止了打包程序启动，安装版启动验证尚未完成，详见[验证限制](docs/desktop-release-0.3.2.md#本机验证限制)。
 
 - **无边框全屏**：0.3.2 启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
 - **本地数据**：任务、完成历史和设置保存在 `%APPDATA%\tracer-desktop\`。升级及正常卸载保留用户数据；分享的安装包使用接收者自己的工作区。
-- **核对下载**：安装程序目前未签名。发布附件提供 `SHA256SUMS-0.3.2.txt`，可核对下载文件的 SHA-256。
+- **核对下载**：安装程序目前未签名。发布附件提供 `SHA256SUMS-0.3.4.txt`，可核对下载文件的 SHA-256。
 
 ## 功能
 
@@ -27,9 +27,9 @@ Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、�
 
 ### AI 服务状态
 
-**真实 AI 在线服务尚未开通。** 桌面版已包含资料提取、账号界面和计划流程，在线生成需要运营者部署独立服务并在服务端配置 AI 密钥。安装包不含真实密钥；测试使用可控响应，不代表已经接通真实模型。
+支持两种个人接入方式：**ChatGPT 套餐登录**使用官方 Codex 组件和账号包含的 Codex 额度；**自己的 API**支持 OpenAI、兼容接口及本机模型。无需部署 Tracer 云服务。已完成真实 ChatGPT Pro 授权及模型响应验证；其他用户仍需登录自己的账号并测试。安装包不含账号或密钥。
 
-部署包 `Tracer-AI-Service-0.3.0.zip` 和[开通指南](docs/ai-service-setup.md)用于后续配置。这个账号服务不会自动同步不同电脑的工作区。早期微信小程序代码保留在 [wechat/](wechat/README.md)，需要另行配置微信账号和云开发环境。
+生成前检查套餐额度，额度耗尽或无法确认时停止，不购买额度或自动切换 API。个人 API 按服务商规则计费。任务仍保存在本机，不自动跨设备同步。旧云服务及 [微信小程序](wechat/README.md)代码保留，均需另行配置。
 
 ## 从源码运行与构建
 
@@ -46,7 +46,7 @@ npm start
 npm run dist
 ```
 
-产物为 `dist/Tracer-Setup-0.3.2-x64.exe`。Electron、音频及 PDF/Word 提取依赖会随安装包分发。桌面启动、存档、输入计数和构建细节见 [desktop/README.md](desktop/README.md)。
+产物为 `dist/Tracer-Setup-0.3.4-x64.exe`。Electron、音频、PDF/Word 提取依赖及官方 Codex 运行时会随安装包分发。首次构建下载并校验锁定版本的 Codex，需要访问官方 npm 注册表。桌面启动、存档、输入计数和构建细节见 [desktop/README.md](desktop/README.md)。
 
 ### 浏览器开发模式
 

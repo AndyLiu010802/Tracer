@@ -99,6 +99,16 @@ function createWindow() {
     },
   });
   Menu.setApplicationMenu(null);
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    // OAuth authorization belongs in the user's normal browser, never an embedded login page.
+    try {
+      if (require('../lib/ai-codex').loginURL(url)) {
+        require('electron').shell.openExternal(url).catch(() => {});
+        return { action: 'deny' };
+      }
+    } catch {}
+    return { action: 'allow' };
+  });
   require('./preferences-import').attachPreferencesImport(win, userData, 'http://' + config.host + ':' + config.port);
   const reference = require('./browser').attachBrowser(win, 'http://' + config.host + ':' + config.port);
   require('./window-controls').attachWindowControls(win, 'http://' + config.host + ':' + config.port, [reference.contents]);
@@ -176,7 +186,7 @@ function bootApp() {
 
 // 任何退出路径（托盘菜单、Cmd/Ctrl+Q、系统关机）都先把标记立起来，
 // 免得 close 事件又把窗口拦回托盘。
-app.on('before-quit', function () { isQuitting = true; });
+app.on('before-quit', function () { isQuitting = true; require('../lib/ai-gateway').closeCodex(); });
 
 // 不在关掉最后一个窗口时退出——那正是「缩进托盘后台跑」要的效果。
 // 退出只由托盘菜单的「退出」触发。

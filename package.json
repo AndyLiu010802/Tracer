@@ -1,8 +1,8 @@
 {
   "name": "tracer-desktop",
   "private": true,
-  "version": "0.3.3",
-  "description": "Tracer bilingual desktop task manager with personal AI connections and simple three-question planning.",
+  "version": "0.3.4",
+  "description": "Tracer bilingual task manager with ChatGPT subscription login, personal AI APIs and simple planning.",
   "main": "desktop/main.js",
   "author": {
     "name": "Tracer"
@@ -10,7 +10,8 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test test/*.test.js",
-    "dist": "electron-builder --win nsis --x64"
+    "dist": "electron-builder --win nsis --x64",
+    "predist": "node dev/prepare-codex-runtime.cjs"
   },
   "dependencies": {
     "mammoth": "1.12.3",
@@ -55,6 +56,21 @@
           "**/*.wav",
           "**/*.flac"
         ]
+      },
+      {
+        "from": ".cache/codex-runtime/package/vendor/x86_64-pc-windows-msvc",
+        "to": "codex",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "build/codex-LICENSE.txt",
+        "to": "codex/codex-LICENSE.txt"
+      },
+      {
+        "from": "build/codex-NOTICE.txt",
+        "to": "codex/codex-NOTICE.txt"
       }
     ],
     "asar": true,

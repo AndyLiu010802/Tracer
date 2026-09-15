@@ -1,0 +1,6 @@
+Tracer includes the unmodified OpenAI Codex CLI 0.154.0 for Windows x64.
+Codex is an OpenAI open-source project licensed under Apache License 2.0.
+Source: https://github.com/openai/codex/tree/rust-v0.154.0
+Distribution: @openai/codex@0.154.0-win32-x64 on the npm registry.
+See codex-LICENSE.txt for the license text.
+Tracer is an independent task manager and is not an OpenAI product.

@@ -1,0 +1,16 @@
+{
+  "version": "0.154.0",
+  "platform": "win32-x64",
+  "url": "https://registry.npmjs.org/@openai/codex/-/codex-0.154.0-win32-x64.tgz",
+  "integrity": "sha512-Stg2KEJPIKVqPPR1wCverGOR4ey3RR3cvakR07w7FNKQUMzmHaOZomRsP2bR1qOT/67yHsks9rB+MCMfIWXcRA==",
+  "license": "Apache-2.0",
+  "source": "https://github.com/openai/codex/tree/rust-v0.154.0",
+  "files": {
+    "bin/codex-code-mode-host.exe": "7b4987007702973dfeb49ec9a0c11f737488890e208ccb04f7a147769c4bb1f1",
+    "bin/codex.exe": "be96b992178b1e467c225800da0d65f2c86d5eba1ef0b14632f65db381cbdfde",
+    "codex-package.json": "c8a470c330ce5a399f0de0421bcf2cac102047f5277b6b5f86b1e29f16859629",
+    "codex-path/rg.exe": "14231169855ec5205cf5a1b6f1db358ff4aed4247c86b69ce8aae647c77f6680",
+    "codex-resources/codex-command-runner.exe": "a57ca8beb786a05f36c97309e8a716610c70ced9946dc1437bbbaf4566c0c403",
+    "codex-resources/codex-windows-sandbox-setup.exe": "ea27f90a0746e2464a829cd6e1de0dcafb77c8be603de899661e8c006ef33937"
+  }
+}

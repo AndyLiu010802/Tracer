@@ -18,7 +18,7 @@ const provider=http.createServer(async(req,res)=>{let body='';for await(const ch
   await page.click('#ai-open');check(await page.locator('#ai-goal').isVisible()&&await page.locator('#ai-deadline').isVisible()&&await page.locator('#ai-weekly').isVisible(),'three key questions are visible');
   check(!await page.locator('#ai-daily').isVisible()&&!await page.locator('#ai-files').isVisible(),'advanced settings and attachments start collapsed');
   await page.fill('#ai-goal','Write a short report');await page.fill('#ai-weekly','8');
-  await page.click('[data-ai-step="3"]');check(await page.locator('#ai-login').count()===0,'no Tracer login or invitation required');
+  await page.click('[data-ai-step="3"]');await page.click('#ai-mode-api');await page.waitForSelector('#ai-preset-local');check(await page.locator('#ai-login').count()===0,'no Tracer login or invitation required');
   await page.click('#ai-preset-local');await page.fill('#ai-url','http://127.0.0.1:'+provider.address().port+'/v1');await page.fill('#ai-model','test-local-model');await page.fill('#ai-key','qa-secret-only');
   await page.click('#ai-configure');await page.waitForFunction(()=>document.querySelector('.ai-service-state').textContent.includes('not tested'));
   check(inputs.length===0,'saving configuration does not call or claim connection to a model');
