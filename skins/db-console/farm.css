@@ -1,0 +1,399 @@
+/* 键盘农场的样式。单独成文件，免得 skin.css 被游戏部分撑爆——
+   皮肤骨架和这块玩法内容是两回事，各改各的。
+   颜色全部沿用 skin.css 里那组变量，切皮肤不用动这里。 */
+
+/* ---------- 顶部条 ---------- */
+
+.farm-bal {
+  font: 600 12px/1 var(--font-mono);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+
+.farm-lvl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 11px/1 var(--font-mono);
+  color: var(--muted);
+}
+
+.lvl-bar {
+  display: inline-block;
+  width: 46px;
+  height: 4px;
+  border-radius: 2px;
+  background: #2a2a2a;
+  overflow: hidden;
+}
+
+.lvl-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.btn-on { color: var(--accent); border-color: #2c5a44; }
+.btn-dim, .btn[disabled] { opacity: .45; cursor: default; }
+.farm-msg { color: var(--accent); }
+
+/* ---------- 分页 ---------- */
+
+.ftabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex: none;
+}
+
+.ftab {
+  padding: 7px 12px;
+  font: 11.5px/1 var(--font-mono);
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.ftab:hover { color: var(--fg); text-decoration: none; }
+
+.ftab.is-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.farm-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.pad { padding: 14px; }
+
+.kb-hint {
+  padding: 12px 14px 6px;
+  font: 11px/1.6 var(--font-mono);
+  color: var(--muted);
+}
+
+.kb-hint.inline { padding: 0; }
+
+/* ---------- 键盘农田 ---------- */
+
+.kb {
+  padding: 8px 14px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.kb-row { display: flex; gap: 5px; }
+
+/* 一格 = 一个按键 = 一块地。做成键帽的比例，
+   在伪装模式下读作「keyspace 分片 + 填充率」，一眼过去就是张热力图。 */
+.pk {
+  position: relative;
+  width: 52px;
+  height: 46px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font: 10px/1 var(--font-mono);
+  overflow: hidden;
+}
+
+.pk-wide { width: 214px; }
+
+.pk-cap {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  font-size: 8.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.pk-face { font-size: 15px; line-height: 1; margin-top: 4px; }
+.pk-sub { font-size: 10px; color: var(--muted); }
+.pk-lv { font-size: 9px; color: #4a4a4a; }
+
+.pk-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: #2a2a2a;
+}
+
+.pk-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.pk-empty {
+  border-style: dashed;
+  color: #5a5a5a;
+  cursor: pointer;
+}
+
+.pk-empty:hover { border-color: var(--accent); color: var(--accent); }
+.pk-live { cursor: pointer; }
+.pk-live:hover { border-color: var(--accent); }
+.pk-lock { opacity: .35; }
+.pk-heat { cursor: default; }
+
+.kb-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+}
+
+/* 便签：农场的主要输入面。在这里敲字最顺手，
+   而且它看着就是个 scratch 查询框，不违和。 */
+.kb-scratch { padding: 4px 14px 16px; }
+
+.scratch {
+  width: 100%;
+  min-height: 84px;
+  resize: vertical;
+  padding: 10px 12px;
+  font: 12px/1.6 var(--font-mono);
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+}
+
+.scratch:focus { border-color: #3a3a3a; }
+.scratch::placeholder { color: #4d4d4d; }
+
+/* ---------- 仓库 ---------- */
+
+.mini {
+  font: 10.5px/1 var(--font-mono);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 3px 6px;
+  cursor: pointer;
+}
+
+.mini:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+.mini.on { color: var(--accent); border-color: #2c5a44; }
+
+/* ---------- 订单 ---------- */
+
+.od-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.od {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.od-ok { border-color: #2c5a44; }
+.od-title { font: 600 12px/1.4 var(--font-mono); }
+.od-sub { font: 10.5px/1.5 var(--font-mono); color: var(--muted); }
+
+/* ---------- 动物 ---------- */
+
+.an {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.an-mail { border-color: #2c5a44; }
+.an-off { opacity: .6; }
+
+.an-face {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #232323;
+  font-size: 17px;
+  color: var(--muted);
+  flex: none;
+}
+
+.an-body { flex: 1; min-width: 0; }
+.an-name { font: 600 12px/1.5 var(--font-mono); }
+.an-sub { font: 10.5px/1.5 var(--font-mono); color: var(--muted); }
+.an-lv { color: var(--accent); font-weight: 400; }
+
+/* ---------- 统计 ---------- */
+
+.statgrid {
+  font: 11px/1.7 var(--font-mono);
+  color: #c9c9c9;
+  max-width: 420px;
+}
+
+.statgrid .col {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 0;
+  border-bottom: 1px solid #242424;
+}
+
+.statgrid .typ { color: var(--muted); }
+
+/* ---- 角色/装备 ---- */
+.eq-slots { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 10px; }
+.eq-slot { flex: 1 1 130px; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: var(--surface); font: 11px/1.5 var(--font-mono); }
+.eq-slot-nm { display: block; color: var(--muted); font-size: 10px; margin-bottom: 3px; }
+.eq-empty { color: #4a4a4a; }
+.eq-face { width: 20px; height: 20px; vertical-align: middle; object-fit: contain; }
+
+.loot-eq { color: var(--accent); border-color: var(--accent); font-weight: 600; }
+
+/* ---- 锻造 ---- */
+.rec-need { font: 10px/1.5 var(--font-mono); color: var(--muted); }
+.rec-miss { color: #e0603e; }
+.forge-lock td { opacity: .45; }
+
+/* ---------- 种子商店（左侧栏） ---------- */
+
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.shop-item:hover { background: #262626; }
+.shop-item.is-active { background: #234436; }
+.shop-item.is-active .shop-name { color: var(--accent); }
+.shop-locked { opacity: .4; cursor: default; }
+.shop-locked:hover { background: transparent; }
+.shop-name { font: 600 11.5px/1.4 var(--font-mono); color: #c9c9c9; }
+.shop-meta { font: 10px/1.4 var(--font-mono); color: var(--muted); }
+
+/* ---- 钓鱼分区 ---- */
+.spot-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 8px; }
+.spot { padding: 4px 10px; border: 1px solid var(--border); border-radius: 5px;
+  color: var(--muted); font-size: 12px; cursor: pointer; }
+.spot:hover { color: var(--fg); border-color: #3a3a3a; text-decoration: none; }
+.spot.is-active { color: var(--accent); border-color: var(--accent); }
+.spot-lock { opacity: .6; }
+.spot-cost { color: var(--accent); }
+.rz { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.rz-common { background: #6b6b6b; } .rz-uncommon { background: #4fa3ff; }
+.rz-rare { background: #b06bff; } .rz-epic { background: #ff8f3e; } .rz-legendary { background: #ffd23e; }
+.dex-row { display: flex; gap: 8px; align-items: baseline; margin: 3px 0; }
+.dex-sp { width: 6.5em; color: var(--muted); font-size: 11px; flex: none; }
+.dex-cells { display: flex; flex-wrap: wrap; gap: 4px; }
+.dexf { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 5px; font-size: 15px; }
+.dexf-off { color: #4a4a4a; }
+.fish-face { width: 20px; height: 20px; vertical-align: middle; object-fit: contain; }
+/* 鱼塘场景面板 */
+.scene { position: relative; width: 100%; height: 150px; border-radius: 6px; margin-bottom: 8px;
+  background-size: cover; background-position: center; border: 1px solid var(--border); overflow: hidden; }
+.scene-name { position: absolute; left: 10px; bottom: 8px; color: #eaf4f0; font-size: 13px; font-weight: 600;
+  letter-spacing: .02em; text-shadow: 0 1px 3px rgba(0, 0, 0, .75); }
+/* 最近钓获展示 */
+.catch { position: absolute; right: 10px; bottom: 8px; display: flex; align-items: center; gap: 8px;
+  background: rgba(0, 0, 0, .38); border-radius: 8px; padding: 4px 12px 4px 4px; backdrop-filter: blur(2px); }
+.catch-img { width: 68px; height: 68px; object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5)); }
+.catch-info { color: #eaf4f0; font-size: 12px; text-shadow: 0 1px 2px rgba(0, 0, 0, .7); }
+.catch-tag { display: block; color: var(--accent); font-size: 10px; margin-top: 2px; }
+
+/* ---- 副本卡牌 ---- */
+.mob-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-top: 6px; }
+.mob-card { border: 1px solid var(--border); border-radius: 8px; padding: 8px 6px; text-align: center; cursor: pointer;
+  background: var(--surface); transition: border-color .12s; }
+.mob-card:hover { border-color: var(--accent); }
+.mob-card.mob-lock { opacity: .45; cursor: default; }
+.mob-card.mob-boss { border-color: #b06bff; }
+.mob-pic { height: 56px; display: flex; align-items: center; justify-content: center; font-size: 34px; }
+.mob-face { max-width: 56px; max-height: 56px; object-fit: contain; }
+.mob-nm { font-size: 12px; color: var(--fg); margin-top: 4px; }
+.mob-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ---- 对战 ---- */
+.arena { height: 84px; border-radius: 6px; margin-bottom: 8px; background-size: cover; background-position: center; border: 1px solid var(--border); }
+.battle { display: flex; align-items: center; justify-content: space-around; gap: 8px; }
+.fighter { flex: 1; text-align: center; }
+.f-pic { height: 64px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.f-pic img { max-width: 64px; max-height: 64px; object-fit: contain; }
+.f-nm { font-size: 12px; color: var(--fg); margin: 2px 0 4px; }
+.vs { color: var(--muted); font-size: 12px; }
+.hpbar { position: relative; height: 12px; border-radius: 6px; background: #2a2a2a; overflow: hidden; }
+.hpfill { position: absolute; inset: 0 auto 0 0; height: 100%; }
+.hpfill.hp-p { background: #3ecf8e; } .hpfill.hp-m { background: #e0603e; }
+.hpfill.hp-ore { background: #c99a4a; }
+.vein-locked td { opacity: .45; }
+.vein-cd { color: #8a8a8a; }
+/* 当前挂机矿脉行高亮，观感沿用 .shop-item.is-active。加 .mine-grid 不是为了提特异性
+   （去掉它写成 .grid tr.is-active td 分数一样），而是把作用域锁在开采矿脉表，不外溢到
+   其余复用 .grid 的表格（背包材料表、锻造配方表等）——仓库里每个 is-active 消费者都是
+   这样各自限定的。与 skin.css 的 .grid tr:hover td 同分，靠 farm.css 后加载取胜。 */
+.mine-grid tr.is-active td { background: #234436; color: var(--accent); }
+/* 魔法页：当前施放的法术行、正在刻符的那一格高亮。作用域同样锁在 .magic-grid，理由见上面 .mine-grid 的注释。 */
+.magic-grid tr.is-active td, .magic-grid td.is-active { background: #234436; color: var(--accent); }
+.hptxt { position: relative; font-size: 9px; line-height: 12px; color: #eaeaea; text-shadow: 0 0 2px #000; }
+.blog { margin: 8px 0; max-height: 130px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; padding: 6px; }
+.blog-line { font: 11px/1.6 var(--font-mono); color: var(--muted); }
+
+/* ---- 战斗特效 ---- */
+.f-pic { position: relative; }
+.is-hit { animation: hitShake .28s ease; }
+.is-hit.is-crit { animation: hitShakeBig .34s ease; }
+.is-kill { animation: killFlash .3s ease; }
+@keyframes hitShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes hitShakeBig { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-8px,-2px); } 60% { transform: translate(8px,2px); } }
+@keyframes killFlash { 0% { filter: brightness(2.4); } 100% { filter: brightness(1); } }
+.is-hit::after { content: ''; position: absolute; inset: 0; background: rgba(224,96,62,.45); border-radius: 8px;
+  animation: flashFade .3s ease forwards; pointer-events: none; }
+@keyframes flashFade { from { opacity: 1; } to { opacity: 0; } }
+.dmg-float { position: absolute; top: -2px; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none;
+  font: 700 14px/1 var(--font-mono); color: #ffd23e; text-shadow: 0 1px 3px #000; animation: floatUp .7s ease forwards; }
+.dmg-float.is-crit { font-size: 20px; color: #ff6b3e; }
+@keyframes floatUp { 0% { opacity: 1; transform: translate(-50%,0); } 100% { opacity: 0; transform: translate(-50%,-28px); } }
+.defeat-flash { animation: defeatFlash .5s ease; }
+@keyframes defeatFlash { 0% { background: rgba(200,40,40,.35); } 100% { background: transparent; } }
+
+/* ---- 战利品堆 ---- */
+.loot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0; padding: 8px;
+  border: 1px dashed var(--border); border-radius: 8px; min-height: 20px; }
+.loot-lbl { font: 600 11px/1 var(--font-mono); color: var(--muted); margin-right: 4px; }
+.loot-i { font: 11px/1 var(--font-mono); color: var(--accent); border: 1px solid var(--border); border-radius: 4px; padding: 3px 7px; }
+.loot-none { font: 11px/1 var(--font-mono); color: #4a4a4a; }
+.mat-face { width: 18px; height: 18px; vertical-align: middle; object-fit: contain; margin-right: 3px; }

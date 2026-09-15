@@ -1,0 +1,21 @@
+<view class="page tasks-page">
+  <view class="row"><view class="muted">{{L.workspace}}</view><view class="language"><text class="{{lang === 'zh' ? 'active' : ''}}" data-lang="zh" bindtap="language">中文</text><text class="{{lang === 'en' ? 'active' : ''}}" data-lang="en" bindtap="language">EN</text></view></view>
+  <view class="row"><view class="title">{{L.tasks}}</view><view class="badge">{{countLabel}}</view></view>
+  <view class="notice" wx:if="{{demo}}">{{L.demo}}</view>
+  <view class="notice" wx:if="{{pending}}">{{L.pendingNotice}}</view>
+  <input placeholder="{{L.search}}" value="{{query}}" bindinput="search" confirm-type="search" />
+  <scroll-view scroll-x class="statuses"><view class="status {{status === item.key ? 'selected' : ''}}" wx:for="{{statuses}}" wx:key="key" data-key="{{item.key}}" bindtap="status">{{item.label}}</view></scroll-view>
+  <view class="row"><picker range="{{projectNames}}" value="{{projectIndex}}" bindchange="project"><view class="filter">{{projectNames[projectIndex]}} ▾</view></picker><view class="filter" bindtap="newProject">{{L.addProject}}</view></view>
+  <view class="row flags"><view class="filter {{high ? 'selected' : ''}}" bindtap="high">{{L.high}}</view><view class="filter {{overdue ? 'selected' : ''}}" bindtap="overdue">{{L.overdue}}</view><view class="muted">{{resultsLabel}}</view></view>
+  <view class="error" wx:if="{{error}}">{{error}}</view>
+  <view class="empty" wx:if="{{!tasks.length}}">{{loading ? L.loading : L.empty}}<view class="muted">{{L.emptyHelp}}</view></view>
+  <view class="panel task" wx:for="{{tasks}}" wx:key="id" data-id="{{item.id}}" bindtap="edit">
+    <view class="row"><text class="muted">{{item.seq}}</text><text class="badge">{{item.statusLabel}}</text></view>
+    <view class="task-title {{item.status === 'done' ? 'done' : ''}}">{{item.title}}</view>
+    <view class="task-meta"><text wx:if="{{item.projectName}}">{{item.projectName}}　</text><text wx:if="{{item.priorityLabel}}" class="high">{{item.priorityLabel}}　</text><text wx:if="{{item.assignee}}">{{L.assignee}} · {{item.assignee}}</text></view>
+    <view class="task-meta" wx:if="{{item.checklistLabel}}">{{item.checklistLabel}}</view><view class="task-meta high" wx:if="{{item.blockersLabel}}">{{item.blockersLabel}}</view>
+    <view class="task-meta {{item.overdue ? 'high' : ''}}" wx:if="{{item.due}}">{{item.overdue ? L.overdue : L.due}} · {{item.due}}</view>
+    <view class="task-meta" wx:if="{{item.scheduled}}">{{L.planned}} · {{item.scheduled}}</view>
+  </view>
+  <view class="add-bar"><button class="primary" bindtap="add">{{L.newTaskButton}}</button></view>
+</view>

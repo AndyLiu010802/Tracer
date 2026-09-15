@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 标签页伪装：固定标题 + 内联 SVG favicon，历史记录里只有 localhost -->
+<title>Market Data Platform — Engineering Docs</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232f6fdb'/%3E%3Cpath d='M4 11.2V5.6h1.5v4.3h2.3v1.3zm5 0V5.6h3.1v1.2h-1.7v1h1.6v1.2h-1.6v2.2z' fill='white'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/skin.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="top-left">
+    <span class="mark">MD</span>
+    <span class="product">Market Data Platform</span>
+    <span class="pill">v4.2.1</span>
+  </div>
+  <div class="top-mid">
+    <label class="search">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+      <input type="text" placeholder="Search documentation" spellcheck="false" aria-label="Search documentation">
+      <kbd>/</kbd>
+    </label>
+  </div>
+  <div class="top-right">
+    <span class="env">
+      <span class="dot"></span>staging
+    </span>
+    <span class="avatar" title="Signed in">YL</span>
+  </div>
+</header>
+
+<div class="shell">
+
+  <nav class="side" aria-label="Documentation">
+    <div class="side-group">
+      <div class="side-label">Getting started</div>
+      <a class="side-link" data-page="overview" href="#overview">Pipeline overview</a>
+      <a class="side-link" data-page="auth" href="#auth">Authentication</a>
+    </div>
+    <div class="side-group">
+      <div class="side-label">Ingestion</div>
+      <a class="side-link" data-page="rate-limits" href="#rate-limits">Rate limits &amp; backoff</a>
+      <a class="side-link" data-page="normalization" href="#normalization">Tick normalization</a>
+      <a class="side-link" data-page="errors" href="#errors">Error codes</a>
+    </div>
+    <div class="side-group">
+      <div class="side-label">Platform</div>
+      <a class="side-link" data-page="i18n" href="#i18n">Localization &amp; fixtures</a>
+      <a class="side-link" data-page="changelog" href="#changelog">Changelog</a>
+    </div>
+    <div class="side-foot">
+      <span class="side-build">build 4.2.1+a91f0c3</span>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="crumbs" id="crumbs"></div>
+    <article class="doc" id="doc"></article>
+    <footer class="doc-foot">
+      <span>Last reviewed 2026-08-14 by platform-data</span>
+      <a href="#edit">Edit this page</a>
+    </footer>
+  </main>
+
+  <aside class="rail">
+    <div class="rail-block">
+      <div class="rail-label">On this page</div>
+      <div class="toc" id="toc"></div>
+    </div>
+    <!-- 小窗挂载点。皮肤与小窗的唯一结构约定就是这个 id。 -->
+    <div class="rail-block" id="aside-slot"></div>
+  </aside>
+
+</div>
+
+<script src="/content.js"></script>
+</body>
+</html>

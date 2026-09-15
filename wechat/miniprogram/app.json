@@ -1,0 +1,10 @@
+{
+  "pages": ["pages/tasks/index", "pages/edit/index", "pages/sync/index"],
+  "window": { "navigationBarTitleText": "Tracer 任务", "navigationBarBackgroundColor": "#13151a", "navigationBarTextStyle": "white", "backgroundColor": "#101216", "backgroundTextStyle": "light" },
+  "tabBar": { "color": "#9299a7", "selectedColor": "#e5b567", "backgroundColor": "#171a21", "borderStyle": "black", "list": [
+    { "pagePath": "pages/tasks/index", "text": "任务" },
+    { "pagePath": "pages/sync/index", "text": "同步与设备" }
+  ] },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,18 @@
+/* Tracer Planner：未安排托盘 + 本周 7 天列，横向排布，可拖任务排期。 */
+.planner { display: grid; grid-template-columns: 200px repeat(7, minmax(140px, 1fr)); gap: 8px; align-items: start; overflow-x: auto; padding-bottom: 12px; }
+.pl-tray, .pl-day { display: flex; flex-direction: column; min-height: 120px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; }
+.pl-tray { background: transparent; border-style: dashed; }
+.pl-is-today { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-soft); }
+.pl-col-head { font-size: 11.5px; font-weight: 600; color: var(--muted); margin-bottom: 8px; display: flex; align-items: baseline; gap: 5px; }
+.pl-dow { text-transform: uppercase; letter-spacing: .5px; }
+.pl-dom { color: var(--fg); font-size: 14px; }
+.pl-is-today .pl-dom { color: var(--accent); }
+.pl-body { display: flex; flex-direction: column; gap: 6px; min-height: 32px; flex: 1; }
+.pl-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 9px; cursor: grab; }
+.pl-card:hover { border-color: #34373f; }
+.pl-card:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.pl-card.dragging { opacity: .55; }
+.pl-card-title { font-size: 12.5px; line-height: 1.35; margin-bottom: 5px; }
+.pl-card-meta { display: flex; align-items: center; gap: 6px; }
+.pl-seq { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); }
+.pl-dot { width: 7px; height: 7px; border-radius: 2px; display: inline-block; }

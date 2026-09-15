@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 标签页伪装：内部工程工作台。favicon 是半月，呼应日月轮回主题。 -->
+<title>Tracer — Engineering</title>
+<link rel="icon" href="/tracer-logo.png">
+<script>
+/* 首帧就定好时段，否则 CSS 默认夜色会在 app.js 接管时扫一次 2s 过渡。
+   边界逻辑与 model.js 的 dayPhase 保持同步。
+   ?phase=dawn|day|dusk|night 可固定预览某个时段（app.js 同样认它）。 */
+(function (h) {
+  var m = /[?&]phase=(dawn|day|dusk|night)\b/.exec(location.search);
+  document.documentElement.setAttribute('data-phase',
+    m ? m[1] :
+    h >= 5 && h < 9 ? 'dawn' : h >= 9 && h < 17 ? 'day' : h >= 17 && h < 21 ? 'dusk' : 'night');
+})(new Date().getHours());
+</script>
+<link rel="stylesheet" href="/skin.css">
+<link rel="stylesheet" href="/board.css">
+<link rel="stylesheet" href="/notes.css">
+<link rel="stylesheet" href="/planner.css">
+<link rel="stylesheet" href="/timeline.css">
+<link rel="stylesheet" href="/map.css">
+<link rel="stylesheet" href="/insights.css">
+<link rel="stylesheet" href="/farm.css">
+<link rel="stylesheet" href="/garden.css">
+<link rel="stylesheet" href="/wellness.css">
+<link rel="stylesheet" href="/crystal.css">
+<link rel="stylesheet" href="/ai-assistant.css">
+<link rel="stylesheet" href="/window-controls.css">
+</head>
+<body>
+
+<!-- 空状态插画的共享图形：弦月 + 星点。各分区用 <use> 引用。 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="moon-art">
+      <path d="M 48 14 A 22 22 0 0 0 48 58 A 13 22 0 0 1 48 14 Z" fill="currentColor" opacity=".92"/>
+      <circle cx="67" cy="21" r="1.6" fill="var(--accent2)"/>
+      <circle cx="78" cy="39" r="1.1" fill="currentColor" opacity=".55"/>
+      <circle cx="23" cy="15" r="1.2" fill="currentColor" opacity=".45"/>
+      <circle cx="71" cy="55" r="1" fill="var(--accent2)" opacity=".7"/>
+      <circle cx="15" cy="49" r="1" fill="currentColor" opacity=".35"/>
+    </g>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="top-left">
+    <span class="mark" aria-hidden="true">
+      <img src="/tracer-logo.png" width="28" height="28" alt="">
+    </span>
+    <span class="crumb crumb-strong">Tracer</span>
+    <span class="crumb-sep">/</span>
+    <span class="crumb">Engineering</span>
+  </div>
+  <div class="top-mid"></div>
+  <div class="top-right">
+    <button class="new-btn" id="daily-card-toggle" aria-controls="daily-card" aria-expanded="true"></button>
+    <button class="new-btn" id="focus-open-compact" hidden></button>
+    <button class="new-btn" id="ai-open">✦ AI 计划</button>
+    <select class="new-btn" id="language-select" aria-label="Language"><option value="zh">中文</option><option value="en">English</option></select>
+    <button class="new-btn" id="new-btn" title="New task">+ New</button>
+    <span class="dial"><span class="sundial" id="sundial"></span><span class="clock" id="clock"></span></span>
+    <span class="avatar-wrap">
+      <span class="avatar" title="Signed in">AL</span>
+      <span class="save-dot" id="save-dot" title="Synced"></span>
+    </span>
+    <div class="window-controls" id="window-controls" role="group" aria-label="Window controls" hidden>
+      <button type="button" class="window-control" id="window-minimize" aria-label="Minimize" title="Minimize"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
+      <button type="button" class="window-control" id="window-fullscreen" aria-label="Exit full screen (F11)" title="Exit full screen (F11)"><svg viewBox="0 0 16 16" aria-hidden="true"><path id="window-fullscreen-icon" d="M2 6h4V2m4 0v4h4M2 10h4v4m4 0v-4h4"/></svg></button>
+      <button type="button" class="window-control window-control-close" id="window-close" aria-label="Hide to system tray" title="Hide to system tray"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8m0-8-8 8"/></svg></button>
+    </div>
+  </div>
+</header>
+
+
+<div id="focus-alarm" role="status" hidden><span aria-hidden="true">◷</span><div><strong id="focus-alarm-title"></strong><p id="focus-alarm-text"></p></div><button class="btn btn-primary" id="focus-alarm-next"></button><button class="btn" id="focus-alarm-dismiss"></button></div>
+
+<div class="shell">
+
+  <nav class="side" aria-label="Sections">
+    <div class="nav-group" id="nav-secs">
+      <a class="nav-item" data-sec="inbox" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2 9.5 4 3h8l2 6.5V13H2zM2 9.5h3.5l1 2h3l1-2H14"/></svg>Inbox</a>
+      <a class="nav-item" data-sec="notes" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M3.5 2h7L13 4.5V14h-9.5zM10 2v3h3"/><path d="M5.5 8H11M5.5 10.5H9"/></svg>Notes</a>
+      <a class="nav-item active" data-sec="board" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2.5 2.5h3.4v11H2.5zM6.9 2.5h3.4v7H6.9zM11.3 2.5h2.2v9h-2.2z"/></svg>Board</a>
+      <a class="nav-item" data-sec="map" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="1.8"/><circle cx="11.5" cy="3.5" r="1.8"/><circle cx="11.5" cy="12.5" r="1.8"/><path d="M5.2 7.2 9.8 4.3M5.2 8.8l4.6 2.9"/></svg>Project Map</a>
+      <a class="nav-item" data-sec="planner" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3"/></svg>Planner</a>
+      <a class="nav-item" data-sec="timeline" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2 4h7M5 8h8M3 12h6"/><path d="M8 1.5v13" stroke-dasharray="1.5 2"/></svg>Timeline</a>
+      <a class="nav-item" data-sec="insights" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2.5 13.5V9M6.2 13.5V5M9.9 13.5V7.5M13.5 13.5V3"/></svg>Insights</a>
+      <a class="nav-item" data-sec="garden" role="tab" tabindex="0" id="nav-garden"><svg viewBox="0 0 16 16"><path d="M8 14V7M8 7C8 4 6 2 3 2c0 3 2 5 5 5M8 7c0-2.5 1.7-4.5 4.5-4.5C12.5 5 10.5 7 8 7"/></svg>Garden</a>
+    </div>
+    <div class="nav-label" id="projects-label">Projects</div>
+    <!-- 阶段 2 起由 app.js 渲染项目清单 -->
+    <div class="nav-group" id="proj-list"></div>
+  </nav>
+
+  <main class="main" id="main">
+<section class="daily-bar" id="daily-card" aria-label="Daily inspiration and focus">
+  <div id="ambient-background" aria-hidden="true"></div>
+  <div class="daily-quote"><div class="daily-eyebrow"><span id="daily-label">每日名言</span><span id="daily-date"></span></div><blockquote id="daily-text"></blockquote><a id="daily-source" target="_blank" rel="noopener noreferrer"></a></div>
+  <div class="daily-actions"><button id="focus-open" class="focus-pill"><span class="focus-indicator" aria-hidden="true">◷</span><span id="focus-label">番茄钟</span><strong id="focus-clock">25:00</strong></button><button class="ambient-button" id="music-quick-pause" hidden></button><div class="background-actions"><button class="ambient-button" id="ambient-shuffle"><span aria-hidden="true">↻</span> <span id="ambient-name">背景</span></button><button class="ambient-button" id="ambient-toggle" aria-pressed="true"></button><button class="ambient-button" id="daily-card-hide"></button></div></div>
+</section>
+    <section class="sec" id="sec-inbox">
+      <header class="sec-head"><h1>Inbox</h1><span class="sec-sub">Capture first, sort later</span></header>
+      <div class="empty">
+        <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
+        <div class="empty-title">Inbox zero</div>
+        <div class="empty-sub">Capture a thought with one line — sort it later.</div>
+      </div>
+    </section>
+    <section class="sec" id="sec-notes">
+      <header class="sec-head"><h1>Notes</h1><span class="sec-sub">Pages and drafts</span></header>
+      <div class="empty">
+        <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
+        <div class="empty-title">No pages yet</div>
+        <div class="empty-sub">Drafts and documents will gather here.</div>
+      </div>
+    </section>
+    <section class="sec active" id="sec-board">
+      <header class="sec-head"><h1>Board</h1><span class="sec-sub">Todo · In Progress · In Review · Done</span></header>
+      <div class="empty">
+        <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
+        <div class="empty-title">Board is clear</div>
+        <div class="empty-sub">Cards flow from Todo to Done as work happens.</div>
+      </div>
+    </section>
+    <section class="sec" id="sec-map">
+      <header class="sec-head"><h1>Project Map</h1><span class="sec-sub">Workspace at a glance</span></header>
+      <div class="empty">
+        <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
+        <div class="empty-title">The map is dark</div>
+        <div class="empty-sub">Add projects and watch the constellation light up.</div>
+      </div>
+    </section>
+    <section class="sec" id="sec-planner">
+      <header class="sec-head"><h1>Planner</h1><span class="sec-sub">This week</span></header>
+      <div class="empty">
+        <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
+        <div class="empty-title">Nothing scheduled</div>
+        <div class="empty-sub">Drop tasks onto the week when you're ready.</div>
+      </div>
+    </section>
+    <section class="sec" id="sec-timeline">
+      <header class="sec-head"><h1>Timeline</h1><span class="sec-sub">Quarter view</span></header>
+      <div class="empty">
+        <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
+        <div class="empty-title">No ranges yet</div>
+        <div class="empty-sub">Project bars will stretch across the months.</div>
+      </div>
+    </section>
+    <section class="sec" id="sec-insights">
+      <header class="sec-head"><h1>Insights</h1><span class="sec-sub">Work rhythms</span></header>
+      <div class="empty">
+        <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
+        <div class="empty-title">Quiet for now</div>
+        <div class="empty-sub">Rhythms and metrics build up as you work.</div>
+      </div>
+    </section>
+    <section class="sec" id="sec-garden">
+      <header class="sec-head"><h1>Garden</h1><span class="sec-sub">A quiet corner of the workspace</span></header>
+      <div class="garden-wrap">
+        <aside class="garden-side">
+          <div class="garden-shop" id="garden-shop"></div>
+          <!-- farm.js 借这两个 id 放选中作物的详情（null-safe，没有就跳过）。
+               必须是 garden-shop 的兄弟节点、不能是它的子节点：farm.js 的
+               renderShop() 每次都用 sideEl.innerHTML= 整块重写商店列表，
+               放里面会被这行覆盖冲掉，详情面板等于白做。 -->
+          <div class="garden-rail">
+            <div class="rail-label" id="rail-label"></div>
+            <div class="definition" id="definition"></div>
+          </div>
+        </aside>
+        <div class="garden-main" id="garden-main">
+          <!-- 静态占位：数据加载失败时（workspace 拉取失败）onShow 钩子全体
+               不会触发，Garden 的 DBFarm.mount() 也就永远不会跑，这块占位会
+               一直留着而不是一片空白。加载成功后 farm.js 的 render() 会用
+               mainEl.innerHTML= 整体替换掉它，和其它分区首屏占位的套路一致。 -->
+          <div class="empty">
+            <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
+            <div class="empty-title">The garden is quiet</div>
+            <div class="empty-sub">Give it a season and something will grow.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="rail">
+    <!-- 拖拽把手：横向拖拽改宽度，双击/回车切换阅读面板显隐（见 rail.js）。 -->
+    <div class="rail-grip" role="separator" aria-orientation="vertical" tabindex="0"
+         title="Drag to resize &middot; double-click to toggle"></div>
+    <!-- 小窗挂载点。在工作台语境下，面板定位为「参考资料」。 -->
+    <div class="rail-block" id="aside-slot"
+         data-panel-tag="ref"
+         data-panel-title="Reference"
+         data-panel-meta="cached &middot; utf8"></div>
+  </aside>
+
+</div>
+
+<div id="modal-root" hidden></div>
+
+<script src="/task-history.js"></script>
+<script src="/model.js"></script>
+<script src="/workspace-sync.js"></script>
+<script src="/task-i18n.js"></script>
+<script src="/i18n.js"></script>
+<script src="/window-controls.js"></script>
+<script src="/app.js"></script>
+<!-- 右栏拖宽 + 随阅读面板显隐自动收起（ES5，纯前端，无持久化开关——收起态
+     由 #aside-slot 里阅读面板的实际状态推导，见 rail.js）。必须在 app.js 之后：
+     依赖 .shell/.rail/#aside-slot 已在 DOM 里（这几个都是静态标记，本来就有）。 -->
+<script src="/rail.js"></script>
+<!-- 共享游戏引擎：从 db-console 目录兜底服务（server GAME_DIR 回退）。
+     必须在 app.js 之后（Tracer 的 Ctrl+Alt+G 先注册以屏蔽 farm 自带的文案切换），
+     顺序 fishing→combat→equip→mining→magic→farm 与 db-console 一致。 -->
+<script src="/fishing.js"></script>
+<script src="/combat.js"></script>
+<script src="/equip.js"></script>
+<script src="/mining.js"></script>
+<script src="/magic.js"></script>
+<script src="/farm.js"></script>
+<script src="/inbox.js"></script>
+<script src="/task-editor.js"></script>
+<script src="/board.js"></script>
+<script src="/projects.js"></script>
+<script src="/notes.js"></script>
+<script src="/planner.js"></script>
+<script src="/timeline.js"></script>
+<script src="/map.js"></script>
+<script src="/insights-model.js"></script>
+<script src="/insights.js"></script>
+<script src="/garden.js"></script>
+<script src="/focus-model.js"></script>
+<script src="/daily-content.js"></script>
+<script src="/music-model.js"></script>
+<script src="/music.js"></script>
+<script src="/wellness.js"></script>
+<script src="/ai-planner.js"></script>
+<script src="/ai-assistant.js"></script>
+</body>
+</html>

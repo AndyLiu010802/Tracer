@@ -1,0 +1,16 @@
+node_modules/
+.worktrees/
+.cache/
+*.log
+local.config.json
+bookmarks.json
+.superpowers/
+/data/
+# electron-builder 出包产物（Setup.exe、解包缓存等），构建可重现，不进版本库。
+/dist/
+/ai-service/data/
+/ai-service/secrets/
+/ai-service/.env
+/.playwright-mcp/
+/output/
+/cloud/.openai/

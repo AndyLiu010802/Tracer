@@ -1,0 +1,79 @@
+{
+  "name": "tracer-desktop",
+  "private": true,
+  "version": "0.3.1",
+  "description": "Tracer bilingual desktop task manager with focus audio, completion history and an AI planning assistant. PDF and Word extraction runs locally; shared AI service is deployed separately.",
+  "main": "desktop/main.js",
+  "author": {
+    "name": "Tracer"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.js",
+    "dist": "electron-builder --win nsis --x64"
+  },
+  "dependencies": {
+    "mammoth": "1.12.3",
+    "pdfjs-dist": "6.3.289",
+    "uiohook-napi": "^1.5.4"
+  },
+  "devDependencies": {
+    "electron": "44.3.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.tracer.workbench",
+    "productName": "Tracer",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "server.js",
+      "lib/**/*",
+      "public/**/*",
+      "skins/**/*",
+      "desktop/**/*",
+      "!desktop/test/**",
+      "!desktop/node_modules/**",
+      "!desktop/package-lock.json",
+      "!desktop/README.md",
+      "!**/*.bak",
+      "!**/*.log",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "music",
+        "to": "music",
+        "filter": [
+          "**/*.mp3",
+          "**/*.m4a",
+          "**/*.aac",
+          "**/*.ogg",
+          "**/*.wav",
+          "**/*.flac"
+        ]
+      }
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/uiohook-napi/**/*"
+    ],
+    "win": {
+      "icon": "build/app-icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "artifactName": "Tracer-Setup-${version}-${arch}.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

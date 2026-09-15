@@ -1,0 +1,24 @@
+<view class="page">
+  <label class="label">{{L.title}}</label><input value="{{title}}" data-field="title" bindinput="field" maxlength="200" placeholder="{{L.titleHint}}" />
+  <label class="label">{{L.description}}</label><textarea value="{{notes}}" data-field="notes" bindinput="field" maxlength="100000" placeholder="{{L.notesHint}}" />
+  <label class="label">{{L.acceptance}}</label><textarea value="{{acceptance}}" data-field="acceptance" bindinput="field" maxlength="100000" placeholder="{{L.acceptanceHint}}" />
+  <label class="label">{{L.status}}</label><picker range="{{statuses}}" value="{{statusIndex}}" data-field="statusIndex" bindchange="field"><view class="picker">{{statuses[statusIndex]}} ▾</view></picker>
+  <label class="label">{{L.project}}</label><picker range="{{projectNames}}" value="{{projectIndex}}" data-field="projectIndex" bindchange="field"><view class="picker">{{projectNames[projectIndex]}} ▾</view></picker>
+  <label class="label">{{L.type}}</label><picker range="{{types}}" value="{{typeIndex}}" data-field="typeIndex" bindchange="field"><view class="picker">{{types[typeIndex]}} ▾</view></picker>
+  <label class="label">{{L.priority}}</label><picker range="{{priorities}}" value="{{priorityIndex}}" data-field="priorityIndex" bindchange="field"><view class="picker">{{priorities[priorityIndex]}} ▾</view></picker>
+  <label class="label">{{L.assignee}}</label><input value="{{assignee}}" data-field="assignee" bindinput="field" maxlength="200" placeholder="{{L.ownerHint}}" />
+  <label class="label">{{L.labels}}</label><input value="{{labelsText}}" data-field="labelsText" bindinput="field" maxlength="10000" placeholder="{{L.labelsHint}}" />
+  <label class="label">{{L.estimate}}</label><input type="digit" value="{{estimate}}" data-field="estimate" bindinput="field" />
+  <label class="label">{{L.spent}}</label><input type="digit" value="{{spent}}" data-field="spent" bindinput="field" />
+  <label class="label">{{L.plannedDate}}</label><view class="row"><picker mode="date" value="{{scheduled}}" data-field="scheduled" bindchange="field"><view class="picker">{{scheduled || L.chooseDate}} ▾</view></picker><button size="mini" data-field="scheduled" bindtap="clear">{{L.clear}}</button></view>
+  <label class="label">{{L.dueDate}}</label><view class="row"><picker mode="date" value="{{due}}" data-field="due" bindchange="field"><view class="picker">{{due || L.chooseDate}} ▾</view></picker><button size="mini" data-field="due" bindtap="clear">{{L.clear}}</button></view>
+  <label class="label">{{L.checklist}}</label>
+  <view wx:for="{{checklist}}" wx:key="id" class="row"><switch checked="{{item.done}}" color="#e5b567" data-index="{{index}}" bindchange="checkToggle" /><input value="{{item.text}}" data-index="{{index}}" bindinput="checkText" maxlength="1000" /><button size="mini" data-index="{{index}}" bindtap="checkRemove">{{L.removeStep}}</button></view>
+  <input value="{{checkNew}}" data-field="checkNew" bindinput="field" maxlength="1000" placeholder="{{L.checklistHint}}" /><button size="mini" bindtap="checkAdd">{{L.addStep}}</button>
+  <label class="label">{{L.links}}</label><textarea value="{{linksText}}" data-field="linksText" bindinput="field" maxlength="100000" placeholder="{{L.linksHint}}" />
+  <label class="label">{{L.dependsOn}}</label><view class="muted">{{L.dependencyHint}}</view>
+  <checkbox-group bindchange="dependency"><label wx:for="{{dependencies}}" wx:key="id" class="row"><checkbox value="{{item.id}}" checked="{{item.checked}}" color="#e5b567" /><text>{{item.seq}} · {{item.status}} · {{item.title}}</text></label></checkbox-group>
+  <view class="error" wx:if="{{error}}">{{error}}</view>
+  <button class="primary" loading="{{saving}}" disabled="{{saving}}" bindtap="save">{{L.saveTask}}</button>
+  <button class="danger" wx:if="{{id}}" disabled="{{saving}}" bindtap="remove">{{L.deleteTask}}</button>
+</view>

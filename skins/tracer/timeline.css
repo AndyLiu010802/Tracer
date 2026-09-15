@@ -1,0 +1,16 @@
+/* Tracer Timeline：项目横条铺在月刻度上，横条叠完成度进度，点横条改起止。 */
+.tl { position: relative; }
+.tl-axis { position: relative; height: 26px; margin-left: 180px; border-bottom: 1px solid var(--border); }
+.tl-month { position: absolute; top: 0; font-size: 11px; color: var(--muted); padding: 4px 0 0 6px; border-left: 1px solid var(--border); height: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
+.tl-rows { position: relative; padding-top: 8px; }
+.tl-today { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--accent); opacity: .55; z-index: 1; }
+.tl-row { display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: center; height: 40px; }
+.tl-label { display: flex; align-items: center; gap: 8px; font-size: 13px; padding-right: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tl-label i { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+.tl-track { position: relative; height: 100%; }
+.tl-bar { position: absolute; top: 8px; height: 22px; border: 1px solid; border-radius: 5px; cursor: pointer; overflow: hidden; display: flex; align-items: center; }
+.tl-bar:hover { filter: brightness(1.15); }
+.tl-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; opacity: .45; }
+.tl-bar-label { position: relative; font-size: 10.5px; font-weight: 600; color: var(--fg); padding-left: 7px; }
+.tl-set { font: inherit; font-size: 11.5px; color: var(--muted); background: transparent; border: 1px dashed var(--border); border-radius: 5px; padding: 3px 10px; cursor: pointer; }
+.tl-set:hover { color: var(--accent); border-color: var(--accent); }

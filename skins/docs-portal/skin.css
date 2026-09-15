@@ -1,0 +1,383 @@
+/* docs-portal 皮肤。
+   与引擎的契约：必须定义下面这组变量，小窗只认这些变量来取色取字体。 */
+
+:root {
+  --fg: #232b36;
+  --bg: #f7f8fa;
+  --muted: #737f8d;
+  --border: #e3e7ec;
+  --accent: #2f6fdb;
+  --surface: #ffffff;
+  --font-body: -apple-system, "Segoe UI", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+  --radius: 6px;
+
+  --code-bg: #f5f7f9;
+  --note-bg: #f0f5fd;
+  --warn-bg: #fdf5ec;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #d5dbe3;
+    --bg: #14171c;
+    --muted: #79838f;
+    --border: #262b33;
+    --accent: #7aa7f0;
+    --surface: #191d23;
+    --code-bg: #12151a;
+    --note-bg: #16202e;
+    --warn-bg: #241d15;
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* 隐藏滚动条，保留滚动。侧栏、右栏、正文各带一条时，
+   页面右侧会叠出好几条平行的滚动条，很难看也很显眼。 */
+html, body, .side, .rail, .main {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.side::-webkit-scrollbar,
+.rail::-webkit-scrollbar,
+.main::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.65 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- 顶栏 ---------- */
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  height: 48px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.top-left { display: flex; align-items: center; gap: 9px; }
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: .02em;
+}
+
+.product { font-weight: 600; font-size: 13px; }
+
+.pill {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font: 10px/1.6 var(--font-mono);
+  color: var(--muted);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 4px 9px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.search svg {
+  width: 13px; height: 13px; flex: none;
+  fill: none; stroke: var(--muted); stroke-width: 1.6;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--fg);
+  font: 12.5px/1.5 var(--font-body);
+}
+.search input:focus { outline: none; }
+.search input::placeholder { color: var(--muted); }
+
+.search kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font: 10px/1.5 var(--font-mono);
+  color: var(--muted);
+}
+
+.top-right { display: flex; align-items: center; gap: 12px; }
+
+.env {
+  display: flex; align-items: center; gap: 5px;
+  font: 11px/1 var(--font-mono);
+  color: var(--muted);
+}
+
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #3fae6b;
+  box-shadow: 0 0 0 2px rgba(63, 174, 107, .18);
+}
+
+.avatar {
+  display: grid; place-items: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--muted);
+  font: 600 9.5px/1 var(--font-mono);
+}
+
+/* ---------- 三栏骨架 ---------- */
+
+.shell {
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr) 344px;
+  align-items: start;
+  gap: 0;
+  max-width: 1580px;
+  margin: 0 auto;
+}
+
+/* ---------- 左侧导航 ---------- */
+
+.side {
+  position: sticky;
+  top: 48px;
+  height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 18px 12px 18px 16px;
+  border-right: 1px solid var(--border);
+}
+
+.side-group { margin-bottom: 18px; }
+
+.side-label {
+  padding: 0 8px;
+  margin-bottom: 5px;
+  font: 600 10px/1.6 var(--font-body);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.side-link {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--fg);
+  font-size: 12.5px;
+  text-decoration: none;
+}
+
+.side-link:hover { background: var(--surface); text-decoration: none; }
+
+.side-link.is-active {
+  background: var(--note-bg);
+  color: var(--accent);
+  font-weight: 500;
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.side-foot {
+  padding: 10px 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.side-build { font: 9.5px/1.5 var(--font-mono); color: var(--muted); opacity: .8; }
+
+/* ---------- 正文 ---------- */
+
+.main {
+  min-width: 0;
+  padding: 26px 40px 60px;
+  background: var(--surface);
+  min-height: calc(100vh - 48px);
+  border-right: 1px solid var(--border);
+}
+
+.crumbs {
+  font: 11px/1.6 var(--font-mono);
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.crumbs span + span::before { content: "/"; margin: 0 7px; opacity: .5; }
+
+.doc { max-width: 760px; }
+
+.doc h1 {
+  font-size: 25px;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -.011em;
+  margin: 0 0 8px;
+}
+
+.doc .lede {
+  font-size: 14.5px;
+  color: var(--muted);
+  margin: 0 0 26px;
+}
+
+.doc h2 {
+  font-size: 16px;
+  font-weight: 620;
+  letter-spacing: -.005em;
+  margin: 34px 0 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.doc h3 { font-size: 13.5px; font-weight: 620; margin: 22px 0 7px; }
+
+.doc p { margin: 0 0 13px; }
+
+.doc ul, .doc ol { margin: 0 0 13px; padding-left: 20px; }
+.doc li { margin-bottom: 5px; }
+
+.doc code {
+  padding: 1.5px 4px;
+  border-radius: 3px;
+  background: var(--code-bg);
+  font: 12px/1.4 var(--font-mono);
+}
+
+.doc pre {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.doc pre code { padding: 0; background: none; font-size: 11.5px; line-height: 1.62; }
+
+.doc table {
+  width: 100%;
+  margin: 0 0 18px;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.doc th, .doc td {
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.doc th {
+  font: 600 10.5px/1.6 var(--font-body);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.doc td code { font-size: 11.5px; }
+
+.note, .warn {
+  margin: 0 0 16px;
+  padding: 11px 14px;
+  border-left: 2px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--note-bg);
+  font-size: 13px;
+}
+
+.warn { border-left-color: #d08a35; background: var(--warn-bg); }
+
+.note strong, .warn strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.doc-foot {
+  display: flex;
+  justify-content: space-between;
+  max-width: 760px;
+  margin-top: 44px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* ---------- 右栏 ---------- */
+
+.rail {
+  position: sticky;
+  top: 48px;
+  height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 22px 16px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.rail-label {
+  margin-bottom: 7px;
+  font: 600 10px/1.6 var(--font-body);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.toc a {
+  display: block;
+  padding: 2.5px 0 2.5px 10px;
+  border-left: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.toc a:hover { color: var(--accent); text-decoration: none; }
+.toc a.lvl3 { padding-left: 20px; font-size: 11.5px; }
+
+#aside-slot { flex: 1; min-height: 0; display: flex; }
+
+@media (max-width: 1240px) {
+  .shell { grid-template-columns: 200px minmax(0, 1fr); }
+  .rail { display: none; }
+}

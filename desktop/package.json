@@ -1,0 +1,5 @@
+{
+  "name": "tracer-desktop",
+  "private": true,
+  "_comment": "本目录不再是独立的 npm 项目：依赖（electron/electron-builder/uiohook-napi）与打包配置已合并进仓库根 package.json（应用根=仓库根，见 docs/superpowers/plans/2026-09-04-desktop-packaging.md Task 4）。开发/构建请在仓库根目录跑 npm install / npm start / npm run dist。这个 name 字段刻意留着且必须保持 tracer-desktop 不变——虽然运行时不再读它，但它是 app.getPath('userData') 曾经据以推导路径的历史依据，改动它会造成误导。"
+}

@@ -1,0 +1,17 @@
+/* Tracer Project Map：脑图树，SVG 节点+贝塞尔连线，画布可平移。 */
+.map-canvas { overflow: hidden; height: calc(100vh - 150px); cursor: grab; position: relative; }
+.map-canvas.grabbing { cursor: grabbing; }
+#map-svg { transition: none; }
+.me { fill: none; stroke: var(--border); stroke-width: 1.5; }
+.mn text { font-size: 12.5px; fill: var(--fg); font-family: var(--font-body); }
+.mn rect { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+.mn-root rect { fill: var(--accent-soft); stroke: var(--accent); }
+.mn-root text { fill: var(--fg); font-weight: 600; }
+.mn-proj rect { fill: var(--panel); }
+.mn-proj text { font-weight: 550; }
+.mn-caret { cursor: pointer; fill: var(--muted); }
+.mn-caret:hover { fill: var(--fg); }
+.mn-task { cursor: pointer; }
+.mn-task:hover rect { stroke: var(--accent); }
+.mn-task text { fill: var(--muted); }
+.mn-task:hover text { fill: var(--fg); }

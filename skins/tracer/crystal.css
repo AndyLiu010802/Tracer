@@ -1,0 +1,19 @@
+/* Shared crystal surface for task cards, including the unscheduled tray. */
+.card, .pl-card { position: relative; isolation: isolate; background: linear-gradient(140deg, #ffffff0e, #ffffff03 48%, #ffffff07), #171c22c9; backdrop-filter: blur(12px) saturate(1.15); border: 1px solid #ffffff21; border-top-color: #ffffff45; border-left-color: #ffffff30; border-radius: 13px; box-shadow: inset 0 1px 0 #ffffff18, inset 0 -1px 1px #0006, 0 3px 8px #0003; }
+.card::after, .pl-card::after { content: ''; position: absolute; inset: 2px; border-radius: 10px; pointer-events: none; z-index: -1; border: 1px solid #ffffff05; border-top-color: #ffffff13; background: linear-gradient(115deg, #ffffff05, transparent 28%, #ffffff03 55%, transparent 56%); }
+.card:hover, .pl-card:hover { border-color: #ffffff48; border-top-color: #ffffff6b; box-shadow: inset 0 1px 0 #ffffff25, 0 8px 22px #0005; }
+.pl-card { padding: 11px 12px; transition: border-color .15s, box-shadow .15s; }
+.pl-card:focus { border-color: #ffffff48; box-shadow: inset 0 1px 0 #ffffff25, 0 3px 8px #0003; }
+.pl-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.pl-card .drag-handle { min-width: 24px; min-height: 24px; color: #8793a5; border-color: #ffffff0f; border-radius: 6px; }
+.pl-card .drag-handle:hover { color: var(--accent); border-color: var(--accent); }
+.pl-card .card-actions { margin-bottom: 10px; }
+.pl-card-title { color: #e8ebf0; font-weight: 550; line-height: 1.5; overflow-wrap: anywhere; margin-bottom: 12px; }
+.pl-card-meta { padding-top: 9px; border-top: 1px solid #ffffff0b; }
+.pl-tray, .pl-day { border-radius: 12px; background: #ffffff02; border-color: #ffffff0b; padding: 9px; }
+.pl-tray { background: #ffffff01; }
+.pl-body { gap: 10px; }
+.pl-is-today { border-color: #d9bc6055; background: #d9bc6005; }
+@media (prefers-reduced-motion: reduce) { .pl-card { transition: none; } }
+.drag-ghost { border-color: var(--accent); box-shadow: 0 18px 45px #0007; }
+.drag-ghost.drop-invalid { border-color: #e86a8a; }

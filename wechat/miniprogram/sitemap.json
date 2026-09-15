@@ -1,0 +1,1 @@
+{ "desc": "个人任务不进入搜索索引", "rules": [{ "action": "disallow", "page": "*" }] }

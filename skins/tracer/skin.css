@@ -1,0 +1,303 @@
+/* Tracer —— Linear 风深色工作台，主题「日月轮回」。
+   底色四时恒定（伪装依赖深色），随真实时刻轮转的是 accent 与顶部天光：
+   拂晓 5-9 琥珀 / 白昼 9-17 鎏金 / 黄昏 17-21 绛紫 / 夜 21-5 靛银。
+   每个时段是一对渐变色（--accent → --accent2），黄昏与夜晚另有星空层淡入。
+   首帧由 index.html 内联脚本写好时段（<html data-phase="...">），app.js 每分钟对时。 */
+
+:root {
+  /* 深色界面必须显式声明，否则 Chrome/Edge 在 .side/.main/.rail 的
+     overflow-y:auto 上画浅色原生滚动条，一眼假 */
+  color-scheme: dark;
+  /* 引擎契约变量：小窗只通过这 9 个取色取字体 */
+  --fg: #dde0e6;
+  --bg: #0d0e10;
+  --muted: #82868f;
+  --border: #24262c;
+  --accent: #7c8fe8;
+  --surface: #17191d;
+  --font-body: 'Segoe UI Variable Text', 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --radius: 8px;
+  /* 皮肤私有 */
+  --panel: #121316;
+  --accent2: #7cc8e8;
+  --accent-soft: rgba(124, 143, 232, .13);
+  --glow: rgba(124, 143, 232, .32);
+  --sky: rgba(124, 143, 232, .07);
+  --star: 0;               /* 星空层不透明度，仅黄昏/夜晚拉起 */
+}
+html[data-phase="dawn"]  { --accent: #e8975a; --accent2: #e86a8a; --accent-soft: rgba(232, 151, 90, .14); --glow: rgba(232, 151, 90, .32); --sky: rgba(232, 140, 96, .085); --star: 0; }
+html[data-phase="day"]   { --accent: #d9b95c; --accent2: #f0dfa4; --accent-soft: rgba(217, 185, 92, .13); --glow: rgba(217, 185, 92, .30); --sky: rgba(217, 185, 92, .06); --star: 0; }
+html[data-phase="dusk"]  { --accent: #b07ce8; --accent2: #e87cc8; --accent-soft: rgba(176, 124, 232, .14); --glow: rgba(176, 124, 232, .34); --sky: rgba(176, 124, 232, .09); --star: .35; }
+html[data-phase="night"] { --accent: #7c8fe8; --accent2: #7cc8e8; --accent-soft: rgba(124, 143, 232, .13); --glow: rgba(124, 143, 232, .32); --sky: rgba(124, 143, 232, .07); --star: .6; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--fg);
+  background:
+    radial-gradient(1100px 420px at 24% -140px, rgba(255, 255, 255, .025), transparent 70%),
+    var(--bg);
+  overflow: hidden;
+}
+
+/* 天光：一层从顶部渗下来的极淡色。渐变本身不能过渡，
+   所以用「纯色 + 固定渐变蒙版」——background-color 可以 2s 过渡。 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--sky);
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent);
+  mask-image: linear-gradient(180deg, #000, transparent);
+  transition: background-color 2s ease;
+}
+
+/* 星空：黄昏浅淡、入夜清晰，白昼隐去。图案是内联 SVG 的散点。 */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 220px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--star);
+  transition: opacity 2s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='190'%3E%3Cg fill='%23bcd0f5'%3E%3Ccircle cx='18' cy='34' r='1'/%3E%3Ccircle cx='67' cy='12' r='.7'/%3E%3Ccircle cx='108' cy='52' r='1.2'/%3E%3Ccircle cx='151' cy='20' r='.6'/%3E%3Ccircle cx='196' cy='64' r='.9'/%3E%3Ccircle cx='238' cy='30' r='.7'/%3E%3Ccircle cx='42' cy='88' r='.6'/%3E%3Ccircle cx='86' cy='118' r='.9'/%3E%3Ccircle cx='139' cy='96' r='.5'/%3E%3Ccircle cx='176' cy='140' r='.8'/%3E%3Ccircle cx='222' cy='108' r='.6'/%3E%3Ccircle cx='12' cy='152' r='.7'/%3E%3Ccircle cx='253' cy='166' r='.5'/%3E%3Ccircle cx='120' cy='168' r='.6'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent);
+  mask-image: linear-gradient(180deg, #000 30%, transparent);
+}
+
+/* 细滚动条，融进深色 */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #2b2e35; border-radius: 5px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background-color: #3a3e47; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- 顶栏 ---------- */
+.top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .022), transparent), color-mix(in srgb, var(--panel) 90%, transparent);
+}
+/* 底边一条会呼吸的 accent 发丝线，中间亮、两端隐 */
+.top::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 8%, var(--glow), transparent 92%);
+  opacity: .5;
+  transition: background 2s ease;
+}
+.top-left { display: flex; align-items: center; gap: 9px; }
+.top-mid { flex: 1; }
+.top-right { display: flex; align-items: center; gap: 14px; }
+.mark {
+  display: inline-flex; width: 19px; height: 19px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 6px var(--glow));
+  transition: color 2s ease, filter 2s ease;
+}
+.mark svg { width: 100%; height: 100%; }
+.crumb { color: var(--muted); }
+.crumb-strong { color: var(--fg); font-weight: 650; letter-spacing: .3px; font-size: 14.5px; }
+.crumb-sep { color: var(--muted); opacity: .55; }
+
+/* 日晷胶囊：地平线 + 渐变弧线 + 刻度 + 带光晕的日/月 + 时间，一件仪器 */
+.dial {
+  display: inline-flex; align-items: center; gap: 9px;
+  height: 28px; padding: 0 12px 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, var(--sky), transparent 85%),
+    color-mix(in srgb, var(--surface) 60%, transparent);
+  transition: background-color 2s ease;
+}
+.sundial { display: inline-flex; width: 76px; height: 20px; }
+.sundial svg { width: 100%; height: 100%; }
+.clock { color: var(--fg); opacity: .75; font-family: var(--font-mono); font-size: 12px; letter-spacing: .5px; }
+
+.avatar-wrap { position: relative; display: inline-flex; }
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-soft), transparent 130%);
+  border: 1px solid var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px; font-weight: 700;
+  transition: background-color 2s ease, color 2s ease, border-color 2s ease;
+}
+/* 保存状态 = 头像右下角的在线点徽章 */
+.save-dot {
+  position: absolute; right: -2px; bottom: -2px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #4fbf82;
+  border: 2px solid #14161a;
+  box-shadow: 0 0 6px rgba(79, 191, 130, .5);
+}
+.save-dot.saving { background: var(--muted); box-shadow: none; }
+.save-dot.err { background: #e5b567; box-shadow: 0 0 6px rgba(229, 181, 103, .55); }
+
+/* ---------- 三栏骨架 ---------- */
+.shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr) var(--rail-w, 392px);
+  height: calc(100% - 48px);
+}
+/* 阅读面板隐藏/浮动时右栏收起，只留把手那 6px（rail.js 靠 MutationObserver
+   推导，不另设持久化开关——见 rail.js 顶部注释）。 */
+.shell[data-rail="collapsed"] { grid-template-columns: 236px minmax(0, 1fr) 6px; }
+/* 拖动中：整页禁选中文字、光标统一成 col-resize，指针经过 iframe 时不被吞事件
+   （iframe 会截获自己范围内的 pointermove，只靠把手的 setPointerCapture 不够）。 */
+body.is-resizing { cursor: col-resize; user-select: none; }
+body.is-resizing #aside-slot iframe { pointer-events: none; }
+
+/* ---------- 左侧导航 ---------- */
+.side {
+  padding: 14px 10px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .012), transparent 140px);
+}
+.nav-group { display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  position: relative;
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 11px;
+  border-radius: var(--radius);
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  transition: color .15s ease, background-color .15s ease;
+}
+.nav-item svg {
+  width: 16px; height: 16px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.4;
+  stroke-linecap: round; stroke-linejoin: round;
+  opacity: .9;
+}
+.nav-item:hover { background: var(--surface); color: var(--fg); }
+.nav-item.active {
+  background: linear-gradient(90deg, var(--accent-soft), transparent 82%);
+  color: var(--fg);
+  transition: background-color 2s ease, color 2s ease;
+}
+/* 激活态的左缘光条 */
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 7px; bottom: 7px;
+  width: 2.5px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  box-shadow: 0 0 8px var(--glow);
+  transition: background 2s ease, box-shadow 2s ease;
+}
+.nav-item.active svg { color: var(--accent); opacity: 1; filter: drop-shadow(0 0 4px var(--glow)); }
+.nav-label {
+  margin: 18px 11px 6px;
+  font-size: 10.5px; font-weight: 650; letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: .8;
+}
+
+/* ---------- 主区与分区 ---------- */
+.main { overflow-y: auto; padding: 24px 28px; }
+.sec { display: none; }
+.sec.active { display: block; animation: sec-in .18s ease; }
+@keyframes sec-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+.sec-head h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: .2px; }
+.sec-sub { color: var(--muted); font-size: 13px; }
+
+/* 空状态：弦月与星点的插画 + 标题 + 一句副文案。 */
+.empty {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 96px 0 72px;
+  color: var(--muted);
+  text-align: center;
+}
+.empty-art {
+  width: 96px; height: 72px;
+  margin-bottom: 10px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 14px var(--glow));
+  transition: color 2s ease, filter 2s ease;
+}
+.empty-title { color: var(--fg); font-size: 15.5px; font-weight: 600; letter-spacing: .2px; }
+.empty-sub { font-size: 13px; max-width: 320px; line-height: 1.55; }
+
+/* ---------- 右栏 ---------- */
+/* rail 必须是 flex 容器，#aside-slot 必须能 flex:1 撑满剩余高度——
+   小窗停靠态在 reader.css 里就是靠 flex:1 长高，父链断了就塌成 min-height。 */
+.rail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+  padding: 12px;
+  overflow-y: auto;
+  background: var(--panel);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, .015);
+}
+#aside-slot { flex: 1; min-height: 0; display: flex; }
+
+/* 拖拽把手。不能用负 left 贴到边界外——.rail 是 overflow-y:auto，纵向 auto
+   会把横向也一并变成裁剪/出滚动条的轴，负偏移的把手会被吃掉或催生横向滚动条。
+   默认视觉上几乎不可见，只在 hover/拖动/键盘聚焦时用 ::after 画一条 accent 细线。 */
+.rail-grip {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 2;
+  touch-action: none;
+}
+.rail-grip::after {
+  content: '';
+  position: absolute;
+  left: 2px; top: 0; bottom: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+.rail-grip:hover::after,
+.rail-grip.is-dragging::after,
+.rail-grip:focus-visible::after {
+  opacity: .55;
+}
+.rail-grip:focus-visible { outline: none; }
+
+/* 收起态：把手仍要能双击/键盘展开，铺满那 6px；不留 padding/边框避免多出一条缝。
+   #aside-slot 本身不强制 display:none——dock 态的收起已经由面板自己的
+   style.display:none 盖住了（reader.js 的 applyHidden），这里再扣一层没有必要；
+   float 态的收起则相反，绝不能扣：面板此刻是 position:fixed 飘在别处，
+   若这里 display:none，祖先的 display:none 会连它一起从渲染树摘掉（fixed
+   逃不开这个），float 窗口就会跟着右栏一起消失，违背「浮动态本该独立于
+   右栏可见」的初衷。 */
+.shell[data-rail="collapsed"] .rail { padding: 0; border-left: none; }
+.shell[data-rail="collapsed"] .rail-grip { width: 100%; }
+
+/* 窄视口：右栏收窄，别把阅读面板挤出屏幕（body overflow:hidden 下没有滚动条可救）。
+   用户手动拖过宽度会写 inline --rail-w，inline 样式优先级天然盖过这里。 */
+@media (max-width: 1100px) {
+  .shell { --rail-w: 320px; }
+}

@@ -1,0 +1,233 @@
+/* 小窗样式。
+   与皮肤的唯一耦合点是下面这组 CSS 变量——取色、字体、圆角全从皮肤拿，
+   因此换任何一套皮肤都能自动融进去，不需要改这里一行。
+   皮肤必须提供：--fg --bg --muted --border --accent --surface
+                --font-body --font-mono --radius */
+
+/* 隐藏面板范围内的所有滚动条，滚动本身照常。
+   小窗宽度本来就紧张，滚动条既占地方又扎眼。 */
+.fx-panel,
+.fx-panel * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.fx-panel *::-webkit-scrollbar,
+.fx-panel::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.fx-panel {
+  --fx-pad: 10px;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e3e7ec);
+  border-radius: var(--radius, 6px);
+  font-family: var(--font-body, sans-serif);
+  color: var(--fg, #222);
+  overflow: hidden;
+}
+
+/* 停靠态填满右栏剩余高度，而不是写死一个值。
+   写死 560px 会让右栏自身也需要滚动，于是页面右侧叠出第二条滚动条。
+   撑满之后右栏不再溢出，那条滚动条从结构上就没有了。 */
+.fx-panel[data-mode="dock"] {
+  width: 100%;
+  flex: 1;
+  min-height: 320px;
+}
+
+.fx-panel[data-mode="float"] {
+  position: fixed;
+  z-index: 9999;
+  resize: both;
+  min-width: 320px;
+  min-height: 260px;
+  box-shadow: 0 8px 28px rgba(15, 22, 33, .16), 0 2px 6px rgba(15, 22, 33, .08);
+}
+
+/* ---- 标题栏 ---- */
+
+.fx-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px var(--fx-pad);
+  border-bottom: 1px solid var(--border, #e3e7ec);
+  background: var(--bg, #fafbfc);
+  flex: none;
+}
+
+.fx-panel[data-mode="float"] .fx-head {
+  cursor: move;
+}
+
+.fx-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 9.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border, #e3e7ec);
+  color: var(--muted, #7c8794);
+  flex: none;
+}
+
+.fx-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted, #7c8794);
+  letter-spacing: .01em;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fx-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--muted, #7c8794);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.fx-icon:hover {
+  border-color: var(--border, #e3e7ec);
+  color: var(--fg, #222);
+}
+
+.fx-icon.is-on {
+  border-color: var(--accent, #2f6fdb);
+  color: var(--accent, #2f6fdb);
+}
+
+/* ---- 地址栏 ---- */
+
+.fx-bar {
+  display: flex;
+  gap: 6px;
+  padding: 7px var(--fx-pad);
+  border-bottom: 1px solid var(--border, #e3e7ec);
+  flex: none;
+}
+
+/* 小窗内的前进/后退/刷新。iframe 没有浏览器自带的导航栏，
+   这三个按钮是唯一的退路。 */
+.fx-nav {
+  flex: none;
+  width: 22px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--muted, #7c8794);
+  background: var(--bg, #fafbfc);
+  border: 1px solid var(--border, #e3e7ec);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.fx-nav:hover {
+  color: var(--accent, #2f6fdb);
+  border-color: var(--accent, #2f6fdb);
+}
+
+.fx-nav:active {
+  transform: translateY(1px);
+}
+
+.fx-src {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 7px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  color: var(--fg, #222);
+  background: var(--bg, #fafbfc);
+  border: 1px solid var(--border, #e3e7ec);
+  border-radius: 3px;
+}
+
+.fx-src:focus {
+  outline: none;
+  border-color: var(--accent, #2f6fdb);
+}
+
+.fx-go {
+  flex: none;
+  padding: 4px 9px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted, #7c8794);
+  background: var(--bg, #fafbfc);
+  border: 1px solid var(--border, #e3e7ec);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.fx-go:hover {
+  color: var(--accent, #2f6fdb);
+  border-color: var(--accent, #2f6fdb);
+}
+
+/* ---- 内容区 ---- */
+
+/* 内容区固定深色，不跟随皮肤。
+   一是长时间阅读省眼，二是 iframe 加载前不会闪一下白底。
+   外框仍取皮肤变量，于是整体看起来就是文档站里嵌了一块日志/控制台面板。 */
+.fx-body {
+  flex: 1;
+  min-height: 0;
+  /* 与 fixture view 的 --fx-bg 一致，取皮肤的大背景底色（--bg），iframe 加载前也不闪、不露出另一种底色。 */
+  background: var(--bg, #171717);
+}
+
+.fx-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.fx-native .fx-frame, .fx-native [hidden] { display: none !important; }
+.fx-native .fx-body { position: relative; overflow: hidden; }
+.fx-native .fx-meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 85%; }
+.fx-browser-message { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 28px; box-sizing: border-box; text-align: center; gap: 12px; color: var(--muted, #999); }
+.fx-browser-message strong { color: var(--text, #eee); font-size: 18px; }
+.fx-browser-message p { overflow-wrap: anywhere; line-height: 1.6; }
+.fx-native button:disabled { opacity: .35; cursor: default; }
+
+/* ---- 页脚 ---- */
+
+.fx-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px var(--fx-pad);
+  border-top: 1px solid var(--border, #e3e7ec);
+  background: var(--bg, #fafbfc);
+  font-family: var(--font-mono, monospace);
+  font-size: 9.5px;
+  color: var(--muted, #7c8794);
+  flex: none;
+}
+
+.fx-hint {
+  opacity: .55;
+}

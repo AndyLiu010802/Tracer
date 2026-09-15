@@ -1,0 +1,93 @@
+/* A contained photographic glass card above the main workspace. */
+body { display: flex; flex-direction: column; }
+.top { flex-shrink: 0; }
+.shell { height: auto; flex: 1; min-height: 0; }
+#ambient-background { position: absolute; inset: 0; z-index: -2; pointer-events: none; background-position: center 48%; background-size: cover; }
+#ambient-background::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(0,0,0,.69), rgba(0,0,0,.38) 60%, rgba(0,0,0,.56)); }
+#ambient-background[hidden] { display: none; }
+.daily-bar { position: relative; isolation: isolate; overflow: hidden; container: daily-card / inline-size; flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 28px; min-height: 154px; margin: 0 0 26px; padding: 24px 28px; border: 1px solid #ffffff5c; border-top-color: #ffffff96; border-bottom-color: #ffffff24; border-radius: 22px; background: #1b242c; box-shadow: inset 0 2px 2px #ffffff36, inset 2px 0 3px #ffffff25, inset -1px -3px 5px #0007, 0 2px 3px #0008, 0 14px 32px -8px #0009; }
+.daily-bar::before { content: ''; position: absolute; inset: 3px; z-index: 1; pointer-events: none; border: 1px solid #ffffff13; border-top-color: #ffffff38; border-left-color: #ffffff25; border-radius: 18px; box-shadow: inset 0 1px 1px #ffffff12, 0 1px 2px #0004; background: linear-gradient(113deg, transparent 20%, #ffffff07 33%, #ffffff15 33.2%, #ffffff03 43%, transparent 60%); }
+.daily-bar::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit; background: linear-gradient(170deg, #ffffff25, #ffffff05 36%, #0000000d 75%, #ffffff0f); backdrop-filter: blur(3px) saturate(.92); }
+.daily-quote, .daily-actions { text-shadow: 0 1px 5px #0008; }
+.daily-bar[hidden], #focus-open-compact[hidden] { display: none; }
+#focus-open-compact { font-variant-numeric: tabular-nums; }
+.top-right { flex-wrap: wrap; }
+#daily-card-toggle, #focus-open-compact { white-space: nowrap; }
+.daily-quote { flex: 1 1 340px; min-width: min(100%, 340px); max-width: 900px; }
+.daily-eyebrow { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; color: #c8bc98; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; }
+#daily-date { color: #a9b4c2; font-weight: 400; letter-spacing: .4px; }
+#daily-text { margin: 8px 0 5px; font-size: clamp(16px, 3cqi, 20px); line-height: 1.55; color: #f0ede6; font-weight: 450; text-wrap: pretty; word-break: normal; overflow-wrap: break-word; hyphens: auto; }
+#daily-source { color: #b4c0cd; font-size: 11px; text-decoration: none; overflow-wrap: anywhere; }
+#daily-source:hover { color: #fff; text-decoration: underline; }
+.daily-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; flex: 0 1 300px; min-width: 0; max-width: 100%; }
+.focus-pill { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; max-width: 100%; padding: 10px 15px; border-radius: 12px; border: 1px solid #e5d2a05c; background: #14191d88; backdrop-filter: blur(18px); color: #faf4e5; cursor: pointer; font: inherit; font-size: 12px; box-shadow: inset 0 1px 0 #ffffff19, 0 4px 18px #0002; }
+.focus-pill strong { min-width: 50px; font: 600 18px var(--font-mono); font-variant-numeric: tabular-nums; }
+.focus-pill:hover { border-color: #e2c584; background: #262a30; }
+.focus-indicator { display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; background: #d6b66720; color: #e3c87c; font-size: 20px; }
+.focus-pill[data-running="true"] .focus-indicator { background: #507f672f; color: #9ed3b5; }
+.focus-pill[data-complete="true"] { border-color: #9ed3b5; }
+.background-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 12px; min-width: 0; max-width: 100%; }
+.ambient-button { max-width: 100%; color: #b8c4ce; background: transparent; border: 0; font: inherit; font-size: 11px; cursor: pointer; padding: 3px 0; white-space: normal; overflow-wrap: anywhere; }
+.ambient-button:hover { color: #fff; }
+.daily-bar button:focus-visible, .daily-bar a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+#focus-alarm { position: fixed; bottom: 24px; right: 24px; z-index: 9500; display: flex; flex-wrap: wrap; align-items: center; gap: 14px; max-width: min(580px, calc(100vw - 32px)); padding: 18px; border: 1px solid #a6ccac; border-radius: 14px; background: #17251ff7; color: #e8f2ea; box-shadow: 0 12px 40px #0005; }
+#focus-alarm[hidden] { display: none; }
+#focus-alarm p { font-size: 12px; margin: 5px 0 0; line-height: 1.5; color: #b3c8bc; }
+.focus-modal { width: 570px; }
+.focus-modal-head { display: flex; align-items: center; justify-content: space-between; }
+.focus-modal-head h2 { margin: 0; font-size: 19px; }
+.focus-modes { display: flex; gap: 8px; margin: 18px 0; }
+.focus-modes button { flex: 1; }
+.focus-modes button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.focus-ring { --progress: 0deg; width: 180px; height: 180px; margin: 18px auto 12px; padding: 5px; border-radius: 50%; background: conic-gradient(var(--accent) var(--progress), var(--border) 0); }
+.focus-ring-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; width: 100%; height: 100%; background: var(--panel); border-radius: 50%; }
+#focus-large-clock { font: 550 38px var(--font-mono); font-variant-numeric: tabular-nums; }
+#focus-state-label { color: var(--muted); font-size: 12px; }
+.focus-controls { display: flex; justify-content: center; gap: 12px; margin: 16px 0 20px; }
+.focus-controls .btn { min-width: 100px; }
+.focus-stats { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 15px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; }
+.focus-stats span { color: var(--muted); }
+.focus-settings { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px; }
+.focus-settings summary { cursor: pointer; font-size: 13px; color: var(--fg); }
+.focus-settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+.focus-settings input[type=number] { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--fg); font: inherit; }
+.focus-sound-row { display: flex; align-items: center; gap: 10px; margin: 14px 0 4px; }
+.focus-sound-row label { display: flex; align-items: center; margin: 0; gap: 7px; font-size: 12px; }
+.focus-sound-row input { accent-color: var(--accent); }
+.focus-sound-row button { margin-left: auto; }
+.focus-help { font-size: 11px !important; line-height: 1.6; }
+.focus-music { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.music-heading, .music-controls, .music-picker { display: flex; align-items: center; gap: 8px; }
+.music-heading { justify-content: space-between; }
+.music-heading h3 { margin: 0; font-size: 14px; }
+.music-picker select { flex: 1; min-width: 0; }
+.music-picker .btn { flex-shrink: 0; }
+.music-controls { margin-top: 12px; flex-wrap: wrap; }
+.music-volume { display: flex !important; flex: 1; align-items: center; gap: 8px; min-width: 160px; margin: 0 !important; font-size: 11px !important; }
+.music-volume input { min-width: 60px; flex: 1; width: 80px; accent-color: var(--accent); }
+.music-volume output { min-width: 30px; font-variant-numeric: tabular-nums; }
+#music-error { color: #f0a4a4; }
+.music-plan { border-top: 1px solid var(--border); padding-top: 12px; }
+.music-plan summary { cursor: pointer; font-size: 12px; }
+#music-plan-list { max-height: 240px; overflow: auto; margin-top: 10px; }
+.music-plan-row { display: flex; align-items: center; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.music-plan-row > span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.music-plan-row label { display: flex; align-items: center; gap: 4px; margin: 0; font-size: 11px; }
+.music-plan-row input { width: 58px; padding: 5px; border-radius: 5px; border: 1px solid var(--border); background: var(--bg); color: var(--fg); }
+#music-quick-pause[hidden] { display: none; }
+#focus-error { color: #f0a4a4; }
+/* The reference rail can narrow this card on a wide display. Measure the
+   card's content box, not the viewport, before placing the timer alongside it. */
+@container daily-card (max-width: 680px) {
+  .daily-quote { flex: 1 0 100%; min-width: 0; max-width: none; }
+  .daily-actions { flex: 1 0 100%; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .daily-actions .focus-pill { flex: 0 0 auto; padding: 8px 10px; gap: 8px; }
+  .daily-actions .focus-pill strong { font-size: 16px; }
+  .background-actions { flex: 1 1 230px; }
+}
+@container daily-card (max-width: 360px) {
+  .daily-eyebrow { gap: 6px 12px; letter-spacing: .6px; }
+  .daily-actions { justify-content: flex-start; }
+  .background-actions { flex-basis: 100%; justify-content: flex-start; }
+}
+@media (max-width: 600px) { #focus-alarm { right: 16px; bottom: 16px; } }

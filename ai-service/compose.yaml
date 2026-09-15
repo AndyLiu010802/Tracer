@@ -1,0 +1,51 @@
+services:
+  ai:
+    build:
+      context: .
+      dockerfile: ai-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8787
+      DATA_DIR: /app/data
+      TRUST_PROXY: "1"
+      OPENAI_API_KEY_FILE: /run/secrets/openai_key
+      INVITE_CODE_FILE: /run/secrets/invite_code
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5-mini}
+      DAILY_PLAN_LIMIT: ${DAILY_PLAN_LIMIT:-10}
+      GLOBAL_DAILY_PLAN_LIMIT: ${GLOBAL_DAILY_PLAN_LIMIT:-100}
+      MAX_USERS: ${MAX_USERS:-100}
+    secrets:
+      - openai_key
+      - invite_code
+    volumes:
+      - ai_data:/app/data
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8787/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      AI_DOMAIN: ${AI_DOMAIN:?Set AI_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [ai]
+secrets:
+  openai_key:
+    file: ./secrets/openai_key.txt
+  invite_code:
+    file: ./secrets/invite_code.txt
+volumes:
+  ai_data:
+  caddy_data:
+  caddy_config:

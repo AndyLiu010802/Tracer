@@ -1,0 +1,61 @@
+(function () {
+  'use strict';
+  var M = window.TracerModel, T = window.Tracer, A = window.TracerInsights, H = window.TaskHistory, L = window.TracerLocale.t;
+  var sec = document.getElementById('sec-insights'), period = '30', dates = A.range(30, M.todayISO()), query = '', project = '', page = 0, data;
+  function esc(v) { return M.esc(v); }
+  function dateLabel(date, long) { return new Date(date + 'T12:00:00').toLocaleDateString(window.TracerLocale.language() === 'zh' ? 'zh-CN' : 'en', long ? { year: 'numeric', month: 'short', day: 'numeric' } : { month: 'numeric', day: 'numeric' }); }
+  function timeLabel(time) { return new Date(time).toLocaleString(window.TracerLocale.language() === 'zh' ? 'zh-CN' : 'en', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+  function tile(icon, label, value, sub, color) { return '<article class="ins-tile" style="--ins-tone:' + color + '"><div class="ins-tile-top"><span>' + L(label) + '</span><span class="ins-icon" aria-hidden="true">' + icon + '</span></div><strong class="ins-num">' + value + '</strong><p class="ins-sub">' + esc(sub) + '</p></article>'; }
+  function chart() {
+    var max = Math.max(4, ...data.buckets.map(function (b) { return b.count; }));
+    return '<div class="ins-chart" role="group" aria-label="' + L('insTrend') + '"><div class="ins-chart-guide"><span>' + max + '</span><span>' + Math.round(max / 2) + '</span><span>0</span></div><div class="ins-columns">' + data.buckets.map(function (b, i) {
+      return '<button class="ins-column" data-bucket="' + i + '" title="' + esc(dateLabel(b.from) + ' – ' + dateLabel(b.to) + ': ' + b.count) + '" aria-label="' + esc(dateLabel(b.from) + ' – ' + dateLabel(b.to) + ', ' + L('insCompletedCount', { count: b.count })) + '"><span class="ins-column-value">' + b.count + '</span><span class="ins-bar-track"><span class="ins-bar" style="height:' + (b.count / max * 100) + '%"></span></span><span class="ins-xtick">' + dateLabel(b.from) + '</span></button>';
+    }).join('') + '</div></div>';
+  }
+  function status() {
+    var colors = ['#9daabd', '#86b6ec', '#c4a2eb', '#85ceb1'], count = data.counts, offset = 0;
+    var segments = M.STATUSES.map(function (s, i) { var size = data.total ? count[s] / data.total * 100 : 0; var c = '<circle cx="64" cy="64" r="50" pathLength="100" fill="none" stroke="' + colors[i] + '" stroke-width="9" stroke-dasharray="' + size + ' ' + (100 - size) + '" stroke-dashoffset="' + (-offset) + '"/>'; offset += size; return c; }).join('');
+    return '<div class="ins-distribution"><div class="ins-donut"><svg viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="64" r="50" fill="none" stroke="#ffffff09" stroke-width="9"/>' + segments + '</svg><div><strong>' + (data.total ? Math.round(count.done / data.total * 100) : 0) + '%</strong><span>' + L('insCurrentRate') + '</span></div></div><div class="ins-statuslist">' + M.STATUSES.map(function (s, i) { return '<div class="ins-status-row"><i style="background:' + colors[i] + '"></i><span>' + L(s) + '</span><strong>' + count[s] + '</strong></div>'; }).join('') + '</div></div>';
+  }
+  function currentState(h) { var task = M.findTask(T.store.data, h.taskId); return !task ? 'insDeleted' : task.status !== 'done' ? 'insReopened' : 'done'; }
+  function historyTable() {
+    var rows = data.rows.slice(page * 15, (page + 1) * 15);
+    return '<div class="ins-table-wrap"><table class="ins-table"><thead><tr><th>' + L('insCompletedAt') + '</th><th>' + L('task') + '</th><th>' + L('projects') + '</th><th>' + L('assignee') + '</th><th>' + L('insCurrentState') + '</th></tr></thead><tbody>' + (rows.length ? rows.map(function (h) { return '<tr><td class="ins-date">' + esc(timeLabel(h.completedAt)) + '</td><td><button class="ins-history-task" data-history="' + esc(h.id) + '"><span class="ins-task-seq">' + esc(h.seq) + '</span><span>' + esc(h.title) + '</span></button></td><td>' + esc(h.projectName || '—') + '</td><td>' + esc(h.assignee || '—') + '</td><td><span class="ins-state ' + currentState(h) + '">' + L(currentState(h)) + '</span></td></tr>'; }).join('') : '<tr><td colspan="5"><div class="ins-empty"><span aria-hidden="true">◇</span><strong>' + L('insEmpty') + '</strong><p>' + L('insEmptyHelp') + '</p></div></td></tr>') + '</tbody></table></div>';
+  }
+  function render() {
+    var ws = T.store.data; if (!ws) return;
+    if (period !== 'custom') dates = A.range(period === 'all' ? 0 : Number(period), M.todayISO());
+    data = A.analyze(ws, { from: dates.from, to: dates.to, query: query, project: project }, T.focus ? T.focus.read() : null);
+    page = Math.min(page, Math.max(0, Math.ceil(data.rows.length / 15) - 1));
+    var projects = new Map(); ws.projects.forEach(function (p) { projects.set(p.id, p.name); }); H.completed(ws).forEach(function (h) { if (h.projectId && !projects.has(h.projectId)) projects.set(h.projectId, h.projectName); });
+    sec.innerHTML = '<header class="ins-header"><div><div class="ins-eyebrow">' + L('insEyebrow') + '</div><h1>' + L('insights') + '</h1><p>' + L('insSubtitle') + '</p></div><div class="ins-periods" aria-label="' + L('insRange') + '">' + ['7', '30', '90', 'all'].map(function (v) { return '<button data-period="' + v + '" aria-pressed="' + (period === v) + '">' + L(v === 'all' ? 'insAll' : 'insDays', { count: v }) + '</button>'; }).join('') + '</div></header>'
+      + '<div class="ins-filters"><label>' + L('insFrom') + '<input id="ins-from" type="date" value="' + dates.from + '"></label><span class="ins-date-sep">—</span><label>' + L('insTo') + '<input id="ins-to" type="date" value="' + dates.to + '"></label><label class="ins-project-filter">' + L('projects') + '<select id="ins-project"><option value="">' + L('allProjects') + '</option>' + Array.from(projects).map(function (p) { return '<option value="' + esc(p[0]) + '">' + esc(p[1]) + '</option>'; }).join('') + '</select></label><span class="ins-local-note">' + L('insHistorySafe') + '</span></div>'
+      + '<div class="ins-tiles">' + tile('✓', 'insPeriodCompleted', data.rows.length, L('insEventsHint'), '#85ceb1') + tile('◇', 'insUnique', data.unique, L('insUniqueHint'), '#86b6ec') + tile('◷', 'insFocus', Math.round(data.focusMinutes), L('insFocusCount', { count: data.focusCount }), '#dcc17c') + tile('◌', 'insActive', data.total - data.counts.done, L('insCurrentHint'), '#c4a2eb') + '</div>'
+      + '<div class="ins-grid"><article class="ins-panel"><div class="ins-panel-head"><div><h2>' + L('insTrend') + '</h2><p>' + L('insChartHelp') + '</p></div><span class="ins-badge">' + L('insCompletedCount', { count: data.rows.length }) + '</span></div>' + chart() + '</article><article class="ins-panel"><div class="ins-panel-head"><div><h2>' + L('insStatus') + '</h2><p>' + L('insCurrentHint') + '</p></div></div>' + status() + '</article></div>'
+      + '<article class="ins-panel ins-activity"><div class="ins-panel-head"><div><h2>' + L('insActivity') + '</h2><p>' + L('insActivityHelp') + '</p></div><span class="ins-legend">' + L('insLess') + '<i></i><i></i><i></i><i></i>' + L('insMore') + '</span></div><div class="ins-heatmap">' + data.heat.map(function (d) { return '<button class="ins-heat" data-date="' + d.date + '" data-level="' + Math.min(4, d.count) + '" title="' + esc(dateLabel(d.date, true) + ' · ' + L('insCompletedCount', { count: d.count })) + '" aria-label="' + esc(dateLabel(d.date, true) + ' · ' + L('insCompletedCount', { count: d.count })) + '"></button>'; }).join('') + '</div><div class="ins-heat-labels"><span>' + dateLabel(data.heat[0].date) + '</span><span>' + dateLabel(data.heat[90].date) + '</span></div></article>'
+      + '<article class="ins-panel ins-history"><div class="ins-panel-head"><div><h2>' + L('insHistory') + '</h2><p>' + L('insHistoryHint') + '</p></div><button class="btn" id="ins-export"' + (data.rows.length ? '' : ' disabled') + '>↓ ' + L('insExport') + '</button></div><input type="search" id="ins-search" placeholder="' + L('insSearch') + '" aria-label="' + L('insSearch') + '" value="' + esc(query) + '">'
+      + (data.unknown ? '<p class="ins-warning">' + L('insUnknown', { count: data.unknown }) + '</p>' : '') + historyTable()
+      + '<footer class="ins-history-footer"><span>' + L('insRecords', { count: data.rows.length }) + '</span><div><button class="btn" id="ins-prev" aria-label="' + L('insPrevious') + '"' + (page ? '' : ' disabled') + '>‹</button><span>' + (page + 1) + ' / ' + Math.max(1, Math.ceil(data.rows.length / 15)) + '</span><button class="btn" id="ins-next" aria-label="' + L('insNext') + '"' + ((page + 1) * 15 >= data.rows.length ? ' disabled' : '') + '>›</button></div></footer></article><p class="ins-footnote">' + L('insRetentionHelp') + ' ' + L('insFocusLocal') + '</p>';
+    sec.querySelector('#ins-project').value = project;
+    sec.querySelectorAll('[data-period]').forEach(function (b) { b.onclick = function () { period = b.dataset.period; page = 0; render(); }; });
+    ['from', 'to'].forEach(function (key) { sec.querySelector('#ins-' + key).onchange = function () { var next = Object.assign({}, dates); next[key] = this.value; if (!next.to || (next.from && next.from > next.to)) { T.ui.notice(L('insInvalidDates')); this.value = dates[key]; return; } dates = next; period = 'custom'; page = 0; render(); }; });
+    sec.querySelector('#ins-project').onchange = function () { project = this.value; page = 0; render(); };
+    sec.querySelector('#ins-search').oninput = function (e) { if (e.isComposing) return; var pos = this.selectionStart; query = this.value; page = 0; render(); var input = sec.querySelector('#ins-search'); input.focus({ preventScroll: true }); input.setSelectionRange(pos, pos); };
+    sec.querySelector('#ins-search').oncompositionend = function (e) { this.oninput(e); };
+    sec.querySelectorAll('[data-bucket]').forEach(function (b) { b.onclick = function () { var bucket = data.buckets[Number(b.dataset.bucket)]; dates = { from: bucket.from, to: bucket.to }; period = 'custom'; page = 0; render(); }; });
+    sec.querySelectorAll('[data-date]').forEach(function (b) { b.onclick = function () { dates = { from: b.dataset.date, to: b.dataset.date }; period = 'custom'; page = 0; render(); }; });
+    sec.querySelector('#ins-prev').onclick = function () { page--; render(); }; sec.querySelector('#ins-next').onclick = function () { page++; render(); };
+    sec.querySelector('#ins-export').onclick = function () { var blob = new Blob([A.csv(data.rows, [L('insCompletedAt') + ' (UTC)', L('record'), L('task'), L('projects'), L('assignee')])], { type: 'text/csv;charset=utf-8' }); var url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = 'tracer-completions-' + M.todayISO() + '.csv'; a.click(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000); };
+    sec.querySelectorAll('[data-history]').forEach(function (b) { b.onclick = function () { var h = data.rows.find(function (r) { return r.id === b.dataset.history; }); T.ui.modal(function (box, close) {
+      box.innerHTML = '<div class="ins-eyebrow">' + L('insSnapshot') + '</div><h2>' + esc(h.title) + '</h2><p>' + esc(h.seq) + ' · ' + esc(timeLabel(h.completedAt)) + '</p><dl class="ins-snapshot">' + [[L('projects'), h.projectName], [L('assignee'), h.assignee], [L('dueDate'), h.due], [L('insCurrentState'), L(currentState(h))]].map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + esc(r[1] || '—') + '</dd>'; }).join('') + '</dl><p>' + L('insSnapshotHelp') + '</p><div class="modal-actions"><button class="btn" id="ins-close">' + L('timerDismiss') + '</button></div>'; box.querySelector('#ins-close').onclick = close;
+    }); }; });
+  }
+  T.onShow('insights', render);
+  T.refreshInsightsFocus = function (focus) {
+    if (!sec.classList.contains('active') || !sec.querySelector('.ins-tiles')) return;
+    var rows = focus.history.filter(function (h) { var d = A.day(h.endedAt); return (!dates.from || d >= dates.from) && (!dates.to || d <= dates.to); });
+    var tile = sec.querySelectorAll('.ins-tile')[2];
+    tile.querySelector('.ins-num').textContent = Math.round(rows.reduce(function (n, h) { return n + h.minutes; }, 0));
+    tile.querySelector('.ins-sub').textContent = L('insFocusCount', { count: rows.length });
+  };
+})();

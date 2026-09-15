@@ -1,0 +1,5 @@
+.row input { flex: 1; min-width: 0; }
+.row switch, .row checkbox, .row button { flex-shrink: 0; }
+.row text { flex: 1; min-width: 0; word-break: break-all; }
+.row { margin: 12rpx 0; }
+.row button[size=mini] { padding: 0 12rpx; font-size: 22rpx; }
