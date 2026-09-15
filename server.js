@@ -205,7 +205,7 @@ async function handleRequest(req, res) {
     if (!loopbackHost || !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress) || req.headers['x-tracer-ai'] !== '1' || (req.headers.origin && req.headers.origin !== 'http://' + req.headers.host)) { send(403, { error: 'forbidden' }); return; }
     const action = pathname.slice('/api/ai/'.length);
     try {
-      if (action === 'status' && req.method === 'GET') { send(200, await aiGateway.handle(action)); return; }
+      if (['status', 'personal-status'].includes(action) && req.method === 'GET') { send(200, await aiGateway.handle(action)); return; }
       if (READONLY_STORE || req.method !== 'POST' || !String(req.headers['content-type']).startsWith('application/json')) { send(403, { error: 'forbidden' }); return; }
       const data = JSON.parse(await readBody(req, action === 'extract' ? 14500000 : 900000));
       send(200, action === 'extract' ? await require('./lib/ai-extract').extract(data) : await aiGateway.handle(action, data));

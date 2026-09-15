@@ -1,41 +1,8 @@
 'use strict';
-const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
-const {_electron:electron}=require(process.env.TRACER_QA_PLAYWRIGHT||'playwright');
-const {createService}=require('../ai-service/server');
-const root=path.resolve(__dirname,'..'),profile=path.join(root,'.cache','ai-desktop-qa-'+Date.now());fs.mkdirSync(profile,{recursive:true});
-const checks=[],inputs=[];function check(name,value){assert.ok(value,name);checks.push(name);console.log('PASS '+name);}
-const plan={title:'Research report',summary:'Prepare and review a concise report from the brief.',questions:['Who will review the draft?'],assumptions:['The source material is complete.'],risks:[],tasks:[{key:'t1',title:'Analyze the source material',notes:'Read and outline the report.',acceptance:'Outline is ready',hours:2,priority:'high',dependsOn:[],checklist:['Check sources']},{key:'t2',title:'Write and review the report',notes:'Draft and review.',acceptance:'Report reviewed',hours:2,priority:'medium',dependsOn:['t1'],checklist:['Check references']}]};
-(async()=>{
- const cloud=createService({file:path.join(profile,'cloud.json'),env:{INVITE_CODE:'qa-invite',DAILY_PLAN_LIMIT:'10'},generate:async data=>{inputs.push(data);return structuredClone(plan);}});await new Promise(r=>cloud.listen(0,'127.0.0.1',r));
- const env={...process.env,TRACER_USER_DATA_DIR:profile,TRACER_DISABLE_INPUT_HOOK:'1',DOCS_PORTAL_DATA_DIR:path.join(profile,'data'),DOCS_PORTAL_STATE_FILE:path.join(profile,'bookmarks.json'),DOCS_PORTAL_PORT:'18138',DOCS_PORTAL_SKIN:'tracer'};delete env.ELECTRON_RUN_AS_NODE;
- let app;try{
-  const packaged=process.argv[2];app=await electron.launch({executablePath:packaged?path.resolve(packaged):require('electron'),args:packaged?[]:[root],env,timeout:45000});let page;
-  for(let i=0;i<100;i++){page=app.context().pages().find(p=>p.url().startsWith('http://127.0.0.1:18138/'));if(page)break;await new Promise(r=>setTimeout(r,100));}
-  assert.ok(page);page.setDefaultTimeout(15000);const errors=[];page.on('pageerror',e=>{errors.push(e.message);console.log('RENDERER',e.message);});await page.waitForFunction(()=>window.Tracer?.store?.data);console.log('AI state',await page.evaluate(()=>({model:typeof TracerAIPlanner,handler:typeof document.querySelector('#ai-open').onclick,ready:document.readyState})));
-  await page.selectOption('#language-select','en');await page.evaluate(()=>{TracerModel.addTask(Tracer.store.data,{title:'Existing completed task',status:'done'});TracerModel.addTask(Tracer.store.data,{title:'Existing task',notes:'Keep this task'});Tracer.touch();});await page.waitForFunction(()=>!Tracer.store.inflight&&!Tracer.store.dirty);
-  const history=await page.evaluate(()=>JSON.stringify(Tracer.store.data.completionHistory));
-  await page.click('#ai-open');check('English AI entry and no fabricated account',await page.locator('.ai-dialog h2').innerText()==='AI planning assistant'&&await page.locator('.ai-service-state').innerText()==='Cloud service not set up');
-  await page.click('[data-ai-step="3"]');await page.fill('#ai-url','http://127.0.0.1:'+cloud.address().port);await page.click('#ai-configure');await page.waitForFunction(()=>document.querySelector('#ai-configure')&&!document.querySelector('#ai-configure').disabled);
-  await page.fill('#ai-username','qa_user');await page.fill('#ai-password','qa-password-12345');await page.fill('#ai-invite','qa-invite');await page.click('#ai-register');await page.waitForSelector('#ai-goal');
-  check('registered account connects to shared backend',await page.locator('.ai-service-state').innerText()==='qa_user');
-  await page.fill('#ai-goal','Prepare a report based on the attached brief.');await page.check('#ai-context');
-  await page.setInputFiles('#ai-files',{name:'brief.txt',mimeType:'text/plain',buffer:Buffer.from('Deliver a two-page research report with sources.')});await page.waitForSelector('.ai-doc');check('local document extraction is displayed',await page.locator('.ai-doc').innerText().then(s=>s.includes('brief.txt')));
-  await page.click('#ai-next');await page.fill('#ai-weekly','8');await page.fill('#ai-daily','2');await page.fill('#ai-session','1');await page.click('#ai-next');
-  await page.click('#ai-generate');check('generation requires explicit document sharing consent',await page.locator('#ai-error').innerText().then(s=>s.includes('agree'))&&inputs.length===0);
-  await page.check('#ai-consent');await page.click('#ai-generate');await page.waitForSelector('#ai-title');
-  check('provider receives selected brief and unfinished tasks only',inputs[0].documents[0].text.includes('two-page')&&inputs[0].tasks.length===1&&inputs[0].tasks[0].title==='Existing task');
-  check('preview leaves workspace unchanged',await page.evaluate(()=>Tracer.store.data.tasks.length===2));
-  await page.fill('#ai-task-hours-0','160');await page.click('#ai-recalculate');await page.click('#ai-apply');await page.waitForFunction(()=>!document.querySelector('#ai-apply').disabled);check('capacity shortage prevents creation',await page.evaluate(()=>Tracer.store.data.tasks.length===2)&&await page.locator('#ai-error').innerText().then(s=>s.includes('capacity')));
-  await page.fill('#ai-task-hours-0','2');await page.click('#ai-recalculate');await page.fill('#ai-feedback','The project lead will review the draft.');await page.check('#ai-consent');await page.click('#ai-generate');await page.waitForFunction(()=>document.querySelector('#ai-apply')&&!document.querySelector('#ai-apply').disabled);check('follow-up answer is sent for revision',inputs.length===2&&inputs[1].feedback.includes('project lead'));
-  await page.locator('.ai-dialog').evaluate(el=>{el.scrollTop=0;});await page.screenshot({path:path.join(root,'.cache','ai-planner-review.png')});
-  await page.click('#ai-apply');await page.waitForSelector('.ai-success');check('confirmed plan creates scheduled tasks and a summary note',await page.evaluate(()=>Tracer.store.data.tasks.length===6&&Tracer.store.data.notes.length===1&&Tracer.store.data.tasks.slice(2).every(t=>t.scheduled&&t.estimate===1)));
-  check('past completion history is preserved',await page.evaluate(()=>JSON.stringify(Tracer.store.data.completionHistory))===history);
-  await page.click('#ai-view');await page.reload();await page.waitForFunction(()=>window.Tracer?.store?.data?.tasks.length===6);check('created plan survives reload',true);
-  await page.click('#ai-open');await page.click('[data-ai-step="3"]');check('desktop encrypted login survives page reload',await page.locator('.ai-service-state').innerText()==='qa_user');
-  const connection=fs.readFileSync(path.join(profile,'data','.ai','connection.json'),'utf8');check('credentials are encrypted outside renderer storage',JSON.parse(connection).encrypted&&!connection.includes('qa-password')&&await page.evaluate(()=>!JSON.stringify(localStorage).includes('qa-password')));
-  const extraction=await page.evaluate(async()=>{const r=await fetch('/api/ai/extract',{method:'POST',headers:{'Content-Type':'application/json','x-tracer-ai':'1'},body:JSON.stringify({name:'extra.txt',data:btoa('Packaged extraction works')})});return r.json();});check('file extraction worker runs in desktop app',extraction.text==='Packaged extraction works');
-  const fixtures=require('./ai-fixtures.cjs');for(const [name,buffer,expected]of [['brief.pdf',fixtures.pdfFixture(),'Task brief for planning'],['brief.docx',await fixtures.docxFixture(),'Word task brief']]){const result=await page.evaluate(async data=>{const r=await fetch('/api/ai/extract',{method:'POST',headers:{'Content-Type':'application/json','x-tracer-ai':'1'},body:JSON.stringify(data)});return r.json();},{name,data:buffer.toString('base64')});check(name+' extraction works in desktop package',result.text&&result.text.includes(expected));}
-  await page.click('#ai-close');await page.selectOption('#language-select','zh');await page.click('#ai-open');check('Chinese interface available',await page.locator('.ai-dialog h2').innerText()==='AI 计划助手');await page.screenshot({path:path.join(root,'.cache','ai-planner-account-zh.png')});
-  check('no renderer errors',errors.length===0);fs.writeFileSync(path.join(root,'.cache','ai-desktop-qa-result.json'),JSON.stringify({packaged:!!packaged,checks},null,2));
- }finally{if(app)await app.close();await new Promise(r=>cloud.close(r));}
-})().catch(e=>{console.error(e);process.exitCode=1;});
+// Current desktop AI verification: simplified UI plus native credential storage.
+// Real provider credentials are deliberately not used by this test suite.
+const cp=require('node:child_process'),path=require('node:path');
+for(const file of ['qa-ai-personal.cjs','qa-ai-personal-storage.cjs']) {
+ const r=cp.spawnSync(process.execPath,[path.join(__dirname,file)],{stdio:'inherit',env:process.env});
+ if(r.error)throw r.error;if(r.status!==0)process.exit(r.status||1);
+}

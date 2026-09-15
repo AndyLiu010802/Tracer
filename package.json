@@ -1,8 +1,8 @@
 {
   "name": "tracer-desktop",
   "private": true,
-  "version": "0.3.2",
-  "description": "Tracer bilingual desktop task manager with focus audio, completion history and an AI planning assistant. PDF and Word extraction runs locally; shared AI service is deployed separately.",
+  "version": "0.3.3",
+  "description": "Tracer bilingual desktop task manager with personal AI connections and simple three-question planning.",
   "main": "desktop/main.js",
   "author": {
     "name": "Tracer"
@@ -31,6 +31,7 @@
     "files": [
       "server.js",
       "lib/**/*",
+      "ai-service/provider.js",
       "public/**/*",
       "skins/**/*",
       "desktop/**/*",

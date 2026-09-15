@@ -1,8 +1,8 @@
-# Tracer 0.3.2 桌面版
+# Tracer 0.3.3 桌面版
 
 Tracer 将任务管理、完成历史、番茄钟、音频、笔记和参考浏览器放在独立 Windows 应用中。0.3.2 默认以无边框全屏启动，使用黑底金色星月 Logo。
 
-**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/latest)**：在发布附件中选择 `Tracer-Setup-0.3.2-x64.exe`。安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置与完成历史。
+**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/latest)**：在发布附件中选择 `Tracer-Setup-0.3.3-x64.exe`。安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置与完成历史。
 
 应用依赖和打包配置统一放在**仓库根**的 `package.json` 中，包括 Electron、`uiohook-napi`、PDF/Word 提取依赖和 electron-builder。`desktop/main.js` 会加载上层目录的服务代码，因此构建必须从仓库根开始。本目录的 `package.json` 只是说明性指针，不是独立 npm 项目。
 
@@ -15,9 +15,9 @@ Tracer 将任务管理、完成历史、番茄钟、音频、笔记和参考浏�
 
 ## AI 计划助手
 
-桌面版在本地提取 PDF、Word 和文本内容，用户同意发送后才向配置的服务请求计划。**真实 AI 服务尚未开通**；运营者还需要部署服务并配置服务器端密钥。安装包没有真实 AI 密钥，自动化测试的可控响应不代表真实模型已连接。
+桌面版在本地提取 PDF、Word 和文本内容。用户自行配置 AI 基础地址、模型和密钥，只需回答目标、截止日期和每周工时三个问题，预览后确认创建任务。安装包没有真实 AI 密钥，自动化测试的可控响应不代表真实模型已连接。
 
-独立部署包沿用 `Tracer-AI-Service-0.3.0.zip`，见 [AI 服务开通指南](../docs/ai-service-setup.md)。AI 账号与各电脑本地工作区分别管理，当前不自动进行跨电脑任务同步。
+见 [个人 AI 设置指南](../docs/personal-ai-setup.md)。无需云端部署或 Tracer 账号；当前不自动进行跨电脑任务同步。
 
 ## 全局输入计数
 
