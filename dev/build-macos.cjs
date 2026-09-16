@@ -6,6 +6,11 @@ async function main() {
   const arch = process.argv[2] || process.arch;
   if (!['arm64', 'x64'].includes(arch)) throw new Error('Choose arm64 (Apple Silicon) or x64 (Intel).');
   const signed = process.env.TRACER_MAC_SIGNED === '1';
+  // Actions represents absent secrets as empty strings. Builder treats an empty
+  // CSC_LINK as the project directory, so unset absent credentials explicitly.
+  for (const name of ['CSC_LINK', 'CSC_KEY_PASSWORD', 'APPLE_ID', 'APPLE_APP_SPECIFIC_PASSWORD', 'APPLE_TEAM_ID']) {
+    if (process.env[name] === '') delete process.env[name];
+  }
   // Signed distribution must fail closed if a Developer ID certificate is missing.
   // Ad-hoc test builds are runnable locally but are not notarized public releases.
   const config = signed
@@ -13,4 +18,4 @@ async function main() {
     : { mac: { identity: '-', hardenedRuntime: false, notarize: false } };
   await build({ targets: Platform.MAC.createTarget(['dmg', 'zip'], Arch[arch]), publish: 'never', config });
 }
-main().catch(error => { console.error(error.message); process.exitCode = 1; });
+main().catch(error => { console.error(error.message); process.exit(1); });

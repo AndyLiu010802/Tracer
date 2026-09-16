@@ -3,6 +3,7 @@ name: macOS desktop
 on:
   push:
     branches: ['codex/macos-support']
+    paths-ignore: ['**/*.md']
   workflow_dispatch:
     inputs:
       signed:
