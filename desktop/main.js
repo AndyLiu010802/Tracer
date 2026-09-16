@@ -1,7 +1,8 @@
 'use strict';
 
 const path = require('node:path');
-const { app, BrowserWindow, Menu, Tray, nativeImage, dialog } = require('electron');
+const { app, BrowserWindow, Menu, Tray, nativeImage, dialog, systemPreferences } = require('electron');
+const { installApplicationMenu, canStartInputHook } = require('./platform-integration');
 const { pulseFor } = require('./pulse');
 const { migrateUserData } = require('./migrate');
 
@@ -48,8 +49,10 @@ function forward(pulse) {
   win.webContents.send('farm-pulse', pulse);
 }
 
-function startHook() {
+let hookStarted = false;
+function startHook(prompt = false) {
   if (process.env.TRACER_DISABLE_INPUT_HOOK === '1') return;
+  if (hookStarted || !canStartInputHook(process.platform, systemPreferences, prompt)) return;
   let uIOhook;
   try {
     uIOhook = require('uiohook-napi').uIOhook;
@@ -61,7 +64,13 @@ function startHook() {
   // 处理器不接收事件参数——键位、坐标从源头就够不到。内容无关是结构上的，不是过滤出来的。
   uIOhook.on('keydown', function () { forward(pulseFor('keydown')); });
   uIOhook.on('mousedown', function () { forward(pulseFor('mousedown')); });
-  uIOhook.start();
+  try { uIOhook.start(); hookStarted = true; }
+  catch (e) {
+    uIOhook.removeAllListeners('keydown');
+    uIOhook.removeAllListeners('mousedown');
+    console.error('[farm] Global input hook unavailable; counting only in-app input: ' + e.message);
+    return;
+  }
   app.on('will-quit', function () { try { uIOhook.stop(); } catch (e) {} });
 }
 
@@ -98,7 +107,7 @@ function createWindow() {
       backgroundThrottling: false,
     },
   });
-  Menu.setApplicationMenu(null);
+  installApplicationMenu({ platform: process.platform, Menu, showWindow, enableInput: () => startHook(true) });
   win.webContents.setWindowOpenHandler(({ url }) => {
     // OAuth authorization belongs in the user's normal browser, never an embedded login page.
     try {
@@ -134,6 +143,7 @@ function createTray() {
   // 托盘图标是琥珀色新月，配 tracer 的「日月轮回」主题（透明底，深浅两种任务栏都验过对比度）。
   // 同目录还有 tray-16.png 备用；换素材时两个尺寸一起换。
   var icon = nativeImage.createFromPath(path.join(__dirname, 'assets', 'tray.png'));
+  if (process.platform === 'darwin') { icon = icon.resize({ width: 18, height: 18 }); icon.setTemplateImage(true); }
   tray = new Tray(icon);
   tray.setToolTip('Tracer');
   tray.setContextMenu(Menu.buildFromTemplate([
@@ -142,7 +152,7 @@ function createTray() {
     { label: '退出', click: function () { isQuitting = true; app.quit(); } },
   ]));
   // Windows 上左键单击托盘图标也打开面板（右键才出菜单）。
-  tray.on('click', showWindow);
+  if (process.platform !== 'darwin') tray.on('click', showWindow);
 }
 
 // 单实例：只允许一个桌面进程在跑。否则第二个进程会再挂一个全局钩子、再建一个托盘，
@@ -179,7 +189,7 @@ function bootApp() {
   });
   server.listen(config.port, config.host, function () { launch(); });
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (launched && !isQuitting) { showWindow(); startHook(); }
   });
   });
 }

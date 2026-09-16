@@ -1,6 +1,8 @@
-# Tracer 0.3.3 桌面版
+# Tracer 桌面版
 
-Tracer 将任务管理、完成历史、番茄钟、音频、笔记和参考浏览器放在独立 Windows 应用中。0.3.2 默认以无边框全屏启动，使用黑底金色星月 Logo。
+Tracer 将任务管理、完成历史、番茄钟、音频、笔记和参考浏览器放在独立桌面应用中。默认以无边框全屏启动，使用黑底金色星月 Logo。Windows 已有发布入口；macOS 新增 Apple 芯片与 Intel 构建支持，安装包尚待原生构建与实机验证。
+
+**[Mac 安装、权限与构建指南](../docs/macos-install.md)**：支持生成 `.dmg` 和 `.zip`，安装时将 Tracer 拖入「应用程序」。Mac 本地数据位于 `~/Library/Application Support/tracer-desktop/`；关闭窗口后可点击 Dock 图标恢复，使用 **Command+Q** 完全退出。Mac 上支持 **Control+Command+F** 全屏切换和系统编辑菜单。
 
 **[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/latest)**：在发布附件中选择 `Tracer-Setup-0.3.3-x64.exe`。安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置与完成历史。
 

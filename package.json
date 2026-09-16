@@ -11,7 +11,10 @@
     "start": "electron .",
     "test": "node --test test/*.test.js",
     "dist": "electron-builder --win nsis --x64",
-    "predist": "node dev/prepare-codex-runtime.cjs"
+    "dist:mac": "node dev/build-macos.cjs",
+    "dist:mac:arm64": "node dev/build-macos.cjs arm64",
+    "dist:mac:x64": "node dev/build-macos.cjs x64",
+    "test:desktop": "node --test desktop/test/*.test.js"
   },
   "dependencies": {
     "mammoth": "1.12.3",
@@ -25,6 +28,7 @@
   "build": {
     "appId": "com.tracer.workbench",
     "productName": "Tracer",
+    "beforePack": "dev/before-desktop-pack.cjs",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -58,13 +62,6 @@
         ]
       },
       {
-        "from": ".cache/codex-runtime/package/vendor/x86_64-pc-windows-msvc",
-        "to": "codex",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
         "from": "build/codex-LICENSE.txt",
         "to": "codex/codex-LICENSE.txt"
       },
@@ -79,8 +76,52 @@
     ],
     "win": {
       "icon": "build/app-icon.ico",
+      "extraResources": [
+        {
+          "from": ".cache/codex-runtime/package/vendor/x86_64-pc-windows-msvc",
+          "to": "codex",
+          "filter": [
+            "**/*"
+          ]
+        }
+      ],
       "target": [
         "nsis"
+      ]
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/app-icon.png",
+      "artifactName": "Tracer-${version}-mac-${arch}.${ext}",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "extraResources": [
+        {
+          "from": ".cache/codex-runtime/darwin-${arch}/runtime",
+          "to": "codex",
+          "filter": [
+            "**/*"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
       ]
     },
     "nsis": {

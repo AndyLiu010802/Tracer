@@ -2,9 +2,11 @@
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[下载 Windows 桌面版](https://github.com/AndyLiu010802/Tracer/releases/latest)** · [0.3.4 更新说明](docs/desktop-release-0.3.4.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[下载 Windows 桌面版](https://github.com/AndyLiu010802/Tracer/releases/latest)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.4 更新说明](docs/desktop-release-0.3.4.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
+
+**macOS（Apple 芯片 / Intel）**：已添加两种架构的 DMG / ZIP 构建流程和 Mac 桌面适配，安装包尚待 macOS 构建及实机验证，暂未提供已发布的 Mac 下载附件。发布后打开对应的 DMG，将 Tracer 拖入「应用程序」即可安装；详见 [Mac 安装指南](docs/macos-install.md)。
 
 在 Releases 中下载 **`Tracer-Setup-0.3.4-x64.exe`**，运行后按提示安装。安装程序创建桌面和开始菜单快捷方式，不需要另装 Node.js 或 Codex。更新已有版本前，请先从系统托盘退出 Tracer，再安装到原来的位置。
 
@@ -46,7 +48,16 @@ npm start
 npm run dist
 ```
 
-产物为 `dist/Tracer-Setup-0.3.4-x64.exe`。Electron、音频、PDF/Word 提取依赖及官方 Codex 运行时会随安装包分发。首次构建下载并校验锁定版本的 Codex，需要访问官方 npm 注册表。桌面启动、存档、输入计数和构建细节见 [desktop/README.md](desktop/README.md)。
+产物为 `dist/Tracer-Setup-<版本>-x64.exe`。Electron、音频、PDF/Word 提取依赖及官方 Codex 运行时会随安装包分发。首次构建下载并校验锁定版本的 Codex，需要访问官方 npm 注册表。桌面启动、存档、输入计数和构建细节见 [desktop/README.md](desktop/README.md)。
+
+在 Mac 上构建与本机芯片匹配的 DMG / ZIP：
+
+```sh
+npm run dist:mac
+node dev/verify-macos-release.cjs
+```
+
+也可使用仓库的 **Actions → macOS desktop** 分别在 Apple 芯片和 Intel 云端构建机上构建。默认生成测试包；正式签名、公证和 Release 草稿所需配置见 [Mac 发布流程](docs/macos-install.md#维护者构建与发布)。
 
 ### 浏览器开发模式
 

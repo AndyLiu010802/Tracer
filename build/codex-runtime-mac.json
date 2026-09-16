@@ -1,0 +1,15 @@
+{
+  "version": "0.154.0",
+  "license": "Apache-2.0",
+  "source": "https://github.com/openai/codex/tree/rust-v0.154.0",
+  "targets": {
+    "darwin-arm64": {
+      "url": "https://registry.npmjs.org/@openai/codex/-/codex-0.154.0-darwin-arm64.tgz",
+      "integrity": "sha512-HP/vJCH/t2hB9Kg6hotN9UglClJ6/z584fal5lEP14C9gNAgAQS4/kTQC7l5V+BA3TqwDPwINSjul28cX8AYXg=="
+    },
+    "darwin-x64": {
+      "url": "https://registry.npmjs.org/@openai/codex/-/codex-0.154.0-darwin-x64.tgz",
+      "integrity": "sha512-2aqz+72Hop8PF2RYglQ4JnGjm3OlRIrTykJIT0hyLeUgM6NCFy09RgTmqRCoWliKQZjEn9jjZqUEp7QujAj77g=="
+    }
+  }
+}
