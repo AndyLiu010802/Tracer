@@ -99,3 +99,24 @@ jobs:
         run: |
           version=$(node -p "require('./package.json').version")
           gh release create "v${version}-mac" artifacts/* --draft --target "$GITHUB_SHA" --title "Tracer ${version} for macOS" --notes-file docs/macos-release-notes.md
+
+  preview-download:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/codex/macos-support' }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Tracer-mac-*-preview
+          path: artifacts
+          merge-multiple: true
+      - name: Publish verified preview downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          gh release create "v${version}-mac-preview.${GITHUB_RUN_NUMBER}" artifacts/* --prerelease --latest=false --target "$GITHUB_SHA" --title "Tracer ${version} macOS preview" --notes-file docs/macos-preview-notes.md
