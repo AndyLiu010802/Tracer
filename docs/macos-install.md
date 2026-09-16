@@ -31,7 +31,7 @@ shasum -a 256 Tracer-*-mac-*.dmg
 
 ## Mac 上的功能与操作
 
-沿用现有的任务、项目、笔记、完成历史、番茄钟、音频、参考浏览器、PDF/Word 提取、桌宠与个人 AI 界面。AI 运行时会随芯片架构一起打包，登录凭据使用当前 Mac 的用户环境。真实账号登录、音频、桌宠及系统权限仍需在 Mac 上完成最终验收。
+0.3.4 测试包沿用该版本的任务、项目、笔记、完成历史、番茄钟、音频、参考浏览器、PDF/Word 提取与个人 AI 界面。AI 运行时会随芯片架构一起打包，登录凭据使用当前 Mac 的用户环境。真实账号登录、音频及系统权限仍需在 Mac 上完成最终验收；本地 0.3.5 的桌宠等新增功能不在此次测试包内。
 
 - **Command+C / V / X / Z / A**：通过原生「编辑」菜单复制、粘贴、剪切、撤销、全选。
 - **Control+Command+F**、F11 或右上角全屏按钮：切换全屏。
@@ -80,6 +80,6 @@ node dev/verify-macos-release.cjs
 
 同时勾选 `release_draft`，会在两种架构都成功后生成 `v<版本>-mac` 的 **GitHub Release 草稿**，供维护者验收后发布。草稿发布后，普通用户才能在 Releases 中直接下载。重复运行同版本时，已有标签/Release 会导致创建步骤失败；请使用新的版本号或人工管理既有草稿，流程不会自动覆盖旧附件。
 
-自动验证覆盖安装包隐私检查、源码一致性、AI 可执行文件架构及运行、签名、应用主进程和本地服务启动。它不代替 GUI 实机验收。发布前检查：任务与笔记编辑、复制粘贴、全屏/Dock 恢复、升级保留数据、资料导入、音频、桌宠拖动、权限拒绝与授权，以及真实账号 AI 登录。
+自动验证覆盖安装包隐私检查、源码一致性、AI 可执行文件架构及运行、签名、应用主进程和本地服务启动。它不代替 GUI 实机验收。正式发布前检查：任务与笔记编辑、复制粘贴、全屏/Dock 恢复、升级保留数据、资料导入、音频、权限拒绝与授权，以及真实账号 AI 登录。
 
 参考：[electron-builder v26 Mac 配置](https://www.electron.build/v26/docs/mac/)、[Electron 签名与公证](https://www.electronjs.org/docs/latest/tutorial/code-signing)、[GitHub 原生构建机](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)。
