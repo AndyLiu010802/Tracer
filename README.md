@@ -6,7 +6,7 @@ Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、�
 
 ## 下载与安装
 
-**macOS（Apple 芯片 / Intel）**：已添加两种架构的 DMG / ZIP 构建流程和 Mac 桌面适配，安装包尚待 macOS 构建及实机验证，暂未提供已发布的 Mac 下载附件。发布后打开对应的 DMG，将 Tracer 拖入「应用程序」即可安装；详见 [Mac 安装指南](docs/macos-install.md)。
+**macOS（Apple 芯片 / Intel）**：**[下载 0.3.4 Mac 测试版](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.4-mac-preview.3)**。打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两种架构均已通过原生云端构建和启动检查；这是尚未获得 Apple 公证的测试版，首次打开可能被 macOS 拦截，详见 [Mac 安装指南](docs/macos-install.md)。本地 0.3.5 也已加入构建支持，其未发布功能不包含在本次 0.3.4 测试包中。
 
 在 Releases 中下载 **`Tracer-Setup-0.3.4-x64.exe`**，运行后按提示安装。安装程序创建桌面和开始菜单快捷方式，不需要另装 Node.js 或 Codex。更新已有版本前，请先从系统托盘退出 Tracer，再安装到原来的位置。
 
