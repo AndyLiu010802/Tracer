@@ -207,10 +207,41 @@ async function handleRequest(req, res) {
     try {
       if (['status', 'personal-status', 'codex-status'].includes(action) && req.method === 'GET') { send(200, await aiGateway.handle(action)); return; }
       if (READONLY_STORE || req.method !== 'POST' || !String(req.headers['content-type']).startsWith('application/json')) { send(403, { error: 'forbidden' }); return; }
-      const data = JSON.parse(await readBody(req, action === 'extract' ? 14500000 : 900000));
+      const data = JSON.parse(await readBody(req, action === 'extract' ? 14500000 : ['personal-pet-image', 'codex-pet-image'].includes(action) ? 5700000 : 900000));
       send(200, action === 'extract' ? await require('./lib/ai-extract').extract(data) : await aiGateway.handle(action, data));
     } catch (e) { send(400, { error: /^[a-z-]{3,50}$/.test(e.message) ? e.message : 'request-failed' }); }
     return;
+  }
+
+  if (pathname.startsWith('/api/pet-package/')) {
+    const send = (status, body) => { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' }); res.end(JSON.stringify(body)); };
+    if (!loopbackHost || !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress) ||
+        req.headers['x-tracer-pet'] !== '1' || (req.headers.origin && req.headers.origin !== 'http://' + req.headers.host) ||
+        (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site']))) { send(403, { error: 'forbidden' }); return; }
+    if (req.method !== 'POST' || !String(req.headers['content-type']).startsWith('application/json')) { send(405, { error: 'method-not-allowed' }); return; }
+    const action = pathname.slice('/api/pet-package/'.length), packages = require('./lib/pet-package');
+    if (!['export', 'inspect', 'import'].includes(action)) { send(404, { error: 'not-found' }); return; }
+    if (READONLY_STORE && action === 'import') { send(403, { error: 'readonly' }); return; }
+    try {
+      const data = JSON.parse(await readBody(req, action === 'export' ? 8192 : packages.LIMIT));
+      if (action === 'export') send(200, await packages.exportPackage(DATA_DIR, data));
+      else if (action === 'import') send(200, await packages.importPackage(DATA_DIR, data));
+      else { const pack = packages.inspect(data); send(200, { profile: pack.profile, animated: pack.animated, behaviors: pack.behaviors,
+        ...(pack.animated ? { animationVersion: pack.animationVersion } : {}) }); }
+    } catch (e) { send(e.code === 'too-large' ? 413 : 400, { error: e.code === 'too-large' ? 'pet-package-too-large' : /^[a-z-]{3,50}$/.test(e.message) ? e.message : 'invalid-pet-package' }); }
+    return;
+  }
+
+  if (pathname.startsWith('/api/pet-art/')) {
+    if (!loopbackHost || !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress) ||
+        (req.headers.origin && req.headers.origin !== 'http://' + req.headers.host) ||
+        (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site']))) { res.writeHead(403).end(); return; }
+    if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { allow: 'GET, HEAD' }).end(); return; }
+    const image = await require('./lib/pet-image').readAsset(DATA_DIR, pathname);
+    if (!image) { res.writeHead(404).end(); return; }
+    res.writeHead(200, { 'content-type': 'image/png', 'x-content-type-options': 'nosniff',
+      'cross-origin-resource-policy': 'same-origin', 'cache-control': 'private, max-age=31536000, immutable' });
+    res.end(req.method === 'HEAD' ? undefined : image); return;
   }
 
   if (pathname === '/api/music' || pathname.startsWith('/api/music/')) {

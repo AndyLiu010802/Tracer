@@ -1,0 +1,122 @@
+name: Desktop release
+
+on:
+  push:
+    branches: ['codex/release-*']
+    paths-ignore: ['**/*.md']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-latest
+            platform: windows
+            arch: x64
+            executable: dist/win-unpacked/Tracer.exe
+          - runner: macos-15
+            platform: mac
+            arch: arm64
+            executable: dist/mac-arm64/Tracer.app/Contents/MacOS/Tracer
+          - runner: macos-15-intel
+            platform: mac
+            arch: x64
+            executable: dist/mac/Tracer.app/Contents/MacOS/Tracer
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Check native filesystem aliases
+        run: node -e "const fs=require('fs'),os=require('os'),p=require('path');const t=os.tmpdir(),r=fs.realpathSync.native(t);console.log(JSON.stringify({platform:process.platform,node:process.version,temp:t,canonical:r,difference:p.relative(p.resolve(t),r)}));const d=fs.mkdtempSync(p.join(t,'tracer-path-check-')),f=p.join(d,'probe');fs.writeFileSync(f,'probe');console.log(JSON.stringify({file:f,canonical:fs.realpathSync.native(f),nlink:fs.statSync(f).nlink}));fs.unlinkSync(f);fs.rmdirSync(d);"
+      - run: node --test --test-concurrency=4 test/*.test.js
+      - run: npm run test:desktop
+      - name: Build Windows installer
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: npm run dist -- --publish never
+      - name: Build native Mac DMG and ZIP
+        if: matrix.platform == 'mac'
+        env:
+          TRACER_MAC_SIGNED: '0'
+        run: npm run dist:mac:${{ matrix.arch }}
+      - name: Verify Windows package
+        if: matrix.platform == 'windows'
+        run: node dev/verify-ai-release.cjs
+      - name: Verify native Mac package and startup
+        if: matrix.platform == 'mac'
+        run: node dev/verify-macos-release.cjs ${{ matrix.arch }}
+      - name: Install isolated UI test driver
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+        run: npm install --prefix .cache/release-qa --no-save --package-lock=false playwright@1.63.0
+      - name: Verify packaged companion playback and file compatibility
+        env:
+          TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
+        run: node dev/qa-pet-dense-release.cjs '${{ matrix.executable }}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Tracer-${{ matrix.platform }}-${{ matrix.arch }}
+          compression-level: 0
+          if-no-files-found: error
+          path: |
+            dist/Tracer-Setup-*.exe
+            dist/Tracer-Setup-*.exe.blockmap
+            dist/Tracer-*-mac-${{ matrix.arch }}.dmg
+            dist/Tracer-*-mac-${{ matrix.arch }}.zip
+            dist/SHA256SUMS-*.txt
+      - name: Preserve native UI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: UI-evidence-${{ matrix.platform }}-${{ matrix.arch }}
+          if-no-files-found: ignore
+          include-hidden-files: true
+          path: |
+            .cache/pet-dense-release-*/*.png
+            .cache/pet-dense-release-*/launch.log
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Tracer-*
+          path: artifacts
+          merge-multiple: true
+      - name: Validate all platform files and combine checksums
+        run: node dev/verify-release-artifacts.cjs stage artifacts release
+      - name: Upload complete release as a draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          gh release create "v${version}" release/* --draft --target "$GITHUB_SHA" --title "Tracer ${version}" --notes-file "docs/desktop-release-${version}.md"
+          release_id=$(gh release view "v${version}" --json databaseId --jq .databaseId)
+          gh api "repos/$GH_REPO/releases/$release_id" > uploaded-release.json
+          node dev/verify-release-artifacts.cjs uploaded release uploaded-release.json
+          gh release edit "v${version}" --draft=false --latest

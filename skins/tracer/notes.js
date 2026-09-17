@@ -146,7 +146,7 @@
         + '<button class="chip" id="note-preview">' + L('◱ 预览', '◱ Preview') + '</button>'
         + '<button class="chip" id="note-pin">' + (n.pinned ? L('★ 已置顶', '★ Pinned') : L('☆ 置顶', '☆ Pin')) + '</button>'
         + '<button class="chip chip-del" id="note-del">' + L('删除', 'Delete') + '</button></div>'
-        + '<textarea class="note-body" id="note-body" placeholder="' + L('用 Markdown 记录…（Ctrl+E 切换预览）', 'Write in Markdown… (Ctrl+E toggles preview)') + '"></textarea>';
+        + '<textarea class="note-body" id="note-body" placeholder="' + L('用 Markdown 记录…（Ctrl/Cmd+E 切换预览）', 'Write in Markdown… (Ctrl/Cmd+E toggles preview)') + '"></textarea>';
       document.getElementById('note-body').value = n.body;
     }
     wireEditor(ws, n);
@@ -177,9 +177,9 @@
     if (editBtn) editBtn.addEventListener('click', function () { preview = false; renderEditor(); });
   }
 
-  // Ctrl+E 切换编辑/预览（仅当 Notes 分区激活且有选中笔记）
+  // Ctrl/Cmd+E 切换编辑/预览（仅当 Notes 分区激活且有选中笔记）
   document.addEventListener('keydown', function (e) {
-    if (!(e.ctrlKey && (e.key === 'e' || e.key === 'E'))) return;
+    if (!((e.ctrlKey || e.metaKey) && (e.key === 'e' || e.key === 'E'))) return;
     if (T.currentSec() !== 'notes' || !currentId) return;
     e.preventDefault();
     preview = !preview;

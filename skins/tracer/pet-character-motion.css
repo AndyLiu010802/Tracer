@@ -1,0 +1,246 @@
+/* The six native characters are articulated SVG rigs. Custom art keeps its own renderer. */
+.pet-home.has-builtin-animation .pet-character>.pet-builtin-sprite{animation:none!important;transform:none!important;overflow:hidden;filter:none}
+.pet-home.has-builtin-animation .pet-effects,.pet-home.has-builtin-animation .pet-idle-scene{display:none!important}
+.pet-home[data-pet] .pet-character>.pet-rig{animation:none!important;transform:none!important;overflow:visible;--rig-head:none;--rig-body:none;--rig-posture:none;--rig-left-arm:none;--rig-right-arm:none;--rig-left-leg:none;--rig-right-leg:none;--rig-tail:none;--rig-left-ear:none;--rig-right-ear:none;--rig-leaf:none;--rig-left-wing:none;--rig-right-wing:none;--rig-mouth:none;--rig-sneeze:none;--rig-keepsake:none;--rig-dust:none;--rig-curl-show:none;--rig-curl-hide:none}
+.pet-rig .rig-part{transform-box:view-box;animation-timing-function:steps(4,end)}
+.pet-rig .rig-posture{animation:var(--rig-posture,none);transform:var(--rig-posture-pose,none)}
+.pet-rig .rig-head{animation:var(--rig-head,none);transform:var(--rig-head-pose,none)}
+.pet-rig .rig-body{animation:var(--rig-body,none);transform:var(--rig-body-pose,none)}
+.pet-rig .rig-arm-left{animation:var(--rig-left-arm,none);transform:var(--rig-left-arm-pose,none)}
+.pet-rig .rig-arm-right{animation:var(--rig-right-arm,none);transform:var(--rig-right-arm-pose,none)}
+.pet-rig .rig-leg-left{animation:var(--rig-left-leg,none);transform:var(--rig-left-leg-pose,none)}
+.pet-rig .rig-leg-right{animation:var(--rig-right-leg,none);transform:var(--rig-right-leg-pose,none)}
+.pet-rig .rig-tail{animation:var(--rig-tail,none);transform:var(--rig-tail-pose,none)}
+.pet-rig .rig-ear-left{animation:var(--rig-left-ear,none);transform:var(--rig-left-ear-pose,none)}
+.pet-rig .rig-ear-right{animation:var(--rig-right-ear,none);transform:var(--rig-right-ear-pose,none)}
+.pet-rig .rig-leaf{animation:var(--rig-leaf,none);transform:var(--rig-leaf-pose,none)}
+.pet-rig .rig-wing-left{animation:var(--rig-left-wing,none);transform:var(--rig-left-wing-pose,none)}
+.pet-rig .rig-wing-right{animation:var(--rig-right-wing,none);transform:var(--rig-right-wing-pose,none)}
+.pet-rig .rig-mouth{animation:var(--rig-mouth,none)}
+.pet-rig .rig-eyes{animation:rig-blink var(--rig-blink-time,5.3s) steps(1,end) infinite}
+.pet-rig .rig-eyes-closed{opacity:0}
+.pet-rig .rig-tail-curled{opacity:var(--rig-curled-opacity,0);animation:var(--rig-curl-show,none)}
+.pet-rig .rig-tail-relaxed{opacity:var(--rig-relaxed-opacity,1);animation:var(--rig-curl-hide,none)}
+.pet-rig .rig-sneeze{opacity:0;animation:var(--rig-sneeze,none)}
+.pet-rig .rig-soil-pat{opacity:0;animation:var(--rig-dust,none)}
+.pet-rig .rig-tongue{opacity:0}
+.pet-rig :is(.rig-moonstone,.rig-pebbles,.rig-gadget){opacity:var(--rig-keepsake-opacity,0);animation:var(--rig-keepsake,none)}
+.pet-home[data-behavior=feed] .pet-rig-miso .rig-tongue{opacity:1;animation:miso-lick .8s steps(3,end) infinite}
+.pet-home[data-behavior=sleep] .pet-rig .rig-eyes{opacity:0;animation:none}
+.pet-home[data-behavior=sleep] .pet-rig .rig-eyes-closed{opacity:1}
+.pet-character:has(>.pet-rig) .pet-idle-scene :is(.idle-fishing-paw,.idle-digging-paw,.idle-mining-paw){display:none}
+
+/* Sprout: two deliberate pats, a nod, then a small satisfied pause. */
+.pet-home[data-pet=sprout] .pet-character>.pet-rig{--rig-head:sprout-listen 5.6s steps(4,end) infinite;--rig-body:sprout-wool-settle 4.8s steps(4,end) infinite;--rig-leaf:sprout-leaf-sway 3.8s steps(5,end) infinite;--rig-blink-time:6.2s}
+.pet-home[data-pet=sprout][data-behavior=pet] .pet-character>.pet-rig{--rig-head:sprout-nuzzle 2s steps(5,end) infinite;--rig-left-ear:sprout-ear-warm 2s steps(4,end) infinite;--rig-right-ear:sprout-ear-warm 2s steps(4,end) infinite reverse;--rig-leaf:sprout-leaf-sway 1.7s steps(4,end) infinite}
+.pet-home[data-pet=sprout][data-behavior=feed] .pet-character>.pet-rig{--rig-head:sprout-savour 2.8s steps(5,end) infinite;--rig-mouth:sprout-chew .6s steps(2,end) infinite;--rig-right-arm:sprout-bowl-hold 2.8s steps(4,end) infinite}
+.pet-home[data-pet=sprout][data-behavior=play] .pet-character>.pet-rig{--rig-right-arm:sprout-seed-tap 2.4s steps(6,end) infinite;--rig-left-leg:sprout-prance 2.4s steps(4,end) infinite;--rig-head:sprout-nuzzle 2.4s steps(4,end) infinite;--rig-leaf:sprout-leaf-sway 1.2s steps(4,end) infinite}
+.pet-home[data-pet=sprout][data-behavior=sleep] .pet-character>.pet-rig{--rig-head:none;--rig-body:sprout-sleep-breathe 5s steps(4,end) infinite;--rig-leaf:none;--rig-head-pose:translateY(9px) rotate(7deg);--rig-body-pose:scaleY(.9);--rig-left-arm-pose:rotate(-18deg);--rig-right-arm-pose:rotate(18deg);--rig-leaf-pose:rotate(22deg)}
+.pet-home[data-pet=sprout][data-behavior=wake] .pet-character>.pet-rig{--rig-body:sprout-wool-shake 2s steps(6,end) infinite;--rig-left-ear:sprout-ear-warm .7s steps(3,end) infinite;--rig-right-ear:sprout-ear-warm .7s steps(3,end) infinite reverse;--rig-leaf:sprout-leaf-sway .7s steps(4,end) infinite}
+.pet-home[data-pet=sprout][data-behavior=fishing] .pet-character>.pet-rig{--rig-head:sprout-water-watch 4s steps(5,end) infinite;--rig-right-arm:sprout-water-dip 4s steps(6,end) infinite}
+.pet-home[data-pet=sprout][data-behavior=exercise] .pet-character>.pet-rig{--rig-left-leg:sprout-prance 2.6s steps(5,end) infinite;--rig-right-leg:sprout-prance 2.6s steps(5,end) infinite reverse;--rig-left-arm:sprout-bowl-hold 2.6s steps(4,end) infinite;--rig-head:sprout-listen 2.6s steps(4,end) infinite}
+.pet-home[data-pet=sprout][data-behavior=farming] .pet-character>.pet-rig{--rig-right-arm:sprout-soil-double-pat 3.8s steps(8,end) infinite;--rig-head:sprout-garden-nod 3.8s steps(5,end) infinite;--rig-dust:sprout-pat-dust 3.8s steps(4,end) infinite;--rig-left-arm-pose:rotate(-12deg)}
+.pet-home[data-pet=sprout][data-behavior=mining] .pet-character>.pet-rig{--rig-right-arm:sprout-stone-test 4.6s steps(6,end) infinite;--rig-head:sprout-water-watch 4.6s steps(4,end) infinite}
+.pet-home[data-pet=sprout][data-behavior=focus] .pet-character>.pet-rig{--rig-head:none;--rig-head-pose:rotate(-3deg);--rig-leaf:sprout-leaf-sway 8s steps(4,end) infinite;--rig-body:sprout-sleep-breathe 6s steps(4,end) infinite}
+.pet-home[data-pet=sprout][data-behavior=drag] .pet-character>.pet-rig{--rig-head:sprout-listen 2.8s steps(4,end) infinite;--rig-left-leg:rig-dangle-left .9s steps(4,end) infinite;--rig-right-leg:rig-dangle-right .9s steps(4,end) infinite;--rig-leaf:sprout-leaf-sway .9s steps(4,end) infinite;--rig-left-arm-pose:rotate(15deg);--rig-right-arm-pose:rotate(-15deg)}
+
+/* Miso: inspect first, lick a paw, then pretend the pounce was planned. */
+.pet-home[data-pet=miso] .pet-character>.pet-rig{--rig-tail:miso-tail-curl 5.2s steps(7,end) infinite;--rig-head:miso-disdain 6s steps(4,end) infinite;--rig-curl-show:miso-curled-show 5.2s steps(1,end) infinite;--rig-curl-hide:miso-curled-hide 5.2s steps(1,end) infinite;--rig-blink-time:4.6s}
+.pet-home[data-pet=miso][data-behavior=pet] .pet-character>.pet-rig{--rig-head:miso-cheek-rub 1.9s steps(5,end) infinite;--rig-tail:miso-tail-curl 1.9s steps(5,end) infinite;--rig-left-arm:miso-knead 1.2s steps(4,end) infinite;--rig-right-arm:miso-knead 1.2s steps(4,end) infinite reverse}
+.pet-home[data-pet=miso][data-behavior=feed] .pet-character>.pet-rig{--rig-head:miso-food-inspect 3.6s steps(7,end) infinite;--rig-right-arm:miso-paw-lick 3.6s steps(7,end) infinite;--rig-mouth:miso-lick .8s steps(3,end) infinite;--rig-tail:miso-tail-tip 2s steps(3,end) infinite}
+.pet-home[data-pet=miso][data-behavior=play] .pet-character>.pet-rig{--rig-posture:miso-pounce 2.8s steps(7,end) infinite;--rig-left-arm:miso-pounce-paw 2.8s steps(7,end) infinite;--rig-right-arm:miso-pounce-paw 2.8s steps(7,end) infinite;--rig-tail:miso-pounce-tail 2.8s steps(7,end) infinite;--rig-head:none}
+.pet-home[data-pet=miso][data-behavior=sleep] .pet-character>.pet-rig{--rig-head:none;--rig-tail:none;--rig-body:miso-loaf-breathe 5.4s steps(4,end) infinite;--rig-curl-show:none;--rig-curl-hide:none;--rig-curled-opacity:1;--rig-relaxed-opacity:0;--rig-head-pose:translateY(12px) rotate(-6deg);--rig-body-pose:scaleY(.82);--rig-left-arm-pose:translate(9px,-3px) rotate(-30deg);--rig-right-arm-pose:translate(-9px,-3px) rotate(30deg);--rig-left-leg-pose:translateY(-5px);--rig-right-leg-pose:translateY(-5px)}
+.pet-home[data-pet=miso][data-behavior=wake] .pet-character>.pet-rig{--rig-posture:miso-back-stretch 3.2s steps(7,end) infinite;--rig-left-arm:miso-stretch-paw 3.2s steps(6,end) infinite;--rig-right-arm:miso-stretch-paw 3.2s steps(6,end) infinite;--rig-tail:miso-pounce-tail 3.2s steps(6,end) infinite}
+.pet-home[data-pet=miso][data-behavior=fishing] .pet-character>.pet-rig{--rig-right-arm:miso-fish-swat 2.9s steps(7,end) infinite;--rig-head:miso-food-inspect 2.9s steps(5,end) infinite;--rig-tail:miso-tail-tip 1.4s steps(4,end) infinite}
+.pet-home[data-pet=miso][data-behavior=exercise] .pet-character>.pet-rig{--rig-posture:miso-back-stretch 4s steps(7,end) infinite;--rig-left-arm:miso-stretch-paw 4s steps(5,end) infinite;--rig-right-arm:miso-stretch-paw 4s steps(5,end) infinite;--rig-tail:miso-tail-curl 4s steps(5,end) infinite}
+.pet-home[data-pet=miso][data-behavior=farming] .pet-character>.pet-rig{--rig-right-arm:miso-cover-seed 3.1s steps(7,end) infinite;--rig-left-arm:miso-knead 1.55s steps(4,end) infinite;--rig-head:miso-food-inspect 3.1s steps(5,end) infinite}
+.pet-home[data-pet=miso][data-behavior=mining] .pet-character>.pet-rig{--rig-right-arm:miso-stone-swat 2.6s steps(6,end) infinite;--rig-head:miso-disdain 2.6s steps(4,end) infinite;--rig-tail:miso-tail-tip 1.3s steps(3,end) infinite}
+.pet-home[data-pet=miso][data-behavior=focus] .pet-character>.pet-rig{--rig-head:none;--rig-tail:miso-tail-tip 7s steps(3,end) infinite;--rig-head-pose:rotate(-4deg);--rig-curl-show:none;--rig-curl-hide:none;--rig-curled-opacity:1;--rig-relaxed-opacity:0}
+.pet-home[data-pet=miso][data-behavior=drag] .pet-character>.pet-rig{--rig-head:miso-disdain 2s steps(3,end) infinite;--rig-left-leg:rig-dangle-left 1s steps(4,end) infinite;--rig-right-leg:rig-dangle-right 1s steps(4,end) infinite;--rig-tail:miso-pounce-tail 2s steps(5,end) infinite;--rig-left-ear-pose:rotate(-15deg);--rig-right-ear-pose:rotate(15deg)}
+
+/* Brook: flippers balance every waddle; the fishing dip ends in a tidy pebble check. */
+.pet-home[data-pet=brook] .pet-character>.pet-rig{--rig-body:brook-waddle 4.4s steps(6,end) infinite;--rig-left-leg:brook-step-left 4.4s steps(5,end) infinite;--rig-right-leg:brook-step-right 4.4s steps(5,end) infinite;--rig-right-arm:brook-flipper-balance 4.4s steps(5,end) infinite;--rig-blink-time:5.8s}
+.pet-home[data-pet=brook][data-behavior=pet] .pet-character>.pet-rig{--rig-left-arm:brook-happy-flipper 1.5s steps(5,end) infinite;--rig-right-arm:brook-happy-flipper 1.5s steps(5,end) infinite reverse;--rig-head:brook-proud-nod 2.2s steps(5,end) infinite}
+.pet-home[data-pet=brook][data-behavior=feed] .pet-character>.pet-rig{--rig-head:brook-fish-gulp 2.7s steps(6,end) infinite;--rig-mouth:brook-beak .6s steps(2,end) infinite;--rig-right-arm:brook-fish-offer 2.7s steps(5,end) infinite;--rig-left-leg:none;--rig-right-leg:none}
+.pet-home[data-pet=brook][data-behavior=play] .pet-character>.pet-rig{--rig-posture:brook-belly-slide 3.4s steps(8,end) infinite;--rig-left-arm:brook-slide-flipper 3.4s steps(6,end) infinite;--rig-right-arm:brook-slide-flipper 3.4s steps(6,end) infinite reverse;--rig-left-leg:brook-step-left 1.7s steps(4,end) infinite;--rig-right-leg:brook-step-right 1.7s steps(4,end) infinite;--rig-body:none}
+.pet-home[data-pet=brook][data-behavior=sleep] .pet-character>.pet-rig{--rig-body:brook-sleep-breathe 5.8s steps(4,end) infinite;--rig-head-pose:translateY(9px) rotate(-4deg);--rig-left-leg:none;--rig-right-leg:none;--rig-right-arm:none;--rig-left-arm-pose:rotate(-20deg);--rig-right-arm-pose:rotate(20deg);--rig-body-pose:scaleY(.92)}
+.pet-home[data-pet=brook][data-behavior=wake] .pet-character>.pet-rig{--rig-left-arm:brook-happy-flipper 1.4s steps(5,end) infinite;--rig-right-arm:brook-happy-flipper 1.4s steps(5,end) infinite reverse;--rig-head:brook-proud-nod 1.4s steps(4,end) infinite;--rig-body:brook-waddle 1.4s steps(5,end) infinite}
+.pet-home[data-pet=brook][data-behavior=fishing] .pet-character>.pet-rig{--rig-posture:brook-fishing-dive 4.2s steps(8,end) infinite;--rig-right-arm:brook-fishing-scoop 4.2s steps(8,end) infinite;--rig-head:brook-fish-gulp 4.2s steps(6,end) infinite;--rig-body:none;--rig-left-leg:none;--rig-right-leg:none}
+.pet-home[data-pet=brook][data-behavior=exercise] .pet-character>.pet-rig{--rig-body:brook-waddle 1.5s steps(5,end) infinite;--rig-left-leg:brook-step-left 1.5s steps(5,end) infinite;--rig-right-leg:brook-step-right 1.5s steps(5,end) infinite;--rig-left-arm:brook-flipper-balance 1.5s steps(4,end) infinite reverse;--rig-right-arm:brook-flipper-balance 1.5s steps(4,end) infinite}
+.pet-home[data-pet=brook][data-behavior=farming] .pet-character>.pet-rig{--rig-right-arm:brook-pebble-place 4s steps(7,end) infinite;--rig-head:brook-map-check 4s steps(6,end) infinite;--rig-keepsake-opacity:1;--rig-keepsake:brook-pebble-tidy 4s steps(5,end) infinite;--rig-left-leg:none;--rig-right-leg:none}
+.pet-home[data-pet=brook][data-behavior=mining] .pet-character>.pet-rig{--rig-right-arm:brook-pebble-place 3.5s steps(6,end) infinite;--rig-head:brook-proud-nod 3.5s steps(5,end) infinite;--rig-keepsake-opacity:1;--rig-keepsake:brook-pebble-tidy 3.5s steps(5,end) infinite}
+.pet-home[data-pet=brook][data-behavior=focus] .pet-character>.pet-rig{--rig-head:brook-map-check 7s steps(5,end) infinite;--rig-right-arm:none;--rig-body:none;--rig-left-leg:none;--rig-right-leg:none;--rig-left-arm-pose:rotate(-12deg);--rig-keepsake-opacity:1}
+.pet-home[data-pet=brook][data-behavior=drag] .pet-character>.pet-rig{--rig-body:none;--rig-left-arm:brook-happy-flipper .7s steps(4,end) infinite;--rig-right-arm:brook-happy-flipper .7s steps(4,end) infinite reverse;--rig-left-leg:brook-step-left .9s steps(4,end) infinite;--rig-right-leg:brook-step-right .9s steps(4,end) infinite}
+
+/* Ember: weight sits over four paws, with the muzzle and tail balancing each move. */
+.pet-home[data-pet=ember] .pet-character>.pet-rig{--rig-head:ember-sniff 4.8s steps(7,end) infinite;--rig-tail:ember-tail-watch 5.8s steps(5,end) infinite;--rig-right-ear:ember-ear-scan 4.8s steps(4,end) infinite;--rig-blink-time:5.1s}
+.pet-home[data-pet=ember][data-behavior=pet] .pet-character>.pet-rig{--rig-head:ember-cheek-offer 2.3s steps(5,end) infinite;--rig-tail:ember-tail-wag 1.1s steps(5,end) infinite;--rig-right-ear:ember-ear-scan 2.3s steps(3,end) infinite}
+.pet-home[data-pet=ember][data-behavior=feed] .pet-character>.pet-rig{--rig-head:ember-berry-nibble 2.4s steps(7,end) infinite;--rig-mouth:ember-nose-twitch .5s steps(2,end) infinite;--rig-right-arm:ember-paw-ready 2.4s steps(5,end) infinite;--rig-tail:ember-tail-watch 3s steps(4,end) infinite}
+.pet-home[data-pet=ember][data-behavior=play] .pet-character>.pet-rig{--rig-posture:ember-scout-leap 2.5s steps(8,end) infinite;--rig-left-arm:ember-leap-front 2.5s steps(7,end) infinite;--rig-right-arm:ember-leap-front 2.5s steps(7,end) infinite;--rig-left-leg:ember-leap-hind 2.5s steps(7,end) infinite;--rig-right-leg:ember-leap-hind 2.5s steps(7,end) infinite;--rig-tail:ember-leap-tail 2.5s steps(7,end) infinite;--rig-head:none}
+.pet-home[data-pet=ember][data-behavior=sleep] .pet-character>.pet-rig{--rig-head:none;--rig-tail:none;--rig-right-ear:none;--rig-body:ember-den-breathe 5.2s steps(4,end) infinite;--rig-head-pose:translate(-10px,15px) rotate(12deg);--rig-tail-pose:translate(15px,11px) rotate(-34deg);--rig-body-pose:scaleY(.8);--rig-left-arm-pose:rotate(24deg);--rig-right-arm-pose:rotate(26deg);--rig-left-leg-pose:rotate(-20deg);--rig-right-leg-pose:rotate(-18deg)}
+.pet-home[data-pet=ember][data-behavior=wake] .pet-character>.pet-rig{--rig-posture:ember-play-bow 3s steps(7,end) infinite;--rig-head:ember-sniff 3s steps(6,end) infinite;--rig-left-arm:ember-bow-paw 3s steps(5,end) infinite;--rig-right-arm:ember-bow-paw 3s steps(5,end) infinite;--rig-tail:ember-tail-watch 3s steps(5,end) infinite}
+.pet-home[data-pet=ember][data-behavior=fishing] .pet-character>.pet-rig{--rig-head:ember-water-sniff 3.6s steps(6,end) infinite;--rig-right-arm:ember-water-test 3.6s steps(7,end) infinite;--rig-tail:ember-leap-tail 3.6s steps(5,end) infinite}
+.pet-home[data-pet=ember][data-behavior=exercise] .pet-character>.pet-rig{--rig-posture:ember-play-bow 2.8s steps(7,end) infinite;--rig-left-leg:ember-trot 1.4s steps(5,end) infinite;--rig-right-leg:ember-trot 1.4s steps(5,end) infinite reverse;--rig-left-arm:ember-trot 1.4s steps(5,end) infinite reverse;--rig-right-arm:ember-trot 1.4s steps(5,end) infinite}
+.pet-home[data-pet=ember][data-behavior=farming] .pet-character>.pet-rig{--rig-head:ember-water-sniff 3.2s steps(5,end) infinite;--rig-right-arm:ember-fast-dig 1.6s steps(6,end) infinite;--rig-left-arm:ember-fast-dig 1.6s steps(6,end) infinite reverse;--rig-tail:ember-tail-watch 3.2s steps(4,end) infinite}
+.pet-home[data-pet=ember][data-behavior=mining] .pet-character>.pet-rig{--rig-head:ember-sniff 3.8s steps(6,end) infinite;--rig-right-arm:ember-ore-scratch 3.8s steps(7,end) infinite;--rig-right-ear:ember-ear-scan 3.8s steps(5,end) infinite}
+.pet-home[data-pet=ember][data-behavior=focus] .pet-character>.pet-rig{--rig-head:ember-scout-watch 8s steps(4,end) infinite;--rig-tail:ember-tail-tip 8s steps(4,end) infinite;--rig-right-ear:ember-ear-scan 8s steps(4,end) infinite}
+.pet-home[data-pet=ember][data-behavior=drag] .pet-character>.pet-rig{--rig-head:ember-scout-watch 2s steps(4,end) infinite;--rig-tail:ember-leap-tail 1.6s steps(5,end) infinite;--rig-left-arm:rig-dangle-left .8s steps(4,end) infinite;--rig-right-arm:rig-dangle-right .8s steps(4,end) infinite;--rig-left-leg:rig-dangle-left .8s steps(4,end) infinite;--rig-right-leg:rig-dangle-right .8s steps(4,end) infinite}
+
+/* Luna: one listening ear, careful little movements, then an unhurried stretch. */
+.pet-home[data-pet=luna] .pet-character>.pet-rig{--rig-right-ear:luna-ear-listen 6.4s steps(6,end) infinite;--rig-head:luna-moon-watch 7s steps(4,end) infinite;--rig-left-ear-pose:rotate(-4deg);--rig-blink-time:6.8s}
+.pet-home[data-pet=luna][data-behavior=pet] .pet-character>.pet-rig{--rig-head:luna-shy-nuzzle 2.6s steps(5,end) infinite;--rig-right-ear:luna-ear-soften 2.6s steps(5,end) infinite;--rig-left-ear:luna-ear-soften 2.6s steps(5,end) infinite reverse;--rig-left-arm-pose:rotate(-15deg);--rig-right-arm-pose:rotate(15deg)}
+.pet-home[data-pet=luna][data-behavior=feed] .pet-character>.pet-rig{--rig-head:luna-carrot-nibble 2s steps(5,end) infinite;--rig-mouth:luna-nibble .45s steps(2,end) infinite;--rig-left-arm:luna-hold-carrot 2s steps(4,end) infinite;--rig-right-arm:luna-hold-carrot 2s steps(4,end) infinite reverse;--rig-right-ear:luna-ear-listen 4s steps(4,end) infinite}
+.pet-home[data-pet=luna][data-behavior=play] .pet-character>.pet-rig{--rig-posture:luna-moon-hop 3.3s steps(7,end) infinite;--rig-left-leg:luna-hop-haunch 3.3s steps(6,end) infinite;--rig-right-leg:luna-hop-haunch 3.3s steps(6,end) infinite;--rig-right-ear:luna-hop-ear 3.3s steps(7,end) infinite;--rig-left-ear:luna-hop-ear 3.3s steps(7,end) infinite reverse;--rig-head:none}
+.pet-home[data-pet=luna][data-behavior=sleep] .pet-character>.pet-rig{--rig-head:none;--rig-right-ear:none;--rig-body:luna-sleep-breathe 6.3s steps(4,end) infinite;--rig-left-ear-pose:rotate(-48deg);--rig-right-ear-pose:rotate(42deg);--rig-head-pose:translateY(8px) rotate(-8deg);--rig-left-arm-pose:rotate(-22deg);--rig-right-arm-pose:rotate(22deg);--rig-body-pose:scaleY(.9);--rig-keepsake-opacity:.65}
+.pet-home[data-pet=luna][data-behavior=wake] .pet-character>.pet-rig{--rig-posture:luna-yoga-stretch 4.2s steps(7,end) infinite;--rig-left-arm:luna-yoga-paw 4.2s steps(6,end) infinite;--rig-right-arm:luna-yoga-paw 4.2s steps(6,end) infinite reverse;--rig-right-ear:luna-ear-unfold 4.2s steps(7,end) infinite;--rig-left-ear:luna-ear-unfold 4.2s steps(7,end) infinite reverse}
+.pet-home[data-pet=luna][data-behavior=fishing] .pet-character>.pet-rig{--rig-head:luna-water-listen 5s steps(5,end) infinite;--rig-right-arm:luna-water-touch 5s steps(6,end) infinite;--rig-right-ear:luna-ear-listen 5s steps(6,end) infinite}
+.pet-home[data-pet=luna][data-behavior=exercise] .pet-character>.pet-rig{--rig-posture:luna-yoga-stretch 5.5s steps(7,end) infinite;--rig-left-arm:luna-yoga-paw 5.5s steps(6,end) infinite;--rig-right-arm:luna-yoga-paw 5.5s steps(6,end) infinite reverse;--rig-left-leg:luna-yoga-haunch 5.5s steps(5,end) infinite;--rig-right-ear:luna-ear-unfold 5.5s steps(6,end) infinite}
+.pet-home[data-pet=luna][data-behavior=farming] .pet-character>.pet-rig{--rig-right-arm:luna-seed-place 4.6s steps(7,end) infinite;--rig-head:luna-water-listen 4.6s steps(5,end) infinite;--rig-left-arm-pose:rotate(-14deg);--rig-right-ear:luna-ear-listen 4.6s steps(5,end) infinite}
+.pet-home[data-pet=luna][data-behavior=mining] .pet-character>.pet-rig{--rig-right-arm:luna-moonstone-polish 4.4s steps(7,end) infinite;--rig-head:luna-water-listen 4.4s steps(5,end) infinite;--rig-keepsake-opacity:1;--rig-keepsake:luna-stone-turn 4.4s steps(6,end) infinite}
+.pet-home[data-pet=luna][data-behavior=focus] .pet-character>.pet-rig{--rig-head:none;--rig-head-pose:rotate(-3deg);--rig-right-ear:luna-ear-listen 10s steps(4,end) infinite;--rig-keepsake-opacity:1;--rig-left-arm-pose:rotate(-12deg);--rig-right-arm-pose:rotate(12deg)}
+.pet-home[data-pet=luna][data-behavior=drag] .pet-character>.pet-rig{--rig-head:luna-shy-nuzzle 3s steps(4,end) infinite;--rig-right-ear:luna-hop-ear 1.7s steps(5,end) infinite;--rig-left-ear:luna-hop-ear 1.7s steps(5,end) infinite reverse;--rig-left-leg:rig-dangle-left 1.3s steps(4,end) infinite;--rig-right-leg:rig-dangle-right 1.3s steps(4,end) infinite}
+
+/* Nova: wings think faster than the feet; curiosity occasionally ends in a sparkle sneeze. */
+.pet-home[data-pet=nova] .pet-character>.pet-rig{--rig-left-wing:nova-wing-fidget 5.6s steps(6,end) infinite;--rig-right-wing:nova-wing-fidget 5.6s steps(6,end) infinite reverse;--rig-tail:nova-tail-question 6.2s steps(6,end) infinite;--rig-head:nova-sneeze-windup 8s steps(7,end) infinite;--rig-sneeze:nova-sparkle-sneeze 8s steps(5,end) infinite;--rig-blink-time:4.8s}
+.pet-home[data-pet=nova][data-behavior=pet] .pet-character>.pet-rig{--rig-head:nova-horn-nuzzle 2s steps(5,end) infinite;--rig-left-wing:nova-wing-hug 2s steps(5,end) infinite;--rig-right-wing:nova-wing-hug 2s steps(5,end) infinite reverse;--rig-tail:nova-tail-question 2s steps(5,end) infinite;--rig-sneeze:none}
+.pet-home[data-pet=nova][data-behavior=feed] .pet-character>.pet-rig{--rig-head:nova-starfruit-chomp 2.7s steps(7,end) infinite;--rig-mouth:nova-chomp .6s steps(3,end) infinite;--rig-right-arm:nova-snack-inspect 2.7s steps(5,end) infinite;--rig-sneeze:nova-snack-spark 2.7s steps(4,end) infinite}
+.pet-home[data-pet=nova][data-behavior=play] .pet-character>.pet-rig{--rig-posture:nova-hover-misfire 2.8s steps(8,end) infinite;--rig-left-wing:nova-practice-flap .7s steps(5,end) infinite;--rig-right-wing:nova-practice-flap .7s steps(5,end) infinite reverse;--rig-left-leg:nova-hover-foot 2.8s steps(6,end) infinite;--rig-right-leg:nova-hover-foot 2.8s steps(6,end) infinite reverse;--rig-tail:nova-tail-balance 2.8s steps(6,end) infinite;--rig-head:none;--rig-sneeze:none}
+.pet-home[data-pet=nova][data-behavior=sleep] .pet-character>.pet-rig{--rig-head:none;--rig-left-wing:none;--rig-right-wing:none;--rig-tail:none;--rig-sneeze:none;--rig-body:nova-sleep-breathe 5.7s steps(4,end) infinite;--rig-head-pose:translateY(9px) rotate(8deg);--rig-left-wing-pose:rotate(-32deg) scaleX(.68);--rig-right-wing-pose:rotate(32deg) scaleX(.68);--rig-tail-pose:rotate(19deg);--rig-left-arm-pose:rotate(-18deg);--rig-right-arm-pose:rotate(18deg)}
+.pet-home[data-pet=nova][data-behavior=wake] .pet-character>.pet-rig{--rig-left-wing:nova-practice-flap 1.1s steps(5,end) infinite;--rig-right-wing:nova-practice-flap 1.1s steps(5,end) infinite reverse;--rig-head:nova-sneeze-windup 3s steps(6,end) infinite;--rig-sneeze:nova-sparkle-sneeze 3s steps(5,end) infinite;--rig-tail:nova-tail-question 3s steps(5,end) infinite}
+.pet-home[data-pet=nova][data-behavior=fishing] .pet-character>.pet-rig{--rig-right-arm:nova-water-experiment 3.9s steps(7,end) infinite;--rig-head:nova-crystal-inspect 3.9s steps(6,end) infinite;--rig-right-wing:nova-wing-fidget 3.9s steps(5,end) infinite;--rig-sneeze:none}
+.pet-home[data-pet=nova][data-behavior=exercise] .pet-character>.pet-rig{--rig-left-wing:nova-practice-flap 1.3s steps(5,end) infinite;--rig-right-wing:nova-practice-flap 1.3s steps(5,end) infinite reverse;--rig-left-leg:nova-hover-foot 2.6s steps(5,end) infinite;--rig-right-leg:nova-hover-foot 2.6s steps(5,end) infinite reverse;--rig-head:nova-crystal-inspect 5.2s steps(4,end) infinite;--rig-sneeze:none}
+.pet-home[data-pet=nova][data-behavior=farming] .pet-character>.pet-rig{--rig-right-arm:nova-seed-experiment 3.7s steps(7,end) infinite;--rig-head:nova-crystal-inspect 3.7s steps(5,end) infinite;--rig-tail:nova-tail-balance 3.7s steps(5,end) infinite;--rig-sneeze:none}
+.pet-home[data-pet=nova][data-behavior=mining] .pet-character>.pet-rig{--rig-right-arm:nova-crystal-tap 3.4s steps(7,end) infinite;--rig-head:nova-crystal-inspect 3.4s steps(6,end) infinite;--rig-left-wing:nova-wing-fidget 3.4s steps(5,end) infinite;--rig-right-wing:nova-wing-fidget 3.4s steps(5,end) infinite reverse;--rig-keepsake-opacity:1;--rig-keepsake:nova-gadget-test 3.4s steps(6,end) infinite;--rig-sneeze:nova-snack-spark 3.4s steps(4,end) infinite}
+.pet-home[data-pet=nova][data-behavior=focus] .pet-character>.pet-rig{--rig-head:nova-crystal-inspect 8s steps(5,end) infinite;--rig-left-wing:nova-wing-fidget 9s steps(4,end) infinite;--rig-right-wing:nova-wing-fidget 9s steps(4,end) infinite reverse;--rig-tail:nova-tail-question 9s steps(4,end) infinite;--rig-keepsake-opacity:1;--rig-sneeze:none}
+.pet-home[data-pet=nova][data-behavior=drag] .pet-character>.pet-rig{--rig-left-wing:nova-practice-flap .55s steps(5,end) infinite;--rig-right-wing:nova-practice-flap .55s steps(5,end) infinite reverse;--rig-left-leg:nova-hover-foot 1.1s steps(5,end) infinite;--rig-right-leg:nova-hover-foot 1.1s steps(5,end) infinite reverse;--rig-tail:nova-tail-balance 1.1s steps(5,end) infinite;--rig-head:none;--rig-sneeze:none}
+
+@keyframes rig-blink{0%,44%,48%,100%{opacity:1}45%,47%{opacity:.05}}
+@keyframes rig-dangle-left{50%{transform:rotate(12deg) translateY(3px)}}
+@keyframes rig-dangle-right{50%{transform:rotate(-12deg) translateY(3px)}}
+@keyframes sprout-leaf-sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(11deg)}}
+@keyframes sprout-listen{0%,65%,100%{transform:rotate(0)}30%,45%{transform:rotate(-4deg)}}
+@keyframes sprout-wool-settle{0%,100%{transform:scaleY(1)}55%{transform:scale(1.018,.98)}}
+@keyframes sprout-nuzzle{0%,100%{transform:rotate(-4deg)}45%{transform:translateY(2px) rotate(7deg)}}
+@keyframes sprout-ear-warm{50%{transform:rotate(14deg)}}
+@keyframes sprout-savour{0%,100%{transform:none}25%,65%{transform:translate(2px,5px) rotate(4deg)}80%{transform:rotate(-3deg)}}
+@keyframes sprout-chew{50%{transform:translateY(2px) scaleX(1.2)}}
+@keyframes sprout-bowl-hold{40%,70%{transform:translate(-7px,-8px) rotate(22deg)}}
+@keyframes sprout-seed-tap{0%,100%{transform:none}20%,50%{transform:rotate(-16deg)}35%,65%{transform:translate(10px,13px) rotate(8deg)}}
+@keyframes sprout-prance{0%,100%{transform:none}30%,55%{transform:translateY(-5px) rotate(7deg)}}
+@keyframes sprout-sleep-breathe{0%,100%{transform:scaleY(.9)}50%{transform:scale(1.02,.93)}}
+@keyframes sprout-wool-shake{0%,100%{transform:none}25%{transform:rotate(-3deg)}40%{transform:rotate(3deg)}55%{transform:rotate(-2deg)}70%{transform:none}}
+@keyframes sprout-water-watch{35%,65%{transform:translate(3px,4px) rotate(6deg)}}
+@keyframes sprout-water-dip{0%,100%{transform:none}40%,55%{transform:translate(8px,17px) rotate(6deg)}70%{transform:translate(4px,3px)}}
+@keyframes sprout-soil-double-pat{0%,75%,100%{transform:none}20%,45%{transform:translate(5px,4px) rotate(-10deg)}30%,55%{transform:translate(9px,19px) rotate(5deg)}}
+@keyframes sprout-garden-nod{0%,70%,100%{transform:none}30%,55%{transform:translateY(5px) rotate(4deg)}}
+@keyframes sprout-pat-dust{0%,20%,75%,100%{opacity:0}30%,55%{opacity:1;transform:translateY(-3px)}}
+@keyframes sprout-stone-test{0%,100%{transform:none}35%,65%{transform:translate(12px,13px) rotate(7deg)}50%{transform:translate(8px,10px)}}
+@keyframes miso-tail-curl{0%,100%{transform:rotate(-6deg)}35%{transform:rotate(10deg)}60%{transform:rotate(-3deg)}}
+@keyframes miso-curled-show{0%,45%,90%,100%{opacity:0}46%,89%{opacity:1}}
+@keyframes miso-curled-hide{0%,45%,90%,100%{opacity:1}46%,89%{opacity:0}}
+@keyframes miso-disdain{0%,60%,100%{transform:none}25%,40%{transform:translateY(-2px) rotate(-5deg)}}
+@keyframes miso-cheek-rub{0%,100%{transform:rotate(-6deg)}50%{transform:translate(3px,3px) rotate(9deg)}}
+@keyframes miso-knead{0%,100%{transform:none}50%{transform:translateY(6px) rotate(-4deg)}}
+@keyframes miso-food-inspect{0%,100%{transform:none}20%{transform:rotate(-6deg)}42%,65%{transform:translate(4px,5px) rotate(6deg)}82%{transform:translateY(-2px)}}
+@keyframes miso-paw-lick{0%,25%,100%{transform:none}45%,70%{transform:translate(-13px,-23px) rotate(22deg)}}
+@keyframes miso-lick{50%{transform:translate(2px,3px)}}
+@keyframes miso-tail-tip{0%,80%,100%{transform:none}35%,55%{transform:rotate(7deg)}}
+@keyframes miso-pounce{0%,100%{transform:none}25%{transform:translateY(7px) scaleY(.94)}45%{transform:translate(5px,-7px) rotate(3deg)}65%{transform:translate(8px,3px) scaleY(.97)}85%{transform:none}}
+@keyframes miso-pounce-paw{0%,100%{transform:none}25%{transform:rotate(-10deg)}45%{transform:translate(7px,-4px) rotate(-28deg)}65%{transform:translateY(5px)}}
+@keyframes miso-pounce-tail{25%{transform:rotate(12deg)}45%{transform:rotate(-17deg)}70%{transform:rotate(8deg)}}
+@keyframes miso-back-stretch{0%,100%{transform:none}35%,65%{transform:translateY(6px) scale(1.04,.94) rotate(-3deg)}}
+@keyframes miso-stretch-paw{35%,65%{transform:translate(2px,7px) rotate(-17deg)}}
+@keyframes miso-loaf-breathe{0%,100%{transform:scaleY(.82)}50%{transform:scale(1.025,.85)}}
+@keyframes miso-fish-swat{0%,100%{transform:none}32%{transform:translateY(-6px) rotate(-25deg)}46%{transform:translate(14px,11px) rotate(-4deg)}65%{transform:translate(-7px,-5px) rotate(18deg)}}
+@keyframes miso-cover-seed{0%,100%{transform:none}20%{transform:translate(12px,5px) rotate(-15deg)}40%{transform:translate(4px,10px) rotate(15deg)}60%{transform:translate(12px,5px) rotate(-15deg)}80%{transform:translate(4px,10px) rotate(15deg)}}
+@keyframes miso-stone-swat{0%,100%{transform:none}25%{transform:rotate(-18deg)}42%{transform:translate(14px,7px)}70%{transform:translate(-5px,-6px) rotate(13deg)}}
+@keyframes brook-waddle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes brook-step-left{0%,100%{transform:none}25%,45%{transform:translateY(-4px) rotate(10deg)}}
+@keyframes brook-step-right{0%,100%{transform:none}55%,75%{transform:translateY(-4px) rotate(-10deg)}}
+@keyframes brook-flipper-balance{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(12deg)}}
+@keyframes brook-happy-flipper{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(35deg)}}
+@keyframes brook-proud-nod{35%{transform:translateY(-3px)}65%{transform:translateY(3px) rotate(4deg)}}
+@keyframes brook-fish-gulp{0%,100%{transform:none}30%{transform:translate(3px,7px) rotate(8deg)}60%{transform:translateY(-4px) rotate(-4deg)}78%{transform:translateY(1px)}}
+@keyframes brook-beak{50%{transform:translateY(2px) scaleY(1.2)}}
+@keyframes brook-fish-offer{30%,55%{transform:translate(-15px,-4px) rotate(36deg)}}
+@keyframes brook-belly-slide{0%,100%{transform:none}25%{transform:translateY(5px) rotate(-4deg)}45%,65%{transform:translate(9px,11px) rotate(24deg) scaleY(.88)}82%{transform:translate(2px,4px) rotate(6deg)}}
+@keyframes brook-slide-flipper{45%,65%{transform:rotate(40deg)}82%{transform:rotate(-10deg)}}
+@keyframes brook-sleep-breathe{0%,100%{transform:scaleY(.92)}50%{transform:scale(1.02,.94)}}
+@keyframes brook-fishing-dive{0%,100%{transform:none}30%,55%{transform:translate(6px,4px) rotate(8deg)}72%{transform:translateY(-2px)}}
+@keyframes brook-fishing-scoop{0%,100%{transform:none}30%{transform:rotate(-8deg)}48%{transform:translate(10px,14px) rotate(12deg)}68%{transform:translate(-4px,-3px) rotate(28deg)}}
+@keyframes brook-pebble-place{0%,100%{transform:none}25%{transform:translate(8px,3px) rotate(-8deg)}50%,70%{transform:translate(11px,15px) rotate(10deg)}}
+@keyframes brook-map-check{0%,100%{transform:none}30%,50%{transform:translateY(3px) rotate(8deg)}75%{transform:rotate(-4deg)}}
+@keyframes brook-pebble-tidy{0%,100%{transform:none}45%{transform:translateX(3px)}65%{transform:translateX(0)}}
+@keyframes ember-sniff{0%,55%,100%{transform:none}18%,32%{transform:translateX(3px) rotate(-3deg)}25%,40%{transform:translateX(1px) rotate(2deg)}}
+@keyframes ember-tail-watch{0%,100%{transform:rotate(-4deg)}55%{transform:rotate(8deg)}}
+@keyframes ember-ear-scan{0%,70%,100%{transform:none}25%{transform:rotate(-12deg)}45%{transform:rotate(9deg)}}
+@keyframes ember-cheek-offer{40%,65%{transform:translate(-3px,4px) rotate(-9deg)}}
+@keyframes ember-tail-wag{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(15deg)}}
+@keyframes ember-berry-nibble{20%{transform:translate(1px,5px) rotate(4deg)}40%,65%{transform:translate(-3px,8px) rotate(9deg)}80%{transform:translateY(2px)}}
+@keyframes ember-nose-twitch{50%{transform:translate(-2px,1px)}}
+@keyframes ember-paw-ready{45%,65%{transform:translateY(-5px) rotate(-12deg)}}
+@keyframes ember-scout-leap{0%,100%{transform:none}22%{transform:translateY(5px) scaleY(.93)}46%{transform:translate(-4px,-8px) rotate(-3deg)}65%{transform:translate(1px,3px)}80%{transform:none}}
+@keyframes ember-leap-front{22%{transform:rotate(12deg)}46%{transform:rotate(-25deg)}65%{transform:rotate(8deg)}}
+@keyframes ember-leap-hind{22%{transform:rotate(-18deg)}46%{transform:rotate(23deg)}65%{transform:translateY(2px)}}
+@keyframes ember-leap-tail{22%{transform:rotate(-10deg)}46%{transform:rotate(18deg)}75%{transform:rotate(-4deg)}}
+@keyframes ember-den-breathe{0%,100%{transform:scaleY(.8)}50%{transform:scale(1.02,.83)}}
+@keyframes ember-play-bow{35%,65%{transform:rotate(5deg) translateY(4px)}}
+@keyframes ember-bow-paw{35%,65%{transform:rotate(-15deg) translateY(4px)}}
+@keyframes ember-water-sniff{30%,55%{transform:translate(-2px,7px) rotate(10deg)}75%{transform:rotate(-4deg)}}
+@keyframes ember-water-test{25%{transform:translateY(-8px) rotate(-12deg)}45%{transform:translateY(3px) rotate(7deg)}65%{transform:translateY(-5px)}}
+@keyframes ember-trot{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(14deg) translateY(-4px)}}
+@keyframes ember-fast-dig{0%,100%{transform:none}25%{transform:translateY(-9px) rotate(-15deg)}50%{transform:translate(-5px,1px) rotate(18deg)}75%{transform:translateY(-5px)}}
+@keyframes ember-ore-scratch{0%,100%{transform:none}25%,50%{transform:translateY(-9px) rotate(-10deg)}38%,63%{transform:translate(-4px,1px) rotate(15deg)}}
+@keyframes ember-scout-watch{0%,100%{transform:none}25%,45%{transform:rotate(-6deg)}70%{transform:rotate(3deg)}}
+@keyframes ember-tail-tip{30%,55%{transform:rotate(5deg)}}
+@keyframes luna-ear-listen{0%,70%,100%{transform:rotate(0)}28%,46%{transform:rotate(16deg)}58%{transform:rotate(-4deg)}}
+@keyframes luna-moon-watch{35%,55%{transform:translateY(-1px) rotate(-4deg)}}
+@keyframes luna-shy-nuzzle{30%,60%{transform:translateY(3px) rotate(6deg)}}
+@keyframes luna-ear-soften{50%{transform:rotate(24deg)}}
+@keyframes luna-carrot-nibble{30%,70%{transform:translateY(3px) rotate(2deg)}}
+@keyframes luna-nibble{50%{transform:translateY(2px)}}
+@keyframes luna-hold-carrot{25%,80%{transform:translate(8px,-12px) rotate(-16deg)}}
+@keyframes luna-moon-hop{0%,100%{transform:none}25%{transform:translateY(4px) scaleY(.96)}48%{transform:translate(-5px,-4px)}68%{transform:translate(-7px,2px)}84%{transform:translate(-3px,0)}}
+@keyframes luna-hop-haunch{25%{transform:rotate(-8deg)}48%{transform:rotate(14deg) translateY(-3px)}68%{transform:rotate(-4deg)}}
+@keyframes luna-hop-ear{0%,100%{transform:none}25%{transform:rotate(8deg)}48%{transform:rotate(-17deg)}68%{transform:rotate(21deg)}}
+@keyframes luna-sleep-breathe{0%,100%{transform:scaleY(.9)}50%{transform:scale(1.015,.93)}}
+@keyframes luna-yoga-stretch{0%,100%{transform:none}35%,65%{transform:translateY(2px) rotate(-3deg) scaleY(1.02)}}
+@keyframes luna-yoga-paw{35%,65%{transform:translateY(-6px) rotate(48deg)}}
+@keyframes luna-yoga-haunch{35%,65%{transform:translate(-5px,0) rotate(8deg)}}
+@keyframes luna-ear-unfold{0%,100%{transform:rotate(4deg)}35%,65%{transform:rotate(-15deg)}}
+@keyframes luna-water-listen{30%,65%{transform:translate(2px,4px) rotate(6deg)}}
+@keyframes luna-water-touch{0%,100%{transform:none}35%,60%{transform:translate(13px,6px) rotate(-4deg)}75%{transform:translate(6px,-3px)}}
+@keyframes luna-seed-place{0%,100%{transform:none}25%{transform:translate(-4px,-9px) rotate(12deg)}55%,72%{transform:translate(12px,6px) rotate(-6deg)}}
+@keyframes luna-moonstone-polish{0%,100%{transform:none}30%,65%{transform:translate(15px,5px) rotate(-8deg)}45%{transform:translate(10px,2px) rotate(5deg)}}
+@keyframes luna-stone-turn{30%,65%{transform:translate(-3px,-3px) rotate(8deg)}45%{transform:translate(-2px,-3px) rotate(-6deg)}}
+@keyframes nova-wing-fidget{0%,60%,100%{transform:rotate(0)}24%{transform:rotate(12deg)}38%{transform:rotate(-5deg)}}
+@keyframes nova-tail-question{0%,100%{transform:none}25%,45%{transform:rotate(-12deg)}70%{transform:rotate(7deg)}}
+@keyframes nova-sneeze-windup{0%,60%,100%{transform:none}65%{transform:translateY(-3px) rotate(-5deg)}75%{transform:translate(3px,4px) rotate(7deg)}84%{transform:rotate(-3deg)}}
+@keyframes nova-sparkle-sneeze{0%,68%,100%{opacity:0;transform:none}75%{opacity:1;transform:translate(1px,-3px)}86%{opacity:0;transform:translate(6px,-7px)}}
+@keyframes nova-horn-nuzzle{45%,70%{transform:rotate(-8deg) translateY(3px)}}
+@keyframes nova-wing-hug{50%{transform:rotate(-20deg) scaleX(.85)}}
+@keyframes nova-starfruit-chomp{25%{transform:rotate(-5deg)}45%,65%{transform:translate(3px,5px) rotate(6deg)}80%{transform:translateY(-2px)}}
+@keyframes nova-chomp{50%{transform:translateY(3px) scaleY(1.2)}}
+@keyframes nova-snack-inspect{25%,65%{transform:translate(-12px,-10px) rotate(24deg)}}
+@keyframes nova-snack-spark{0%,50%,100%{opacity:0}68%{opacity:1;transform:translateY(-3px)}82%{opacity:0;transform:translate(4px,-6px)}}
+@keyframes nova-hover-misfire{0%,100%{transform:none}25%{transform:translateY(-4px)}45%{transform:translate(-3px,-8px) rotate(-3deg)}65%{transform:translateY(3px) scaleY(.97)}82%{transform:none}}
+@keyframes nova-practice-flap{0%,100%{transform:rotate(-9deg) scaleX(.9)}50%{transform:rotate(23deg) scaleX(1.04)}}
+@keyframes nova-hover-foot{25%,50%{transform:rotate(15deg) translateY(2px)}68%{transform:rotate(-5deg)}}
+@keyframes nova-tail-balance{25%{transform:rotate(-12deg)}50%{transform:rotate(13deg)}75%{transform:rotate(-4deg)}}
+@keyframes nova-sleep-breathe{0%,100%{transform:scaleY(.96)}50%{transform:scale(1.018,.99)}}
+@keyframes nova-water-experiment{0%,100%{transform:none}30%{transform:translate(7px,1px) rotate(-9deg)}45%{transform:translate(10px,13px) rotate(5deg)}62%{transform:translate(-5px,-6px) rotate(23deg)}}
+@keyframes nova-crystal-inspect{0%,100%{transform:none}28%{transform:rotate(-7deg)}55%{transform:translate(2px,5px) rotate(8deg)}75%{transform:translateY(-2px)}}
+@keyframes nova-seed-experiment{0%,100%{transform:none}25%{transform:translate(-8px,-10px) rotate(18deg)}55%{transform:translate(10px,13px)}75%{transform:translate(4px,7px) rotate(-8deg)}}
+@keyframes nova-crystal-tap{0%,100%{transform:none}28%,55%{transform:translate(5px,3px) rotate(-10deg)}40%,68%{transform:translate(10px,12px) rotate(8deg)}}
+@keyframes nova-gadget-test{25%{transform:rotate(-9deg)}55%{transform:rotate(9deg) translateY(-2px)}75%{transform:rotate(-4deg)}}
+
+@media(prefers-reduced-motion:reduce){
+  .pet-rig .rig-part,.pet-rig :is(.rig-tail-curled,.rig-tail-relaxed){animation:none!important}
+  .pet-home[data-behavior=pet] .pet-rig .rig-head{transform:rotate(-4deg)}
+  .pet-home[data-behavior=feed] .pet-rig .rig-head{transform:translateY(4px) rotate(3deg)}
+  .pet-home[data-behavior=play] .pet-rig .rig-arm-right{transform:rotate(-20deg)}
+  .pet-home:is([data-behavior=fishing],[data-behavior=farming],[data-behavior=mining]) .pet-rig .rig-arm-right{transform:translate(8px,8px) rotate(5deg)}
+  .pet-home[data-behavior=exercise] .pet-rig-luna .rig-ear-right{transform:rotate(-15deg)}
+  .pet-home[data-behavior=exercise] .pet-rig-nova .rig-wing-right{transform:rotate(18deg)}
+  .pet-home[data-behavior=drag] .pet-rig .rig-leg-left{transform:rotate(10deg)}
+}

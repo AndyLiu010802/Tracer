@@ -35,6 +35,13 @@
     s.lastNotifiedId = typeof input.lastNotifiedId === 'string' ? input.lastNotifiedId : '';
     return s;
   }
+  function removeTasks(s, ids) {
+    var removed = s.history.filter(function (h) { return h.task && ids.has(h.task.id); });
+    if (s.task && ids.has(s.task.id)) { reset(s); s.task = null; }
+    s.history = s.history.filter(function (h) { return !h.task || !ids.has(h.task.id); });
+    s.totalMinutes = Math.max(0, s.totalMinutes - removed.reduce(function (sum, h) { return sum + h.minutes; }, 0));
+    s.roundsDone = Math.max(0, s.roundsDone - removed.length);
+  }
   function remaining(s, now) { return s.running ? Math.min(s.duration, Math.max(0, s.endAt - now)) : s.remaining; }
   function settle(s, now) {
     if (!s.running || now < s.endAt) return false;
@@ -60,5 +67,5 @@
   function nextMode(s) { return s.mode === 'focus' ? (s.roundsDone > 0 && s.roundsDone % s.settings.rounds === 0 ? 'long' : 'short') : 'focus'; }
   function today(s, now) { var key = dayKey(now), rows = s.history.filter(function (h) { return dayKey(h.endedAt) === key; }); return { count: rows.length, minutes: rows.reduce(function (sum, h) { return sum + h.minutes; }, 0) }; }
   function format(ms) { var seconds = Math.max(0, Math.ceil(ms / 1000)); return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0'); }
-  return { fresh: fresh, read: read, config: config, dayKey: dayKey, remaining: remaining, settle: settle, reset: reset, start: start, pause: pause, nextMode: nextMode, today: today, format: format };
+  return { fresh: fresh, read: read, config: config, dayKey: dayKey, removeTasks: removeTasks, remaining: remaining, settle: settle, reset: reset, start: start, pause: pause, nextMode: nextMode, today: today, format: format };
 });

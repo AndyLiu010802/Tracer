@@ -10,6 +10,9 @@ test('Mini Program remembers language, updates labels and keeps task content and
   const iContext = { wx, module: { exports: {} }, require: () => I };
   vm.runInNewContext(fs.readFileSync(require.resolve('../wechat/miniprogram/lib/i18n'), 'utf8'), iContext);
   const locale = iContext.module.exports;
+  assert.equal(locale.language(), 'en');
+  locale.set('zh');
+  assert.equal(locale.language(), 'zh');
   const ws = M.emptyWorkspace(); M.addTask(ws, { title: '发布 API release', status: 'doing', priority: 'high' });
   const original = JSON.stringify(ws);
   const store = { model: M, snapshot: () => ({ data: ws, demo: true, dirty: false }) };

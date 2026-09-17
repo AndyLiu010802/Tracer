@@ -2069,5 +2069,6 @@
   }
 
   boot();
-  window.DBFarm = { mount: mount, unmount: unmount, syncFocus: syncFocus };
+  window.DBFarm = { mount: mount, unmount: unmount, syncFocus: syncFocus,
+    progress: function () { return state ? { harvested: state.stats.harvested, fish: state.stats.fish, orders: state.stats.orders } : {}; } };
 })();

@@ -6,6 +6,10 @@
   'use strict';
   // Each pair is [Simplified Chinese, English]. Task content is never translated.
   var pairs = {
+    deleteProject: ['删除项目', 'Delete project'], deleteProjectNamed: ['删除项目「{name}」', 'Delete project “{name}”'],
+    deleteProjectContents: ['将一并删除 {tasks} 项任务、{notes} 篇笔记和 {history} 条完成记录。', 'This also deletes {tasks} tasks, {notes} notes and {history} completion records.'],
+    deleteProjectWarning: ['相关排期、任务附件链接和本机专注记录也会清除，无法撤销。', 'Related schedules, task attachment links and local focus records will also be removed. This cannot be undone.'],
+    projectDeleted: ['项目及关联内容已删除', 'Project and related content deleted'],
     insEyebrow: ['工作回顾', 'WORK IN REVIEW'], insSubtitle: ['看见进展，留住每一次完成。', 'See your progress. Keep every completion.'],
     insRange: ['统计区间', 'Reporting period'], insAll: ['全部历史', 'All time'], insDays: ['近 {count} 天', '{count} days'], insFrom: ['开始日期', 'From'], insTo: ['结束日期', 'To'],
     insHistorySafe: ['完成记录独立保留', 'Completion history is retained'], insPeriodCompleted: ['区间完成次数', 'Completions in period'], insEventsHint: ['按实际完成事件计数', 'Counts completion events'],

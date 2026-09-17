@@ -1,0 +1,123 @@
+name: macOS desktop
+
+on:
+  push:
+    branches: ['codex/macos-support']
+    paths-ignore: ['**/*.md']
+  workflow_dispatch:
+    inputs:
+      signed:
+        description: 'Sign and notarize with Apple Developer credentials'
+        type: boolean
+        default: false
+      release_draft:
+        description: 'Create a downloadable GitHub Release draft (requires signed build)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Validate release mode and signing credentials
+        env:
+          SIGNED: ${{ inputs.signed }}
+          RELEASE_DRAFT: ${{ inputs.release_draft }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [[ "$RELEASE_DRAFT" == true && "$SIGNED" != true ]]; then
+            echo 'Release drafts require signing and notarization.' >&2
+            exit 1
+          fi
+          if [[ "$SIGNED" == true ]]; then
+            for name in CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID; do
+              if [[ -z "${!name}" ]]; then echo "Missing secret: $name" >&2; exit 1; fi
+            done
+          fi
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:desktop
+      - name: Build DMG and ZIP
+        env:
+          TRACER_MAC_SIGNED: ${{ inputs.signed && '1' || '0' }}
+          CSC_LINK: ${{ inputs.signed && secrets.CSC_LINK || '' }}
+          CSC_KEY_PASSWORD: ${{ inputs.signed && secrets.CSC_KEY_PASSWORD || '' }}
+          APPLE_ID: ${{ inputs.signed && secrets.APPLE_ID || '' }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ inputs.signed && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ inputs.signed && secrets.APPLE_TEAM_ID || '' }}
+        run: npm run dist:mac:${{ matrix.arch }}
+      - name: Verify package and native startup
+        env:
+          TRACER_MAC_SIGNED: ${{ inputs.signed && '1' || '0' }}
+        run: node dev/verify-macos-release.cjs ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Tracer-mac-${{ matrix.arch }}-${{ inputs.signed && 'signed' || 'preview' }}
+          if-no-files-found: error
+          path: |
+            dist/Tracer-*-mac-${{ matrix.arch }}.dmg
+            dist/Tracer-*-mac-${{ matrix.arch }}.zip
+            dist/SHA256SUMS-*-mac-${{ matrix.arch }}.txt
+
+  release-draft:
+    if: ${{ inputs.release_draft && inputs.signed }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Tracer-mac-*-signed
+          path: artifacts
+          merge-multiple: true
+      - name: Create release draft for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          gh release create "v${version}-mac" artifacts/* --draft --target "$GITHUB_SHA" --title "Tracer ${version} for macOS" --notes-file docs/macos-release-notes.md
+
+  preview-download:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/codex/macos-support' }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Tracer-mac-*-preview
+          path: artifacts
+          merge-multiple: true
+      - name: Publish verified preview downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          gh release create "v${version}-mac-preview.${GITHUB_RUN_NUMBER}" artifacts/* --prerelease --latest=false --target "$GITHUB_SHA" --title "Tracer ${version} macOS preview" --notes-file docs/macos-preview-notes.md

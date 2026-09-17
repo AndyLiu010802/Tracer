@@ -27,6 +27,13 @@ if (process.isMainFrame && location.protocol === 'http:'
     && ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname)
     && !location.pathname.startsWith('/r/')) {
   const windowActions = new Set(['state', 'toggle-fullscreen', 'minimize', 'close']);
+  contextBridge.exposeInMainWorld('TracerPet', {
+    send: message => ipcRenderer.send('tracer-pet-command', message),
+    onAction: callback => {
+      if (typeof callback !== 'function') return;
+      ipcRenderer.on('tracer-pet-action', (_event,message) => callback(message));
+    }
+  });
   contextBridge.exposeInMainWorld('TracerWindow', {
     send: action => { if (windowActions.has(action)) ipcRenderer.send('tracer-window-action', action); },
     onState: callback => {

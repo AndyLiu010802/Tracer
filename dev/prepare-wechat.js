@@ -3,6 +3,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.join(__dirname, '..');
 for (const [source, target] of [
+  ['public/project-deletion.js', 'skins/tracer/project-deletion.js'],
+  ['public/project-deletion.js', 'wechat/miniprogram/lib/project-deletion.js'],
+  ['public/project-deletion.js', 'wechat/cloudfunctions/tracer/project-deletion.js'],
   ['public/task-history.js', 'skins/tracer/task-history.js'],
   ['public/task-history.js', 'wechat/miniprogram/lib/task-history.js'],
   ['public/task-history.js', 'wechat/cloudfunctions/tracer/task-history.js'],

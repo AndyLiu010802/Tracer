@@ -9,10 +9,13 @@
 
   function render() {
     var ws = T.store.data;
-    var html = '<a class="proj-item proj-all' + (filterId === null ? ' active' : '') + '" data-id="">' + L('allTasks') + '</a>';
+    if (filterId && !M.findProject(ws, filterId)) filterId = null;
+    var html = '<button type="button" class="proj-item proj-all' + (filterId === null ? ' active' : '') + '" data-id="">' + L('allTasks') + '</button>';
     ws.projects.forEach(function (p) {
-      html += '<a class="proj-item' + (filterId === p.id ? ' active' : '') + '" data-id="' + p.id + '">'
-        + '<i style="background:' + p.color + '"></i>' + M.esc(p.name) + '</a>';
+      html += '<div class="proj-row"><button type="button" class="proj-item' + (filterId === p.id ? ' active' : '') + '" data-id="' + M.esc(p.id) + '">'
+        + '<i style="background:' + M.esc(p.color) + '"></i><span class="proj-name">' + M.esc(p.name) + '</span></button>'
+        + '<button type="button" class="proj-delete" data-delete-project="' + M.esc(p.id) + '" aria-label="' + M.esc(L('deleteProjectNamed', { name: p.name })) + '" title="' + L('deleteProject') + '">'
+        + '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg></button></div>';
     });
     html += '<button class="proj-add" id="proj-add">+ ' + L('newProject') + '</button>';
     list.innerHTML = html;
@@ -26,6 +29,35 @@
       });
     });
     document.getElementById('proj-add').addEventListener('click', addProjectDialog);
+    list.querySelectorAll('[data-delete-project]').forEach(function (button) {
+      button.onclick = function () { deleteProjectDialog(button.dataset.deleteProject); };
+    });
+  }
+
+  function deleteProjectDialog(id) {
+    var ws = T.store.data, project = M.findProject(ws, id);
+    if (!project) return;
+    var tasks = ws.tasks.filter(function (t) { return t.projectId === id; });
+    var ids = new Set(tasks.map(function (t) { return t.id; }));
+    var history = window.TaskHistory.completed(ws).filter(function (h) { return h.projectId === id || ids.has(h.taskId); });
+    T.ui.modal(function (box, close) {
+      box.classList.add('project-delete-dialog');
+      box.setAttribute('aria-labelledby', 'project-delete-title');
+      box.innerHTML = '<h2 id="project-delete-title">' + L('deleteProject') + '</h2>'
+        + '<p class="project-delete-name"></p><p>' + L('deleteProjectContents', {
+          tasks: tasks.length, notes: ws.notes.filter(function (n) { return n.projectId === id; }).length, history: history.length
+        }) + '</p><p>' + L('deleteProjectWarning') + '</p>'
+        + '<div class="modal-actions"><button type="button" class="btn" id="project-delete-cancel">' + L('cancel') + '</button>'
+        + '<button type="button" class="btn btn-danger" id="project-delete-confirm">' + L('deleteProject') + '</button></div>';
+      box.querySelector('.project-delete-name').textContent = project.name;
+      box.querySelector('#project-delete-cancel').onclick = close;
+      box.querySelector('#project-delete-confirm').onclick = function () {
+        if (M.deleteProject(T.store.data, id)) {
+          T.touch(); close(); T.redraw(); T.ui.notice(L('projectDeleted'));
+        } else { close(); T.redraw(); }
+      };
+    });
+    document.getElementById('project-delete-cancel').focus();
   }
 
   function addProjectDialog() {
