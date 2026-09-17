@@ -27,7 +27,10 @@ async function prepare(platform = process.platform, arch = process.arch) {
   const vendor = path.join(unpack, 'package/vendor', target.triple);
   fs.mkdirSync(unpack, { recursive: true });
   // Always extract from the verified archive, including when the cache exists.
-  cp.execFileSync('tar', ['-xf', archive, '-C', unpack], { windowsHide: true });
+  // Git Bash's GNU tar interprets a Windows drive letter as a remote host.
+  // Use the native Windows tar even when the build was launched from Bash.
+  const tar = process.platform === 'win32' ? path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe') : 'tar';
+  cp.execFileSync(tar, ['-xf', archive, '-C', unpack], { windowsHide: true });
   if (spec.files) {
     for (const [name, hash] of Object.entries(spec.files)) {
       if (crypto.createHash('sha256').update(fs.readFileSync(path.join(vendor, name))).digest('hex') !== hash) {
