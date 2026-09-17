@@ -23,6 +23,36 @@ test('focus clock persists wall-clock deadline through reload and pauses without
   assert.equal(F.settle(s, start + 9999999), false); assert.equal(s.history.length, 1);
 });
 
+test('project ownership survives reading, pausing and reloading a focus session without inventing legacy ownership', () => {
+  const start = new Date(2026, 8, 18, 9).getTime();
+  for (const projectId of ['original-project', null, undefined]) {
+    const saved = F.fresh();
+    saved.task = { id: 'current-task', title: 'Keep the original association', ...(projectId !== undefined ? { projectId } : {}) };
+    saved.history = [{ id: 'legacy-session', endedAt: start - 1000, minutes: 15, task: { id: 'legacy-task', title: 'Old saved work' } }];
+    saved.totalMinutes = 15; saved.roundsDone = 1;
+    let state = F.read(saved);
+    saved.task.projectId = 'changed-in-another-record';
+    assert.equal(Object.hasOwn(state.task, 'projectId'), projectId !== undefined);
+    assert.equal(state.task.projectId, projectId, 'reading captures a separate task snapshot');
+    F.start(state, start, 'one-persistent-session');
+    F.pause(state, start + 5 * 60000);
+    state = F.read(JSON.parse(JSON.stringify(state)));
+    assert.equal(state.running, false); assert.equal(state.remaining, 20 * 60000);
+    assert.equal(Object.hasOwn(state.task, 'projectId'), projectId !== undefined);
+    assert.equal(state.task.projectId, projectId);
+    F.start(state, start + 10 * 60000, 'must-not-replace-the-session');
+    assert.equal(state.runId, 'one-persistent-session');
+    assert.equal(F.settle(state, state.endAt), true);
+    state = F.read(JSON.parse(JSON.stringify(state)));
+    assert.equal(state.history.length, 2); assert.equal(state.totalMinutes, 40);
+    assert.equal(state.history[1].task.id, 'current-task');
+    assert.equal(Object.hasOwn(state.history[1].task, 'projectId'), projectId !== undefined);
+    assert.equal(state.history[1].task.projectId, projectId);
+    assert.equal(Object.hasOwn(state.history[0].task, 'projectId'), false, 'legacy history never borrows the current task project');
+    assert.equal(F.settle(state, start + 24 * 3600000), false); assert.equal(state.history.length, 2);
+  }
+});
+
 test('sleep completes only the running session and does not fabricate unattended rounds', () => {
   const s = F.fresh(), now = Date.now(); F.start(s, now, 'sleep'); F.settle(s, now + 12 * 3600000);
   assert.equal(s.running, false); assert.equal(s.completed, true); assert.equal(s.history.length, 1); assert.equal(s.roundsDone, 1);

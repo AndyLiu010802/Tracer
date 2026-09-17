@@ -23,7 +23,8 @@
     s.running = !!input.running && Number.isFinite(input.endAt) && input.endAt > 0;
     s.endAt = s.running ? input.endAt : null; s.runId = typeof input.runId === 'string' ? input.runId : '';
     if (s.running && !s.runId) { s.running = false; s.endAt = null; }
-    s.task = input.task && typeof input.task.id === 'string' && typeof input.task.title === 'string' ? { id: input.task.id, title: input.task.title } : null;
+    s.task = input.task && typeof input.task.id === 'string' && typeof input.task.title === 'string' ? { id: input.task.id, title: input.task.title,
+      ...(Object.prototype.hasOwnProperty.call(input.task, 'projectId') ? { projectId: typeof input.task.projectId === 'string' ? input.task.projectId : null } : {}) } : null;
     s.completed = !!input.completed && !s.running;
     s.roundsDone = Number.isSafeInteger(input.roundsDone) && input.roundsDone >= 0 ? input.roundsDone : 0;
     s.history = Array.isArray(input.history) ? input.history.filter(function (h) { return h && typeof h.id === 'string' && Number.isFinite(h.endedAt) && Number.isFinite(h.minutes) && h.minutes > 0; }).slice(-500) : [];

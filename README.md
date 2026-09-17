@@ -1,37 +1,34 @@
 # Tracer
 
-0.3.9 支持与伙伴聊出任务或项目：伙伴会补问关键缺口，整理成可预览的方案，只有你确认后才写入工作区。主窗口和原生桌宠都能使用；日期和工时可留空，对话与待确认方案保存在本机，创建结果未确认时可重试同一请求，避免重复添加。
+0.3.10 新增「伙伴家园」：为最多 6 个项目选择野花、向日葵或薰衣草，已保存的任务成果和关联专注记录会让花圃生长。当前选择的内置或自定义伙伴住在家园；原农场、收藏与冒险保留在「休闲区」，继续使用原存档。
 
 仍可单独重新生成不满意的伙伴动作，保存前保留原动作和养成进度；含保留旧帧与新动作的导出文件，最低仍需 Tracer 0.3.8 打开。
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[下载 Tracer 0.3.9：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.9 更新说明](docs/desktop-release-0.3.9.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[Tracer 0.3.10 发布入口：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.10 更新说明](docs/desktop-release-0.3.10.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-0.3.9 已在[统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)发布 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三平台原生构建与验收全部通过，七项公开附件及统一 SHA-256 校验文件已核验。
+**0.3.10 发布状态：待构建与验证。** 本地已通过 647 项核心测试、16 项桌面测试；Windows x64、Mac arm64 与 Mac x64 的原生构建、打包应用验收及公开下载校验尚未完成。下列 0.3.10 下载入口和文件名对应计划产物，验证通过并发布后方可下载。
 
-0.3.9 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
+0.3.10 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
 
 | 电脑类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Windows x64 | [Tracer-Setup-0.3.9-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-Setup-0.3.9-x64.exe) | — |
-| Mac：Apple 芯片（M 系列） | [Tracer-0.3.9-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-arm64.zip) |
-| Mac：Intel | [Tracer-0.3.9-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-x64.zip) |
+| Windows x64 | [Tracer-Setup-0.3.10-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-Setup-0.3.10-x64.exe) | — |
+| Mac：Apple 芯片（M 系列） | [Tracer-0.3.10-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-arm64.zip) |
+| Mac：Intel | [Tracer-0.3.10-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-x64.zip) |
 
 Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置；任务、设置、桌宠和个人工作区保留。
 
-Windows x64、Mac arm64 与 Mac x64 均通过 **631 项核心测试、16 项桌面测试**。真实打包应用的主窗口与原生桌宠已通过 16 帧播放、新格式导入导出、旧格式导入，以及桌宠通过 IPC 确认创建任务和同请求重试检查。模拟 AI 的伙伴生成、草稿恢复、任务与项目方案确认和工作区恢复 QA 也已通过。[查看本次 Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35174730636)。
-
-本地 Windows 安装包已通过 256 个打包源码文件的逐字节一致性核验及原生运行 QA；三平台 CI 均来自同一提交 [a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef](https://github.com/AndyLiu010802/Tracer/commit/a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef)。AI 自动化场景使用模拟响应与本地合成图，不消耗真实 AI 额度，也不代表本次已验证真实 AI 账号登录与服务响应。
 
 Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证。真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
 
 - **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
 - **本地数据**：任务、完成历史和设置保存在 `%APPDATA%\tracer-desktop\`。升级及正常卸载保留用户数据；分享的安装包使用接收者自己的工作区。
-- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.3.9.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/SHA256SUMS-0.3.9.txt)，覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-Setup-0.3.9-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。
+- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.3.10.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/SHA256SUMS-0.3.10.txt)，覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-Setup-0.3.10-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。
 
 ## 功能
 
@@ -43,6 +40,16 @@ Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Ap
 - 独立 Chromium 参考浏览器，支持页面脚本、登录、后退前进和下载；网站自身的访问限制与网络条件仍然适用。
 - AI 计划助手：读取本地 PDF、Word 和文本资料，根据截止日期和可投入工时预览任务拆解与排程。
 - 桌面伙伴：6 个内置伙伴的 16 种动作各有 16 帧；更新后新生成的伙伴每个动作也使用 16 张连续图像，共 256 帧。旧照片与旧 4 帧动作包继续兼容，安装更新不会自动调用 AI 或重绘已有伙伴。
+
+### 伙伴家园
+
+在「家园」为已保存的项目种下一株植物，最多保留 6 块花圃，可选野花、向日葵和薰衣草。种植时会吸收已有任务与专注记录；之后每完成一项不同任务、每累计 25 分钟关联专注，都为植物积累成长。同一任务反复完成、同一轮专注重复读取不会重复计入。
+
+植物依次经历种子、发芽、成长和花苞；项目至少有一项任务，且当前任务全部完成时首次盛放并留下日期。后续新增任务会改变当前完成数，但不会让植物倒退或抹去纪念。休息、逾期和离开应用不会使植物枯萎，也不需要每日领取或手动浇水。
+
+家园沿用当前选择的内置或自定义伙伴。项目列表中的植物可以带你回对应花圃，花圃也能打开项目或为下一项任务打开专注计时器。「本次进展」显示本次打开应用期间收到的新增反馈；植物阶段、累计完成数、专注分钟和首次盛放日期保存在本机。
+
+原农场、仓库、钓鱼和冒险均可从「休闲区」进入，继续使用原农场存档。家园记录独立保存；移除花圃保留项目和任务，删除项目则清理对应花圃。详细规则见[专注与家园说明](docs/focus-and-appearance.md)。
 
 ### 与伙伴创建任务或项目
 
@@ -198,9 +205,9 @@ build/                 安装包图标素材（build/app-icon.ico），构建安
 
 `db-console` 的图标竖栏可以切换分区：Home 概览、Table Editor（主视图）、SQL Editor、Database、Auth、Storage、Project Settings 都是可信的假界面。停在哪个分区、哪张表会被记住。
 
-### 键盘农场（db-console 的 Queues 分区 / tracer 的 Garden 分区）
+### 休闲区：键盘农场（db-console 的 Queues / tracer 家园内）
 
-**Queues（db-console）和 Garden（tracer）是同一个挂机游戏的两个入口**，玩法取自《Typing Farmer / 指尖农场》的核心创意：**键盘就是农田**。
+**Queues（db-console）和家园中的「休闲区」（tracer）共用原来的农场游戏**，玩法取自《Typing Farmer / 指尖农场》的核心创意：**键盘就是农田**。Tracer 的家园首页另行展示项目花圃，保留通往休闲区的入口。
 
 每个按键是一块地，在这个控制台里敲一下字，对应的地块就长一格；成熟后自动收进仓库并续种。农场标签页下方带一块便签，是最顺手的输入面（看着就是个 scratch 查询框）。由此产生一层很轻的策略：把高价值作物放在常敲的键上，把便宜快熟的放在冷门键上。
 
@@ -208,21 +215,21 @@ build/                 安装包图标素材（build/app-icon.ico），构建安
 |---|---|
 | 作物 | 15 种，按等级解锁。金币/按键的效率梯度照搬原作：胡萝卜垫底、小麦棉花中坚、彩虹花上层、摇钱树断层第一 |
 | 地块 | 整块键盘，按等级逐排解锁（home row → qwerty → zxcv → 数字 → 空格/左键） |
-| 下雨 | 每 2 分钟浇进度最低的几块地。这是离线收益的唯一来源，也是原作里用来拉平冷门按键的机制 |
+| 下雨与被动生长 | 下雨照顾进度最低的地块；已种植的作物也会随时间缓慢生长，保留原有离线结算 |
 | 仓库 | 分别出售、一键全卖、锁定不卖 |
 | 订单 | 价高于直接卖，是换种子的主要动力。4 小时自动刷新，也可花钱刷 |
 | 动物 | 8 只。收够它爱吃的作物 → 邮箱来信 → 回信 → 入住，各带一个实打实的增益；喂食涨好感，每级 +1% 售价 |
 | 钓鱼 | 修好鱼塘后，鼠标点击自动捞鱼，稀有度差距极大（鲸鱼是后期坑） |
-| 番茄钟 | 25/5 分钟。完成一轮额外浇一轮水并给金币——工作和农场是同一件事 |
+| 番茄钟 | Tracer 中共用顶部计时器与自定义时长，完成专注保留原有浇水和金币奖励 |
 | 图鉴与统计 | 按键热力图、作物/鱼/动物图鉴、生涯计数 |
 
-花园顶部的 **🌱 显示农场 / Show farm** 可关闭工程伪装，显示农场名称与图标；切换后按钮变为 **工程伪装 / Disguise**，可随时恢复。两种皮肤均显示此按钮，偏好随农场存档保存。灰暗并标注等级的地块仍需达到对应等级才能使用。
+休闲区农场顶部的 **🌱 显示农场 / Show farm** 可关闭工程伪装，显示农场名称与图标；切换后按钮变为 **工程伪装 / Disguise**，可随时恢复。两种皮肤均显示此按钮，偏好随农场存档保存。灰暗并标注等级的地块仍需达到对应等级才能使用。
 
 三条实现原则写在 [skins/db-console/farm.js](skins/db-console/farm.js) 顶部：**只吃本控制台内的输入**（阅读面板 `.fx-panel` 里的按键一律不计——那是 iframe 里的外部站点，把它的键盘事件接进游戏既无必要也不体面）；按键只记次数、不记顺序也不碰内容；输入监听在脚本加载时就装好，切到别的分区照样记账。
 
 没做原作的装修、动物服装和联机——前两个在一块侧栏面板里价值不大，联机需要服务器。
 
-**Garden 是从 db-console 共享过来的，不是复制或 fork。** 游戏引擎（`farm.js`/`fishing.js`/`combat.js`/`equip.js`/`mining.js`/`magic.js`/`farm.css`）物理上仍然只放在 `skins/db-console/` 一份，`server.js` 里的 `GAME_DIR` 兜底逻辑让 tracer 缺文件时直接从 db-console 目录取——两套皮肤加载的是完全同一份代码，改一处两边同时生效。存档也共用同一个 localStorage 键（`dbconsole.farm.v3`），在 db-console 种的地，切到 tracer 的 Garden 照样在，反过来也一样。
+**休闲区的原农场继续与 db-console 共享。** 游戏引擎（`farm.js`/`fishing.js`/`combat.js`/`equip.js`/`mining.js`/`magic.js`/`farm.css`）仍只放在 `skins/db-console/` 一份，`server.js` 的 `GAME_DIR` 兜底逻辑让两套皮肤使用同一份代码。原农场继续使用 localStorage 键 `dbconsole.farm.v3`，在 db-console 种的地和收藏也会出现在 Tracer 的休闲区。项目花圃使用独立的 `tracer.garden.v1` 记录，不覆盖原农场。
 
 tracer 里 `Ctrl+Alt+G` 是老板键：一键隐藏 Garden——导航栏里的入口消失，如果正停在 Garden 会自动跳回上一个分区，隐藏状态会记住。同一组合键在游戏内部还绑了「切换伪装文案」（上面提到的 🌱），两个监听会抢；tracer 的老板键处理器注册得更早并用 `stopImmediatePropagation` 挡住后注册的同键监听，因此 `Ctrl+Alt+G` 在 tracer 里只做「隐藏」，不会跟文案切换混在一起触发两次。
 

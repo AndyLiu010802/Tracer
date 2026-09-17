@@ -1,22 +1,19 @@
 # Tracer 桌面版
 
-0.3.9 支持与伙伴聊出任务或项目：伙伴会补问关键缺口，整理成可预览的方案，只有你确认后才写入工作区。主窗口和原生桌宠都能使用；日期和工时可留空，对话与待确认方案保存在本机，创建结果未确认时可重试同一请求，避免重复添加。
+0.3.10 新增「伙伴家园」：为最多 6 个项目选择野花、向日葵或薰衣草，已保存的任务成果和关联专注记录会让花圃生长。当前选择的内置或自定义伙伴住在家园；原农场、收藏与冒险保留在「休闲区」，继续使用原存档。
 
 仍可单独重新生成不满意的伙伴动作，保存前保留原动作和养成进度；含保留旧帧与新动作的导出文件，最低仍需 Tracer 0.3.8 打开。
 
-Tracer 将任务管理、完成历史、番茄钟、音频、笔记、参考浏览器和桌面伙伴放在独立桌面应用中。默认以无边框全屏启动，使用黑底金色星月 Logo。[0.3.9 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)提供 Windows x64、Apple 芯片 Mac 和 Intel Mac 的同版本安装包；附件在三个平台的原生云端构建与验证全部通过后发布。
+Tracer 将任务管理、完成历史、番茄钟、音频、笔记、参考浏览器和桌面伙伴放在独立桌面应用中。默认以无边框全屏启动，使用黑底金色星月 Logo。[0.3.10 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)提供 Windows x64、Apple 芯片 Mac 和 Intel Mac 的同版本安装包；附件在三个平台的原生云端构建与验证全部通过后发布。
 
-**[Mac 安装、权限与构建指南](../docs/macos-install.md)**：下载 [Apple 芯片 DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-arm64.dmg) 或 [Intel DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-x64.dmg)，发布页也提供对应的 ZIP。安装时将 Tracer 拖入「应用程序」。Mac 本地数据位于 `~/Library/Application Support/tracer-desktop/`；关闭窗口后可点击 Dock 图标恢复，使用 **Command+Q** 完全退出。Mac 上支持 **Control+Command+F** 全屏切换和系统编辑菜单。Mac 包使用 ad-hoc 签名，尚未获得 Developer ID 签名与 Apple 公证；真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍待实机验收。
+**[Mac 安装、权限与构建指南](../docs/macos-install.md)**：下载 [Apple 芯片 DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-arm64.dmg) 或 [Intel DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-x64.dmg)，发布页也提供对应的 ZIP。安装时将 Tracer 拖入「应用程序」。Mac 本地数据位于 `~/Library/Application Support/tracer-desktop/`；关闭窗口后可点击 Dock 图标恢复，使用 **Command+Q** 完全退出。Mac 上支持 **Control+Command+F** 全屏切换和系统编辑菜单。Mac 包使用 ad-hoc 签名，尚未获得 Developer ID 签名与 Apple 公证；真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍待实机验收。
 
-**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-Setup-0.3.9-x64.exe)**：安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置、桌宠与完成历史。
+**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-Setup-0.3.10-x64.exe)**：安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置、桌宠与完成历史。
 
-0.3.9 已在[统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)发布 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三平台原生构建与验收全部通过，七项公开附件及统一 SHA-256 校验文件已核验。
+**0.3.10 发布状态：待构建与验证。** 本地已通过 647 项核心测试、16 项桌面测试；Windows x64、Mac arm64 与 Mac x64 的原生构建、打包应用验收及公开下载校验尚未完成。下列 0.3.10 下载入口和文件名对应计划产物，验证通过并发布后方可下载。
 
-Windows x64、Mac arm64 与 Mac x64 均通过 **631 项核心测试、16 项桌面测试**。真实打包应用的主窗口与原生桌宠已通过 16 帧播放、新格式导入导出、旧格式导入，以及桌宠通过 IPC 确认创建任务和同请求重试检查。模拟 AI 的伙伴生成、草稿恢复、任务与项目方案确认和工作区恢复 QA 也已通过。[查看本次 Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35174730636)。
 
-本地 Windows 安装包已通过 256 个打包源码文件的逐字节一致性核验及原生运行 QA；三平台 CI 均来自同一提交 [a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef](https://github.com/AndyLiu010802/Tracer/commit/a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef)。AI 自动化场景使用模拟响应与本地合成图，不消耗真实 AI 额度，也不代表本次已验证真实 AI 账号登录与服务响应。
-
-0.3.9 的 6 个内置伙伴每动作有 16 个姿态帧；更新后生成的伙伴每个动作有 16 张连续图像，共 256 帧。旧照片和旧 4 帧动作包继续兼容，安装升级不会自动调用 AI 或重绘已有伙伴。
+0.3.10 的 6 个内置伙伴每动作有 16 个姿态帧；更新后生成的伙伴每个动作有 16 张连续图像，共 256 帧。旧照片和旧 4 帧动作包继续兼容，安装升级不会自动调用 AI 或重绘已有伙伴。
 
 应用依赖和打包配置统一放在**仓库根**的 `package.json` 中，包括 Electron、`uiohook-napi`、PDF/Word 提取依赖和 electron-builder。`desktop/main.js` 会加载上层目录的服务代码，因此构建必须从仓库根开始。本目录的 `package.json` 只是说明性指针，不是独立 npm 项目。
 
@@ -26,6 +23,14 @@ Windows x64、Mac arm64 与 Mac x64 均通过 **631 项核心测试、16 项桌�
 - 窗口模式下可拖动应用顶栏。**Esc** 继续关闭弹窗。
 - 右上角可最小化窗口，或隐藏到托盘。点击托盘图标恢复窗口；完全退出使用托盘菜单「退出」。
 - 重复打开快捷方式会恢复已有窗口。
+
+## 伙伴家园
+
+0.3.10 的家园为最多 6 个已保存项目展示花圃，可选野花、向日葵或薰衣草。已有历史在种植时静默吸收；后续每项不同的已完成任务与每累计 25 分钟关联专注积累成长。同一任务反复完成、同一轮专注重读均不重复计入。
+
+当前任务全部完成且至少有一项时，植物首次盛放并记录日期；后来新增任务、休息或逾期不会让成长退回。项目仍显示真实的当前完成数与总数。家园使用当前选择的内置或自定义伙伴；项目和花圃之间可以互相打开，也能从花圃进入下一项任务的专注计时器。
+
+「本次进展」只显示本次打开应用期间收到的新增反馈。阶段、累计完成数、专注分钟和首次盛放日期单独保存在本机；读取或写入失败时保留原记录并提供重试。原农场和收藏在「休闲区」完整保留，继续使用原存档。详见[专注与家园说明](../docs/focus-and-appearance.md)。
 
 ## 伙伴聊天创建
 
@@ -37,7 +42,7 @@ Windows x64、Mac arm64 与 Mac x64 均通过 **631 项核心测试、16 项桌�
 
 ## 伙伴生成草稿
 
-0.3.9 在导航栏显示伙伴生成进度。收起生成窗口或隐藏主窗口后，只要应用仍在运行，当前生成会继续；重新打开时复用原来的照片、设置、预览和动作进度。完整结果会提醒保存并自动打开预览；其他任务或设置弹窗正在编辑时，预览会等待它关闭。
+0.3.10 在导航栏显示伙伴生成进度。收起生成窗口或隐藏主窗口后，只要应用仍在运行，当前生成会继续；重新打开时复用原来的照片、设置、预览和动作进度。完整结果会提醒保存并自动打开预览；其他任务或设置弹窗正在编辑时，预览会等待它关闭。
 
 处理并缩放后的参考照片、角色设置、已完成动作和重试标识保存在当前桌面用户环境的 IndexedDB 恢复草稿中。刷新或重新启动后可以继续剩余动作，不会自动发起图像生成。每页完成后等待草稿事务提交，再请求下一页；暂存失败会暂停后续请求。服务端保存本机生成记录，在已有可复用结果时接回相同请求的结果。
 
@@ -134,8 +139,8 @@ npm run dist    # electron-builder --win nsis --x64
 
 产物在仓库根的 `dist/`（该目录已进 `.gitignore`，不进版本库）：
 
-- `dist/Tracer-Setup-0.3.9-x64.exe` —— 安装程序本身，双击运行
-- `dist/Tracer-Setup-0.3.9-x64.exe.blockmap` —— electron-builder 生成的增量更新索引，当前没有配置自动更新
+- `dist/Tracer-Setup-0.3.10-x64.exe` —— 安装程序本身，双击运行
+- `dist/Tracer-Setup-0.3.10-x64.exe.blockmap` —— electron-builder 生成的增量更新索引，当前没有配置自动更新
 - `dist/win-unpacked/` —— 未打包的调试版应用，供本地核对用，不用来发给别人
 
 安装程序不是一路下一步：`oneClick: false` 会让你选安装目录，默认装到当前用户的
@@ -149,10 +154,10 @@ NSIS 卸载程序会清掉安装目录和开始菜单/桌面快捷方式，但**
 
 ### 发布文件与校验
 
-Windows 安装包目前未签名，Mac 包为 ad-hoc 签名。统一发布附件提供 [SHA256SUMS-0.3.9.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/SHA256SUMS-0.3.9.txt)，覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-Setup-0.3.9-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。可用 PowerShell 的 `Get-FileHash` 核对 Windows 文件的 SHA-256；Mac 核对方式见安装指南。Windows 是否显示安装提示取决于系统配置和文件来源。
+Windows 安装包目前未签名，Mac 包为 ad-hoc 签名。统一发布附件提供 [SHA256SUMS-0.3.10.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/SHA256SUMS-0.3.10.txt)，覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-Setup-0.3.10-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。可用 PowerShell 的 `Get-FileHash` 核对 Windows 文件的 SHA-256；Mac 核对方式见安装指南。Windows 是否显示安装提示取决于系统配置和文件来源。
 
 ```powershell
-Get-FileHash -Algorithm SHA256 .\Tracer-Setup-0.3.9-x64.exe
+Get-FileHash -Algorithm SHA256 .\Tracer-Setup-0.3.10-x64.exe
 ```
 
 共享安装包包含应用与音频，不包含开发机的工作区、登录令牌或 AI 服务密钥。用户数据和运行缓存不应加入源码仓库或安装程序。

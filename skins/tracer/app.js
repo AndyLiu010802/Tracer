@@ -211,6 +211,7 @@
       // Edits made during an in-flight save stay on top of the accepted snapshot.
       adopt(Sync.merge(sent, store.data, accepted).workspace);
       store.base = Sync.clone(accepted);
+      if (window.Tracer.garden) window.Tracer.garden.refresh();
       if (!store.dirty) adopt(Sync.clone(accepted));
       persistDraft();
       setDot('', 'Saved locally');
@@ -308,6 +309,7 @@
     store.data.meta = next.meta; store.epoch++;
   }
   function redraw() {
+    if (window.Tracer.garden) window.Tracer.garden.refresh();
     if (window.Tracer.renderProjects) window.Tracer.renderProjects();
     if (window.Tracer.refreshWellness) window.Tracer.refreshWellness();
     if (window.Tracer.pet) window.Tracer.pet.refresh();

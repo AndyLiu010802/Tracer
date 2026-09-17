@@ -35,6 +35,7 @@ async (page) => {
     await page.waitForFunction(() => JSON.parse(localStorage.getItem('dbconsole.farm.v3'))?.pomo.done === 1);
     check(await page.evaluate(() => { const farm = JSON.parse(localStorage.getItem('dbconsole.farm.v3')); return farm.stats.earned === 60 && farm.focusLink.credited.length === 1; }), 'completed focus automatically awards exactly 60 coins');
     await page.locator('#focus-close').click(); await page.locator('[data-sec="garden"]').click();
+    await page.locator('[data-home-action="open-leisure"]').click();
     await page.locator('[data-tab="stats"]').click();
     await page.waitForFunction(() => document.querySelector('[data-focus-stat="minutes"]')?.textContent === '1');
     check(true, 'garden shows minutes from the shared timer');

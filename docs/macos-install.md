@@ -1,47 +1,48 @@
 # Tracer for macOS
 
-0.3.9 支持与伙伴聊出任务或项目：伙伴会补问关键缺口，整理成可预览的方案，只有你确认后才写入工作区。主窗口和原生桌宠都能使用；日期和工时可留空，对话与待确认方案保存在本机，创建结果未确认时可重试同一请求，避免重复添加。
+0.3.10 新增「伙伴家园」：为最多 6 个项目选择野花、向日葵或薰衣草，已保存的任务成果和关联专注记录会让花圃生长。当前选择的内置或自定义伙伴住在家园；原农场、收藏与冒险保留在「休闲区」，继续使用原存档。
 
 仍可单独重新生成不满意的伙伴动作，保存前保留原动作和养成进度；含保留旧帧与新动作的导出文件，最低仍需 Tracer 0.3.8 打开。
 
 ## 当前状态
 
-**[Tracer 0.3.9 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)**同时分发 Windows、Apple Silicon 和 Intel 的安装包。两种 Mac 架构各提供 DMG、ZIP，另有 Windows blockmap 索引，六个附件共用 `SHA256SUMS-0.3.9.txt`。
+**[Tracer 0.3.10 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)**同时分发 Windows、Apple Silicon 和 Intel 的安装包。两种 Mac 架构各提供 DMG、ZIP，另有 Windows blockmap 索引，六个附件共用 `SHA256SUMS-0.3.10.txt`。
 
-0.3.9 Mac 包使用与 Windows 相同版本的功能，新增伙伴聊天追问、方案预览和确认创建。伙伴生成进度、后台继续、本机草稿恢复和误触保护继续保留，内置伙伴的 16 帧动作、新生成伙伴的 256 帧格式、旧照片和旧 4 帧动作包也继续兼容。安装更新不会自动调用 AI 或重绘已有伙伴。
+0.3.10 Mac 包使用与 Windows 相同版本的功能，新增项目花圃与伙伴家园。伙伴聊天追问、方案预览、确认创建，生成进度、后台继续、本机草稿恢复和误触保护继续保留；内置伙伴的 16 帧动作、新生成伙伴的 256 帧格式、旧照片和旧 4 帧动作包也继续兼容。安装更新不会自动调用 AI 或重绘已有伙伴。
 
-0.3.9 已在[统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)发布 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三平台原生构建与验收全部通过，七项公开附件及统一 SHA-256 校验文件已核验。
+**0.3.10 发布状态：待构建与验证。** 本地已通过 647 项核心测试、16 项桌面测试；Windows x64、Mac arm64 与 Mac x64 的原生构建、打包应用验收及公开下载校验尚未完成。下列 0.3.10 下载入口和文件名对应计划产物，验证通过并发布后方可下载。
 
-Windows x64、Mac arm64 与 Mac x64 均通过 **631 项核心测试、16 项桌面测试**。真实打包应用的主窗口与原生桌宠已通过 16 帧播放、新格式导入导出、旧格式导入，以及桌宠通过 IPC 确认创建任务和同请求重试检查。模拟 AI 的伙伴生成、草稿恢复、任务与项目方案确认和工作区恢复 QA 也已通过。[查看本次 Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35174730636)。
-
-本地 Windows 安装包已通过 256 个打包源码文件的逐字节一致性核验及原生运行 QA；三平台 CI 均来自同一提交 [a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef](https://github.com/AndyLiu010802/Tracer/commit/a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef)。AI 自动化场景使用模拟响应与本地合成图，不消耗真实 AI 额度，也不代表本次已验证真实 AI 账号登录与服务响应。
 
 **Mac 包为 ad-hoc 签名，尚未经过 Apple Developer ID 签名与公证。** 真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收。首次打开的系统提示见 [测试包说明](macos-preview-notes.md)。Windows 的 `.exe` 不能用于 Mac。
 
 ## 选择下载文件
 
-在苹果菜单 →「关于本机」查看芯片类型，在 [0.3.9 发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)中选择：
+在苹果菜单 →「关于本机」查看芯片类型，在 [0.3.10 发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)中选择：
 
 | Mac 类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Apple 芯片（M 系列） | [Tracer-0.3.9-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-arm64.dmg) | [Tracer-0.3.9-mac-arm64.zip](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-arm64.zip) |
-| Intel 处理器 | [Tracer-0.3.9-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-x64.dmg) | [Tracer-0.3.9-mac-x64.zip](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-x64.zip) |
+| Apple 芯片（M 系列） | [Tracer-0.3.10-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-arm64.dmg) | [Tracer-0.3.10-mac-arm64.zip](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-arm64.zip) |
+| Intel 处理器 | [Tracer-0.3.10-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-x64.dmg) | [Tracer-0.3.10-mac-x64.zip](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-x64.zip) |
 
 打开 DMG，将 **Tracer 拖入 Applications（应用程序）**，弹出磁盘映像，再从「应用程序」或 Spotlight 启动。ZIP 需解压后将 `Tracer.app` 放入「应用程序」。终端用户无需安装 Node.js 或 Codex。
 
 更新前用 **Command+Q** 退出旧版，再替换「应用程序」中的 Tracer。工作区保存在 `~/Library/Application Support/tracer-desktop/`，替换程序不会删除该目录；不同电脑之间的数据不会自动迁移。
 
-0.3.9 统一发布中的 Mac 附件与未启用正式签名的独立 `preview` 附件均为 ad-hoc 签名，不能视为已公证正式版。若 macOS 阻止打开，按下方测试包说明处理，或等待 Developer ID 签名并经过 Apple 公证的版本；不需要关闭系统安全保护。
+0.3.10 统一发布中的 Mac 附件与未启用正式签名的独立 `preview` 附件均为 ad-hoc 签名，不能视为已公证正式版。若 macOS 阻止打开，按下方测试包说明处理，或等待 Developer ID 签名并经过 Apple 公证的版本；不需要关闭系统安全保护。
 
-统一发布附有 [SHA256SUMS-0.3.9.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/SHA256SUMS-0.3.9.txt)，同时覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-Setup-0.3.9-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。在下载目录执行以下命令，与校验文件中对应文件名的条目比较：
+统一发布附有 [SHA256SUMS-0.3.10.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/SHA256SUMS-0.3.10.txt)，同时覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-Setup-0.3.10-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。在下载目录执行以下命令，与校验文件中对应文件名的条目比较：
 
 ```sh
-shasum -a 256 Tracer-0.3.9-mac-*.dmg
+shasum -a 256 Tracer-0.3.10-mac-*.dmg
 ```
 
 ## Mac 上的功能与操作
 
-0.3.9 包含任务、项目、笔记、完成历史、番茄钟、音频、参考浏览器、PDF/Word 提取、个人 AI 和桌面伙伴。6 个内置伙伴的 16 种动作各有 16 个不同姿态；新生成的伙伴为每动作 16 张连续图像、总计 256 帧，导入导出同时兼容新旧动作包。创建完整新伙伴需要 16 次图像生成，失败重试保留已完成动作，不会在安装、升级或恢复草稿时自动生成。
+伙伴家园可为最多 6 个项目种植野花、向日葵或薰衣草。每项不同的已保存完成任务与每累计 25 分钟关联专注积累成长；当前任务全部完成且至少有一项时首次盛放。休息、逾期、重复完成或重新读取历史不会使植物退回，也不会重复奖励。家园沿用当前的内置或自定义伙伴；原农场、收藏和冒险从「休闲区」进入，原存档保留。
+
+「本次进展」显示本次打开应用期间收到的新增反馈；阶段、累计完成数、专注分钟和首次盛放日期保存在本机。项目删除后清理对应花圃，单独移除花圃则保留项目与任务。详见[专注与家园说明](focus-and-appearance.md)。
+
+0.3.10 包含任务、项目、笔记、完成历史、番茄钟、音频、参考浏览器、PDF/Word 提取、个人 AI 和桌面伙伴。6 个内置伙伴的 16 种动作各有 16 个不同姿态；新生成的伙伴为每动作 16 张连续图像、总计 256 帧，导入导出同时兼容新旧动作包。创建完整新伙伴需要 16 次图像生成，失败重试保留已完成动作，不会在安装、升级或恢复草稿时自动生成。
 
 主窗口和原生桌宠的聊天都可以整理新任务或项目：需要时先追问，预览后由你确认创建，日期和工时可留空。对话、未发送文字和待确认方案保存在各窗口的本机记录中；刷新或重启后可恢复。创建结果未确认时重试同一请求，避免重复添加。不会自动向 AI 发送已有工作区或照片。微信小程序及其配对、云同步入口已移除，本地工作区仍保留。
 
@@ -58,7 +59,7 @@ AI 运行时会随芯片架构一起打包，登录凭据使用当前 Mac 的用
 - 点击 **Dock** 中的 Tracer 图标，或菜单栏图标 →「打开面板」：恢复窗口。
 - **Command+Q** 或 Tracer 菜单 →「退出」：完全退出应用。生成中、完整伙伴尚未保存或草稿暂存异常时会先提醒确认；选择留下会继续运行。
 
-花园的后台输入计数需要 macOS 系统权限。首次启动不会自动弹出授权请求；未授权时仅统计窗口内输入，任务和其他核心功能仍可用。需要后台计数时，选择 Tracer 菜单 →「启用后台输入计数」，在系统设置的「隐私与安全性 → 辅助功能」中授权 Tracer；如系统要求，也检查「输入监控」，然后重新启动应用。计数器只使用匿名的按键/点击次数，不保存输入内容。
+休闲区农场的后台输入计数需要 macOS 系统权限，伙伴家园的项目花圃不使用输入次数。首次启动不会自动弹出授权请求；未授权时仅统计窗口内输入，任务和其他核心功能仍可用。需要后台计数时，选择 Tracer 菜单 →「启用后台输入计数」，在系统设置的「隐私与安全性 → 辅助功能」中授权 Tracer；如系统要求，也检查「输入监控」，然后重新启动应用。计数器只使用匿名的按键/点击次数，不保存输入内容。
 
 ## 维护者构建与发布
 
@@ -82,7 +83,7 @@ node dev/verify-macos-release.cjs
 
 ### GitHub 云端构建
 
-统一发布使用 `.github/workflows/desktop-release.yml`，在 **Actions → Desktop release → Run workflow** 手动运行，或推送到 `codex/release-*` 分支触发。它会在 Windows x64、Apple 芯片 Mac 和 Intel Mac 的原生构建机上分别安装依赖、测试、构建并验证安装包。三个平台全部通过后，才在 `v<版本>` 的同一个公开 Release 中发布 Windows EXE 及 blockmap 索引、两个 Mac DMG、两个 Mac ZIP，以及合并后的 `SHA256SUMS-<版本>.txt`。0.3.9 的 Mac 产物使用 ad-hoc 签名，工作流的自动检查不等于 Developer ID 签名或 Apple 公证。
+统一发布使用 `.github/workflows/desktop-release.yml`，在 **Actions → Desktop release → Run workflow** 手动运行，或推送到 `codex/release-*` 分支触发。它会在 Windows x64、Apple 芯片 Mac 和 Intel Mac 的原生构建机上分别安装依赖、测试、构建并验证安装包。三个平台全部通过后，才在 `v<版本>` 的同一个公开 Release 中发布 Windows EXE 及 blockmap 索引、两个 Mac DMG、两个 Mac ZIP，以及合并后的 `SHA256SUMS-<版本>.txt`。0.3.10 的 Mac 产物使用 ad-hoc 签名，工作流的自动检查不等于 Developer ID 签名或 Apple 公证。
 
 ### 独立 Mac 签名与公证测试
 

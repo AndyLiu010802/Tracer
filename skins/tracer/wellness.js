@@ -81,13 +81,18 @@
   }
   function advance() {
     unlockSound();
-    return change(function (s) { if (!s.completed) return; F.reset(s, F.nextMode(s)); F.start(s, Date.now(), M.uid()); });
+    return change(function (s) { if (!s.completed) return; F.reset(s, F.nextMode(s)); snapshotTask(s); F.start(s, Date.now(), M.uid()); });
+  }
+  function snapshotTask(s) {
+    if(s.mode!=='focus'||s.runId||!s.task)return;
+    var task=M.findTask(T.store.data,s.task.id);
+    s.task=task?{id:task.id,title:task.title,projectId:task.projectId||null}:null;
   }
   function startPause() {
     unlockSound();
     return change(function (s) {
       if (s.running) F.pause(s, Date.now());
-      else { if (s.completed) F.reset(s, F.nextMode(s)); F.start(s, Date.now(), M.uid()); }
+      else { if (s.completed) F.reset(s, F.nextMode(s)); snapshotTask(s); F.start(s, Date.now(), M.uid()); }
     });
   }
   function reset(mode) {
@@ -116,7 +121,7 @@
       box.querySelector('#focus-start').onclick = startPause; box.querySelector('#focus-reset').onclick = function () { reset(state.mode); };
       box.querySelectorAll('[data-focus-mode]').forEach(function (button) { button.onclick = function () { if (state.mode !== button.dataset.focusMode) reset(button.dataset.focusMode); }; });
       box.querySelector('#focus-task').value = state.task ? state.task.id : '';
-      box.querySelector('#focus-task').onchange = function () { var id = this.value, task = tasks.find(function (t) { return t.id === id; }); change(function (s) { if (!s.running) s.task = task ? { id: task.id, title: task.title } : null; }); };
+      box.querySelector('#focus-task').onchange = function () { var id = this.value, task = tasks.find(function (t) { return t.id === id; }); change(function (s) { if (!s.running && !(s.runId && !s.completed)) s.task = task ? { id: task.id, title: task.title, projectId: task.projectId || null } : null; }); };
       box.querySelectorAll('[data-focus-setting]').forEach(function (input) {
         input.onchange = function () {
           if (!input.value || !input.reportValidity()) { input.value = state.settings[input.dataset.focusSetting]; return; }
@@ -140,6 +145,7 @@
     box.querySelector('#focus-start').focus({ preventScroll: true }); box.scrollTop = 0;
   }
   function draw() {
+    if (T.garden) T.garden.refresh();
     if (T.refreshInsightsFocus) T.refreshInsightsFocus(state);
     if (window.DBFarm && window.DBFarm.syncFocus) window.DBFarm.syncFocus(state);
     var ms = F.remaining(state, Date.now()), text = F.format(ms), stats = F.today(state, Date.now());
@@ -165,7 +171,7 @@
     box.querySelector('#focus-start').textContent = state.running ? L('timerPause') : state.completed ? L('timerNext', { mode: L(F.nextMode(state)) }) : L(state.remaining < state.duration ? 'timerResume' : 'timerStart');
     box.querySelector('#focus-count').textContent = L('focusCount', { count: stats.count });
     box.querySelector('#focus-minutes').textContent = L('focusMinutes', { minutes: stats.minutes });
-    box.querySelector('#focus-task').disabled = state.running || state.mode !== 'focus';
+    box.querySelector('#focus-task').disabled = state.running || !!(state.runId && !state.completed) || state.mode !== 'focus';
     var taskPicker = box.querySelector('#focus-task');
     if (document.activeElement !== taskPicker) {
       if (state.task && !Array.prototype.some.call(taskPicker.options, function (option) { return option.value === state.task.id; })) { var option = document.createElement('option'); option.value = state.task.id; option.textContent = state.task.title; taskPicker.appendChild(option); }
@@ -217,7 +223,19 @@
   }
   T.refreshWellness = function () { pruneDeletedTasks(state); change(function () {}); drawDaily(); draw(); if (T.music) T.music.refreshLabels(); };
   T.ready.then(function () { T.refreshWellness(); });
-  T.focus = { open: openTimer, toggle: startPause, read: function () { return F.read(state); } };
+  async function openForTask(id) {
+    var task=M.findTask(T.store.data,id);if(!task||task.status==='done')return false;
+    var kept=false;
+    await change(function(s){
+      var started=s.running||!!(s.runId&&!s.completed);
+      if(started){kept=!s.task||s.task.id!==id;return;}
+      F.reset(s,'focus');s.task={id:task.id,title:task.title,projectId:task.projectId||null};
+    });
+    openTimer();
+    if(kept)showError(TracerLocale.language()==='zh'?'当前一轮仍未结束，已保留原任务。结束或重置后可为其他项目专注。':'Your current session is kept. Finish or reset it before focusing on another project.');
+    return !kept;
+  }
+  T.focus = { open: openTimer, openForTask: openForTask, toggle: startPause, read: function () { return F.read(state); } };
   window.addEventListener('storage', function (event) { if (event.key === KEY || !event.key) { state = load(); draw(); } if (event.key === APPEARANCE || !event.key) { appearance = loadAppearance(); drawDaily(); } });
   function tick() {
     drawDaily();

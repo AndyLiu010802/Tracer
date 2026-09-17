@@ -5,6 +5,43 @@
    的剩余高度。.main 有 overflow-y:auto 且自身高度由 .shell 的网格撑满视口，
    height:100% 能正确解析到这条链路上。 */
 #sec-garden.active { display: flex; flex-direction: column; height: 100%; }
+#garden-home-root { min-width: 0; flex: 1; }
+/* Home owns its spacing. Respond to the actual center pane rather than adding
+   the workspace padding to the garden's own padding. Other sections retain it. */
+.main:has(> #sec-garden.active > #garden-home-root:not([hidden])) { min-width: 0; padding: 0; }
+.main:has(> #sec-garden.active > #garden-home-root:not([hidden])) > .daily-bar { margin: 18px 20px 0; }
+#sec-garden:has(> #garden-home-root:not([hidden])) > .sec-head { display: none; }
+/* Temporarily reclaim the reading rail for this section on smaller windows.
+   No saved rail state is changed: switching sections restores its prior size. */
+@media (max-width: 1200px) {
+  .shell:has(#sec-garden.active) { grid-template-columns: 236px minmax(0, 1fr); }
+  .shell:has(#sec-garden.active) > .rail { display: none; }
+}
+@media (max-width: 720px) {
+  .shell:has(#sec-garden.active) { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .shell:has(#sec-garden.active) > .side { min-width: 0; padding: 6px 10px 2px; border-right: 0; border-bottom: 1px solid var(--border); overflow: hidden; }
+  .shell:has(#sec-garden.active) > .side #nav-secs { flex-direction: row; gap: 4px; overflow-x: auto; padding-bottom: 4px; }
+  .shell:has(#sec-garden.active) > .side .nav-item { flex: none; gap: 6px; padding: 6px 9px; font-size: 11px; white-space: nowrap; }
+  .shell:has(#sec-garden.active) > .side :is(.nav-label, #proj-list) { display: none; }
+  .shell:has(#sec-garden.active) > .main { min-width: 0; min-height: 0; }
+  body:has(#sec-garden.active) > .top { min-width: 0; gap: 12px; padding-inline: 10px; }
+  body:has(#sec-garden.active) > .top .top-mid,
+  body:has(#sec-garden.active) > .top .top-left :is(.crumb-sep, .crumb:not(.crumb-strong)),
+  body:has(#sec-garden.active) > .top .dial { display: none; }
+  body:has(#sec-garden.active) > .top .top-right { flex: 1; min-width: 0; flex-wrap: nowrap; gap: 7px; overflow-x: auto; padding-block: 2px; }
+  body:has(#sec-garden.active) > .top .top-right > * { flex-shrink: 0; }
+  .main:has(> #sec-garden.active > #garden-home-root:not([hidden])) > .daily-bar { margin: 12px 12px 0; }
+}
+#garden-home-root[hidden], #garden-leisure-wrapper[hidden] { display: none; }
+#garden-leisure-wrapper { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.garden-leisure-heading { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.garden-leisure-heading p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.garden-plot-dialog p { color: var(--muted); font-size: 12px; line-height: 1.7; }
+.garden-plot-dialog .garden-dialog-error { color: #e4b68b; }
+.proj-garden { flex: none; align-self: center; width: 29px; height: 30px; padding: 3px; border: 0; border-radius: 7px; background: transparent; color: var(--accent); cursor: pointer; }
+.proj-garden:hover { background: var(--surface); }
+.proj-garden:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.proj-garden svg { width: 100%; height: 100%; display: block; }
 .garden-wrap { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 12px; height: auto; flex: 1; min-height: 0; }
 .garden-side { display: flex; flex-direction: column; min-height: 0; }
 .garden-shop { flex: 1; min-height: 0; overflow-y: auto; }

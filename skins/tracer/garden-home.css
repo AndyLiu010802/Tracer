@@ -1,0 +1,105 @@
+.garden-home{--home-fg:#dfe5d7;--home-muted:#99a596;--home-green:#b3c69c;--home-line:#a8bf9121;container:garden-home / inline-size;max-width:1240px;width:100%;min-width:0;margin:0 auto;padding:clamp(15px,2vw,26px) clamp(12px,2vw,28px) 36px;color:var(--home-fg);font-family:var(--font-body,system-ui,sans-serif);font-size:13px;line-height:1.55;isolation:isolate}
+.garden-home,.garden-home *{box-sizing:border-box}
+.garden-home [hidden]{display:none!important}
+.garden-home button{font:inherit;cursor:pointer;-webkit-app-region:no-drag}
+.garden-home button:focus-visible{outline:2px solid #d0ddaf;outline-offset:4px}
+.garden-home button:disabled{cursor:default;opacity:.5}
+.garden-home .garden-home-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:17px}
+.garden-home .garden-home-eyebrow{font-size:10px;font-weight:600;letter-spacing:2px;color:#9eac96}
+.garden-home .garden-home-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:7px 12px;border:1px solid var(--home-line);border-radius:8px;color:var(--home-fg);background:#a9c19109;line-height:1.4;transition:background .15s,border-color .15s;white-space:normal;text-align:center}
+.garden-home .garden-home-button:hover:not(:disabled){background:#a9c19117;border-color:#b2c69955}
+.garden-home .garden-home-icon{display:inline-flex;width:17px;height:17px;flex:none}
+.garden-home .garden-home-icon svg{width:100%;height:100%}
+.garden-home .garden-home-secondary{color:#acb3a5;background:transparent;border-color:#a8b29322;min-height:32px;font-size:11px}
+.garden-home .garden-home-hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.92fr);min-height:252px;overflow:hidden;border:1px solid #a8c29925;border-radius:18px;background:radial-gradient(ellipse at 75% 40%,#6487651a,transparent 70%),linear-gradient(115deg,#1e2924 0%,#192420 49%,#18201e 100%)}
+.garden-home .garden-home-hero:before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.07;background-image:radial-gradient(#dbe3ca 1px,transparent 1px);background-size:7px 7px;mask-image:linear-gradient(90deg,transparent,#000)}
+.garden-home .garden-home-intro{position:relative;padding:35px 0 31px 32px;align-self:center;z-index:1}
+.garden-home .garden-home-title{margin:0 0 11px;font-size:30px;line-height:1.25;font-weight:600;letter-spacing:1px;color:#e9ecdc}
+.garden-home .garden-home-description{max-width:350px;margin:0;color:#aebba8;font-size:12px;line-height:1.9;text-wrap:pretty}
+.garden-home .garden-home-today{display:flex;flex-wrap:wrap;gap:20px;margin-top:26px}
+.garden-home .garden-home-stat{display:grid;grid-template-columns:17px auto;column-gap:8px;align-items:center;min-width:90px}
+.garden-home .garden-home-stat>.garden-home-icon{color:#bac8a4}
+.garden-home .garden-home-stat-value{font-weight:500;font-size:24px;line-height:1.15;font-variant-numeric:tabular-nums;color:#e2e9d7}
+.garden-home .garden-home-stat-label{grid-column:2;font-size:10px;color:#95a78f;margin-top:4px}
+.garden-home .garden-home-residence{position:relative;min-width:0;min-height:252px;align-self:stretch}
+.garden-home .garden-home-landscape{position:absolute;inset:auto 0 0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.garden-home .garden-home-companion{position:absolute;left:43%;bottom:38px;width:160px;max-width:44%;aspect-ratio:1;border:0;padding:0;background:none;border-radius:40%;display:block;z-index:1}
+.garden-home .garden-home-companion:hover{background:#a9c19108}
+.garden-home .garden-home-companion-art{display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+.garden-home .garden-home-companion-art>.pet-sprite,.garden-home .garden-home-static-companion{display:block;width:100%;height:100%;object-fit:contain;filter:none;image-rendering:pixelated}
+.garden-home .garden-home-companion-placeholder{display:grid;place-items:center;width:100%;height:100%;color:#a9bd98}
+.garden-home .garden-home-companion-placeholder svg{width:56px;height:56px}
+.garden-home .garden-home-companion-caption{position:absolute;left:15%;right:8%;bottom:11px;display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:4px 9px;text-align:center;font-size:10px;color:#a0b394;z-index:2;pointer-events:none}
+.garden-home .garden-home-companion-name{font-size:12px;font-weight:500;color:#d7dfc8;max-width:100%;overflow-wrap:anywhere}
+.garden-home .garden-home-companion-state{font-size:10px;font-variant-numeric:tabular-nums}
+.garden-home .garden-home-error{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:16px 0 0;border:1px solid #cfad7145;background:#c89b4e0c;border-radius:8px;padding:10px 12px;color:#dcc59b;overflow-wrap:anywhere}
+.garden-home .garden-home-error-text{flex:1;min-width:0}
+.garden-home .garden-home-retry{font-size:11px;min-height:30px;padding:5px 9px;color:#dfcaa2;border-color:#cfad7136}
+.garden-home .garden-home-body{display:grid;grid-template-columns:minmax(0,1fr) 224px;gap:27px;margin-top:30px;align-items:start}
+.garden-home .garden-home-garden{min-width:0}
+.garden-home .garden-home-section-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:17px}
+.garden-home .garden-home-section-titles{min-width:0}
+.garden-home .garden-home-section-title{margin:0;font-size:15px;line-height:1.4;font-weight:600;letter-spacing:.4px;color:#dbe3cf}
+.garden-home .garden-home-section-help{margin:6px 0 0;font-size:10px;line-height:1.7;color:#8f9c88}
+.garden-home .garden-home-add{flex:none;font-size:11px;color:#bfcea9}
+.garden-home .garden-home-plots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;min-width:0}
+.garden-home .garden-home-plot{min-width:0;position:relative;display:flex;flex-direction:column;border:1px solid #a2b98d21;border-radius:13px;background:linear-gradient(170deg,#a6b98e07,#19201a04);padding:15px 14px 12px;transition:border-color .2s,background .2s}
+.garden-home .garden-home-plot:hover{border-color:#a2b98d40;background-color:#a2b98d04}
+.garden-home .garden-home-plot[data-active-focus=true]{border-color:#c6d69874;background:linear-gradient(155deg,#92b87916,#19201a04);box-shadow:inset 0 0 0 1px #bfd39e09}
+.garden-home .garden-home-plot-head{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;min-width:0}
+.garden-home .garden-home-project-link{display:flex;align-items:flex-start;gap:7px;padding:0;border:0;min-width:0;background:none;text-align:left;color:#d7dfcd;line-height:1.6;font-size:12px;font-weight:600;border-radius:3px}
+.garden-home .garden-home-project-link:before{content:'';width:6px;height:6px;flex:none;border-radius:2px;margin-top:7px;background:var(--plot-color,#94ae8e)}
+.garden-home .garden-home-project-link .garden-home-button-label{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.garden-home .garden-home-project-link:hover{color:#f0f3e6}
+.garden-home .garden-home-remove{display:flex;align-items:center;justify-content:center;flex:none;width:24px;height:24px;margin:-3px -5px 0 0;border:0;border-radius:5px;background:none;color:#72836c;opacity:.65}
+.garden-home .garden-home-remove:hover,.garden-home .garden-home-remove:focus-visible{opacity:1;color:#d0d5be;background:#bdc9a514}
+.garden-home .garden-home-remove .garden-home-icon{width:14px;height:14px}
+.garden-home .garden-home-plot-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#8e9d83;font-size:10px;margin-top:8px}
+.garden-home .garden-home-stage-name{border:1px solid #abbc8e21;border-radius:20px;padding:1px 6px;font-size:9px;color:#b5c39e;white-space:nowrap}
+.garden-home .garden-home-plot[data-stage="4"] .garden-home-stage-name{color:#d6c992;border-color:#cabb7933;background:#cabb7908}
+.garden-home .garden-home-plant{display:flex;align-items:center;justify-content:center;min-height:136px;margin:0 -8px}
+.garden-home .garden-home-plant-art{display:block;width:158px;height:145px;max-width:100%;overflow:visible}
+.garden-home .garden-home-stages{display:flex;align-items:center;justify-content:center;gap:5px;margin:-2px 0 17px}
+.garden-home .garden-home-stage-dot{height:3px;width:17px;border-radius:4px;background:#a4b28d19}
+.garden-home .garden-home-stage-dot[data-reached=true]{background:#829b6e}
+.garden-home .garden-home-stage-dot[data-current=true]{background:#c0ce97}
+.garden-home .garden-home-counts{display:flex;justify-content:space-between;gap:5px;flex-wrap:wrap;font-size:9px;color:#9bac91;line-height:1.6;font-variant-numeric:tabular-nums}
+.garden-home .garden-home-task-count{color:#c3ceb6}
+.garden-home .garden-home-task-progress{display:block;width:100%;height:3px;margin:7px 0 0;border:0;border-radius:6px;overflow:hidden;background:#a2b98d12;accent-color:#a1b88c}
+.garden-home .garden-home-task-progress::-webkit-progress-bar{background:#a2b98d12}
+.garden-home .garden-home-task-progress::-webkit-progress-value{background:#a1b88c;border-radius:6px}
+.garden-home .garden-home-task-progress::-moz-progress-bar{background:#a1b88c;border-radius:6px}
+.garden-home .garden-home-bloom{margin:9px 0 -1px;min-height:15px;font-size:9px;line-height:1.6;color:#c5b986;overflow-wrap:anywhere}
+.garden-home .garden-home-focus{width:100%;margin-top:15px;min-height:31px;padding:6px;font-size:10px;color:#b7c7a4;background:#a4b79108;border-color:#a4b79124}
+.garden-home .garden-home-focus .garden-home-icon{width:13px;height:13px}
+.garden-home .garden-home-plot[data-active-focus=true] .garden-home-focus{color:#e0e8c5;background:#a4b79117;border-color:#b6cb8c49;font-variant-numeric:tabular-nums}
+.garden-home .garden-home-empty{grid-column:1/-1;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 24px 28px;border:1px dashed #a4b58a35;border-radius:14px;text-align:center;background:radial-gradient(ellipse at 50% 50%,#88a6750b,transparent 72%)}
+.garden-home .garden-home-empty-art{width:110px;height:96px;overflow:hidden}
+.garden-home .garden-home-empty-art .garden-home-plant-art{width:110px;height:102px}
+.garden-home .garden-home-empty-title{font-size:15px;font-weight:500;color:#d3ddc3;line-height:1.6;margin:7px 0}
+.garden-home .garden-home-empty-text{max-width:370px;font-size:11px;color:#8f9e84;margin:0 0 18px;line-height:1.9;text-wrap:pretty}
+.garden-home .garden-home-primary{color:#e1e9d0;border-color:#aec68b56;background:#9fb37f17}
+.garden-home .garden-home-journal{min-width:0;border-left:1px solid var(--home-line);padding:2px 0 0 22px;margin-top:3px}
+.garden-home .garden-home-journal-heading{display:flex;align-items:center;gap:8px}
+.garden-home .garden-home-journal-heading>.garden-home-icon{width:16px;height:16px;color:#a7bb91}
+.garden-home .garden-home-journal .garden-home-section-title{font-size:13px}
+.garden-home .garden-home-events{list-style:none;margin:22px 0 0;padding:0}
+.garden-home .garden-home-event{position:relative;display:flex;align-items:flex-start;gap:10px;padding:0 0 20px;min-width:0}
+.garden-home .garden-home-event:not(:last-child):before{content:'';position:absolute;left:10px;top:25px;bottom:5px;width:1px;background:#9eb5871d}
+.garden-home .garden-home-event-icon{display:flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;border:1px solid #a8bd9129;border-radius:50%;color:#b8c59d;background:#a8bd910b}
+.garden-home .garden-home-event-icon svg{width:12px;height:12px}
+.garden-home .garden-home-event[data-event-type=bloom] .garden-home-event-icon{color:#d1be81;border-color:#cdb16b39}
+.garden-home .garden-home-event-content{min-width:0;padding-top:1px}
+.garden-home .garden-home-event-title{display:block;font-size:11px;color:#bdcbb0;line-height:1.6;overflow-wrap:anywhere}
+.garden-home .garden-home-event-details{display:block;margin-top:4px;font-size:9px;color:#77866d;line-height:1.75;overflow-wrap:anywhere}
+.garden-home .garden-home-journal-empty{font-size:11px;line-height:1.9;color:#819277;margin:25px 0 30px;text-wrap:pretty}
+.garden-home .garden-home-journal-foot{border-top:1px solid #a8bd911b;padding-top:18px;margin-top:3px}
+.garden-home .garden-home-stamp{display:block;width:24px;height:24px;color:#9dac85;opacity:.6}
+.garden-home .garden-home-stamp svg{width:100%;height:100%}
+.garden-home .garden-home-footnote{font-size:10px;color:#809171;line-height:1.9;white-space:pre-line;margin:9px 0 0;letter-spacing:.3px}
+@container garden-home (min-width:1400px){.garden-home .garden-home-hero{min-height:268px}.garden-home .garden-home-companion{width:178px;bottom:39px}.garden-home .garden-home-plant-art{width:170px;height:153px}}
+@container garden-home (max-width:1120px){.garden-home{padding:22px 22px 34px}.garden-home .garden-home-body{grid-template-columns:minmax(0,1fr);gap:25px}.garden-home .garden-home-journal{border-left:0;border-top:1px solid var(--home-line);padding:20px 0 0;margin:0}.garden-home .garden-home-events{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:20px}.garden-home .garden-home-event:before{display:none}.garden-home .garden-home-journal-foot{display:none}.garden-home .garden-home-journal-empty{margin:16px 0 0}.garden-home .garden-home-intro{padding-left:27px}.garden-home .garden-home-title{font-size:27px}}
+@container garden-home (max-width:780px){.garden-home{padding:20px 16px 30px}.garden-home .garden-home-hero{grid-template-columns:minmax(0,1fr) minmax(235px,.9fr);min-height:232px}.garden-home .garden-home-intro{padding:26px 0 26px 23px}.garden-home .garden-home-title{font-size:25px;letter-spacing:.3px}.garden-home .garden-home-description{font-size:11px}.garden-home .garden-home-residence{min-height:230px}.garden-home .garden-home-companion{width:140px;max-width:47%;left:41%;bottom:45px}.garden-home .garden-home-companion-caption{left:10%;right:5%;bottom:12px;gap:2px 6px}.garden-home .garden-home-today{gap:18px;margin-top:19px}.garden-home .garden-home-stat{min-width:73px;column-gap:6px}.garden-home .garden-home-stat-value{font-size:22px}.garden-home .garden-home-plots{grid-template-columns:repeat(2,minmax(0,1fr))}.garden-home .garden-home-section-head{gap:10px}.garden-home .garden-home-events{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container garden-home (max-width:540px){.garden-home{padding:15px 12px 25px}.garden-home .garden-home-top{gap:8px;margin-bottom:12px}.garden-home .garden-home-eyebrow{font-size:9px;letter-spacing:1.1px}.garden-home .garden-home-secondary{padding:5px 8px;font-size:10px}.garden-home .garden-home-hero{grid-template-columns:minmax(0,1fr);border-radius:14px}.garden-home .garden-home-intro{padding:25px 24px 0}.garden-home .garden-home-title{font-size:28px}.garden-home .garden-home-description{max-width:310px;font-size:12px}.garden-home .garden-home-today{margin-top:18px;gap:28px}.garden-home .garden-home-residence{height:218px;min-height:218px;margin-top:-7px}.garden-home .garden-home-landscape{left:50%;width:400px;max-width:115%;transform:translateX(-50%)}.garden-home .garden-home-companion{left:45%;bottom:29px;width:160px;max-width:43%}.garden-home .garden-home-companion-caption{bottom:8px;left:17%;right:6%}.garden-home .garden-home-body{margin-top:23px;gap:24px}.garden-home .garden-home-section-head{align-items:flex-start}.garden-home .garden-home-section-help{font-size:10px;max-width:220px}.garden-home .garden-home-add{font-size:10px;padding:6px 8px;min-height:32px;gap:3px}.garden-home .garden-home-add .garden-home-icon{width:13px;height:13px}.garden-home .garden-home-plot{padding:13px 11px 11px;border-radius:11px}.garden-home .garden-home-plots{gap:10px}.garden-home .garden-home-plant{min-height:128px;margin:0 -7px}.garden-home .garden-home-plant-art{height:133px}.garden-home .garden-home-counts{font-size:9px}.garden-home .garden-home-plot-meta{font-size:9px;gap:4px}.garden-home .garden-home-stage-name{padding:1px 5px;font-size:8px}.garden-home .garden-home-focus{font-size:9px;padding:6px 4px;gap:4px}.garden-home .garden-home-events{grid-template-columns:minmax(0,1fr);margin-top:18px}.garden-home .garden-home-event:before{display:block}.garden-home .garden-home-empty{min-height:290px;padding:18px}.garden-home .garden-home-empty-title{font-size:14px}}
+@container garden-home (max-width:350px){.garden-home{padding-left:10px;padding-right:10px}.garden-home .garden-home-plots{grid-template-columns:minmax(0,1fr)}.garden-home .garden-home-hero .garden-home-title{font-size:25px}.garden-home .garden-home-project-link{font-size:13px}.garden-home .garden-home-counts{font-size:10px}.garden-home .garden-home-focus{font-size:11px}.garden-home .garden-home-eyebrow{letter-spacing:.5px}}
+@media(prefers-reduced-motion:reduce){.garden-home *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}

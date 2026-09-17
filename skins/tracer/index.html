@@ -26,6 +26,7 @@
 <link rel="stylesheet" href="/insights.css">
 <link rel="stylesheet" href="/farm.css">
 <link rel="stylesheet" href="/garden.css">
+<link rel="stylesheet" href="/garden-home.css">
 <link rel="stylesheet" href="/wellness.css">
 <link rel="stylesheet" href="/crystal.css">
 <link rel="stylesheet" href="/ai-assistant.css">
@@ -168,7 +169,10 @@
       </div>
     </section>
     <section class="sec" id="sec-garden">
-      <header class="sec-head"><h1>Garden</h1><span class="sec-sub">A quiet corner of the workspace</span><button class="btn" id="garden-pet-open">✦ Companions</button></header>
+      <header class="sec-head"><h1 id="garden-section-title">Companion home</h1><span class="sec-sub" id="garden-section-subtitle">A little place for the work you care about</span><button class="btn" id="garden-pet-open">✦ Companions</button></header>
+      <div id="garden-home-root"></div>
+      <div id="garden-leisure-wrapper" hidden>
+      <div class="garden-leisure-heading"><button type="button" class="btn" id="garden-back-home">← Back home</button><p id="garden-leisure-help">Your farm, collection and progress are kept here.</p></div>
       <div class="garden-wrap">
         <aside class="garden-side">
           <div class="garden-shop" id="garden-shop"></div>
@@ -192,6 +196,7 @@
             <div class="empty-sub">Give it a season and something will grow.</div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   </main>
@@ -243,7 +248,6 @@
 <script src="/map.js"></script>
 <script src="/insights-model.js"></script>
 <script src="/insights.js"></script>
-<script src="/garden.js"></script>
 <script src="/focus-model.js"></script>
 <script src="/daily-content.js"></script>
 <script src="/music-model.js"></script>
@@ -265,5 +269,8 @@
 <script src="/pet-transfer.js"></script>
 <script src="/pet-edit-draft.js"></script>
 <script src="/pet.js"></script>
+<script src="/garden-model.js"></script>
+<script src="/garden-home-view.js"></script>
+<script src="/garden.js"></script>
 </body>
 </html>

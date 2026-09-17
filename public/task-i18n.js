@@ -104,7 +104,7 @@
     allPriorities: ['所有优先级', 'All priorities'], anyDue: ['所有截止日期', 'Any due date'], today: ['今天到期', 'Due today'], upcoming: ['即将到期', 'Upcoming'],
     clearFilters: ['清除筛选', 'Clear filters'], boardResults: ['显示 {count} / {total} 项任务', '{count} of {total} tasks'], add: ['＋ 添加', '+ Add'],
     priority: ['优先级', 'Priority'], normal: ['普通', 'Normal'], highBadge: ['高', 'High'], todayBadge: ['今天', 'Today'], deleteConfirm: ['删除这个任务？', 'Delete this task?'],
-    inbox: ['收集箱', 'Inbox'], notesSection: ['笔记', 'Notes'], map: ['项目地图', 'Project Map'], planner: ['日程', 'Planner'], timeline: ['时间线', 'Timeline'], insights: ['统计', 'Insights'], garden: ['花园', 'Garden'],
+    inbox: ['收集箱', 'Inbox'], notesSection: ['笔记', 'Notes'], map: ['项目地图', 'Project Map'], planner: ['日程', 'Planner'], timeline: ['时间线', 'Timeline'], insights: ['统计', 'Insights'], garden: ['伙伴家园', 'Companion home'],
     localSaved: ['已保存到本机', 'Saved locally'], saving: ['正在保存…', 'Saving…'],
     draftConflictTip: ['草稿与本机文件有冲突，点击状态点选择版本', 'Draft conflicts with the local file; click the status dot to choose versions'],
     workspaceMerged: ['已合并另一窗口新建的内容，点击状态点重试保存', 'New work from another window was merged; click the status dot to retry saving'],

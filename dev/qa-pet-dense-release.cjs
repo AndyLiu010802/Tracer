@@ -36,7 +36,10 @@ async function cycle(page,selector,action,count,label) {
   checkpoint(label);
   await page.waitForFunction(({selector,action})=>{
     const el=document.querySelector(selector);return el?.dataset.action===action&&el.dataset.playback==='playing';
-  },{selector,action});
+  },{selector,action}).catch(async error=>{
+    console.error('Animation wait state:',await page.evaluate(selector=>({hidden:document.hidden,section:window.Tracer?.currentSec(),matching:[...document.querySelectorAll(selector)].map(el=>({data:{...el.dataset},rect:el.getBoundingClientRect().toJSON()})),home:document.querySelector('.garden-home')?.dataset.petAction}),selector));
+    await page.screenshot({path:path.join(profile,'animation-wait-failure.png')});throw error;
+  });
   const result=await page.evaluate(({selector,action,count})=>new Promise((resolve,reject)=>{
     const element=document.querySelector(selector),frames=new Map();
     const timer=setTimeout(()=>{observer.disconnect();reject(new Error('Timed out waiting for '+count+' '+action+' frames: '+[...frames.keys()].join(',')));},15000);
@@ -154,6 +157,29 @@ async function cycle(page,selector,action,count,label) {
     const persisted=await page.evaluate(async()=>{const response=await fetch('/api/store/workspace');if(!response.ok)throw new Error('workspace-read-failed');return response.json();});
     assert.equal(persisted.tasks.length,1);assert.equal(persisted.tasks[0].id,created[0].id);
     await pet.screenshot({path:path.join(profile,'native-chat-created.png'),omitBackground:true,animations:'disabled'});
+    checkpoint('packaged companion home, saved project plot and task growth');
+    await page.bringToFront();
+    const gardenProject=await page.evaluate(()=>{
+      const project=TracerModel.addProject(Tracer.store.data,{name:'Packaged home check'});
+      Tracer.store.data.tasks[0].projectId=project.id;Tracer.touch();Tracer.saveNow();return project.id;
+    });
+    await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
+    await page.click('#nav-garden');await page.locator('.garden-home').waitFor();
+    await cycle(page,'.garden-home-companion-art .pet-animated-sprite','focus',16,'packaged home uses the selected generated companion during the active focus session');
+    await page.locator('[data-home-action="add-plot"]:visible').first().click();
+    await page.selectOption('#garden-project-select',gardenProject);await page.selectOption('#garden-plant-select','sunflower');await page.click('#garden-plant-save');
+    const gardenCard=page.locator('.garden-home-plot[data-project-id="'+gardenProject+'"]');await gardenCard.waitFor();
+    assert.equal(await gardenCard.getAttribute('data-stage'),'0');
+    await gardenCard.locator('[data-home-action="open-project"]').click();
+    await page.locator('.card[data-id="'+created[0].id+'"]').click();
+    await page.selectOption('#f-status','done');await page.click('#f-save');
+    await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
+    await page.click('#nav-garden');await page.evaluate(()=>Tracer.garden.refresh(true));
+    await page.waitForFunction(id=>Tracer.garden.read().plots.find(plot=>plot.projectId===id)?.stage===4,gardenProject);
+    await page.screenshot({path:path.join(profile,'main-companion-home.png'),animations:'disabled'});
+    await page.reload();await page.waitForFunction(()=>window.Tracer?.garden&&Tracer.store.data);await page.evaluate(()=>Tracer.garden.refresh(true));
+    assert.equal(await page.evaluate(id=>Tracer.garden.read().plots.find(plot=>plot.projectId===id)?.taskIds.length,gardenProject),1,'packaged plot persists without duplicate growth');
+    console.log('PASS packaged companion home, selected sixteen-frame companion, project planting, saved task bloom and reload deduplication');
     assert.equal(aiWrites,0,'native release test never reaches a real generation or AI chat endpoint');assert.deepEqual(errors,[],'no packaged renderer errors');
     console.log('PASS packaged native chat preview, explicit confirmation, real IPC, durable main workspace save and idempotent retry');
     console.log('PASS packaged '+version+', isolated clean profile, main/native builtin and generated sixteen-frame playback, live care, real v2 export/import, legacy v1 import and saved selection');

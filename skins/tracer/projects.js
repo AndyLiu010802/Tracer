@@ -6,6 +6,10 @@
   var filterId = null; // 当前过滤的项目 id，null = 全部
 
   T.projectFilter = function () { return filterId; };
+  T.openProject = function (id) {
+    if (id && !M.findProject(T.store.data,id)) return false;
+    filterId=id||null;render();T.show('board');if(T.renderBoard)T.renderBoard();return true;
+  };
 
   function render() {
     var ws = T.store.data;
@@ -19,6 +23,15 @@
     });
     html += '<button class="proj-add" id="proj-add">+ ' + L('newProject') + '</button>';
     list.innerHTML = html;
+    if(T.garden&&window.TracerGardenHomeView?.plant){
+      T.garden.read().plots.forEach(function(plot){
+        var entry=Array.from(list.querySelectorAll('.proj-item')).find(function(item){return item.dataset.id===plot.projectId;});
+        if(!entry)return;
+        var button=document.createElement('button');button.type='button';button.className='proj-garden';button.dataset.gardenProject=plot.projectId;
+        button.title=TracerLocale.language()==='zh'?'查看项目花圃':'View project plot';button.setAttribute('aria-label',button.title+' · '+M.findProject(ws,plot.projectId).name);
+        button.appendChild(TracerGardenHomeView.plant(plot.plantKind,plot.stage));button.onclick=function(){T.garden.open(plot.projectId);};entry.after(button);
+      });
+    }
 
     list.querySelectorAll('.proj-item').forEach(function (a) {
       a.addEventListener('click', function () {
