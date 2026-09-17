@@ -9,7 +9,12 @@ function png(edge = 1) { const header = Buffer.alloc(13); header.writeUInt32BE(e
 const sheet = png(768), photo = 'data:image/png;base64,' + png().toString('base64');
 const action = 'codex-pet-image', id = 'a'.repeat(32);
 const request = extra => ({ generationId: id, generationAttempt: 0, animationVersion: 2, animationPage: 0, name: 'Moss', kind: 'creature', personality: 'Patient', photo, ...extra });
-function room(t) { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tracer-pet-jobs-')); t.after(() => fs.rmSync(dir, { recursive: true, force: true })); return dir; }
+function room(t) {
+  // Production uses promise-based native realpath for journal I/O. Match that
+  // spelling so injected failures hit on Darwin /var and Windows 8.3 TEMP paths.
+  const dir = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'tracer-pet-jobs-')));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true })); return dir;
+}
 const result = async (dir, page = 0) => ({ image: await Images.storeGenerated(dir, sheet), animationVersion: 2, animationPage: page });
 const journal = (dir, page = 0, attempt = 0) => path.join(dir, '.pet-generation-jobs', id + '-' + page + '-' + attempt + '.json');
 function deferred() { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; }
@@ -57,6 +62,7 @@ test('provider failures retry but a journal write failure retains the paid resul
     return original.call(fsp, from, to);
   });
   await assert.rejects(jobs.run(action, request(), generate), /pet-generation-journal-save-failed/);
+  assert.equal(failed, true, 'the write-failure injection must hit the canonical journal destination');
   assert.equal(calls, 2); assert.equal(fs.existsSync(journal(dir)), false); assert.deepEqual(fs.readdirSync(path.join(dir, '.pet-generation-jobs')), []);
   const savedFiles = fs.readdirSync(path.join(dir, '.pet-art'));
   const recovered = await createJobs(dir).run(action, request(), () => { throw new Error('must only retry persistence'); });
@@ -104,15 +110,28 @@ test('corrupt, oversized and linked journals fail closed, rather than becoming n
 });
 
 test('journal read errors do not appear as absent records and old requests retain their original behavior', async t => {
-  const dir = room(t), jobs = createJobs(dir), original = fsp.lstat; let calls = 0, fail = true;
+  const dir = room(t), jobs = createJobs(dir), original = fsp.lstat; let calls = 0, fail = true, failedReads = 0;
   t.mock.method(fsp, 'lstat', async file => {
-    if (fail && file === journal(dir)) throw Object.assign(new Error('permission denied'), { code: 'EACCES' });
+    if (fail && file === journal(dir)) { failedReads++; throw Object.assign(new Error('permission denied'), { code: 'EACCES' }); }
     return original.call(fsp, file);
   });
   const generate = async () => { calls++; return result(dir); };
   await assert.rejects(jobs.run(action, request(), generate), /pet-generation-journal-read-failed/); assert.equal(calls, 0);
+  assert.equal(failedReads, 1, 'the read-failure injection must hit the canonical journal filename');
   fail = false; await jobs.run(action, request(), generate); assert.equal(calls, 1);
   const untouched = room(t), legacy = createJobs(untouched), rawResult = { arbitrary: 'unchanged', model: 'legacy-model' };
   for (const [name, data] of [[action, {}], ['personal-chat', { generationId: '../ignored' }]]) assert.equal(await legacy.run(name, data, () => rawResult), rawResult);
   assert.deepEqual(fs.readdirSync(untouched), []);
+});
+
+test('system temporary path spellings and canonical paths recover the same completed journal', async t => {
+  const supplied = fs.mkdtempSync(path.join(os.tmpdir(), 'tracer-pet-jobs-alias-')), canonical = fs.realpathSync.native(supplied);
+  t.after(() => fs.rmSync(canonical, { recursive: true, force: true }));
+  let calls = 0;
+  const saved = await createJobs(supplied).run(action, request(), async () => { calls++; return result(supplied); });
+  assert.ok(fs.existsSync(journal(canonical)));
+  const recovered = await createJobs(canonical).run(action, request(), () => { calls++; throw new Error('completed result must be recovered'); });
+  assert.deepEqual(recovered, saved); assert.equal(calls, 1);
+  assert.deepEqual(await Images.readAsset(supplied, recovered.image), sheet);
+  assert.deepEqual(await Images.readAsset(canonical, recovered.image), sheet);
 });
