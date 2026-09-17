@@ -1,10 +1,12 @@
 # Tracer 桌面版
 
-Tracer 将任务管理、完成历史、番茄钟、音频、笔记和参考浏览器放在独立桌面应用中。默认以无边框全屏启动，使用黑底金色星月 Logo。Windows 已有发布入口；[macOS 0.3.4 测试版](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.4-mac-preview.3)已提供 Apple 芯片与 Intel 安装包，两种架构均通过原生构建与启动检查，GUI 实机操作和真实账号 AI 登录仍需验收。
+Tracer 将任务管理、完成历史、番茄钟、音频、笔记、参考浏览器和桌面伙伴放在独立桌面应用中。默认以无边框全屏启动，使用黑底金色星月 Logo。[0.3.6 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)提供 Windows x64、Apple 芯片 Mac 和 Intel Mac 的同版本安装包；**Desktop release** 工作流只有在三个平台全部构建与检查通过后才会发布附件，尚未出现附件表示发布仍未完成。
 
-**[Mac 安装、权限与构建指南](../docs/macos-install.md)**：支持生成 `.dmg` 和 `.zip`，安装时将 Tracer 拖入「应用程序」。Mac 本地数据位于 `~/Library/Application Support/tracer-desktop/`；关闭窗口后可点击 Dock 图标恢复，使用 **Command+Q** 完全退出。Mac 上支持 **Control+Command+F** 全屏切换和系统编辑菜单。
+**[Mac 安装、权限与构建指南](../docs/macos-install.md)**：下载 [Apple 芯片 DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.dmg) 或 [Intel DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.dmg)，发布页也提供对应的 ZIP。安装时将 Tracer 拖入「应用程序」。Mac 本地数据位于 `~/Library/Application Support/tracer-desktop/`；关闭窗口后可点击 Dock 图标恢复，使用 **Command+Q** 完全退出。Mac 上支持 **Control+Command+F** 全屏切换和系统编辑菜单。Mac 包使用 ad-hoc 签名，尚未获得 Developer ID 签名与 Apple 公证；GUI 实机操作、真实账号 AI 登录和系统权限仍待验收。
 
-**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/latest)**：在发布附件中选择 `Tracer-Setup-0.3.3-x64.exe`。安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置与完成历史。
+**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-Setup-0.3.6-x64.exe)**：安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。本地 Windows 0.3.6 已通过真实打包应用在全新用户目录中的启动和交互检查。升级前从托盘退出旧版，安装到原位置可保留任务、设置、桌宠与完成历史。
+
+0.3.6 的 6 个内置伙伴每动作有 16 个姿态帧；更新后生成的伙伴每个动作有 16 张连续图像，共 256 帧。旧照片和旧 4 帧动作包继续兼容，安装升级不会自动调用 AI 或重绘已有伙伴。
 
 应用依赖和打包配置统一放在**仓库根**的 `package.json` 中，包括 Electron、`uiohook-napi`、PDF/Word 提取依赖和 electron-builder。`desktop/main.js` 会加载上层目录的服务代码，因此构建必须从仓库根开始。本目录的 `package.json` 只是说明性指针，不是独立 npm 项目。
 
@@ -84,7 +86,7 @@ npm start
 
 - **关闭窗口 ≠ 退出**：关掉画面只是缩进系统托盘，服务和全局钩子继续在后台跑，照常计数。
 - 托盘使用金色星月图标：左键打开面板；右键菜单提供「打开面板」和「退出」。
-- **真正退出**只走托盘菜单的「退出」——那才会停掉钩子和服务。
+- **真正退出**使用托盘菜单的「退出」；Mac 也可使用 **Command+Q** 或 Tracer 菜单「退出」。退出时会停掉钩子和服务。
 - 只允许一个实例：重复启动不会再开一个，只会把已在跑的窗口顶到前台（否则会有两个钩子重复计数）。
 
 只跑内容无关性测试（不需要装 Electron）：
@@ -104,8 +106,8 @@ npm run dist    # electron-builder --win nsis --x64
 
 产物在仓库根的 `dist/`（该目录已进 `.gitignore`，不进版本库）：
 
-- `dist/Tracer-Setup-0.3.2-x64.exe` —— 安装程序本身，双击运行
-- `dist/Tracer-Setup-0.3.2-x64.exe.blockmap` —— electron-builder 生成的增量更新索引，当前没有配置自动更新
+- `dist/Tracer-Setup-0.3.6-x64.exe` —— 安装程序本身，双击运行
+- `dist/Tracer-Setup-0.3.6-x64.exe.blockmap` —— electron-builder 生成的增量更新索引，当前没有配置自动更新
 - `dist/win-unpacked/` —— 未打包的调试版应用，供本地核对用，不用来发给别人
 
 安装程序不是一路下一步：`oneClick: false` 会让你选安装目录，默认装到当前用户的
@@ -119,10 +121,10 @@ NSIS 卸载程序会清掉安装目录和开始菜单/桌面快捷方式，但**
 
 ### 发布文件与校验
 
-安装包目前未签名。正式下载附件提供 `SHA256SUMS-0.3.2.txt`，可用 PowerShell 的 `Get-FileHash` 核对文件 SHA-256。Windows 是否显示安装提示取决于系统配置和文件来源。
+Windows 安装包目前未签名，Mac 包为 ad-hoc 签名。统一发布附件提供 [SHA256SUMS-0.3.6.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/SHA256SUMS-0.3.6.txt)，覆盖 Windows EXE 和两种 Mac 架构的 DMG、ZIP。可用 PowerShell 的 `Get-FileHash` 核对 Windows 文件的 SHA-256；Mac 核对方式见安装指南。Windows 是否显示安装提示取决于系统配置和文件来源。
 
 ```powershell
-Get-FileHash -Algorithm SHA256 .\Tracer-Setup-0.3.2-x64.exe
+Get-FileHash -Algorithm SHA256 .\Tracer-Setup-0.3.6-x64.exe
 ```
 
 共享安装包包含应用与音频，不包含开发机的工作区、登录令牌或 AI 服务密钥。用户数据和运行缓存不应加入源码仓库或安装程序。

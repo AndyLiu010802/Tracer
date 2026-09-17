@@ -1,6 +1,6 @@
 'use strict';
 const test = require('node:test'), assert = require('node:assert/strict');
-const fs = require('node:fs'), os = require('node:os'), path = require('node:path'), zlib = require('node:zlib'), http = require('node:http');
+const fs = require('node:fs'), os = require('node:os'), path = require('node:path'), zlib = require('node:zlib'), http = require('node:http'), vm = require('node:vm');
 const Images = require('../lib/pet-image'), { createPersonal } = require('../lib/ai-personal');
 function crc(bytes) { let n = 0xffffffff; for (const b of bytes) { n ^= b; for (let i = 0; i < 8; i++) n = n & 1 ? 0xedb88320 ^ (n >>> 1) : n >>> 1; } return (n ^ 0xffffffff) >>> 0; }
 function chunk(name, data) { const bytes = Buffer.alloc(data.length + 12); bytes.writeUInt32BE(data.length); bytes.write(name, 4); data.copy(bytes, 8); bytes.writeUInt32BE(crc(bytes.subarray(4, -4)), bytes.length - 4); return bytes; }
@@ -217,6 +217,44 @@ test('native generated files reject escaping junctions and over-limit files befo
   await assert.rejects(Images.generatedFile(room,'relative.png'),/invalid-image-response/);
   const file = path.join(room,'large.png'), fd = fs.openSync(file,'w'); fs.ftruncateSync(fd,Images.IMAGE_LIMIT+1); fs.closeSync(fd);
   await assert.rejects(Images.generatedFile(room,file),/invalid-image-response/);
+});
+
+test('native generated files allow only Darwin system temporary aliases and retain redirect and hardlink guards', async () => {
+  function nativeFiles({ platform = 'darwin', redirected = {}, symlinks = [], nlink = 1 } = {}) {
+    const module = { exports: {} }, opened = [];
+    const canonical = value => redirected[value] || value.replace(/^\/(var|tmp)(?=\/|$)/, '/private/$1');
+    const native = {
+      realpath: async value => canonical(path.posix.resolve(value)),
+      lstat: async value => ({ isSymbolicLink: () => symlinks.includes(value) }),
+      open: async value => {
+        opened.push(value);
+        return { stat: async () => ({ isFile: () => true, nlink, size: portrait.length, birthtimeMs: 1000, mtimeMs: 1000, ctimeMs: 1000 }),
+          read: async (buffer, offset, length, position) => ({ bytesRead: portrait.copy(buffer, offset, position, position + length) }), close: async () => {} };
+      }
+    };
+    vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../lib/pet-image.js'), 'utf8'), { module, Buffer, process: { platform },
+      require: name => name === 'node:fs/promises' ? native : name === 'node:path' ? path.posix : require(name) });
+    return { images: module.exports, opened };
+  }
+  for (const prefix of ['/var/folders/test', '/tmp']) {
+    const room = prefix + '/job', file = room + '/native/result.png', native = nativeFiles();
+    assert.deepEqual(await native.images.generatedFile(room, file, { createdAfter: 900 }), portrait);
+    assert.deepEqual(native.opened, ['/private' + file]);
+    assert.deepEqual(await native.images.generatedFile(room, '/private' + file), portrait, 'a native result may already use the canonical spelling');
+  }
+  const room = '/var/folders/test/job', file = room + '/native/result.png';
+  const failures = [
+    { platform: 'linux' },
+    { redirected: { [room]: '/private/var/folders/test/other', [file]: '/private/var/folders/test/other/native/result.png' } },
+    { redirected: { [file]: '/private/var/folders/test/job/different/result.png' } },
+    { redirected: { [file]: '/private/var/folders/test/outside/result.png' } },
+    { symlinks: ['/private/var/folders/test/job/native'] },
+    { nlink: 2 }
+  ];
+  for (const setup of failures) await assert.rejects(nativeFiles(setup).images.generatedFile(room, file), /invalid-image-response/);
+  const arbitrary = nativeFiles({ redirected: { '/elsewhere/job': '/private/var/folders/test/job', '/elsewhere/job/result.png': '/private/var/folders/test/job/result.png' } });
+  await assert.rejects(arbitrary.images.generatedFile('/elsewhere/job', '/elsewhere/job/result.png'), /invalid-image-response/);
+  assert.deepEqual(arbitrary.opened, [], 'unrecognized aliases fail before any image bytes are read');
 });
 
 test('local asset route persists across API instances and rejects cross-origin, bad hosts and unsafe paths', async t => {
