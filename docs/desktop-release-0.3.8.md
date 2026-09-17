@@ -31,6 +31,6 @@
 | Mac Apple 芯片 | [DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-0.3.8-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-0.3.8-mac-arm64.zip) |
 | Mac Intel | [DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-0.3.8-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-0.3.8-mac-x64.zip) |
 
-发布前，三个平台均须通过核心测试、桌面测试、实际安装包运行检查和浏览器生成恢复测试；统一工作流随后发布附件与 [SHA-256 校验文件](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/SHA256SUMS-0.3.8.txt)。[查看构建记录](https://github.com/AndyLiu010802/Tracer/actions/workflows/desktop-release.yml)。生成测试使用本地合成图及模拟服务，不消耗真实 AI 额度。
+Windows x64、Mac arm64 与 Mac x64 均已通过 590 项核心测试、16 项桌面测试、实际安装包运行检查和浏览器生成恢复测试；统一工作流已发布全部附件与 [SHA-256 校验文件](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/SHA256SUMS-0.3.8.txt)。[查看构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35171000217)。生成测试使用本地合成图及模拟服务，不消耗真实 AI 额度。
 
 Windows 安装包目前未签名；Mac 包为 ad-hoc 签名，尚未进行 Apple Developer ID 签名与公证。首次安装说明见 [Mac 安装指南](https://github.com/AndyLiu010802/Tracer/blob/codex/release-0.3.8/docs/macos-install.md)。
