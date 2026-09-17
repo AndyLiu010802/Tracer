@@ -21,7 +21,7 @@
 
 ## 下载与验证
 
-以下为 [0.3.9 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)的目标附件。**本次三平台构建与安装包验收尚待完成**；全部通过后才发布，不以此前版本的构建结果代替本次验证。
+[0.3.9 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)已发布以下七项附件。Windows x64、Apple 芯片 Mac 与 Intel Mac 的原生构建与验收全部通过；公开下载地址、文件大小及 SHA-256 校验值均已核验。
 
 | 平台 | 安装包 | 备用格式 |
 | --- | --- | --- |
@@ -31,8 +31,8 @@
 
 第七项附件为统一的 [SHA256SUMS-0.3.9.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/SHA256SUMS-0.3.9.txt)，覆盖上面的六个文件。
 
-本地已通过 **631 项核心测试、16 项桌面测试**，以及伙伴聊天创建和工作区恢复两项浏览器 QA。聊天验证覆盖追问、方案预览、确认创建、本地会话恢复、存储失败与同请求重试。自动化 AI 场景使用模拟服务，不消耗真实 AI 额度。
+Windows x64、Mac arm64 与 Mac x64 均通过 **631 项核心测试、16 项桌面测试**。真实打包应用的主窗口与原生桌宠已通过 16 帧播放、新格式导入导出、旧格式导入，以及桌宠通过 IPC 确认创建任务和同请求重试检查。模拟 AI 的伙伴生成、草稿恢复、任务与项目方案确认和工作区恢复 QA 也已通过。[查看本次 Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35174730636)。
 
-Windows 实际安装包正在构建，原生运行验收尚未完成；三平台云端构建尚未启动。后续还需验证打包应用的主窗口和原生桌宠 16 帧播放、伙伴导入导出、生成草稿恢复及动画资源与源码一致性，再补充安装包验收结果和本次 CI 构建链接。
+本地 Windows 安装包已通过 256 个打包源码文件的逐字节一致性核验及原生运行 QA；三平台 CI 均来自同一提交 [a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef](https://github.com/AndyLiu010802/Tracer/commit/a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef)。AI 自动化场景使用模拟响应与本地合成图，不消耗真实 AI 额度，也不代表本次已验证真实 AI 账号登录与服务响应。
 
 Windows 安装包目前未签名；Mac 包为 ad-hoc 签名，尚未经过 Apple Developer ID 签名与公证。真实账号登录、后台输入权限和未覆盖的界面操作仍需实机验收。详见 [Mac 安装指南](https://github.com/AndyLiu010802/Tracer/blob/codex/release-0.3.9/docs/macos-install.md)与 [Mac 测试包说明](https://github.com/AndyLiu010802/Tracer/blob/codex/release-0.3.9/docs/macos-preview-notes.md)。

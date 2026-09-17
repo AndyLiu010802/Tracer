@@ -10,9 +10,11 @@ Tracer 将任务管理、完成历史、番茄钟、音频、笔记、参考浏�
 
 **[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-Setup-0.3.9-x64.exe)**：安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置、桌宠与完成历史。
 
-0.3.9 的三平台云端构建和安装包验收结果待本次发布流程完成后补充。以下为本版本的目标下载地址；附件只在 Windows x64、Mac arm64 与 Mac x64 的原生构建和验证全部通过后发布。
+0.3.9 已在[统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)发布 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三平台原生构建与验收全部通过，七项公开附件及统一 SHA-256 校验文件已核验。
 
-Desktop release 工作流会在 Windows x64、Mac arm64 与 Mac x64 上执行核心与桌面测试，以及打包应用主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源与源码一致性检查。伙伴生成恢复与聊天创建使用隔离用户目录、本地合成图及模拟 AI 响应验证，不消耗真实 AI 额度。本次测试数量、安装包验收结果和构建记录待发布验证完成后补充。
+Windows x64、Mac arm64 与 Mac x64 均通过 **631 项核心测试、16 项桌面测试**。真实打包应用的主窗口与原生桌宠已通过 16 帧播放、新格式导入导出、旧格式导入，以及桌宠通过 IPC 确认创建任务和同请求重试检查。模拟 AI 的伙伴生成、草稿恢复、任务与项目方案确认和工作区恢复 QA 也已通过。[查看本次 Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35174730636)。
+
+本地 Windows 安装包已通过 256 个打包源码文件的逐字节一致性核验及原生运行 QA；三平台 CI 均来自同一提交 [a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef](https://github.com/AndyLiu010802/Tracer/commit/a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef)。AI 自动化场景使用模拟响应与本地合成图，不消耗真实 AI 额度，也不代表本次已验证真实 AI 账号登录与服务响应。
 
 0.3.9 的 6 个内置伙伴每动作有 16 个姿态帧；更新后生成的伙伴每个动作有 16 张连续图像，共 256 帧。旧照片和旧 4 帧动作包继续兼容，安装升级不会自动调用 AI 或重绘已有伙伴。
 

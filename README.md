@@ -10,7 +10,7 @@ Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、�
 
 ## 下载与安装
 
-0.3.9 的三平台云端构建和安装包验收结果待本次发布流程完成后补充。以下为本版本的目标下载地址；附件只在 Windows x64、Mac arm64 与 Mac x64 的原生构建和验证全部通过后发布。
+0.3.9 已在[统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)发布 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三平台原生构建与验收全部通过，七项公开附件及统一 SHA-256 校验文件已核验。
 
 0.3.9 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
 
@@ -22,7 +22,9 @@ Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、�
 
 Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置；任务、设置、桌宠和个人工作区保留。
 
-Desktop release 工作流会在 Windows x64、Mac arm64 与 Mac x64 上执行核心与桌面测试，以及打包应用主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源与源码一致性检查。伙伴生成恢复与聊天创建使用隔离用户目录、本地合成图及模拟 AI 响应验证，不消耗真实 AI 额度。本次测试数量、安装包验收结果和构建记录待发布验证完成后补充。
+Windows x64、Mac arm64 与 Mac x64 均通过 **631 项核心测试、16 项桌面测试**。真实打包应用的主窗口与原生桌宠已通过 16 帧播放、新格式导入导出、旧格式导入，以及桌宠通过 IPC 确认创建任务和同请求重试检查。模拟 AI 的伙伴生成、草稿恢复、任务与项目方案确认和工作区恢复 QA 也已通过。[查看本次 Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35174730636)。
+
+本地 Windows 安装包已通过 256 个打包源码文件的逐字节一致性核验及原生运行 QA；三平台 CI 均来自同一提交 [a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef](https://github.com/AndyLiu010802/Tracer/commit/a5ca3c007bc990878fc8d6c2fa2abbbd92fc95ef)。AI 自动化场景使用模拟响应与本地合成图，不消耗真实 AI 额度，也不代表本次已验证真实 AI 账号登录与服务响应。
 
 Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证。真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
 
