@@ -8,7 +8,7 @@
 
 **这是 ad-hoc 签名测试版，尚未获得 Apple Developer ID 签名与公证。** macOS 可能阻止首次打开。请只从本仓库下载并核对校验值；如确认要测试，可按 macOS「系统设置 → 隐私与安全性」中的「仍要打开」提示处理。无需关闭 Gatekeeper，也不需要执行移除隔离标记的命令。希望正常首次打开的用户应等待正式签名版本。
 
-Desktop release 工作流分别在 Windows x64、Mac arm64 与 Mac x64 上执行核心与桌面测试，以及真实打包应用在全新用户目录中的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源与源码一致性检查。发布需要三个平台全部通过，具体状态见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/workflows/desktop-release.yml)。伙伴生成与恢复 QA 已在本地通过，覆盖后台继续、刷新恢复、保存失败重试及草稿清除。
+Desktop release 工作流分别在 Windows x64、Mac arm64 与 Mac x64 上执行核心与桌面测试，以及真实打包应用在全新用户目录中的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源与源码一致性检查。三个平台的上述检查及生成恢复测试均已通过，完整记录见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35169166760)。伙伴生成与恢复 QA 已在本地通过，覆盖后台继续、刷新恢复、保存失败重试及草稿清除。
 
 本地最终 Windows 产物 `dist/0.3.7-final` 的包内容、校验值和实际运行均已验证通过。草稿恢复测试使用本地合成图与模拟服务，覆盖存储失败和清除期间的并发写入保护。Mac 真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收。
 
