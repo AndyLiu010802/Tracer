@@ -2,40 +2,44 @@
 
 ## 当前状态
 
-**[Tracer 0.3.6 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)**同时分发 Windows、Apple Silicon 和 Intel 的安装包。两种 Mac 架构各提供 DMG、ZIP，五个下载文件共用 `SHA256SUMS-0.3.6.txt`。
+**[Tracer 0.3.7 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.7)**同时分发 Windows、Apple Silicon 和 Intel 的安装包。两种 Mac 架构各提供 DMG、ZIP，五个下载文件共用 `SHA256SUMS-0.3.7.txt`。
 
-0.3.6 Mac 包使用与 Windows 相同版本的功能，包括内置伙伴的 16 帧动作、更新后生成伙伴的 256 帧格式，以及旧照片和旧 4 帧动作包的兼容支持。安装更新不会自动调用 AI 或重绘已有伙伴。
+0.3.7 Mac 包使用与 Windows 相同版本的功能，新增伙伴生成进度、后台继续、本机草稿恢复和误触保护；保留内置伙伴的 16 帧动作、新生成伙伴的 256 帧格式，以及旧照片和旧 4 帧动作包的兼容支持。安装更新不会自动调用 AI 或重绘已有伙伴。
 
-Windows x64、Mac arm64 与 Mac x64 各自通过 549 项核心测试和 13 项桌面测试（每个平台 562 项），以及真实打包应用在全新用户目录中的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源和源码一致性检查。三个平台使用相同的 252 个应用源码文件。见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35165754413)。
+Desktop release 工作流分别在 Windows x64、Mac arm64 与 Mac x64 上执行核心与桌面测试，以及真实打包应用在全新用户目录中的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源与源码一致性检查。发布需要三个平台全部通过，具体状态见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/workflows/desktop-release.yml)。伙伴生成与恢复 QA 已在本地通过，覆盖后台继续、刷新恢复、保存失败重试及草稿清除。
 
-本地最终 Windows 产物 `dist/0.3.6-final` 已通过包内容与校验值检查，但本机 Windows Application Control 阻止了它的原生执行；最终版本的启动与交互验证结论来自上述云端原生检查。
+本地最终 Windows 产物 `dist/0.3.7-final` 的包内容、校验值和实际运行均已验证通过。草稿恢复测试使用本地合成图与模拟服务，覆盖存储失败和清除期间的并发写入保护。
 
 **Mac 包为 ad-hoc 签名，尚未经过 Apple Developer ID 签名与公证。** 真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收。首次打开的系统提示见 [测试包说明](macos-preview-notes.md)。Windows 的 `.exe` 不能用于 Mac。
 
 ## 选择下载文件
 
-在苹果菜单 →「关于本机」查看芯片类型，在 [0.3.6 发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)中选择：
+在苹果菜单 →「关于本机」查看芯片类型，在 [0.3.7 发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.7)中选择：
 
 | Mac 类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Apple 芯片（M 系列） | [Tracer-0.3.6-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.dmg) | [Tracer-0.3.6-mac-arm64.zip](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.zip) |
-| Intel 处理器 | [Tracer-0.3.6-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.dmg) | [Tracer-0.3.6-mac-x64.zip](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.zip) |
+| Apple 芯片（M 系列） | [Tracer-0.3.7-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-0.3.7-mac-arm64.dmg) | [Tracer-0.3.7-mac-arm64.zip](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-0.3.7-mac-arm64.zip) |
+| Intel 处理器 | [Tracer-0.3.7-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-0.3.7-mac-x64.dmg) | [Tracer-0.3.7-mac-x64.zip](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-0.3.7-mac-x64.zip) |
 
 打开 DMG，将 **Tracer 拖入 Applications（应用程序）**，弹出磁盘映像，再从「应用程序」或 Spotlight 启动。ZIP 需解压后将 `Tracer.app` 放入「应用程序」。终端用户无需安装 Node.js 或 Codex。
 
 更新前用 **Command+Q** 退出旧版，再替换「应用程序」中的 Tracer。工作区保存在 `~/Library/Application Support/tracer-desktop/`，替换程序不会删除该目录；不同电脑之间的数据不会自动迁移。
 
-0.3.6 统一发布中的 Mac 附件与未启用正式签名的独立 `preview` 附件均为 ad-hoc 签名，不能视为已公证正式版。若 macOS 阻止打开，按下方测试包说明处理，或等待 Developer ID 签名并经过 Apple 公证的版本；不需要关闭系统安全保护。
+0.3.7 统一发布中的 Mac 附件与未启用正式签名的独立 `preview` 附件均为 ad-hoc 签名，不能视为已公证正式版。若 macOS 阻止打开，按下方测试包说明处理，或等待 Developer ID 签名并经过 Apple 公证的版本；不需要关闭系统安全保护。
 
-统一发布附有 [SHA256SUMS-0.3.6.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/SHA256SUMS-0.3.6.txt)，同时覆盖 Windows EXE 和两种 Mac 架构的 DMG、ZIP。在下载目录执行以下命令，与校验文件中对应文件名的条目比较：
+统一发布附有 [SHA256SUMS-0.3.7.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/SHA256SUMS-0.3.7.txt)，同时覆盖 Windows EXE 和两种 Mac 架构的 DMG、ZIP。在下载目录执行以下命令，与校验文件中对应文件名的条目比较：
 
 ```sh
-shasum -a 256 Tracer-0.3.6-mac-*.dmg
+shasum -a 256 Tracer-0.3.7-mac-*.dmg
 ```
 
 ## Mac 上的功能与操作
 
-0.3.6 包含任务、项目、笔记、完成历史、番茄钟、音频、参考浏览器、PDF/Word 提取、个人 AI 和桌面伙伴。6 个内置伙伴的 16 种动作各有 16 个不同姿态；新生成的伙伴为每动作 16 张连续图像、总计 256 帧，导入导出同时兼容新旧动作包。创建完整新伙伴需要 16 次图像生成，失败重试保留当前创建会话内已完成的动作，不会在安装或升级时自动生成。
+0.3.7 包含任务、项目、笔记、完成历史、番茄钟、音频、参考浏览器、PDF/Word 提取、个人 AI 和桌面伙伴。6 个内置伙伴的 16 种动作各有 16 个不同姿态；新生成的伙伴为每动作 16 张连续图像、总计 256 帧，导入导出同时兼容新旧动作包。创建完整新伙伴需要 16 次图像生成，失败重试保留已完成动作，不会在安装、升级或恢复草稿时自动生成。
+
+生成窗口可以暂时收起，应用运行时会继续生成，导航栏显示动作进度并提供返回入口。完成后会提醒保存并打开预览；若正在编辑其他弹窗，会等它关闭后再出现。未保存时收起窗口，照片、设置和结果仍然保留。
+
+参考照片先缩放，再连同设置和已完成动作暂存于本机 IndexedDB 草稿；刷新或重新启动后可以继续剩余动作。每页动作先保存进度，再开始下一页，暂存失败会暂停生成。保存伙伴或确认「放弃草稿」后清除草稿中的照片。名字和性格可直接修改；更换照片、形象设置或重新生成全部动作需先确认，完整结果的主按钮只预览。
 
 AI 运行时会随芯片架构一起打包，登录凭据使用当前 Mac 的用户环境。真实账号登录、音频及系统权限仍需在 Mac 上完成最终验收。
 
@@ -44,7 +48,7 @@ AI 运行时会随芯片架构一起打包，登录凭据使用当前 Mac 的用
 - **Command+E**：笔记编辑与预览切换；Ctrl+E 仍可用。
 - **Command+W** 或右上角关闭按钮：隐藏主窗口并继续后台运行。
 - 点击 **Dock** 中的 Tracer 图标，或菜单栏图标 →「打开面板」：恢复窗口。
-- **Command+Q** 或 Tracer 菜单 →「退出」：完全退出应用。
+- **Command+Q** 或 Tracer 菜单 →「退出」：完全退出应用。生成中、完整伙伴尚未保存或草稿暂存异常时会先提醒确认；选择留下会继续运行。
 
 花园的后台输入计数需要 macOS 系统权限。首次启动不会自动弹出授权请求；未授权时仅统计窗口内输入，任务和其他核心功能仍可用。需要后台计数时，选择 Tracer 菜单 →「启用后台输入计数」，在系统设置的「隐私与安全性 → 辅助功能」中授权 Tracer；如系统要求，也检查「输入监控」，然后重新启动应用。计数器只使用匿名的按键/点击次数，不保存输入内容。
 
@@ -70,7 +74,7 @@ node dev/verify-macos-release.cjs
 
 ### GitHub 云端构建
 
-统一发布使用 `.github/workflows/desktop-release.yml`，在 **Actions → Desktop release → Run workflow** 手动运行，或推送到 `codex/release-*` 分支触发。它会在 Windows x64、Apple 芯片 Mac 和 Intel Mac 的原生构建机上分别安装依赖、测试、构建并验证安装包。三个平台全部通过后，才在 `v<版本>` 的同一个公开 Release 中发布 Windows EXE、两个 Mac DMG、两个 Mac ZIP，以及合并后的 `SHA256SUMS-<版本>.txt`。0.3.6 的 Mac 产物使用 ad-hoc 签名，工作流的自动检查不等于 Developer ID 签名或 Apple 公证。
+统一发布使用 `.github/workflows/desktop-release.yml`，在 **Actions → Desktop release → Run workflow** 手动运行，或推送到 `codex/release-*` 分支触发。它会在 Windows x64、Apple 芯片 Mac 和 Intel Mac 的原生构建机上分别安装依赖、测试、构建并验证安装包。三个平台全部通过后，才在 `v<版本>` 的同一个公开 Release 中发布 Windows EXE、两个 Mac DMG、两个 Mac ZIP，以及合并后的 `SHA256SUMS-<版本>.txt`。0.3.7 的 Mac 产物使用 ad-hoc 签名，工作流的自动检查不等于 Developer ID 签名或 Apple 公证。
 
 ### 独立 Mac 签名与公证测试
 

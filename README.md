@@ -2,28 +2,28 @@
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[下载 Tracer 0.3.6：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.6 更新说明](docs/desktop-release-0.3.6.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[下载 Tracer 0.3.7：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.7)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.7 更新说明](docs/desktop-release-0.3.7.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-0.3.6 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。三个平台均已通过原生云端构建与验证，附件共用一份 SHA-256 校验文件。
+0.3.7 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.7)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
 
 | 电脑类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Windows x64 | [Tracer-Setup-0.3.6-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-Setup-0.3.6-x64.exe) | — |
-| Mac：Apple 芯片（M 系列） | [Tracer-0.3.6-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.zip) |
-| Mac：Intel | [Tracer-0.3.6-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.zip) |
+| Windows x64 | [Tracer-Setup-0.3.7-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-Setup-0.3.7-x64.exe) | — |
+| Mac：Apple 芯片（M 系列） | [Tracer-0.3.7-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-0.3.7-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-0.3.7-mac-arm64.zip) |
+| Mac：Intel | [Tracer-0.3.7-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-0.3.7-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/Tracer-0.3.7-mac-x64.zip) |
 
 Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置；任务、设置、桌宠和个人工作区保留。
 
-Windows x64、Mac arm64 与 Mac x64 各自通过 549 项核心测试和 13 项桌面测试（每个平台 562 项），以及打包应用的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源和源码一致性检查；三个平台使用相同的 252 个应用源码文件。见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35165754413)。
+Desktop release 工作流分别在 Windows x64、Mac arm64 与 Mac x64 上执行核心与桌面测试，以及打包应用主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源与源码一致性检查。发布需要三个平台全部通过，具体状态见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/workflows/desktop-release.yml)。伙伴生成与恢复 QA 已在本地通过，覆盖后台继续、刷新恢复、保存失败重试及草稿清除。
 
-本地最终 Windows 产物 `dist/0.3.6-final` 已通过包内容与校验值检查，但本机 Windows Application Control 阻止了它的原生执行；最终版本的启动与交互验证结论来自上述云端原生检查。Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证；真实账号登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
+本地最终 Windows 产物 `dist/0.3.7-final` 的包内容、校验值和实际运行均已验证通过。草稿恢复测试使用本地合成图与模拟服务，覆盖存储失败和清除期间的并发写入保护。Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证；真实账号登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
 
 - **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
 - **本地数据**：任务、完成历史和设置保存在 `%APPDATA%\tracer-desktop\`。升级及正常卸载保留用户数据；分享的安装包使用接收者自己的工作区。
-- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.3.6.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/SHA256SUMS-0.3.6.txt)，覆盖 Windows EXE 和两种 Mac 架构的 DMG、ZIP。
+- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.3.7.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.7/SHA256SUMS-0.3.7.txt)，覆盖 Windows EXE 和两种 Mac 架构的 DMG、ZIP。
 
 ## 功能
 
@@ -35,6 +35,14 @@ Windows x64、Mac arm64 与 Mac x64 各自通过 549 项核心测试和 13 项�
 - 独立 Chromium 参考浏览器，支持页面脚本、登录、后退前进和下载；网站自身的访问限制与网络条件仍然适用。
 - AI 计划助手：读取本地 PDF、Word 和文本资料，根据截止日期和可投入工时预览任务拆解与排程。
 - 桌面伙伴：6 个内置伙伴的 16 种动作各有 16 帧；更新后新生成的伙伴每个动作也使用 16 张连续图像，共 256 帧。旧照片与旧 4 帧动作包继续兼容，安装更新不会自动调用 AI 或重绘已有伙伴。
+
+### 伙伴生成与恢复
+
+生成窗口可以暂时收起，应用保持运行时会在后台继续。导航栏显示已完成动作数，点击即可返回；完成后会提醒保存并重新打开预览。如果你正在编辑任务或其他弹窗，预览会等该窗口关闭后再出现。收起未保存的结果会保留照片、设置和全部动作，并提醒从导航栏返回保存。
+
+参考照片会先缩放，连同设置和已完成动作暂存于本机 IndexedDB 恢复草稿。刷新或重新启动后可以继续剩余动作，恢复草稿不会自动调用 AI。每页动作会先保存进度，再请求下一页；暂存失败会暂停生成。保存伙伴或确认「放弃草稿」后，会清除草稿中的参考照片。
+
+改名字或性格保留已有动作；更换照片、修改会影响形象的设置或重新生成全部动作，需要确认后才清除结果。完整结果的主按钮只打开预览，保存失败可直接重试。生成中、完整伙伴尚未保存或草稿暂存异常时，刷新或真正退出应用会先提醒确认；普通收起窗口不会取消生成。
 
 ### AI 服务状态
 
