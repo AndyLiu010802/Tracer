@@ -110,6 +110,7 @@ async function main() {
   });
   child.stderr.resume();
   let spawnError;
+  let verificationError;
   child.on('error', error => { spawnError = error; });
   try {
     let ready = false;
@@ -141,13 +142,21 @@ async function main() {
     }
     await delay(3000);
     assert.equal(child.exitCode, null, 'Packaged app stays alive after initialization');
+  } catch (error) {
+    verificationError = error;
+    throw error;
   } finally {
     if (child.exitCode === null && !spawnError) {
       const ended = once(child, 'exit'); child.kill('SIGTERM');
       await Promise.race([ended, delay(5000)]);
       if (child.exitCode === null && child.signalCode === null) { child.kill('SIGKILL'); await ended; }
     }
-    fs.rmSync(profile, { recursive: true, force: true });
+    // Electron helpers can finish writing their temporary profile after the
+    // main process exits. Retry only cleanup races; keep all startup assertions.
+    assert.equal(path.dirname(path.resolve(profile)), path.resolve(os.tmpdir()));
+    assert.ok(path.basename(profile).startsWith('tracer-mac-smoke-'));
+    try { await fs.promises.rm(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); }
+    catch (error) { if (verificationError) console.error('Temporary profile cleanup also failed:', error.message); else throw error; }
   }
   const sums = ['dmg', 'zip'].map(ext => {
     const name = `Tracer-${version}-mac-${arch}.${ext}`;
