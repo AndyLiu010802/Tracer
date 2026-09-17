@@ -219,12 +219,16 @@ test('native generated files reject escaping junctions and over-limit files befo
   await assert.rejects(Images.generatedFile(room,file),/invalid-image-response/);
 });
 
-test('native generated files allow only Darwin system temporary aliases and retain redirect and hardlink guards', async () => {
-  function nativeFiles({ platform = 'darwin', redirected = {}, symlinks = [], nlink = 1 } = {}) {
+test('native generated files allow only system temporary aliases and retain redirect and hardlink guards', async () => {
+  const windowsTemporary = 'C:\\Users\\RUNNER~1\\AppData\\Local\\Temp';
+  function nativeFiles({ platform = 'darwin', redirected = {}, symlinks = [], nlink = 1, temporary = windowsTemporary } = {}) {
     const module = { exports: {} }, opened = [];
-    const canonical = value => redirected[value] || value.replace(/^\/(var|tmp)(?=\/|$)/, '/private/$1');
+    const paths = platform === 'win32' ? path.win32 : path.posix;
+    const canonical = value => redirected[value] || (platform === 'win32'
+      ? value.replace(/^C:\\Users\\RUNNER~1(?=\\|$)/i, 'C:\\Users\\runneradmin')
+      : value.replace(/^\/(var|tmp)(?=\/|$)/, '/private/$1'));
     const native = {
-      realpath: async value => canonical(path.posix.resolve(value)),
+      realpath: async value => canonical(paths.resolve(value)),
       lstat: async value => ({ isSymbolicLink: () => symlinks.includes(value) }),
       open: async value => {
         opened.push(value);
@@ -233,7 +237,7 @@ test('native generated files allow only Darwin system temporary aliases and reta
       }
     };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../lib/pet-image.js'), 'utf8'), { module, Buffer, process: { platform },
-      require: name => name === 'node:fs/promises' ? native : name === 'node:path' ? path.posix : require(name) });
+      require: name => name === 'node:fs/promises' ? native : name === 'node:path' ? paths : name === 'node:os' ? { tmpdir: () => temporary } : require(name) });
     return { images: module.exports, opened };
   }
   for (const prefix of ['/var/folders/test', '/tmp']) {
@@ -255,6 +259,21 @@ test('native generated files allow only Darwin system temporary aliases and reta
   const arbitrary = nativeFiles({ redirected: { '/elsewhere/job': '/private/var/folders/test/job', '/elsewhere/job/result.png': '/private/var/folders/test/job/result.png' } });
   await assert.rejects(arbitrary.images.generatedFile('/elsewhere/job', '/elsewhere/job/result.png'), /invalid-image-response/);
   assert.deepEqual(arbitrary.opened, [], 'unrecognized aliases fail before any image bytes are read');
+  const winRoom = windowsTemporary + '\\job', winFile = winRoom + '\\native\\result.png';
+  const winCanonical = 'C:\\Users\\runneradmin\\AppData\\Local\\Temp', win = nativeFiles({ platform: 'win32' });
+  assert.deepEqual(await win.images.generatedFile(winRoom, winFile), portrait);
+  assert.deepEqual(win.opened, [winCanonical + '\\job\\native\\result.png']);
+  assert.deepEqual(await win.images.generatedFile(winRoom, winCanonical + '\\job\\native\\result.png'), portrait);
+  for (const setup of [
+    { redirected: { [winRoom]: winCanonical + '\\other', [winFile]: winCanonical + '\\other\\native\\result.png' } },
+    { redirected: { [winFile]: winCanonical + '\\job\\different\\result.png' } },
+    { symlinks: ['C:\\Users\\RUNNER~1'] },
+    { symlinks: [windowsTemporary] },
+    { symlinks: [winCanonical + '\\job\\native'] },
+    { nlink: 2 }
+  ]) await assert.rejects(nativeFiles({ platform: 'win32', ...setup }).images.generatedFile(winRoom, winFile), /invalid-image-response/);
+  const outsideTemp = 'C:\\Users\\RUNNER~1\\Documents\\job';
+  await assert.rejects(nativeFiles({ platform: 'win32' }).images.generatedFile(outsideTemp, outsideTemp + '\\result.png'), /invalid-image-response/);
 });
 
 test('local asset route persists across API instances and rejects cross-origin, bad hosts and unsafe paths', async t => {

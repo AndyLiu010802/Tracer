@@ -44,7 +44,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Check native filesystem aliases
-        run: node -e "const fs=require('fs'),os=require('os'),p=require('path');const t=os.tmpdir(),r=fs.realpathSync(t);console.log(JSON.stringify({platform:process.platform,node:process.version,temp:t,canonical:r,difference:p.relative(p.resolve(t),r)}));const d=fs.mkdtempSync(p.join(t,'tracer-path-check-')),f=p.join(d,'probe');fs.writeFileSync(f,'probe');console.log(JSON.stringify({file:f,canonical:fs.realpathSync(f),nlink:fs.statSync(f).nlink}));fs.unlinkSync(f);fs.rmdirSync(d);"
+        run: node -e "const fs=require('fs'),os=require('os'),p=require('path');const t=os.tmpdir(),r=fs.realpathSync.native(t);console.log(JSON.stringify({platform:process.platform,node:process.version,temp:t,canonical:r,difference:p.relative(p.resolve(t),r)}));const d=fs.mkdtempSync(p.join(t,'tracer-path-check-')),f=p.join(d,'probe');fs.writeFileSync(f,'probe');console.log(JSON.stringify({file:f,canonical:fs.realpathSync.native(f),nlink:fs.statSync(f).nlink}));fs.unlinkSync(f);fs.rmdirSync(d);"
       - run: node --test --test-concurrency=4 test/*.test.js
       - run: npm run test:desktop
       - name: Build Windows installer
@@ -86,6 +86,7 @@ jobs:
         with:
           name: UI-evidence-${{ matrix.platform }}-${{ matrix.arch }}
           if-no-files-found: ignore
+          include-hidden-files: true
           path: |
             .cache/pet-dense-release-*/*.png
             .cache/pet-dense-release-*/launch.log
