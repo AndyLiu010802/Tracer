@@ -68,8 +68,56 @@ test('companion chat uses both configured protocols without sending workspace da
   const api=createPersonal(temp(t),{request:async(url,opts)=>{captured=JSON.parse(opts.body);return protocol==='chat'?chat('Hello!'):new Response(JSON.stringify({output:[{content:[{type:'output_text',text:'Hello!'}]}]}));}});
   await api.handle('personal-configure',{...settings,protocol});
   const result=await api.handle('personal-chat',{pet:'miso',messages:[{role:'user',content:'Hi'}],tasks:[{title:'Private task'}]});
-  assert.equal(result.reply,'Hello!');assert.equal(JSON.stringify(captured).includes('Private task'),false);if(protocol==='responses')assert.equal(captured.store,false);
+  assert.equal(result.reply,'Hello!');assert.equal(result.proposal,null);assert.equal(JSON.stringify(captured).includes('Private task'),false);if(protocol==='responses')assert.equal(captured.store,false);
  }
+});
+
+test('companion protocols clarify then return a validated review draft with local date and no existing workspace', async t => {
+  const proposal = { type: 'tasks', project: null, tasks: [{ title: 'Draft the report', notes: 'Summarize findings', due: null, scheduled: null, priority: 'medium', estimate: null, checklist: [] }] };
+  for (const protocol of ['chat', 'responses']) {
+    const calls = [], dir = temp(t);
+    let output = { reply: 'What should the report cover?', proposal: null };
+    const api = createPersonal(dir, { request: async (url, opts) => {
+      calls.push(JSON.parse(opts.body));
+      const content = JSON.stringify(output);
+      return protocol === 'chat' ? chat(content) : new Response(JSON.stringify({ output: [{ content: [{ type: 'output_text', text: content }] }] }));
+    } });
+    await api.handle('personal-configure', { ...settings, protocol });
+    const input = { pet: 'nova', today: '2026-09-17', messages: [{ role: 'user', content: 'Help create a report task.' }],
+      tasks: [{ title: 'Private existing task' }], projects: [{ name: 'Private existing project' }], workspace: { notes: 'Private workspace note' } };
+    assert.deepEqual(await api.handle('personal-chat', input), output);
+    output = { reply: 'Here is a draft. Please review it before saving.', proposal };
+    const messages = [...input.messages, { role: 'assistant', content: 'What should the report cover?' }, { role: 'user', content: 'Summarize findings. No deadline.' }];
+    assert.deepEqual(await api.handle('personal-chat', { ...input, messages }), output);
+    output = { reply: 'Updated draft for review.', proposal: { ...proposal, tasks: [{ ...proposal.tasks[0], due: '2026-09-18' }] } };
+    assert.deepEqual(await api.handle('personal-chat', { ...input, messages: [{ role: 'user', content: 'Make the draft due tomorrow.' }], proposal }), output);
+    const body = calls[2], serialized = JSON.stringify(body);
+    for (const hidden of ['Private existing task', 'Private existing project', 'Private workspace note']) assert.equal(serialized.includes(hidden), false);
+    assert.ok(serialized.includes('2026-09-17')); assert.ok(serialized.includes('Summarize findings'));
+    assert.equal(body.model, settings.model); assert.equal(body.tools, undefined);
+    if (protocol === 'responses') {
+      assert.equal(body.store, false); assert.equal(body.text.format.type, 'json_schema'); assert.equal(body.text.format.strict, true);
+      assert.deepEqual(body.text.format.schema.required, ['reply', 'proposal']);
+    } else assert.match(body.messages[0].content, /JSON schema:/);
+    assert.equal(fs.existsSync(path.join(dir, 'workspace.json')), false);
+  }
+});
+
+test('companion providers reject malformed drafts and malformed inputs without silently returning chat text', async t => {
+  for (const protocol of ['chat', 'responses']) {
+    let output, count = 0;
+    const api = createPersonal(temp(t), { request: async () => {
+      count++;
+      return protocol === 'chat' ? chat(output) : new Response(JSON.stringify({ output: [{ content: [{ type: 'output_text', text: output }] }] }));
+    } });
+    await api.handle('personal-configure', { ...settings, protocol });
+    const input = { pet: 'sprout', messages: [{ role: 'user', content: 'Create a task.' }] };
+    for (const invalid of [{ ...input, today: '2026-02-30' }, { ...input, proposal: { tasks: [] } }]) await assert.rejects(api.handle('personal-chat', invalid), /invalid-chat/);
+    assert.equal(count, 0);
+    for (const invalid of ['{"reply":"Draft","proposal":', JSON.stringify({ reply: 'Draft', proposal: { type: 'tasks', project: null, tasks: [] } }), JSON.stringify({ reply: 'Draft' })]) {
+      output = invalid; await assert.rejects(api.handle('personal-chat', input), /invalid-response/);
+    }
+  }
 });
 
 test('provider errors cannot leak credentials; oversized replies and concurrent calls are rejected', async t => {

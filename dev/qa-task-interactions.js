@@ -19,7 +19,6 @@ async (page) => {
     } else await route.fulfill({ json: null });
   });
   await p.route('**/api/state', route => route.fulfill({ json: {} }));
-  await p.route('**/api/sync/**', route => route.fulfill({ json: { connected: false } }));
   try {
     await p.setViewportSize({ width: 1440, height: 1000 });
     await p.goto('http://localhost:8097/?sec=board&qa=interactions', { waitUntil: 'domcontentloaded', timeout: 10000 });

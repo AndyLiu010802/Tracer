@@ -33,9 +33,9 @@ test.after(() => new Promise((resolve) => server.close(() => {
   resolve();
 })));
 
-function req(method, pathname, body) {
+function req(method, pathname, body, headers) {
   return new Promise((resolve, reject) => {
-    const r = http.request(origin + pathname, { method }, (res) => {
+    const r = http.request(origin + pathname, { method, headers }, (res) => {
       const chunks = [];
       res.on('data', (c) => chunks.push(c));
       res.on('end', () => resolve({
@@ -58,6 +58,15 @@ test('只读模式下 POST 同样被拒（sendBeacon 走 POST）', async () => {
   const r = await req('POST', '/api/store/ws-ro2', '{"v":1}');
   assert.strictEqual(r.status, 403);
   assert.ok(!fs.existsSync(path.join(TMP, 'ws-ro2.json')), '只读模式绝不能落盘');
+});
+
+test('同源工作区 beacon 仍遵守只读模式', async () => {
+  const original = '{"tasks":[{"id":"existing","title":"Keep me"}],"meta":{}}';
+  fs.writeFileSync(path.join(TMP, 'workspace.json'), original, 'utf8');
+  const result = await req('POST', '/api/store/workspace', '{"tasks":[],"meta":{}}', { Origin: origin, 'content-type': 'text/plain;charset=UTF-8' });
+  assert.strictEqual(result.status, 403);
+  assert.deepStrictEqual(JSON.parse(result.body), { ok: false, readonly: true });
+  assert.strictEqual((await req('GET', '/api/store/workspace')).body, original);
 });
 
 test('只读模式下 GET 照常可读', async () => {

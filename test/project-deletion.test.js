@@ -91,27 +91,6 @@ test('deletion markers validate IDs and contain no project or task content', () 
   assert.deepEqual(D.validate([{ id: 'p', taskIds: ['t','t'], name: 'Private name' }]), [{ id: 'p', taskIds: ['t'] }]);
 });
 
-test('cloud writes retain project deletion markers when a stale client omits them', async () => {
-  const { createService } = require('../wechat/cloudfunctions/tracer/core');
-  const memoryRepository = require('./helpers/cloud-repository');
-  const service = createService(memoryRepository());
-  const user = { openid: 'project-delete-user', appid: 'wx-test' };
-  const initial = await service({ action: 'read' }, user);
-  const { ws, project } = fixture();
-  const first = await service({ action: 'write', workspace: ws, version: initial.workspace.meta.syncVersion }, user);
-  assert.ok(first.ok);
-  const stale = S.clone(first.workspace), next = S.clone(first.workspace);
-  M.deleteProject(next, project.id);
-  const deleted = await service({ action: 'write', workspace: next, version: first.workspace.meta.syncVersion }, user);
-  assert.ok(deleted.ok);
-  const result = await service({ action: 'write', workspace: stale, version: deleted.workspace.meta.syncVersion }, user);
-  assert.ok(result.ok);
-  assert.equal(result.workspace.projects.length, 1);
-  assert.equal(result.workspace.tasks.length, 1);
-  assert.equal(result.workspace.notes.length, 1);
-  assert.deepEqual(result.workspace.completionHistory, []);
-});
-
 test('deleting project tasks clears only their focus history and running timer', () => {
   const state = F.fresh();
   state.task = { id: 'removed', title: 'Remove me' };

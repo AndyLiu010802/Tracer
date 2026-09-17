@@ -2,6 +2,11 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const actions = new Set(['hide','expand','set-size','ready','drag-start','drag-move','drag-end','feed','play','sleep','pet','select','reminders','snooze','focus-toggle','open-task','open-ai','open-home','open-create','open-remove','open-import','open-export']);
 if (process.isMainFrame) contextBridge.exposeInMainWorld('PetDesktop', {
+  createWork: async value => {
+    const response = await ipcRenderer.invoke('tracer-pet-create-work', value);
+    if (!response || !response.ok) throw new Error(response?.error || 'companion-save-pending');
+    return response.result;
+  },
   send: message => {
     if (!message || !actions.has(message.type)) return;
     if (message.type === 'set-size') {

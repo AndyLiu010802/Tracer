@@ -72,6 +72,7 @@ async function main() {
   const files = asar.listPackage(archive).map(file => file.replaceAll('\\', '/'));
   assert.deepEqual(files.filter(file => /(^|\/)(workspace\.json|bookmarks\.json|accounts\.json|connection\.json|local\.config\.json|\.env|\.cache|\.pet-art|\.codex|\.agents|personal\.json|output)(\/|$)/.test(file)), [], 'No personal workspace, generated artwork or credentials in package');
   assert.equal(JSON.parse(asar.extractFile(archive, 'package.json')).version, version);
+  assert.deepEqual(files.filter(file => /(^|\/)wechat(\/|$)|\/lib\/cloud-sync\.js$|\/skins\/tracer\/sync-ui\.js$/.test(file)), [], 'Retired WeChat code is absent from the installer');
   const sources = ['server.js', 'ai-service/provider.js', ...['desktop', 'lib', 'public', 'skins'].flatMap(runtimeFiles)];
   for (const file of sources) {
     assert.ok(asar.extractFile(archive, file).equals(fs.readFileSync(path.join(root, file))), `${file} matches source`);

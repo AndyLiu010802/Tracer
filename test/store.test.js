@@ -13,7 +13,7 @@ const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'store-test-'));
 process.env.DOCS_PORTAL_DATA_DIR = TMP;
 process.env.DOCS_PORTAL_SKIN = 'docs-portal';
 
-const { server } = require('../server.js');
+const { server, handleRequest } = require('../server.js');
 
 let origin;
 
@@ -29,9 +29,9 @@ test.after(() => new Promise((resolve) => server.close(() => {
   resolve();
 })));
 
-function req(method, pathname, body) {
+function req(method, pathname, body, headers) {
   return new Promise((resolve, reject) => {
-    const r = http.request(origin + pathname, { method }, (res) => {
+    const r = http.request(origin + pathname, { method, headers }, (res) => {
       const chunks = [];
       res.on('data', (c) => chunks.push(c));
       res.on('end', () => resolve({
@@ -40,7 +40,10 @@ function req(method, pathname, body) {
         body: Buffer.concat(chunks).toString('utf8'),
       }));
     });
-    r.on('error', reject);
+    r.on('error', error => {
+      error.message += ' [' + method + ' ' + pathname + ', headers=' + JSON.stringify(headers || {}) + ', reusedSocket=' + r.reusedSocket + ']';
+      reject(error);
+    });
     r.end(body);
   });
 }
@@ -193,4 +196,146 @@ test('HEAD 走读取分支而不是被 405 误伤', async () => {
   const r = await req('HEAD', '/api/store/ws-head');
   assert.strictEqual(r.status, 200);
   assert.strictEqual(r.body, '', 'HEAD 不应带 body');
+});
+
+test('旧同步配置不会接管工作区，本地写入保留任务和已有备份', async () => {
+  const oldDir = path.join(TMP, '.sync');
+  fs.mkdirSync(oldDir, { recursive: true });
+  // An unusable retired endpoint must not be consulted for local reads or writes.
+  const connection = JSON.stringify({ endpoint: 'https://retired.invalid/tracer', token: 'a'.repeat(48), expiresAt: 1 });
+  const backup = JSON.stringify({ tasks: [{ id: 'before-pairing', title: 'Keep this backup' }], meta: {} });
+  fs.writeFileSync(path.join(oldDir, 'connection.json'), connection);
+  fs.writeFileSync(path.join(oldDir, 'before-pairing.json'), backup);
+  const original = { tasks: [{ id: 'local-task', title: 'Local task' }], projects: [], notes: [], inbox: [], meta: { syncAccount: 'retired-account', syncVersion: 9 } };
+  assert.strictEqual((await req('PUT', '/api/store/workspace', JSON.stringify(original))).status, 200);
+  let result = await req('GET', '/api/store/workspace');
+  assert.strictEqual(result.status, 200);
+  assert.deepStrictEqual(JSON.parse(result.body).tasks, original.tasks);
+  assert.strictEqual((await req('HEAD', '/api/store/workspace')).status, 200);
+  const updated = JSON.parse(JSON.stringify(original)); updated.tasks[0].title = 'Local edit';
+  assert.strictEqual((await req('POST', '/api/store/workspace', JSON.stringify(updated))).status, 200);
+  result = await req('GET', '/api/store/workspace');
+  assert.deepStrictEqual(JSON.parse(result.body).tasks, updated.tasks);
+  assert.deepStrictEqual(JSON.parse(fs.readFileSync(path.join(TMP, 'workspace.json.bak'), 'utf8')).tasks, original.tasks);
+  assert.strictEqual(fs.readFileSync(path.join(oldDir, 'connection.json'), 'utf8'), connection);
+  assert.strictEqual(fs.readFileSync(path.join(oldDir, 'before-pairing.json'), 'utf8'), backup);
+});
+
+test('已移除的配对和同步接口返回 404', async () => {
+  for (const [method, url] of [['GET', '/api/sync/status'], ['POST', '/api/sync/pair'], ['POST', '/api/sync/disconnect']]) {
+    assert.strictEqual((await req(method, url, method === 'POST' ? '{}' : undefined)).status, 404, url);
+  }
+});
+
+test('工作区拒绝非本机 Host 和跨来源写入且保留本地数据', async () => {
+  const before = (await req('GET', '/api/store/workspace')).body;
+  const replacement = JSON.stringify({ tasks: [], projects: [], notes: [], inbox: [], meta: {} });
+  for (const method of ['GET', 'HEAD', 'PUT', 'POST']) {
+    const result = await req(method, '/api/store/workspace', ['PUT', 'POST'].includes(method) ? replacement : undefined, { Host: 'untrusted.example' });
+    assert.strictEqual(result.status, 403, method + ' with a non-loopback Host');
+  }
+  for (const method of ['PUT', 'POST']) {
+    for (const source of ['https://untrusted.example', 'null', origin + '1']) {
+      const result = await req(method, '/api/store/workspace', replacement, { Origin: source, 'content-type': 'text/plain;charset=UTF-8' });
+      assert.strictEqual(result.status, 403, method + ' from ' + source);
+    }
+  }
+  assert.strictEqual((await req('GET', '/api/store/workspace')).body, before);
+});
+
+test('工作区拒绝伪装成本机 Host 的远端连接', async () => {
+  let status, body;
+  const response = { writeHead(code) { status = code; return this; }, end(value) { body = value; } };
+  await handleRequest({ url: '/api/store/workspace', method: 'GET', headers: { host: '127.0.0.1:8080' }, socket: { remoteAddress: '203.0.113.40' } }, response);
+  assert.strictEqual(status, 403);
+  assert.deepStrictEqual(JSON.parse(body), { ok: false });
+});
+
+test('同源工作区 beacon 和 JSON 写入无需自定义同步请求头', async () => {
+  for (const [method, contentType] of [['POST', 'text/plain;charset=UTF-8'], ['PUT', 'application/json']]) {
+    const workspace = { tasks: [{ id: 'same-origin', title: contentType }], projects: [], notes: [], inbox: [], meta: {} };
+    const result = await req(method, '/api/store/workspace', JSON.stringify(workspace), { Origin: origin, 'content-type': contentType });
+    assert.strictEqual(result.status, 200);
+    assert.deepStrictEqual(JSON.parse((await req('GET', '/api/store/workspace')).body).tasks, workspace.tasks);
+  }
+});
+
+test('old workspace writes preserve companion creation receipts and contradictory receipts never reach disk', async () => {
+  const Work=require('../public/companion-work'),M=require('../skins/tracer/model');
+  const id='f623b4d1-79de-4cad-ae76-d5523a54dacf';
+  const proposal={type:'tasks',project:null,tasks:[{title:'Create once',notes:'',due:null,scheduled:null,priority:'medium',estimate:null,checklist:[]}]};
+  const created=Work.apply(M.emptyWorkspace(),proposal,id,M).workspace;
+  assert.strictEqual((await req('PUT','/api/store/workspace',JSON.stringify(created))).status,200);
+  const legacy=JSON.parse(JSON.stringify(created));delete legacy.meta.companionReceipts;legacy.tasks[0].notes='Edited by an older client';
+  assert.strictEqual((await req('PUT','/api/store/workspace',JSON.stringify(legacy))).status,200);
+  const before=(await req('GET','/api/store/workspace')).body;
+  assert.deepStrictEqual(JSON.parse(before).meta.companionReceipts,created.meta.companionReceipts);
+  const conflict=Work.apply(M.emptyWorkspace(),{...proposal,tasks:[{...proposal.tasks[0],title:'Changed operation'}]},id,M).workspace;
+  assert.strictEqual((await req('PUT','/api/store/workspace',JSON.stringify(conflict))).status,500);
+  assert.strictEqual((await req('GET','/api/store/workspace')).body,before);
+});
+
+test('stale workspace writes cannot discard unseen companion tasks, projects or notes and leave disk unchanged', async () => {
+  const Work = require('../public/companion-work'), M = require('../skins/tracer/model');
+  const id = 'bbcc9a16-75e1-4379-9201-8539701745b8';
+  const oldTab = JSON.parse((await req('GET', '/api/store/workspace')).body);
+  const proposal = { type: 'project', project: { name: 'New project', notes: 'Project description', start: null, end: null },
+    tasks: [{ title: 'New task', notes: '', due: null, scheduled: null, priority: 'medium', estimate: null, checklist: [] }] };
+  const created = Work.apply(oldTab, proposal, id, M);
+  assert.strictEqual((await req('PUT', '/api/store/workspace', JSON.stringify(created.workspace))).status, 200);
+  const file = path.join(TMP, 'workspace.json'), before = fs.readFileSync(file, 'utf8'), backup = fs.readFileSync(file + '.bak', 'utf8');
+  const attempts = [oldTab];
+  for (const [collection, recordId] of [['tasks', created.taskIds[0]], ['projects', created.projectId], ['notes', created.noteId]]) {
+    const incoming = JSON.parse(JSON.stringify(created.workspace));
+    incoming.meta.companionReceipts = incoming.meta.companionReceipts.filter(receipt => receipt.requestId !== id);
+    incoming[collection] = incoming[collection].filter(record => record.id !== recordId);
+    attempts.push(incoming);
+  }
+  // A forged deletion marker must not bypass the check by retaining raw records
+  // which history preservation would remove before saving.
+  const tombstone = JSON.parse(JSON.stringify(created.workspace));
+  delete tombstone.meta.companionReceipts;
+  tombstone.projectDeletions = [{ id: created.projectId, taskIds: created.taskIds }];
+  attempts.push(tombstone);
+  for (const [index, incoming] of attempts.entries()) {
+    const response = await req(index % 2 ? 'POST' : 'PUT', '/api/store/workspace', JSON.stringify(incoming));
+    assert.strictEqual(response.status, 409);
+    assert.deepStrictEqual(JSON.parse(response.body), { ok: false, error: 'workspace-stale' });
+    assert.strictEqual(fs.readFileSync(file, 'utf8'), before);
+    assert.strictEqual(fs.readFileSync(file + '.bak', 'utf8'), backup);
+    assert.deepStrictEqual(JSON.parse((await req('GET', '/api/store/workspace')).body), JSON.parse(before));
+  }
+  // The rejected request must not poison the write queue or block explicit deletion.
+  const informed = JSON.parse(before); M.deleteProject(informed, created.projectId);
+  assert.strictEqual((await req('PUT', '/api/store/workspace', JSON.stringify(informed))).status, 200);
+  const stored = JSON.parse((await req('GET', '/api/store/workspace')).body);
+  const retry = Work.apply(stored, proposal, id, M);
+  assert.strictEqual(retry.duplicate, true);
+  assert.deepStrictEqual(retry.workspace, stored);
+  assert.ok(!stored.projects.some(row => row.id === created.projectId));
+  assert.ok(!stored.tasks.some(row => created.taskIds.includes(row.id)));
+  assert.ok(!stored.notes.some(row => row.id === created.noteId));
+});
+
+test('informed clients can delete companion standalone tasks without a retry resurrecting them', async () => {
+  const Work = require('../public/companion-work'), M = require('../skins/tracer/model');
+  const id = 'ac20127b-72e6-4cf0-8bbe-96804e826f10';
+  const proposal = { type: 'tasks', project: null,
+    tasks: [{ title: 'Delete explicitly', notes: '', due: null, scheduled: null, priority: 'low', estimate: null, checklist: [] }] };
+  const base = JSON.parse((await req('GET', '/api/store/workspace')).body);
+  const created = Work.apply(base, proposal, id, M);
+  assert.strictEqual((await req('PUT', '/api/store/workspace', JSON.stringify(created.workspace))).status, 200);
+  M.deleteTask(created.workspace, created.taskIds[0]);
+  assert.strictEqual((await req('POST', '/api/store/workspace', JSON.stringify(created.workspace))).status, 200);
+  const stored = JSON.parse((await req('GET', '/api/store/workspace')).body);
+  assert.ok(!stored.tasks.some(row => row.id === created.taskIds[0]));
+  const retry = Work.apply(stored, proposal, id, M);
+  assert.strictEqual(retry.duplicate, true);
+  assert.deepStrictEqual(retry.workspace, stored);
+  assert.strictEqual((await req('PUT', '/api/store/workspace', JSON.stringify(retry.workspace))).status, 200);
+  assert.deepStrictEqual(JSON.parse((await req('GET', '/api/store/workspace')).body), stored);
+  // Missing receipts alone are safe once all corresponding records were explicitly removed.
+  const legacy = JSON.parse(JSON.stringify(stored)); delete legacy.meta.companionReceipts;
+  assert.strictEqual((await req('PUT', '/api/store/workspace', JSON.stringify(legacy))).status, 200);
+  assert.deepStrictEqual(JSON.parse((await req('GET', '/api/store/workspace')).body).meta.companionReceipts, stored.meta.companionReceipts);
 });

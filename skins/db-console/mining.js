@@ -13,7 +13,7 @@
   // price 整体比最初版本低 6 倍——最初按单价对齐鱼价，但开采吞吐（挂机产出/小时）是
   // 钓鱼的 18~90 倍且零前置投入（钓鱼要先付鱼塘/回收器/钓点），按单价对齐的结果是
   // 开采金币效率压倒钓鱼 7.5~10 倍，与 spec 「金币收益与钓鱼可比但不压倒」的意图不符。
-  // 按「每小时产出 × 单价」对齐才是正确量级，见 docs/superpowers/specs/2026-09-04-mining-economy-design.md。
+  // 按「每小时产出 × 单价」对齐才是正确量级；原 mining-economy-design 说明保存在 docs/archive/history-design-notes.zip。
   var ORES = {
     heap_ore:   { name: '铜矿',   job: 'heap_ore',   emoji: '\u{1F7E0}', tier: 1, price: 2 },
     fsm_ore:    { name: '铁矿',   job: 'fsm_ore',    emoji: '\u{1F529}', tier: 2, price: 5 },

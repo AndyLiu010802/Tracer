@@ -216,11 +216,13 @@ task opens its editor in the main workspace.
 
 Configure a ChatGPT account or your own API in **AI plan → My AI**, then open
 the companion's **Chat** tab. It uses the selected connection, without
-automatically switching providers. Only the current conversation and pet
-identity are sent, including a custom companion's name, type and optional
-personality; task data, source photos and files are not sent automatically. Sending
-can use ChatGPT allowance or incur API charges. Replies do not execute
-commands, create tasks or change the timer.
+automatically switching providers. The current conversation, today's local
+date, any draft proposal and pet identity are sent, including a custom
+companion's name, type and optional personality. Existing workspace tasks,
+source photos and files are not sent automatically. Sending can use ChatGPT
+allowance or incur API charges. Replies do not execute commands or change the
+timer; a task or project proposal requires your explicit confirmation before
+it is saved.
 
 Press **Enter** to send, or **Shift+Enter** for a new line. Confirming text with
 an input method does not send the message. Your sent bubble appears immediately,
@@ -233,23 +235,48 @@ button. Retry uses that same message rather than adding another bubble. The
 original text is restored in the composer only when you have not entered a
 new draft. Sending that restored text also retries the same message.
 
-Switching companions starts a fresh conversation and cancels waiting for the
-previous reply, so a slow response cannot appear as the new companion's reply.
-**Clear** also cancels the pending response and clears the conversation and draft.
-Opening **Set up My AI** keeps that companion's conversation and unsent draft
-in memory. After closing settings, reopen **Companions** to return to the chat;
-an interrupted request can be retried. This recovery is only for the settings
-roundtrip and is not saved across a reload or app restart.
+Each companion has its own locally saved conversation, unsent text and work
+proposal. The main window and native desktop window keep separate chat records.
+Switching companions restores that companion's record and cancels waiting for
+the previous reply, so a slow response cannot appear in the wrong chat.
+Closing the panel, opening **Set up My AI**, reloading or restarting retains
+the saved record; interrupted messages can be retried. **Clear** removes the
+conversation and draft when no creation result is still awaiting confirmation.
 
 Pet care and unlocks are saved in this device's `tracer.pet.v1` preferences;
 desktop visibility and position are saved in `pet-window.json` in the app
-profile. They are currently local to this device. Chat is held in the
-current panel's memory and can be cleared; it is not stored in the workspace.
+profile. They are currently local to this device. Chat recovery is held in this
+device's local browser storage and can be cleared; it is not part of companion
+exports or the workspace task file.
 The normal browser version has the same companion home, but transparent
 desktop windows require Electron.
 
+### Create tasks or a project through chat (0.3.9)
+
+Ask the companion to organize new work in either the main window or native
+desktop chat. It asks for essential missing details before proposing a plan;
+dates and effort estimates are optional. Ordinary conversation does not create
+work. The proposal preview shows the project and task details before anything
+is added to the workspace. Continue chatting to revise it, cancel it, or choose
+**Confirm & create** when it is ready.
+
+Confirmation first saves a local recovery record, then writes the proposed
+work through the main workspace. A successful save is required before the chat
+reports completion. If the result is uncertain, the proposal stays available
+and **Retry creation** uses the same request identifier. Resolve that attempt before
+revising or canceling it, so a lost reply or repeated click cannot turn it into
+a second creation request. Reloading or reopening the app restores the pending
+attempt. After successful creation, edit the saved work in the workspace.
+
+Local storage failures display an error and keep available content in the
+open panel. Keep the application open until recovery storage works again.
+
 ## Verification
 
+- `node dev/qa-companion-work.cjs` checks follow-up questions, proposal previews,
+  explicit confirmation, local chat recovery, storage failure protection and
+  same-request creation retries in the workspace and compact desktop layout.
+  It uses mocked AI responses and isolated local data.
 - `node dev/qa-pet-generation-recovery.cjs` checks background generation,
   navigation progress, completion reopening, unsaved reminders, local draft
   recovery, completed-action reuse, explicit discard confirmation and failed
@@ -263,7 +290,7 @@ desktop windows require Electron.
 - `node dev/qa-pet-dense-release.cjs` smoke-tests the packaged Windows app
   in an isolated profile: built-in and generated 16-frame loops in the workspace
   and native desktop window, live care, real file export/import, legacy artwork
-  and saved selection. It defaults to `dist/0.3.8-final/win-unpacked/Tracer.exe`;
+  and saved selection. It defaults to `dist/0.3.9-final/win-unpacked/Tracer.exe`;
   pass another packaged executable path as the first argument if needed.
 - `node dev/qa-pet-frame-boundaries.cjs` verifies cross-cell fragment masking,
   preservation of character and prop pixels at 70/100/180% scale, transparent

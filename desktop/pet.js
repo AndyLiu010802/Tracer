@@ -2,10 +2,13 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { BrowserWindow, ipcMain, screen } = require('electron');
+const Work = require('../public/companion-work');
+const { randomUUID } = require('node:crypto');
 
 function attachPet(main, origin, userData, showMain) {
   const file = path.join(userData, 'pet-window.json');
   let saved = {}, pet = null, snapshot = null, drag = null, expanded = false;
+  const pendingWork = new Map();
   try { saved = JSON.parse(fs.readFileSync(file, 'utf8')); } catch {}
   if (!saved || typeof saved !== 'object' || Array.isArray(saved)) saved = {};
   const normalizeSize = value => Number.isFinite(value) ? Math.max(70, Math.min(180, Math.round(value))) : 100;
@@ -21,6 +24,31 @@ function attachPet(main, origin, userData, showMain) {
     if (!win || win.isDestroyed() || event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame) return false;
     try { const url = new URL(event.senderFrame.url); return url.origin === origin && url.pathname === pathname; } catch { return false; }
   }
+  function settleWork(token, response) {
+    const pending = pendingWork.get(token);
+    if (!pending) return;
+    pendingWork.delete(token); clearTimeout(pending.timer); pending.resolve(response);
+  }
+  function workResult(event, message) {
+    if (!trusted(event, main, '/') || !message || typeof message.token !== 'string' || !pendingWork.has(message.token)) return;
+    if (message.ok === true && message.result && Array.isArray(message.result.taskIds) && message.result.taskIds.length <= 20) {
+      settleWork(message.token, { ok: true, result: message.result });
+    } else settleWork(message.token, { ok: false, error: typeof message.error === 'string' ? message.error.slice(0,100) : 'companion-save-pending' });
+  }
+  ipcMain.handle('tracer-pet-create-work', async (event, request) => {
+    if (!trusted(event, pet, '/pet.html') || !request || !Work.validRequestId(request.requestId)) return { ok: false, error: 'invalid-companion-request-id' };
+    if (main.isDestroyed() || pendingWork.size >= 8) return { ok: false, error: 'workspace-busy' };
+    let proposal;
+    try { proposal = Work.normalize(request.proposal); } catch (error) { return { ok: false, error: error.message }; }
+    const token = randomUUID();
+    return new Promise(resolve => {
+      const timer = setTimeout(() => settleWork(token, { ok: false, error: 'companion-save-pending' }), 30000);
+      pendingWork.set(token, { resolve, timer });
+      try { main.webContents.send('tracer-pet-work-request', { token, value: { requestId: request.requestId, proposal } }); }
+      catch { settleWork(token, { ok: false, error: 'workspace-busy' }); }
+    });
+  });
+  ipcMain.on('tracer-pet-work-result', workResult);
   function persist(enabled) {
     if (pet && !pet.isDestroyed()) { const bounds = pet.getBounds(); saved.x = bounds.x; saved.y = bounds.y; }
     saved.enabled = enabled;
@@ -114,7 +142,12 @@ function attachPet(main, origin, userData, showMain) {
     main.webContents.send('tracer-pet-action', { type: message.type, value });
   }
   ipcMain.on('tracer-pet-command', command);
-  main.once('closed', () => { ipcMain.removeListener('tracer-pet-command',command); if (pet && !pet.isDestroyed()) pet.destroy(); });
+  main.once('closed', () => {
+    ipcMain.removeListener('tracer-pet-command',command);
+    ipcMain.removeListener('tracer-pet-work-result',workResult); ipcMain.removeHandler('tracer-pet-create-work');
+    for (const token of pendingWork.keys()) settleWork(token, { ok: false, error: 'workspace-busy' });
+    if (pet && !pet.isDestroyed()) pet.destroy();
+  });
   if (saved.enabled) show();
   return { show, hide };
 }

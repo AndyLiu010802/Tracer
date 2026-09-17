@@ -78,7 +78,6 @@ function isGameAsset(pathname) {
 // 引擎不关心内容结构。名字白名单挡住路径注入；测试用 DATA_DIR 环境变量改落点。
 // 实际的读写（写队列、原子替换、.bak 回退）在 lib/store.js 里，方便脱离 HTTP 单测。
 const DATA_DIR = process.env.DOCS_PORTAL_DATA_DIR || path.join(ROOT, 'data');
-const cloudSync = require('./lib/cloud-sync').createBridge(DATA_DIR);
 const aiGateway = require('./lib/ai-gateway').createGateway(DATA_DIR);
 const petGenerationJobs = require('./lib/pet-generation-jobs').createJobs(DATA_DIR);
 const STORE_NAME_RE = /^[a-z][a-z0-9-]{0,31}$/;
@@ -253,26 +252,6 @@ async function handleRequest(req, res) {
     await serveMusic(req, res, pathname); return;
   }
 
-  // Desktop-to-cloud bridge. Device tokens stay on disk and never enter browser storage.
-  if (pathname.startsWith('/api/sync/')) {
-    const send = (status, body) => { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); res.end(JSON.stringify(body)); };
-    const remote = req.socket.remoteAddress;
-    if (!loopbackHost || !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(remote)) { send(403, { ok: false }); return; }
-    try {
-      if (pathname === '/api/sync/status' && req.method === 'GET') { send(200, await cloudSync.status()); return; }
-      if (READONLY_STORE || req.method !== 'POST' || req.headers['x-tracer-sync'] !== '1' || !String(req.headers['content-type']).startsWith('application/json')) { send(403, { ok: false }); return; }
-      if (req.headers.origin && req.headers.origin !== 'http://' + req.headers.host) { send(403, { ok: false }); return; }
-      let result;
-      if (pathname === '/api/sync/pair') {
-        const input = JSON.parse(await readBody(req, 8192));
-        result = await cloudSync.pair(input.endpoint, input.code);
-      } else if (pathname === '/api/sync/disconnect') result = await cloudSync.disconnect();
-      else { send(404, { ok: false }); return; }
-      send(result.status || 200, result);
-    } catch { send(503, { ok: false, error: '连接失败，请检查云函数地址、网络与配对码后重试' }); }
-    return;
-  }
-
   // 代理端点
   if (pathname.startsWith('/r/')) {
     const target = rewrite.decodeTarget(pathname.slice(3));
@@ -322,21 +301,15 @@ async function handleRequest(req, res) {
       res.writeHead(404, { 'content-type': 'application/json' }).end('{"ok":false}');
       return;
     }
-    if (name === 'workspace' && await cloudSync.connected()) {
-      const headers = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
-      if (!loopbackHost) { res.writeHead(403, headers).end('{"ok":false}'); return; }
-      if (!['GET', 'HEAD', 'PUT', 'POST'].includes(req.method)) { res.writeHead(405, headers).end('{"ok":false}'); return; }
-      const writing = req.method === 'PUT' || req.method === 'POST';
-      if (writing && (READONLY_STORE || req.headers['x-tracer-sync'] !== '1' ||
-          (req.headers.origin && req.headers.origin !== 'http://' + req.headers.host))) { res.writeHead(403, headers).end('{"ok":false}'); return; }
-      try {
-        const input = writing ? JSON.parse(await readBody(req, 600 * 1024)) : null;
-        const result = await cloudSync.workspace(req.method, input);
-        if (!result) { res.writeHead(409, headers).end('{"ok":false,"error":"同步连接已变化，请刷新页面"}'); return; }
-        res.writeHead(result.status || 200, headers).end(JSON.stringify(!writing && result.ok ? result.workspace : result));
-      } catch (err) {
-        res.writeHead(err.code === 'too-large' ? 413 : 503, headers).end('{"ok":false,"error":"云端暂时不可用，改动尚未同步"}');
-      }
+    // Workspace data stays local after retiring the remote bridge. Keep its
+    // loopback and same-origin protection without blocking sendBeacon or CLI use.
+    if (name === 'workspace' && (!loopbackHost ||
+        !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress) ||
+        ((req.method === 'PUT' || req.method === 'POST') && req.headers.origin && req.headers.origin !== 'http://' + req.headers.host))) {
+      // Discard a rejected upload before returning the connection to keep-alive;
+      // its unread bytes must not compete with the next request on that socket.
+      req.resume?.();
+      res.writeHead(403, { 'content-type': 'application/json' }).end('{"ok":false}');
       return;
     }
     // sendBeacon 只能发 POST，所以 POST 与 PUT 同义
@@ -366,9 +339,35 @@ async function handleRequest(req, res) {
         await store.writeStore(DATA_DIR, name, body, name === 'workspace' ? (previous, next) => {
           const history = require('./public/task-history');
           if (next && next.completionHistory !== undefined) next.completionHistory = history.validate(next.completionHistory);
-          return history.preserve(previous, next);
+          const result = history.preserve(previous, next);
+          const work = require('./public/companion-work');
+          const previousReceipts = work.validateReceipts(previous?.meta?.companionReceipts);
+          const incomingReceipts = work.validateReceipts(result?.meta?.companionReceipts);
+          const receipts = work.mergeReceipts(previousReceipts, incomingReceipts);
+          const known = new Set(incomingReceipts.map(receipt => receipt.requestId));
+          const unseen = previousReceipts.filter(receipt => !known.has(receipt.requestId));
+          if (unseen.length) {
+            // An older tab may not know an operation happened. Retaining only
+            // its receipt while dropping its records would make retries unable
+            // to recover them. Check inside the serialized write, before backup.
+            for (const collection of ['tasks', 'projects', 'notes']) {
+              const before = new Set((Array.isArray(previous?.[collection]) ? previous[collection] : []).map(row => row?.id));
+              const after = new Set((Array.isArray(result?.[collection]) ? result[collection] : []).map(row => row?.id));
+              const lost = unseen.some(receipt => {
+                const ids = collection === 'tasks' ? receipt.taskIds : [collection === 'projects' ? receipt.projectId : receipt.noteId];
+                return ids.some(id => id !== null && before.has(id) && !after.has(id));
+              });
+              if (lost) throw Object.assign(new Error('workspace-stale'), { code: 'workspace-stale' });
+            }
+          }
+          if (receipts.length) { result.meta = result.meta || {}; result.meta.companionReceipts = receipts; }
+          return result;
         } : undefined);
       } catch (err) {
+        if (err.code === 'workspace-stale') {
+          res.writeHead(409, { 'content-type': 'application/json' }).end('{"ok":false,"error":"workspace-stale"}');
+          return;
+        }
         // 落盘失败（磁盘满、权限等）不是客户端的错，打日志方便排查，回 500。
         process.stderr.write('[store] 写入 ' + name + ' 失败：' + err.message + '\n');
         res.writeHead(500, { 'content-type': 'application/json' }).end('{"ok":false}');
@@ -400,7 +399,7 @@ async function handleRequest(req, res) {
   }
 
   // 小窗组件
-  if (PANEL_ASSETS.has(pathname) || ['/workspace-sync.js', '/ai-planner.js', '/tracer-logo.png'].includes(pathname)) {
+  if (PANEL_ASSETS.has(pathname) || ['/workspace-sync.js', '/ai-planner.js', '/companion-work.js', '/tracer-logo.png'].includes(pathname)) {
     const f = safeJoin(PUBLIC_DIR, pathname);
     if (f && await serveFile(res, f)) return;
   }

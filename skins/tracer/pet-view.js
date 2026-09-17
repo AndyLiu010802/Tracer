@@ -5,9 +5,37 @@
     const idle = TracerPetIdle.create();
     let characterAnimation = null;
     let chatDraft = '', draftRevision = 0, messageSequence = 0, composing = false;
+    let work=null, proposalContext=null, creating=false, chatStore=null, storageFailed=false, destroyed=false;
     const tr = (zh,en) => language === 'zh' ? zh : en;
     const find = selector => root.querySelector(selector);
     const text = (selector,value) => { const el=find(selector); if(el) el.textContent=value; };
+    const readState=()=>({conversation:conversation.map(message=>({...message})),draft:chatDraft,work,proposalContext});
+    const unconfirmedWork=()=>work&&['saving','failed'].includes(work.status);
+    function storageNotice(failed) {
+      storageFailed=failed;
+      text('.pet-chat-storage-error',failed?tr('对话暂存失败，请保持窗口打开。修复本机存储后重试；创建前必须先保留可恢复的确认记录。','Chat backup failed. Keep this window open and retry after checking local storage. A recoverable confirmation must be saved before creating work.'):'');
+    }
+    function persistChat(){
+      try {if(!chatStore)throw new Error('chat-storage-unavailable');chatStore.save(readState());storageNotice(false);return true;}
+      catch {storageNotice(true);return false;}
+    }
+    function loadChat(petId){
+      conversation=[];chatDraft='';work=null;proposalContext=null;creating=false;chatStore=null;
+      try {
+        chatStore=TracerPetChatState.create({surface:desktop?'native':'main',petId});
+        let value=chatStore.load();
+        if(restoredChat?.petId===petId)value=TracerPetChatState.normalize({...restoredChat,work:restoredChat.work||null,proposalContext:restoredChat.proposalContext||null});
+        if(value){
+          conversation=value.conversation.map(message=>({...message,status:message.status==='pending'?'failed':message.status}));
+          chatDraft=value.draft;work=value.work;proposalContext=value.proposalContext;
+          if(work?.status==='saving')work.status='failed';
+          if(!chatDraft&&conversation.at(-1)?.status==='failed')chatDraft=conversation.at(-1).content;
+          if(work||conversation.length||chatDraft)tab='chat';
+        }
+        storageNotice(false);
+      }catch{storageNotice(true);}
+      restoredChat=null;messageSequence=conversation.reduce((max,message)=>Math.max(max,message.id),0);draftRevision++;
+    }
     function pauseIdle() { idle.reset(); root.dataset.idle=''; syncAnimation(); }
     function syncAnimation() {
       if (!snapshot) return;
@@ -90,6 +118,9 @@
       find('.pet-bond').insertAdjacentHTML('afterend','<details class="pet-traits" hidden><summary>'+tr('伙伴性格','Personality')+'</summary><p></p></details>');
       find('.pet-bond').insertAdjacentHTML('afterend','<details class="pet-personality-card" hidden><summary class="pet-personality-title"></summary><p class="pet-personality-bio"></p><dl><dt>'+tr('喜欢','Loves')+'</dt><dd class="pet-personality-likes"></dd><dt>'+tr('小习惯','Little ritual')+'</dt><dd class="pet-personality-habit"></dd></dl></details>');
       text('.pet-chat-privacy',tr('使用“我的 AI”中的服务。发送当前对话、伙伴名字、类型及可选性格；不会自动发送任务或照片。每次发送可能使用套餐额度或 API 费用。','Uses your My AI connection. Sends this conversation, companion name, type and optional personality. Tasks and photos are never sent automatically. Sending may use plan allowance or incur API charges.'));
+      find('.pet-chat-form').insertAdjacentHTML('beforebegin','<section class="pet-work-preview" hidden aria-live="polite"></section>');
+      find('.pet-chat-error').insertAdjacentHTML('afterend','<p class="pet-chat-storage-error" role="alert"></p>');
+      text('.pet-chat-privacy',tr('可聊天，也可请伙伴整理新任务或项目；信息不足时会先追问，确认预览后才创建。向“我的 AI”发送当前对话、日期、待完善方案和伙伴资料，不会自动发送已有任务或照片。发送可能使用套餐额度或 API 费用。','Chat or ask for new tasks and projects. Your companion asks for missing details; work is created only after you confirm the preview. My AI receives this conversation, today’s date, draft proposal and companion details. Existing tasks and photos are never sent automatically. Sending may use plan allowance or API fees.'));
       text('.pet-care-help',tr('醒着且空闲时，伙伴会自己钓鱼、锻炼、种地和挖矿。人型和生物各有一套动作。需求按时间变化；睡觉可恢复精力，离开不会失去伙伴或奖励。','While awake and idle, companions fish, exercise, garden and mine, with different moves for humanoids and creatures. Needs change over time; sleep restores energy. Time away never takes away companions or unlocks.'));
       if(desktop) {
         find('.pet-stage-footer').remove();
@@ -110,13 +141,26 @@
         if (action === 'size') { toggleSize(!sizeOpen); return; }
         if (action === 'reset-size') { find('#pet-size-slider').value='100'; text('.pet-size-value','100%'); dispatch('set-size',100); return; }
         if(sizeOpen) toggleSize(false);
-        if (action === 'clear-chat') { cancelChat(); conversation=[]; chatDraft=''; draftRevision++; find('#pet-message').value=''; drawChat(); text('.pet-chat-error',''); return; }
+        if (action === 'clear-chat') {
+          if(creating||unconfirmedWork())return;
+          try {chatStore?.clear();}catch{storageNotice(true);return;}
+          cancelChat(); conversation=[]; chatDraft=''; work=null;proposalContext=null;draftRevision++;find('#pet-message').value='';drawChat();text('.pet-chat-error','');storageNotice(false);return;
+        }
+        if(action==='confirm-work'){confirmWork();return;}
+        if(action==='edit-work'){
+          if(!work||creating||sending||work.status==='created'||unconfirmedWork())return;
+          work.status='editing';proposalContext=work.proposal;persistChat();drawWork();find('#pet-message').focus();return;
+        }
+        if(action==='cancel-work'){
+          if(creating||sending||unconfirmedWork())return;
+          work=null;proposalContext=null;persistChat();drawWork();text('.pet-chat-error','');return;
+        }
         if (action === 'retry-chat') {
           const failed=conversation.at(-1);
-          if (!sending && failed?.status==='failed') sendMessage(failed);
+          if (!sending && !creating && !unconfirmedWork() && failed?.status==='failed') sendMessage(failed);
           return;
         }
-        if (action === 'close') { dispatch(desktop ? 'hide' : 'close'); return; }
+        if (action === 'close') { persistChat();dispatch(desktop ? 'hide' : 'close'); return; }
         if (action === 'open-task') { if(snapshot.task) dispatch(action,snapshot.task.id); return; }
         dispatch(action,b.dataset.value);
       };
@@ -126,13 +170,13 @@
       messageInput.setAttribute('enterkeyhint','send'); messageInput.setAttribute('aria-describedby','pet-chat-hint');
       messageInput.insertAdjacentHTML('afterend','<small id="pet-chat-hint" class="pet-chat-hint">'+tr('Enter 发送 · Shift+Enter 换行','Enter to send · Shift+Enter for a new line')+'</small>');
       composing=false;
-      messageInput.oninput=()=>{chatDraft=messageInput.value;draftRevision++;};
+      messageInput.oninput=()=>{chatDraft=messageInput.value;draftRevision++;persistChat();};
       messageInput.addEventListener('compositionstart',()=>{composing=true;});
       messageInput.addEventListener('compositionend',()=>{composing=false;});
       messageInput.onkeydown=event=>{
         if(event.key!=='Enter'||event.shiftKey||event.isComposing||composing||event.keyCode===229) return;
         event.preventDefault();
-        if(!event.repeat&&!sending) find('.pet-chat-form').requestSubmit();
+        if(!event.repeat&&!sending&&!creating&&!unconfirmedWork()) find('.pet-chat-form').requestSubmit();
       };
       const character=find('.pet-character');
       character.ondragstart=event=>event.preventDefault();
@@ -149,7 +193,7 @@
         if(drag.moved) dispatch('drag-move',pointerPoint(event));
       };
       character.onpointerup=endDrag; character.onpointercancel=endDrag; character.onlostpointercapture=endDrag;
-      tabs(); drawChat();
+      tabs(); drawChat();storageNotice(storageFailed);
     }
     function tabs() {
       root.querySelectorAll('[data-pane]').forEach(el=>el.hidden=el.dataset.pane!==tab);
@@ -174,15 +218,74 @@
         thinking.textContent=(language==='zh'?snapshot.pet.zh:snapshot.pet.en)+tr('正在想…',' is thinking…'); log.appendChild(thinking);
       }
       if(!conversation.length) { const el=document.createElement('p'); el.className='pet-chat-empty'; el.textContent=tr('小伙伴在这里，等你开口。','Your little companion is ready to listen.'); log.appendChild(el); }
-      find('.pet-send').disabled=sending; text('.pet-send',tr('发送','Send'));
+      find('.pet-send').disabled=sending||creating||!!unconfirmedWork();find('[data-act=clear-chat]').disabled=creating||!!unconfirmedWork();text('.pet-send',tr('发送','Send'));
+      drawWork();
       log.scrollTop=log.scrollHeight;
+    }
+    function drawWork(){
+      const host=find('.pet-work-preview');if(!host)return;
+      host.replaceChildren();host.hidden=!work;if(!work)return;
+      host.dataset.status=work.status;host.setAttribute('aria-busy',String(creating));
+      const add=(tag,className,value,parent=host)=>{const element=document.createElement(tag);element.className=className;element.textContent=value;parent.appendChild(element);return element;};
+      const proposal=work.proposal,none=tr('未设置','Not set');
+      add('h3','pet-work-heading',work.status==='created'?tr('已创建到工作区','Created in your workspace'):proposal.type==='project'?tr('项目创建预览','Project preview'):tr('任务创建预览','Task preview'));
+      add('p','pet-work-help',work.status==='created'?tr('已保存。再次发送消息可继续安排新的工作。','Saved. Send another message to plan more work.'):creating?tr('正在保存，请稍候。','Saving. Please wait.'):work.status==='editing'?tr('在下方告诉伙伴要修改什么，收到更新方案后再确认。','Tell your companion what to change below, then confirm the updated proposal.'):work.status==='failed'?tr('这次创建尚未确认保存，请先重试同一请求，避免重复创建。保存后可到工作区修改。','This creation is not confirmed saved. Retry the same request first to avoid duplicates. After saving, you can edit it in the workspace.'):tr('检查以下内容，点击确认后才会写入工作区。','Review these details. Nothing is written until you confirm.'));
+      const details=(parent,items)=>{const list=add('dl','pet-work-fields','',parent);for(const [label,value]of items){add('dt','',label,list);add('dd','',value,list);}};
+      if(proposal.project){
+        const project=add('section','pet-work-project','');
+        add('h4','',proposal.project.name,project);add('p','pet-work-notes',proposal.project.notes||tr('无项目说明','No project notes'),project);
+        details(project,[[tr('开始日期','Start'),proposal.project.start||none],[tr('结束日期','End'),proposal.project.end||none]]);
+      }
+      const list=add('ol','pet-work-tasks','');
+      const priorities={low:tr('低','Low'),medium:tr('中','Medium'),high:tr('高','High'),urgent:tr('紧急','Urgent')};
+      for(const task of proposal.tasks){
+        const item=add('li','pet-work-task','',list);add('h4','',task.title,item);add('p','pet-work-notes',task.notes||tr('无任务说明','No task notes'),item);
+        details(item,[[tr('优先级','Priority'),priorities[task.priority]],[tr('计划日期','Scheduled'),task.scheduled||none],[tr('截止日期','Due'),task.due||none],[tr('预计工时','Estimate'),task.estimate===null?none:String(task.estimate)+tr(' 小时',' hours')]]);
+        add('p','pet-work-checklist-label',tr('检查清单','Checklist'),item);
+        if(task.checklist.length){const checklist=add('ul','pet-work-checklist','',item);for(const entry of task.checklist)add('li','',entry,checklist);}else add('p','pet-work-help',tr('无','None'),item);
+      }
+      if(!proposal.tasks.length)add('p','pet-work-help',tr('仅创建项目，没有初始任务。','Create the project without initial tasks.'));
+      if(work.status==='created')return;
+      const controls=add('div','pet-work-actions','');
+      for(const [action,label]of [['confirm-work',creating?tr('正在保存…','Saving…'):work.status==='failed'?tr('重试创建','Retry creation'):tr('确认创建','Confirm & create')],['edit-work',tr('修改','Revise')],['cancel-work',tr('取消','Cancel')]]){
+        const button=add('button',action==='confirm-work'?'pet-work-confirm':'',label,controls);button.type='button';button.dataset.act=action;button.disabled=creating||sending||(action==='confirm-work'?work.status==='editing':!!unconfirmedWork());
+      }
+    }
+    async function confirmWork(){
+      if(!work||creating||sending||['created','editing'].includes(work.status))return;
+      const target=work,targetStore=chatStore,version=generation,petId=selected,previousStatus=work.status;
+      target.status='saving';creating=true;text('.pet-chat-error','');
+      if(!persistChat()){target.status=previousStatus;creating=false;drawChat();return;}
+      drawChat();
+      let result,error,stored=false;
+      try {
+        result=await dispatch('create-work',{requestId:target.requestId,proposal:TracerCompanionWork.normalize(target.proposal)});
+        if(!result||!Array.isArray(result.taskIds))throw new Error('invalid-create-result');
+        result={projectId:result.projectId||null,taskIds:result.taskIds};
+        const content=tr('已创建','Created ')+(result.projectId?tr('项目和 ','a project and '):'')+result.taskIds.length+tr(' 项任务。',' task(s).');
+        target.status='created';target.result=result;
+        try {stored=targetStore.finish(target.requestId,'created',result,content);}catch{}
+      }catch(failure){
+        error=failure;target.status='failed';
+        try {stored=targetStore.finish(target.requestId,'failed');}catch{}
+      }
+      if(!destroyed&&version===generation&&petId===selected){
+        creating=false;work=target;
+        if(result&&!error)proposalContext=null;
+        if(stored){
+          try {const latest=targetStore.load();if(latest?.work?.requestId===target.requestId){conversation=latest.conversation;messageSequence=conversation.reduce((max,message)=>Math.max(max,message.id),0);chatDraft=latest.draft;work=latest.work;proposalContext=latest.proposalContext;}}catch{stored=false;}
+        }
+        storageNotice(!stored);
+        if(error)text('.pet-chat-error',tr('创建尚未保存成功。方案已保留，请重试。','Work was not confirmed saved. Your proposal is kept; please retry.'));
+        drawChat();
+      }
     }
     function cancelChat() {
       generation++; chatController?.abort(); chatController=null; sending=false;
       find('.pet-send').disabled=false; find('#pet-message').disabled=false; text('.pet-send',tr('发送','Send'));
     }
     function send(event) {
-      event.preventDefault(); if(sending) return;
+      event.preventDefault(); if(sending||creating||unconfirmedWork()) return;
       const input=find('#pet-message'), message=input.value.trim(); if(!message || message.length>2000) return;
       const last=conversation.at(-1);
       const entry=last?.status==='failed'&&last.content===message?last:{id:++messageSequence,role:'user',content:message};
@@ -190,7 +293,7 @@
       sendMessage(entry);
     }
     async function sendMessage(entry) {
-      if(sending) return;
+      if(sending||creating||unconfirmedWork()) return;
       const input=find('#pet-message');
       if(input.value.trim()===entry.content) { input.value=''; chatDraft=''; draftRevision++; }
       const sentRevision=draftRevision;
@@ -199,16 +302,22 @@
       const controller=new AbortController(); chatController=controller;
       const timeout=setTimeout(()=>controller.abort(),150000);
       const messages=conversation.slice(-15).map(({role,content})=>({role,content}));
-      entry.status='pending'; sending=true; text('.pet-chat-error',''); drawChat();
+      entry.status='pending';sending=true;if(work&&work.status!=='created')work.status='editing';text('.pet-chat-error','');persistChat();drawChat();
       input.focus({preventScroll:true});
       try {
         const mode=localStorage.getItem('tracer.ai.mode')==='api'?'personal':'codex';
         const companion=snapshot.pet.custom?{name:snapshot.pet.en,personality:snapshot.pet.personality||'',kind:snapshot.pet.kind}:undefined;
-        const result=await fetch('/api/ai/'+mode+'-chat',{method:'POST',headers:{'Content-Type':'application/json','x-tracer-ai':'1'},signal:controller.signal,body:JSON.stringify({messages,pet:snapshot.pet.id,language,companion})});
+        const now=new Date(),today=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+        const result=await fetch('/api/ai/'+mode+'-chat',{method:'POST',headers:{'Content-Type':'application/json','x-tracer-ai':'1'},signal:controller.signal,body:JSON.stringify({messages,pet:snapshot.pet.id,language,companion,today,proposal:proposalContext?TracerCompanionWork.normalize(proposalContext):null})});
         const data=await result.json();
         if(!result.ok) throw new Error(data.error || 'request-failed');
         if(typeof data.reply!=='string'||!data.reply.trim()||data.reply.length>2000) throw new Error('invalid-response');
-        if(version===generation) { entry.status='sent'; conversation.push({id:++messageSequence,role:'assistant',content:data.reply}); conversation=conversation.slice(-32); }
+        const proposal=data.proposal==null?null:TracerCompanionWork.normalize(data.proposal);
+        if(version===generation) {
+          entry.status='sent';conversation.push({id:++messageSequence,role:'assistant',content:data.reply});conversation=conversation.slice(-32);
+          work=proposal?{requestId:crypto.randomUUID(),proposal,status:'pending',result:null}:null;
+          if(proposal)proposalContext=proposal;
+        }
       } catch(error) {
         const missing=['personal-not-configured','codex-login-required','codex-runtime-unavailable'].includes(error.message);
         if(version===generation) {
@@ -219,24 +328,26 @@
         }
       } finally {
         clearTimeout(timeout);
-        if(version===generation) { sending=false; chatController=null; if(root.isConnected) drawChat(); }
+        if(version===generation) { sending=false;chatController=null;persistChat();if(root.isConnected)drawChat(); }
       }
     }
     function update(value) {
       snapshot=value; if(!snapshot || !snapshot.pet) return;
-      if(restoredChat) {
-        if(restoredChat.petId===snapshot.pet.id) {
-          conversation=restoredChat.conversation.map(message=>({...message,status:message.status==='pending'?'failed':message.status}));
-          messageSequence=conversation.reduce((max,message)=>Math.max(max,message.id),0);
-          chatDraft=restoredChat.draft||''; tab='chat';
-          if(!chatDraft&&conversation.at(-1)?.status==='failed') chatDraft=conversation.at(-1).content;
-        }
-        restoredChat=null;
+      const switched=selected!==snapshot.pet.id;
+      if(switched){
+        if(selected){persistChat();cancelChat();}
+        loadChat(snapshot.pet.id);
       }
       if(language!==snapshot.language) { language=snapshot.language; shell(); }
+      else if(switched){find('#pet-message').value=chatDraft;drawChat();tabs();storageNotice(storageFailed);text('.pet-chat-error','');}
+      if(unconfirmedWork()&&!creating&&chatStore){
+        try {
+          const completed=chatStore.completed(work.requestId);
+          if(completed){conversation=completed.conversation;work=completed.work;proposalContext=null;messageSequence=conversation.reduce((max,message)=>Math.max(max,message.id),0);persistChat();text('.pet-chat-error','');drawChat();}
+        }catch{storageNotice(true);}
+      }
       const p=snapshot.pet, state=snapshot.needs;
       const personality=TracerPetPersonalities.get(p.id);
-      if(selected && selected!==p.id) { cancelChat(); conversation=[]; chatDraft=''; draftRevision++; drawChat(); find('#pet-message').value=''; text('.pet-chat-error',''); }
       if(selected!==p.id || !find('.pet-character .pet-sprite')) {
         characterAnimation?.destroy(); characterAnimation=null; selected=p.id;
         find('.pet-character').replaceChildren(art(p,true),effectLayer(p),TracerPetIdleArt());
@@ -358,6 +469,6 @@
         }
       }
     }
-    return { update, readChat:()=>({petId:selected,conversation:conversation.map(message=>({...message})),draft:chatDraft}), destroy:()=>{ generation++; chatController?.abort();characterAnimation?.destroy();if(desktop)window.removeEventListener('blur',blurSize);if(drag?.moved)dispatch('drag-end');drag=null;root.replaceChildren(); } };
+    return { update, readChat:()=>({petId:selected,...readState()}), destroy:()=>{persistChat();destroyed=true;generation++;chatController?.abort();characterAnimation?.destroy();if(desktop)window.removeEventListener('blur',blurSize);if(drag?.moved)dispatch('drag-end');drag=null;root.replaceChildren();} };
   };
 })();

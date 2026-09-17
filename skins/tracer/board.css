@@ -33,9 +33,8 @@
 }
 .modal textarea { resize: vertical; min-height: 60px; }
 .modal p { font-size: 13px; line-height: 1.6; color: var(--muted); }
-.sync-conflict { margin: 14px 0; }
-.sync-conflict pre { white-space: pre-wrap; word-break: break-word; max-height: 160px; overflow: auto; font-size: 12px; }
-#sync-error { color: #e86a8a; }
+.draft-conflict { margin: 14px 0; }
+.draft-conflict pre { white-space: pre-wrap; word-break: break-word; max-height: 160px; overflow: auto; font-size: 12px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 .btn {
   font: inherit; font-size: 12.5px; font-weight: 550;

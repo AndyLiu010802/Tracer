@@ -73,8 +73,16 @@ async function cycle(page,selector,action,count,label) {
     assert.ok(fs.existsSync(active),'packaged app starts: '+(launchError?.message||log.slice(-1500)));
     checkpoint('connect to packaged browser over CDP');
     browser=await chromium.connectOverCDP('http://127.0.0.1:'+fs.readFileSync(active,'utf8').split(/\r?\n/)[0],{timeout:15000});
-    const context=browser.contexts()[0],origin='http://127.0.0.1:'+port,errors=[];let page,aiWrites=0;
-    await context.route('**/api/ai/**',route=>{if(route.request().method()!=='GET')aiWrites++;return route.fulfill({status:503,json:{error:'release-test-no-ai'}});});
+    const context=browser.contexts()[0],origin='http://127.0.0.1:'+port,errors=[];let page,aiWrites=0,mockedChats=0,allowWorkChat=false;
+    const workProposal={type:'tasks',project:null,tasks:[{title:'Packaged native companion task',notes:'Local synthetic release QA; no AI service was contacted.',due:null,scheduled:null,priority:'medium',estimate:null,checklist:['Confirm native-to-main persistence']}]};
+    await context.route('**/api/ai/**',route=>{
+      const request=route.request();
+      if(allowWorkChat&&request.method()==='POST'&&/\/(codex|personal)-chat$/.test(new URL(request.url()).pathname)&&request.frame().url().endsWith('/pet.html')){
+        mockedChats++;const body=request.postDataJSON();assert.match(body.today,/^\d{4}-\d{2}-\d{2}$/);assert.equal('workspace' in body,false);
+        return route.fulfill({json:{reply:'Review this task, then confirm to create it.',proposal:workProposal}});
+      }
+      if(request.method()!=='GET')aiWrites++;return route.fulfill({status:503,json:{error:'release-test-no-ai'}});
+    });
     context.on('page',target=>target.on('pageerror',error=>errors.push(error.message)));
     for(let i=0;i<120;i++){page=context.pages().find(target=>target.url()===origin+'/');if(page)break;await sleep(250);}
     assert.ok(page,'packaged workspace opens');page.setDefaultTimeout(20000);page.on('pageerror',error=>errors.push(error.message));
@@ -129,7 +137,25 @@ async function cycle(page,selector,action,count,label) {
     assert.equal(await page.evaluate(()=>Tracer.pet.read().selected),adopted.id);
     assert.equal(await page.evaluate(()=>Tracer.pet.read().customs.find(pet=>pet.id===Tracer.pet.read().selected).animation.version),2);
     await pet.waitForFunction(()=>document.querySelector('.pet-name')?.textContent==='Dense Release Fixture');
-    assert.equal(aiWrites,0,'native release test never invokes generation or AI chat');assert.deepEqual(errors,[],'no packaged renderer errors');
+    checkpoint('native chat proposal and confirmed workspace creation over real IPC');
+    allowWorkChat=true;
+    await pet.bringToFront();await pet.locator('.pet-character').hover();await pet.click('[data-quick-act="expand"]');await pet.click('[data-tab="chat"]');
+    await pet.fill('#pet-message','Create a release-check task with no deadline.');await pet.press('#pet-message','Enter');
+    await pet.locator('.pet-work-preview[data-status="pending"]').waitFor();
+    assert.equal(await page.evaluate(()=>Tracer.store.data.tasks.length),0,'a native chat preview never creates work before confirmation');
+    const pending=await pet.evaluate(id=>TracerPetChatState.create({surface:'native',petId:id}).load().work,adopted.id);
+    await pet.click('[data-act="confirm-work"]');await pet.locator('.pet-work-preview[data-status="created"]').waitFor();
+    assert.equal(mockedChats,1,'exactly one locally mocked chat request supplies the preview');
+    const created=await page.evaluate(()=>Tracer.store.data.tasks.map(task=>({id:task.id,title:task.title})));
+    assert.equal(created.length,1);assert.equal(created[0].title,workProposal.tasks[0].title);
+    const duplicate=await pet.evaluate(request=>PetDesktop.createWork(request),{requestId:pending.requestId,proposal:pending.proposal});
+    assert.deepEqual(duplicate.taskIds,[created[0].id],'native IPC retries resolve the same recorded task');
+    assert.equal(await page.evaluate(()=>Tracer.store.data.tasks.length),1,'retrying native confirmation never creates a duplicate');
+    const persisted=await page.evaluate(async()=>{const response=await fetch('/api/store/workspace');if(!response.ok)throw new Error('workspace-read-failed');return response.json();});
+    assert.equal(persisted.tasks.length,1);assert.equal(persisted.tasks[0].id,created[0].id);
+    await pet.screenshot({path:path.join(profile,'native-chat-created.png'),omitBackground:true,animations:'disabled'});
+    assert.equal(aiWrites,0,'native release test never reaches a real generation or AI chat endpoint');assert.deepEqual(errors,[],'no packaged renderer errors');
+    console.log('PASS packaged native chat preview, explicit confirmation, real IPC, durable main workspace save and idempotent retry');
     console.log('PASS packaged '+version+', isolated clean profile, main/native builtin and generated sixteen-frame playback, live care, real v2 export/import, legacy v1 import and saved selection');
     console.log('Artifacts: '+profile);
   };

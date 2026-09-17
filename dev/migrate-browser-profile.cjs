@@ -20,7 +20,7 @@ if (folder.toLowerCase() === profile.toLowerCase() || folder.toLowerCase().start
 fs.mkdirSync(folder, { recursive: true });
 const backup = path.join(folder, 'desktop-profile-before-' + Date.now());
 if (fs.existsSync(profile)) fs.cpSync(profile, backup, {recursive:true,force:false,errorOnExist:true});
-if (fs.existsSync(path.join(profile,'data','.sync','connection.json'))) throw new Error('Existing desktop cloud pairing needs a separate migration');
+if (fs.existsSync(path.join(profile,'data','.sync','connection.json'))) throw new Error('An existing desktop profile has legacy pairing data; preserve it for a separate migration');
 fs.mkdirSync(path.join(profile,'data'),{recursive:true});
 function atomic(file, text) {
   const tmp=file+'.migration-'+process.pid;

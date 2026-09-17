@@ -4,6 +4,28 @@
 .pet-home .pet-chat-delivery { align-self:flex-end; display:flex; align-items:center; flex-wrap:wrap; gap:8px; max-width:100%; margin-top:-6px; color:#d5b69b; font-size:10px; }
 .pet-home .pet-chat-delivery .pet-chat-retry { font-size:10px; padding:3px 8px; line-height:1.4; }
 .pet-home .pet-chat-hint { display:block; color:#8fa397; font-size:10px; line-height:1.6; margin:6px 0 10px; }
+.pet-home .pet-chat-storage-error { color:#e4b68b; font-size:11px; line-height:1.6; overflow-wrap:anywhere; }
+.pet-home .pet-chat-storage-error:empty { display:none; }
+.pet-home .pet-work-preview { min-width:0; margin:12px 0; padding:13px; border:1px solid #c7d9ad55; border-radius:12px; background:#b7dac109; color:#dbe7d5; overflow-wrap:anywhere; }
+.pet-home .pet-work-preview[hidden] { display:none; }
+.pet-home .pet-work-heading { font-size:13px; line-height:1.5; margin:0 0 8px; }
+.pet-home .pet-work-help { font-size:11px; line-height:1.65; color:#abbcaf; margin:8px 0; }
+.pet-home .pet-work-project,.pet-home .pet-work-task { min-width:0; margin:12px 0; padding:11px; border:1px solid #b7dac121; border-radius:8px; }
+.pet-home .pet-work-project h4,.pet-home .pet-work-task h4 { margin:0 0 8px; font-size:12px; line-height:1.6; }
+.pet-home .pet-work-notes { font-size:11px; line-height:1.7; white-space:pre-wrap; margin:6px 0; }
+.pet-home .pet-work-tasks { margin:0; padding:0; list-style:none; counter-reset:pet-work-task; }
+.pet-home .pet-work-task { counter-increment:pet-work-task; }
+.pet-home .pet-work-task h4::before { content:counter(pet-work-task) '. '; color:#a7c9b3; }
+.pet-home .pet-work-fields { display:grid; grid-template-columns:minmax(70px,auto) minmax(0,1fr); gap:5px 10px; margin:10px 0; font-size:11px; line-height:1.55; }
+.pet-home .pet-work-fields dt { color:#9dac9f; }
+.pet-home .pet-work-fields dd { margin:0; }
+.pet-home .pet-work-checklist-label { color:#aab9a8; font-size:11px; margin:10px 0 5px; }
+.pet-home .pet-work-checklist { padding-left:18px; margin:0; font-size:11px; line-height:1.6; }
+.pet-home .pet-work-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+.pet-home .pet-work-actions button { font-size:11px; padding:7px 10px; flex:1 1 auto; }
+.pet-home .pet-work-actions .pet-work-confirm { background:#b9d3a5; color:#19241c; border-color:#c7dfb8; }
+.pet-native .pet-work-preview { padding:10px; }
+.pet-native .pet-work-fields { grid-template-columns:minmax(65px,auto) minmax(0,1fr); }
 .pet-home .pet-personality-card { margin:12px 0; padding:12px; border:1px solid #b7dac124; border-radius:10px; background:#b7dac107; }
 .pet-home .pet-personality-card summary { color:#bfd7c2; font-size:12px; line-height:1.6; cursor:pointer; }
 .pet-home .pet-personality-card p { font-size:11px; line-height:1.65; color:#aebeb1; margin:10px 0 0; }

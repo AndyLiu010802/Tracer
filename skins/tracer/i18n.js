@@ -13,10 +13,9 @@
       Array.prototype.forEach.call(a.childNodes, function (node) { if (node.nodeType === 3 && node.nodeValue.trim()) node.nodeValue = ' ' + t(key); });
     });
     var projectsLabel = document.getElementById('projects-label'); if (projectsLabel) projectsLabel.textContent = t('projects');
-    var saveDot = document.getElementById('save-dot'); if (saveDot) saveDot.title = I.message(lang, saveDot.title);
+    var saveDot = document.getElementById('save-dot'); if (saveDot) { saveDot.title = I.message(lang, saveDot.title); saveDot.setAttribute('aria-label', saveDot.title); }
     if (window.Tracer) {
       if (window.Tracer.store.data) { window.Tracer.redraw(); if (window.Tracer.renderBoard) window.Tracer.renderBoard(); }
-      if (window.Tracer.refreshSyncLabel) window.Tracer.refreshSyncLabel();
       if (window.Tracer.refreshWellness) window.Tracer.refreshWellness();
     }
   }

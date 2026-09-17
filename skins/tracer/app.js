@@ -179,14 +179,17 @@
   var STORE_URL = '/api/store/workspace';
   var store = { data: null, timer: 0, dirty: false, lost: false, inflight: false };
   var Sync = window.WorkspaceSync;
-  store.base = null; store.conflict = null; store.retries = 0;
+  store.base = null; store.conflict = null;
   store.epoch = 0;
-  var DRAFT_KEY = 'tracer.cloudDraft';
+  var DRAFT_KEY = 'tracer.workspaceDraft';
+  // Read-only compatibility source until recovered edits are saved locally.
+  var LEGACY_DRAFT_KEY = 'tracer.cloudDraft', legacySource = null, localDraftSource = null, draftBlocked = false;
   var dot = document.getElementById('save-dot');
 
   function setDot(cls, title) {
     dot.className = 'save-dot' + (cls ? ' ' + cls : '');
     dot.title = I.message(title);
+    dot.setAttribute('aria-label', dot.title);
   }
 
   function save() {
@@ -200,42 +203,44 @@
     var sent = Sync.clone(store.data);
     fetch(STORE_URL, {
       method: 'PUT',
-      headers: { 'content-type': 'application/json', 'x-tracer-sync': '1' },
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify(sent),
     }).then(function (r) { return r.json().then(function (body) {
-      if (r.status === 409 && body.workspace) {
-        var merged = Sync.merge(store.base, store.data, body.workspace);
-        store.dirty = true;
-        if (merged.conflicts.length) {
-          store.conflict = body.workspace;
-          setDot('err', '同步冲突：点击微信同步处理');
-          failed = true;
-        } else {
-          store.base = Sync.clone(body.workspace); adopt(merged.workspace);
-          if (++store.retries >= 3) { failed = true; setDot('err', '云端持续变化，请点击微信同步重试'); }
-        }
-        persistDraft();
-        return;
-      }
       if (!r.ok) { var err = new Error(body.error || '保存失败'); err.status = r.status; throw err; }
       var accepted = body.workspace || sent;
       // Edits made during an in-flight save stay on top of the accepted snapshot.
       adopt(Sync.merge(sent, store.data, accepted).workspace);
-      store.base = Sync.clone(accepted); store.retries = 0;
+      store.base = Sync.clone(accepted);
       if (!store.dirty) adopt(Sync.clone(accepted));
       persistDraft();
-      setDot(body.backupWarning ? 'err' : '', body.backupWarning ? '已同步到云端，本地备份失败' : (accepted.meta.syncAccount ? '已同步到微信' : 'Saved locally'));
+      setDot('', 'Saved locally');
     });
-    }).catch(function (err) {
+    }).catch(async function (err) {
       failed = true;
       store.dirty = true; // 数据还在内存里，下次 touch 重试
-      setDot('err', err.status === 413 ? I.t('tooLarge') : I.t('pendingButton') + ': ' + I.message(err.message));
       persistDraft();
+      if (err.status === 409 && err.message === 'workspace-stale') {
+        try {
+          var latestResponse = await fetch(STORE_URL);
+          if (!latestResponse.ok) throw new Error('workspace-reload-failed');
+          var latest = Sync.validate(await latestResponse.json());
+          var reconciled = Sync.merge(store.base, store.data, latest);
+          store.base = reconciled.conflicts.length ? store.base : Sync.clone(latest);
+          adopt(Sync.assignSequences(reconciled.workspace, latest));
+          store.conflict = reconciled.conflicts.length ? latest : null;
+          persistDraft();
+          setDot('err', I.t(store.conflict ? 'draftConflictTip' : 'workspaceMerged'));
+          return;
+        } catch (recoveryError) {
+          setDot('err', I.t('workspaceChanged'));
+          return;
+        }
+      }
+      setDot('err', err.status === 413 ? I.t('tooLarge') : I.t('savePending') + ': ' + I.message(err.message));
     }).then(function () {
       store.inflight = false;
       persistDraft();
       if (!store.dragging && !store.dirty && modalRoot.hidden && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) redraw();
-      if (window.Tracer.refreshSyncLabel) window.Tracer.refreshSyncLabel();
       // 只补发「在途期间新产生的」改动。失败本身不在这里重试——catch 也会把 dirty
       // 置回 true，不加区分就是一个按往返延迟空转的热循环（实测持续 500 时 2 秒 52 个 PUT）。
       if (store.dirty && !failed) { clearTimeout(store.timer); store.timer = setTimeout(save, 0); }
@@ -255,8 +260,9 @@
   window.addEventListener('beforeunload', function () {
     // inflight 也要兜底：去掉 keepalive 后卸载会掐断在途 PUT，而 save() 开头已把 dirty
     // 置 false，只看 dirty 的话这一格什么都不会发。重复写入无害（服务端按名串行化）。
-    if ((!store.dirty && !store.inflight) || !store.data) return;
-    if (store.data.meta.syncAccount) { persistDraft(); return; }
+    if ((!store.dirty && !store.inflight) || !store.data || store.lost) return;
+    persistDraft();
+    if (store.conflict) return;
     // sendBeacon 只能 POST，端点两个动词等效；超 64KiB 会静默 false
     if (!navigator.sendBeacon(STORE_URL, JSON.stringify(store.data))) {
       setDot('err', 'Not saved');
@@ -264,11 +270,25 @@
   });
 
   function persistDraft() {
-    if (!store.data || !store.data.meta.syncAccount) return;
+    if (!store.data || draftBlocked) return;
     try {
-      if (store.dirty || store.inflight || store.conflict) localStorage.setItem(DRAFT_KEY, JSON.stringify({ base: store.base, data: store.data }));
-      else localStorage.removeItem(DRAFT_KEY);
-    } catch (e) { setDot('err', '未同步草稿无法保存在此浏览器，请勿关闭页面'); }
+      var currentSource = localStorage.getItem(DRAFT_KEY);
+      if (currentSource !== null && currentSource !== localDraftSource) {
+        setDot('err', I.t('otherDraftKept')); return;
+      }
+      if (store.dirty || store.inflight || store.conflict) {
+        var draft = { base: store.base, data: store.data };
+        // Preserve exact provenance across reloads. Never delete a legacy draft
+        // that another window has changed since this recovery began.
+        if (legacySource !== null) draft.legacySource = legacySource;
+        var serialized = JSON.stringify(draft);
+        localStorage.setItem(DRAFT_KEY, serialized); localDraftSource = serialized;
+      } else {
+        if (legacySource !== null && localStorage.getItem(LEGACY_DRAFT_KEY) === legacySource) localStorage.removeItem(LEGACY_DRAFT_KEY);
+        if (currentSource === localDraftSource) localStorage.removeItem(DRAFT_KEY);
+        legacySource = null; localDraftSource = null;
+      }
+    } catch (e) { setDot('err', I.t('localDraftFailed')); }
   }
   // Existing section handlers retain workspace and record references while editing.
   function adopt(next) {
@@ -294,29 +314,56 @@
     fireAll(current);
   }
   function restoreDraft() {
+    var localSource;
     try {
-      var draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
-      if (!draft || !draft.base || !draft.data || !store.data.meta.syncAccount || draft.base.meta.syncAccount !== store.data.meta.syncAccount) return;
+      localSource = localStorage.getItem(DRAFT_KEY);
+      localDraftSource = localSource;
+      var source = localSource || localStorage.getItem(LEGACY_DRAFT_KEY);
+      if (!source) return;
+      var draft = JSON.parse(source);
+      if (!draft || !draft.base || !draft.data) throw new Error('invalid-draft');
+      Sync.validate(draft.base); Sync.validate(draft.data);
+      if (!localSource) {
+        if (!draft.base.meta || !draft.data.meta || !draft.base.meta.syncAccount || draft.data.meta.syncAccount !== draft.base.meta.syncAccount || draft.base.meta.syncAccount !== store.data.meta.syncAccount) {
+          setDot('err', I.t('oldDraftKept')); return;
+        }
+        legacySource = source;
+      } else if (typeof draft.legacySource === 'string' && draft.legacySource === localStorage.getItem(LEGACY_DRAFT_KEY)) legacySource = draft.legacySource;
       var remote = Sync.clone(store.data);
       var merged = Sync.merge(draft.base, draft.data, remote);
       store.base = merged.conflicts.length ? draft.base : remote;
-      adopt(merged.workspace); store.dirty = true;
-      if (merged.conflicts.length) store.conflict = remote;
+      adopt(Sync.assignSequences(merged.workspace, remote)); store.dirty = true;
+      persistDraft();
+      if (merged.conflicts.length) { store.conflict = remote; setDot('err', I.t('draftConflictTip')); }
       else store.timer = setTimeout(save, 500);
-    } catch (e) {}
+    } catch (e) {
+      draftBlocked = !!localSource;
+      setDot('err', I.t('oldDraftKept'));
+    }
   }
-  function refreshCloud() {
-    if (!store.data || !store.data.meta.syncAccount || store.dragging || store.dirty || store.inflight || store.conflict || !modalRoot.hidden || document.hidden) return;
-    if (/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) return;
-    var before = store.epoch;
-    fetch(STORE_URL).then(function (r) { if (!r.ok) throw new Error('offline'); return r.json(); }).then(function (data) {
-      if (store.epoch !== before || store.dragging || store.dirty || store.inflight || !modalRoot.hidden) return;
-      if (data.meta.syncVersion !== store.data.meta.syncVersion) { adopt(data); store.base = Sync.clone(data); redraw(); }
-      setDot('', '已同步到微信');
-    }).catch(function () { setDot('err', '无法连接云端，当前显示上次加载的数据'); });
+  function resolveDraft(choices) {
+    if (!store.conflict) return false;
+    var merged = Sync.merge(store.base, store.data, store.conflict, choices);
+    if (merged.conflicts.length) return false;
+    store.base = Sync.clone(store.conflict); adopt(Sync.assignSequences(merged.workspace, store.conflict)); store.conflict = null;
+    store.dirty = true; persistDraft(); redraw(); save(); return true;
   }
-  setInterval(refreshCloud, 15000);
-  window.addEventListener('online', function () { if (store.dirty) save(); else refreshCloud(); });
+  dot.onclick = function () {
+    if (!store.conflict) { if (store.lost) location.reload(); else if (store.dirty) save(); return; }
+    modal(function (box, close) {
+      var list = Sync.merge(store.base, store.data, store.conflict).conflicts;
+      box.innerHTML = '<h2>' + I.t('conflictTitle') + '</h2><p>' + I.t('draftConflictHelp') + '</p>'
+        + list.map(function (c, i) { return '<div class="draft-conflict"><b>' + M.esc(c.title) + '</b><label for="draft-choice-' + i + '">' + M.esc(I.t(c.field)) + '</label><pre>' + I.t('draftVersion') + ': ' + M.esc(c.local === undefined ? I.t('deleted') : JSON.stringify(c.local)) + '\n' + I.t('diskVersion') + ': ' + M.esc(c.remote === undefined ? I.t('deleted') : JSON.stringify(c.remote)) + '</pre><select id="draft-choice-' + i + '" data-choice="' + i + '"><option value="">' + I.t('choose') + '</option><option value="local">' + I.t('keepDraft') + '</option><option value="remote">' + I.t('keepDisk') + '</option></select></div>'; }).join('')
+        + '<div class="modal-actions"><button class="btn" id="draft-later">' + I.t('later') + '</button><button class="btn btn-primary" id="draft-resolve">' + I.t('mergeSave') + '</button></div>';
+      box.querySelector('#draft-later').onclick = close;
+      box.querySelector('#draft-resolve').onclick = function () {
+        var choices = {}, complete = true;
+        box.querySelectorAll('[data-choice]').forEach(function (el) { if (!el.value) complete = false; else choices[list[+el.dataset.choice].key] = el.value; });
+        if (complete && resolveDraft(choices)) close();
+      };
+    });
+  };
+  window.addEventListener('online', function () { if (store.dirty) save(); });
 
   // ---------- 共享 UI 原语 ----------
   // modal(render) 打开一个弹层：render(close) 返回内容 DOM，close([result]) 关闭。
@@ -471,6 +518,41 @@
   // 后续分区模块的接入点：ready 成功兑现工作区对象（store.data 同步就绪）；
   // 失败则兑现 null 且 store.lost=true。onShow 注册的钩子只在工作区就绪后触发，
   // 模块不用自查 store.data 是否为空——ready 前注册、lost 路径都不会触发。
+  var companionWrite = null;
+  function applyCompanionWork(request) {
+    var Work = window.TracerCompanionWork;
+    if (!request || !Work.validRequestId(request.requestId)) return Promise.reject(new Error('invalid-companion-request-id'));
+    var proposal;
+    try { proposal = Work.normalize(request.proposal); } catch (error) { return Promise.reject(error); }
+    var fingerprint = JSON.stringify(proposal);
+    if (companionWrite) {
+      if (companionWrite.id === request.requestId && companionWrite.fingerprint === fingerprint) return companionWrite.promise;
+      return Promise.reject(new Error('workspace-busy'));
+    }
+    var operation = { id: request.requestId, fingerprint: fingerprint };
+    companionWrite = operation;
+    operation.promise = (async function () {
+      await window.Tracer.ready;
+      if (store.lost || !store.data || store.conflict || store.inflight) throw new Error('workspace-busy');
+      var result = Work.apply(store.data, proposal, request.requestId, M);
+      if (!result.duplicate) adopt(result.workspace);
+      var receipt = store.data.meta.companionReceipts.find(function (entry) { return entry.requestId === request.requestId; });
+      function persisted() {
+        return (store.base && store.base.meta.companionReceipts || []).some(function (entry) {
+          return entry.requestId === receipt.requestId && entry.signature === receipt.signature;
+        });
+      }
+      if (!persisted()) {
+        touch(); clearTimeout(store.timer); save();
+        var until = Date.now() + 20000;
+        while (store.inflight && Date.now() < until) await new Promise(function (resolve) { setTimeout(resolve, 50); });
+        if (!persisted()) throw new Error('companion-save-pending');
+      }
+      redraw();
+      return { duplicate: result.duplicate, projectId: result.projectId, taskIds: result.taskIds, noteId: result.noteId };
+    })().finally(function () { if (companionWrite === operation) companionWrite = null; });
+    return operation.promise;
+  }
   window.Tracer = {
     store: store,
     touch: touch,
@@ -478,6 +560,7 @@
     onShow: onShow,
     currentSec: function () { return current; },
     saveNow: save,
+    applyCompanionWork: applyCompanionWork,
     applyAIPlan: async function (plan, constraints, id) {
       if (store.lost || !store.data || store.conflict || store.inflight) throw new Error('workspace-busy');
       var result = window.TracerAIPlanner.apply(store.data, plan, constraints, id, M);
@@ -489,20 +572,7 @@
       redraw(); return result;
     },
     redraw: redraw,
-    refreshCloud: refreshCloud,
-    importCloud: function (remote) {
-      var merged = Sync.merge(Sync.empty(), store.data || Sync.empty(), remote);
-      store.base = Sync.clone(remote); adopt(merged.workspace); store.dirty = true;
-      // On first pairing a same-ID collision must be resolved against an empty base.
-      if (merged.conflicts.length) { store.base = Sync.empty(); store.base.meta.syncAccount = remote.meta.syncAccount; store.conflict = remote; }
-      persistDraft(); redraw(); if (!store.conflict) save();
-    },
-    resolveCloud: function (choices) {
-      var merged = Sync.merge(store.base, store.data, store.conflict, choices);
-      if (merged.conflicts.length) return false;
-      store.base = Sync.clone(store.conflict); adopt(merged.workspace); store.conflict = null;
-      store.dirty = true; persistDraft(); redraw(); save(); return true;
-    },
+    resolveDraft: resolveDraft,
     // 分区清单的唯一事实来源：garden.js 靠它推导「除 garden 外的所有分区」
     // 来挂卸载钩子，不用另抄一份列表——抄的那份加分区时最容易忘改，忘改的
     // 后果是新分区切进去时农场卸载钩子不触发，1000ms 定时器和游戏 DOM 就

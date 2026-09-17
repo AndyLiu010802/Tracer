@@ -32,7 +32,12 @@ if (process.isMainFrame && location.protocol === 'http:'
     onAction: callback => {
       if (typeof callback !== 'function') return;
       ipcRenderer.on('tracer-pet-action', (_event,message) => callback(message));
-    }
+    },
+    onWorkRequest: callback => {
+      if (typeof callback !== 'function') return;
+      ipcRenderer.on('tracer-pet-work-request', (_event, message) => callback(message));
+    },
+    workResult: result => ipcRenderer.send('tracer-pet-work-result', result),
   });
   contextBridge.exposeInMainWorld('TracerWindow', {
     send: action => { if (windowActions.has(action)) ipcRenderer.send('tracer-window-action', action); },

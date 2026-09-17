@@ -255,6 +255,7 @@
     });
   }
   async function action(type,value) {
+    if(type==='create-work') { const result=await T.applyCompanionWork(value); refresh(true); return result; }
     if(type==='close') { if(closeHome) closeHome(); return; }
     if(type==='desktop') { if(window.TracerPet) window.TracerPet.send({type:'show'}); return; }
     if(type==='open-home') { open(); return; }
@@ -292,6 +293,11 @@
   document.getElementById('garden-pet-open').onclick=open;
   document.getElementById('pet-generation-status').onclick=create;
   if(window.TracerPet) window.TracerPet.onAction(message=>{ if(message) action(message.type,message.value); });
+  if(window.TracerPet?.onWorkRequest) window.TracerPet.onWorkRequest(async message=>{
+    if(!message || typeof message.token!=='string') return;
+    try { const result=await action('create-work',message.value); window.TracerPet.workResult({token:message.token,ok:true,result}); }
+    catch(error) { window.TracerPet.workResult({token:message.token,ok:false,error:error.message}); }
+  });
   window.addEventListener('storage',event=>{if(event.key===KEY){try{state=P.read(JSON.parse(event.newValue));refresh();}catch{}}});
   window.addEventListener('beforeunload',event=>{
     save();

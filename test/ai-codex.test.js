@@ -31,7 +31,7 @@ function fixture(t,options={}){
   if(req.method==='thread/start')result={thread:{id:'thread1'}};
   if(req.method==='turn/start'){
    if(options.images&&args.includes('features.code_mode_host=true')){for(const item of options.images({room:calls.findLast(c=>c.method==='thread/start').params.cwd,dir,turn:req.params}))emit({method:'item/completed',params:{threadId:'thread1',item}});}
-   else emit({method:'item/completed',params:{threadId:'thread1',item:{id:'message1',type:'agentMessage',text:JSON.stringify(output)}}});
+   else emit({method:'item/completed',params:{threadId:'thread1',item:{id:'message1',type:'agentMessage',text:options.rawOutput===undefined?JSON.stringify(output):options.rawOutput}}});
    if(!options.hang)emit({method:'turn/completed',params:{threadId:'thread1',turn:{id:'turn1',status:'completed',items:[]}}});
    result={turn:{id:'turn1',status:'inProgress'}};
   }
@@ -82,11 +82,42 @@ test('planning consumes only structured output from an ephemeral restricted thre
  f.setOutput({tasks:[]});await assert.rejects(f.client.handle('codex-plan',{goal:'Report',constraints}),/invalid-plan/);
 });
 test('companion chat reuses the signed-in account with a restricted tool-free turn',async t=>{
- const f=fixture(t);f.login();f.setOutput({reply:'Hello, let’s take one small step.'});
+ const f=fixture(t);f.login();f.setOutput({reply:'Hello, let’s take one small step.',proposal:null});
  const result=await f.client.handle('codex-chat',{pet:'nova',messages:[{role:'user',content:'Hi'}]});assert.equal(result.reply,'Hello, let’s take one small step.');
  const thread=f.calls.find(c=>c.method==='thread/start').params,turn=f.calls.find(c=>c.method==='turn/start').params;
- assert.ok(thread.baseInstructions.includes('virtual companion'));assert.equal(thread.config['features.shell_tool'],false);assert.deepEqual(turn.outputSchema.required,['reply']);assert.equal(turn.sandboxPolicy.networkAccess,false);
+ assert.ok(thread.baseInstructions.includes('virtual companion'));assert.equal(thread.config['features.shell_tool'],false);assert.deepEqual(turn.outputSchema.required,['reply','proposal']);assert.equal(turn.sandboxPolicy.networkAccess,false);
  assert.equal(thread.config['features.code_mode_host'],false);assert.ok(f.processes[0].args.includes('features.code_mode_host=false'));
+});
+
+test('subscription chat returns only validated draft proposals and never sends existing task or project records',async t=>{
+ const proposal={type:'project',project:{name:'Report',notes:'Summarize findings',start:null,end:null},tasks:[]};
+ const f=fixture(t);f.login();f.setOutput({reply:'What should the project deliver?',proposal:null});
+ const input={pet:'ember',today:'2026-09-17',messages:[{role:'user',content:'Create a project.'}],tasks:[{title:'Private existing task'}],projects:[{name:'Private existing project'}],workspace:{notes:'Private workspace note'}};
+ assert.equal((await f.client.handle('codex-chat',input)).proposal,null);
+ f.setOutput({reply:'Here is a project draft for your confirmation.',proposal});
+ assert.deepEqual((await f.client.handle('codex-chat',{...input,messages:[...input.messages,{role:'assistant',content:'What should the project deliver?'},{role:'user',content:'A summary report. No deadline.'}]})).proposal,proposal);
+ f.setOutput({reply:'Updated draft for review.',proposal:{...proposal,project:{...proposal.project,end:'2026-09-18'}}});
+ await f.client.handle('codex-chat',{...input,proposal,messages:[{role:'user',content:'Make it due tomorrow.'}]});
+ const thread=f.calls.findLast(c=>c.method==='thread/start').params,turn=f.calls.findLast(c=>c.method==='turn/start').params;
+ const sent=JSON.parse(turn.input[0].text);
+ assert.equal(sent.today,input.today);assert.deepEqual(sent.proposal,proposal);
+ for(const privateText of ['Private existing task','Private existing project','Private workspace note'])assert.equal(JSON.stringify(turn).includes(privateText),false);
+ assert.equal(thread.ephemeral,true);assert.equal(thread.config['features.shell_tool'],false);assert.equal(thread.config['features.code_mode_host'],false);
+ assert.deepEqual(turn.sandboxPolicy,{type:'readOnly',networkAccess:false});assert.deepEqual(turn.outputSchema.required,['reply','proposal']);
+ assert.equal(fs.existsSync(path.join(f.dir,'workspace.json')),false);
+ f.setOutput({reply:'Draft',proposal:{type:'tasks',project:null,tasks:[]}});
+ await assert.rejects(f.client.handle('codex-chat',input),/invalid-response/);
+ const turns=f.calls.filter(c=>c.method==='turn/start').length;
+ await assert.rejects(f.client.handle('codex-chat',{...input,proposal:{tasks:[]}}),/invalid-chat/);
+ assert.equal(f.calls.filter(c=>c.method==='turn/start').length,turns);
+});
+
+test('subscription chat handles legacy prose safely and rejects malformed structured output',async t=>{
+ const input={pet:'sprout',messages:[{role:'user',content:'Hello'}]};
+ const prose=fixture(t,{rawOutput:'Hello, take a little stretch.'});prose.login();
+ assert.deepEqual(await prose.client.handle('codex-chat',input),{reply:'Hello, take a little stretch.',proposal:null});
+ const malformed=fixture(t,{rawOutput:'{"reply":"Draft","proposal":'});malformed.login();
+ await assert.rejects(malformed.client.handle('codex-chat',input),/invalid-response/);
 });
 
 test('subscription artwork uses only native image output, attached photo and an isolated ephemeral artwork thread',async t=>{

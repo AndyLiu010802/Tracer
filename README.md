@@ -1,31 +1,35 @@
 # Tracer
 
-0.3.8 支持单独重新生成不满意的动作：在生成预览中选择动作后点击「重新生成此动作」；已保存的自定义伙伴可从「图鉴 → 调整当前伙伴动作」进入。新图成功前保留旧动作，保存修改后才更新原伙伴，养成进度不变。旧四帧或静态伙伴也可编辑；含保留旧帧的新导出文件需要 0.3.8 或更新版本打开。
+0.3.9 支持与伙伴聊出任务或项目：伙伴会补问关键缺口，整理成可预览的方案，只有你确认后才写入工作区。主窗口和原生桌宠都能使用；日期和工时可留空，对话与待确认方案保存在本机，创建结果未确认时可重试同一请求，避免重复添加。
+
+仍可单独重新生成不满意的伙伴动作，保存前保留原动作和养成进度；含保留旧帧与新动作的导出文件，最低仍需 Tracer 0.3.8 打开。
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[下载 Tracer 0.3.8：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.8)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.8 更新说明](docs/desktop-release-0.3.8.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[下载 Tracer 0.3.9：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.9 更新说明](docs/desktop-release-0.3.9.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-0.3.8 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.8)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
+0.3.9 的三平台云端构建和安装包验收结果待本次发布流程完成后补充。以下为本版本的目标下载地址；附件只在 Windows x64、Mac arm64 与 Mac x64 的原生构建和验证全部通过后发布。
+
+0.3.9 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.9)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
 
 | 电脑类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Windows x64 | [Tracer-Setup-0.3.8-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-Setup-0.3.8-x64.exe) | — |
-| Mac：Apple 芯片（M 系列） | [Tracer-0.3.8-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-0.3.8-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-0.3.8-mac-arm64.zip) |
-| Mac：Intel | [Tracer-0.3.8-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-0.3.8-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/Tracer-0.3.8-mac-x64.zip) |
+| Windows x64 | [Tracer-Setup-0.3.9-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-Setup-0.3.9-x64.exe) | — |
+| Mac：Apple 芯片（M 系列） | [Tracer-0.3.9-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-arm64.zip) |
+| Mac：Intel | [Tracer-0.3.9-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-0.3.9-mac-x64.zip) |
 
 Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置；任务、设置、桌宠和个人工作区保留。
 
-Desktop release 工作流分别在 Windows x64、Mac arm64 与 Mac x64 上执行核心与桌面测试，以及打包应用主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源与源码一致性检查。三个平台的上述检查及生成恢复测试均已通过，完整记录见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35171000217)。伙伴生成与恢复 QA 覆盖后台继续、刷新恢复、单动作替换、已保存伙伴编辑、保存失败重试及草稿清除。
+Desktop release 工作流会在 Windows x64、Mac arm64 与 Mac x64 上执行核心与桌面测试，以及打包应用主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源与源码一致性检查。伙伴生成恢复与聊天创建使用隔离用户目录、本地合成图及模拟 AI 响应验证，不消耗真实 AI 额度。本次测试数量、安装包验收结果和构建记录待发布验证完成后补充。
 
-本地 Windows 安装包 `dist/0.3.8-final` 已通过包内容、校验值和实际运行检查。草稿恢复测试使用本地合成图与模拟服务，覆盖存储失败和清除期间的并发写入保护。Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证；真实账号登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
+Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证。真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
 
 - **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
 - **本地数据**：任务、完成历史和设置保存在 `%APPDATA%\tracer-desktop\`。升级及正常卸载保留用户数据；分享的安装包使用接收者自己的工作区。
-- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.3.8.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.8/SHA256SUMS-0.3.8.txt)，覆盖 Windows EXE 和两种 Mac 架构的 DMG、ZIP。
+- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.3.9.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/SHA256SUMS-0.3.9.txt)，覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.9/Tracer-Setup-0.3.9-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。
 
 ## 功能
 
@@ -37,6 +41,14 @@ Desktop release 工作流分别在 Windows x64、Mac arm64 与 Mac x64 上执行
 - 独立 Chromium 参考浏览器，支持页面脚本、登录、后退前进和下载；网站自身的访问限制与网络条件仍然适用。
 - AI 计划助手：读取本地 PDF、Word 和文本资料，根据截止日期和可投入工时预览任务拆解与排程。
 - 桌面伙伴：6 个内置伙伴的 16 种动作各有 16 帧；更新后新生成的伙伴每个动作也使用 16 张连续图像，共 256 帧。旧照片与旧 4 帧动作包继续兼容，安装更新不会自动调用 AI 或重绘已有伙伴。
+
+### 与伙伴创建任务或项目
+
+在主窗口或原生桌宠的「聊天」中描述新任务或项目，伙伴会在需要时追问，再给出方案预览。可继续聊天修改方案或取消；只有确认后才会保存到本机工作区。日期与工时均可留空，普通聊天不会自动创建任务。
+
+每个窗口分别保存各伙伴的本地对话、未发送文字与待确认方案，关闭、刷新或重启后可恢复。创建结果未确认时，请先重试同一请求；它会检查本机保存记录，避免重复创建，确认保存前不能改成新请求。向 AI 发送的内容限于当前对话、当天日期、待完善方案和伙伴资料，不会自动发送已有工作区或照片。
+
+0.3.9 已移除微信小程序和配对、云同步模块；本机工作区、旧恢复草稿和本地保存能力继续保留。
 
 ### 伙伴生成与恢复
 
@@ -50,7 +62,7 @@ Desktop release 工作流分别在 Windows x64、Mac arm64 与 Mac x64 上执行
 
 支持两种个人接入方式：**ChatGPT 套餐登录**使用官方 Codex 组件和账号包含的 Codex 额度；**自己的 API**支持 OpenAI、兼容接口及本机模型。无需部署 Tracer 云服务。已完成真实 ChatGPT Pro 授权及模型响应验证；其他用户仍需登录自己的账号并测试。安装包不含账号或密钥。
 
-生成前检查套餐额度，额度耗尽或无法确认时停止，不购买额度或自动切换 API。个人 API 按服务商规则计费。任务仍保存在本机，不自动跨设备同步。旧云服务及 [微信小程序](wechat/README.md)代码保留，均需另行配置。
+生成前检查套餐额度，额度耗尽或无法确认时停止，不购买额度或自动切换 API。个人 API 按服务商规则计费。任务保存在本机，不自动跨设备同步；可选的自建 AI 服务需另行配置。
 
 ## 从源码运行与构建
 
@@ -85,6 +97,8 @@ node dev/verify-macos-release.cjs
 `powershell -NoProfile -ExecutionPolicy Bypass -File .\start-tasks.ps1` 使用 `127.0.0.1:8081` 打开任务看板；可加 `-Port 8082` 更换端口。`create-task-shortcut.ps1` 创建的是浏览器开发模式快捷方式，与安装程序创建的 Tracer 桌面应用快捷方式不同。项目移动后需重建开发模式快捷方式。
 
 浏览器开发模式的数据在仓库 `data/` 和 `bookmarks.json` 中，与桌面用户目录独立。以下阅读器、皮肤和代理说明保留供浏览器模式及开发使用；桌面版的原生参考浏览器不使用 fixture view 和网页代理。
+
+修改 `public/` 中的任务历史、项目删除或任务翻译共享模块后，运行 `node dev/sync-shared-modules.js` 更新 Tracer 皮肤中的副本。历史设计与旧版发布说明统一保存在 [文档归档](docs/archive/README.md)。
 
 ## 浏览器模式：阅读面板
 

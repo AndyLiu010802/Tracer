@@ -6,6 +6,7 @@ function fixture(t,area={x:0,y:0,width:1200,height:900},saved){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'tracer-pet-desktop-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  if(saved!==undefined)fs.writeFileSync(path.join(dir,'pet-window.json'),JSON.stringify(saved));
  const ipcMain=new EventEmitter(),windows=[],origin='http://127.0.0.1:18000';let cursor={x:100,y:100},shown=0;
+ const handlers=new Map();ipcMain.handle=(name,handler)=>handlers.set(name,handler);ipcMain.removeHandler=name=>handlers.delete(name);
  class Window extends EventEmitter{
   constructor(options){super();this.bounds={x:options.x,y:options.y,width:options.width,height:options.height};this.visible=options.show!==false;this.dead=false;this.sent=[];this.webContents=new EventEmitter();this.webContents.mainFrame={url:origin+'/'};this.webContents.setWindowOpenHandler=()=>{};this.webContents.send=(...args)=>this.sent.push(args);windows.push(this);}
   getBounds(){return {...this.bounds};}isDestroyed(){return this.dead;}isVisible(){return this.visible;}
@@ -14,12 +15,35 @@ function fixture(t,area={x:0,y:0,width:1200,height:900},saved){
   destroy(){this.dead=true;this.emit('closed');}
  }
  const screen={getPrimaryDisplay:()=>({workArea:area}),getDisplayMatching:()=>({workArea:area}),getDisplayNearestPoint:()=>({workArea:area}),getCursorScreenPoint:()=>cursor};
- const mod={exports:{}};vm.runInNewContext(source,{module:mod,URL,__dirname:path.join(__dirname,'../desktop'),require:name=>name==='electron'?{BrowserWindow:Window,ipcMain,screen}:require(name)});
+ const mod={exports:{}};vm.runInNewContext(source,{module:mod,URL,setTimeout,clearTimeout,__dirname:path.join(__dirname,'../desktop'),require:name=>name==='electron'?{BrowserWindow:Window,ipcMain,screen}:require(name)});
  const main=new Window({x:0,y:0,width:1000,height:800}),controller=mod.exports.attachPet(main,origin,dir,()=>shown++);controller.show();const pet=windows[1];pet.emit('ready-to-show');
  function event(win=pet){return{sender:win.webContents,senderFrame:win.webContents.mainFrame};}
  function send(type,value,from=event()){ipcMain.emit('tracer-pet-command',from,{type,value});}
- return{dir,main,pet,send,event,controller,screen,setCursor:value=>{cursor=value;},shown:()=>shown};
+ return{dir,main,pet,send,event,controller,screen,ipcMain,handlers,setCursor:value=>{cursor=value;},shown:()=>shown};
 }
+
+const workRequest={requestId:'f623b4d1-79de-4cad-ae76-d5523a54dacf',proposal:{type:'tasks',project:null,tasks:[{title:'Write report',notes:'',due:null,scheduled:null,priority:'medium',estimate:null,checklist:[]}]}};
+test('native task creation validates the sender and proposal before forwarding to the main workspace',async t=>{
+ const f=fixture(t),invoke=f.handlers.get('tracer-pet-create-work');
+ for(const event of [f.event(f.main),{sender:f.pet.webContents,senderFrame:{url:'http://127.0.0.1:18000/pet.html'}}]) assert.equal((await invoke(event,workRequest)).ok,false);
+ assert.equal((await invoke(f.event(),{...workRequest,proposal:{type:'shell',command:'delete'}})).ok,false);
+ assert.equal(f.main.sent.length,0);
+ const result=invoke(f.event(),workRequest),message=f.main.sent.at(-1);
+ assert.equal(message[0],'tracer-pet-work-request');assert.equal(message[1].value.requestId,workRequest.requestId);
+ let settled=false;result.then(()=>{settled=true;});
+ const response={token:message[1].token,ok:true,result:{projectId:null,taskIds:['created'],noteId:null}};
+ f.ipcMain.emit('tracer-pet-work-result',f.event(),response);await Promise.resolve();assert.equal(settled,false,'pet cannot forge its own creation success');
+ f.ipcMain.emit('tracer-pet-work-result',f.event(f.main),response);
+ assert.equal((await result).result.taskIds[0],'created');
+});
+test('native creation failures are returned and closing the main window settles pending requests',async t=>{
+ const f=fixture(t),invoke=f.handlers.get('tracer-pet-create-work');
+ let pending=invoke(f.event(),workRequest),message=f.main.sent.at(-1)[1];
+ f.ipcMain.emit('tracer-pet-work-result',f.event(f.main),{token:message.token,ok:false,error:'companion-save-pending'});
+ assert.equal((await pending).error,'companion-save-pending');
+ pending=invoke(f.event(),workRequest);f.main.destroy();assert.equal((await pending).ok,false);
+ assert.equal(f.handlers.has('tracer-pet-create-work'),false);assert.equal(f.ipcMain.listenerCount('tracer-pet-work-result'),0);
+});
 
 test('desktop drag keeps the grab offset, clamps to the display and persists its final position',t=>{
  const f=fixture(t);assert.equal(f.pet.bounds.width,220);assert.equal(f.pet.bounds.height,284);

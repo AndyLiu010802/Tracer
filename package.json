@@ -1,7 +1,7 @@
 {
   "name": "tracer-desktop",
   "private": true,
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Tracer bilingual task manager with ChatGPT subscription login, personal AI APIs and simple planning.",
   "main": "desktop/main.js",
   "author": {

@@ -79,6 +79,8 @@ jobs:
         run: |
           node dev/qa-pet-generation-recovery.cjs
           node dev/qa-pet-creator-lifecycle.cjs
+          node dev/qa-companion-work.cjs
+          node dev/qa-workspace-recovery.cjs
       - uses: actions/upload-artifact@v4
         with:
           name: Tracer-${{ matrix.platform }}-${{ matrix.arch }}
@@ -101,6 +103,8 @@ jobs:
             .cache/pet-dense-release-*/*.png
             .cache/pet-dense-release-*/launch.log
             .cache/pet-generation-recovery-*/*.png
+            .cache/companion-work-*/*.png
+            .cache/workspace-recovery-*/*.png
 
   publish:
     needs: build

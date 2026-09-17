@@ -12,7 +12,7 @@ if ((Test-Path -LiteralPath $taskShortcutPath) -and $taskShortcut.Arguments -ne 
 $taskShortcut.TargetPath = Join-Path $PSHOME 'powershell.exe'
 $taskShortcut.Arguments = $taskArgs
 $taskShortcut.WorkingDirectory = $PSScriptRoot
-$taskShortcut.IconLocation = (Join-Path $PSScriptRoot 'build\icon.ico') + ',0'
+$taskShortcut.IconLocation = (Join-Path $PSScriptRoot 'build\app-icon.ico') + ',0'
 $taskShortcut.Description = 'Open the Tracer task board'
 $taskShortcut.WindowStyle = 7
 $taskShortcut.Save()
