@@ -21,9 +21,9 @@
 
 ## 发布与安装
 
-**0.3.10 发布状态：待构建与验证。** 本地已通过 647 项核心测试、16 项桌面测试；Windows x64、Mac arm64 与 Mac x64 的原生构建、打包应用验收及公开下载校验尚未完成。下列 0.3.10 下载入口和文件名对应计划产物，验证通过并发布后方可下载。
+**0.3.10 已发布并完成验证。** [统一下载页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)提供 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三个平台均通过 **647 项核心测试、16 项桌面测试**，以及实际打包应用中的伙伴动画、家园种植、任务盛放和重启去重验收；七项公开附件、下载地址与统一 SHA-256 校验值已核验。[查看本次构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35178952827)。
 
-计划在 [Tracer 0.3.10 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)提供以下七项附件：
+已在 [Tracer 0.3.10 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)提供以下七项附件：
 
 | 用途 | 文件 |
 | --- | --- |
@@ -38,5 +38,7 @@
 Windows 运行 EXE；Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原位置，任务、设置、伙伴和个人工作区保留。
 
 Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证。真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收。
+
+本地 Windows 安装包的 259 个源码文件已与发布源码逐字节核对；三平台使用同一提交 [d7d3fb72dc52a2ed32a1b4fec0d5a7f3dfa5e253](https://github.com/AndyLiu010802/Tracer/commit/d7d3fb72dc52a2ed32a1b4fec0d5a7f3dfa5e253)。家园的保存失败重试、多窗口保护、旧农场存档保留和中英文窄屏检查均已通过。自动化 AI 场景使用模拟响应与本地合成图，不消耗真实 AI 额度。
 
 操作说明见 [Mac 安装指南](https://github.com/AndyLiu010802/Tracer/blob/codex/release-0.3.10/docs/macos-install.md)、[Mac 测试包说明](https://github.com/AndyLiu010802/Tracer/blob/codex/release-0.3.10/docs/macos-preview-notes.md)和[专注与家园说明](https://github.com/AndyLiu010802/Tracer/blob/codex/release-0.3.10/docs/focus-and-appearance.md)。

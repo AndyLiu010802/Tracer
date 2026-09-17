@@ -4,9 +4,9 @@
 
 当前开发版本请查看 [0.3.10 发布说明](../desktop-release-0.3.10.md) 和 [Mac 安装指南](../macos-install.md)。0.3.10 新增伙伴家园，让项目的已保存任务成果和关联专注记录带动花圃成长，原农场存档保留在休闲区。
 
-**0.3.10 发布状态：待构建与验证。** 本地已通过 647 项核心测试、16 项桌面测试；Windows x64、Mac arm64 与 Mac x64 的原生构建、打包应用验收及公开下载校验尚未完成。下列 0.3.10 下载入口和文件名对应计划产物，验证通过并发布后方可下载。
+**0.3.10 已发布并完成验证。** [统一下载页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)提供 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三个平台均通过 **647 项核心测试、16 项桌面测试**，以及实际打包应用中的伙伴动画、家园种植、任务盛放和重启去重验收；七项公开附件、下载地址与统一 SHA-256 校验值已核验。[查看本次构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35178952827)。
 
-计划发布入口：[Tracer 0.3.10](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)。
+发布入口：[Tracer 0.3.10](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)。
 
 [0.3.9 发布说明](../desktop-release-0.3.9.md)保留伙伴聊天追问、方案预览与确认创建、本地会话恢复、同请求重试以及移除微信小程序模块的历史记录。
 

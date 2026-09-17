@@ -10,7 +10,7 @@ Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、�
 
 ## 下载与安装
 
-**0.3.10 发布状态：待构建与验证。** 本地已通过 647 项核心测试、16 项桌面测试；Windows x64、Mac arm64 与 Mac x64 的原生构建、打包应用验收及公开下载校验尚未完成。下列 0.3.10 下载入口和文件名对应计划产物，验证通过并发布后方可下载。
+**0.3.10 已发布并完成验证。** [统一下载页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)提供 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三个平台均通过 **647 项核心测试、16 项桌面测试**，以及实际打包应用中的伙伴动画、家园种植、任务盛放和重启去重验收；七项公开附件、下载地址与统一 SHA-256 校验值已核验。[查看本次构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35178952827)。
 
 0.3.10 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
 
