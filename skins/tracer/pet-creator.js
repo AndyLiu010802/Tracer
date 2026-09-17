@@ -8,10 +8,12 @@
     let initialized = false, confirming = false, photoLoading = false, restartSuggested = false, errorMessage = '', completedGeneration = '', lastDraft;
     const newId = () => crypto.randomUUID().replaceAll('-','');
     const recordId = /^custom_[a-f0-9]{32}$/.test(options.draft?.recordId) ? options.draft.recordId : 'custom_'+newId();
+    let editingId=options.draft?.editingId===recordId?recordId:'', editingSignature=editingId?options.draft.editingSignature:'';
     let generationId = /^[a-f0-9]{32}$/.test(options.draft?.generationId) ? options.draft.generationId : newId();
     const acceptedFields = new Map();
     const actions = TracerPetAnimation.actions, groupCount = actions.length, animationVersion = 2;
     let pageAttempts=Array.from({length:groupCount},(_,index)=>Number.isInteger(options.draft?.pageAttempts?.[index])&&options.draft.pageAttempts[index]>=0&&options.draft.pageAttempts[index]<=1000?options.draft.pageAttempts[index]:0);
+    let generationIdentity='', pendingReplacement=null, retainedFrames=Array(groupCount).fill(16);
     const actionLabels = {idle:['待机','Idle'],pet:['互动','Greeting'],feed:['吃饭','Eating'],play:['玩耍','Playing'],sleep:['睡觉','Sleeping'],wake:['起床','Waking up'],focus:['专注','Focusing'],drag:['被提起','Being picked up'],fishing:['钓鱼','Fishing'],exercise:['锻炼','Exercising'],farming:['种地','Gardening'],mining:['挖矿','Mining'],reading:['阅读','Reading'],writing:['记录','Writing'],crafting:['手作','Crafting'],tea:['喝茶休息','Tea break']};
     const safeImage = value => typeof value === 'string' && /^\/api\/pet-art\/[a-f0-9]{32}\.png$/.test(value);
     const error = message => { errorMessage = message; find('.pet-create-error').textContent = message; notifyChange(); };
@@ -32,7 +34,7 @@
       const frame=find(selector), figure=document.createElement('figure'), caption=document.createElement('figcaption'); caption.textContent=label;
       frame.before(figure); figure.append(caption,frame);
     }
-    find('.pet-result-frame').insertAdjacentHTML('afterend','<div class="pet-animation-preview" hidden><label for="pet-preview-action">'+tr('动作','Action')+'</label><select id="pet-preview-action"></select></div>');
+    find('.pet-result-frame').insertAdjacentHTML('afterend','<div class="pet-animation-preview" hidden><label for="pet-preview-action">'+tr('动作','Action')+'</label><select id="pet-preview-action"></select><button type="button" class="pet-regenerate-action" data-act="regenerate-action"></button><button type="button" class="pet-keep-action" data-act="keep-action" hidden>'+tr('保留原动作','Keep original action')+'</button><small class="pet-action-regeneration-help">'+tr('不满意时可只重画当前动作的 16 帧，其他动作保持不变。','Regenerate only this action’s 16 frames; keep all other actions.')+'</small></div>');
     find('.pet-create-status').insertAdjacentHTML('beforebegin','<progress class="pet-animation-progress" max="'+groupCount+'" value="0" hidden aria-label="'+tr('动作生成进度','Actions completed')+'"></progress>');
     find('#pet-preview-action').innerHTML=actions.map(action=>'<option value="'+action+'">'+tr(...actionLabels[action])+'</option>').join('');
     find('#pet-preview-action').onchange=event=>showPreview(event.target.value);
@@ -44,7 +46,19 @@
     find('.pet-create-actions [data-act="cancel-create"]').textContent=tr('暂时收起','Minimize');
     find('.pet-create-intro').insertAdjacentHTML('beforeend','<p>'+tr('可以暂时收起窗口，生成会继续。导航栏可查看进度，完成后会提醒你保存。','You can minimize this window while generation continues. Check progress in navigation; we will remind you to save when it is ready.')+'</p>');
     find('.pet-create-intro p').textContent=tr('保留熟悉的特征，生成 16 种行为，每个动作 16 帧，共 256 帧，包含阅读、记录、手作和喝茶休息。','A familiar face with 16 behaviors, 16 frames per action and 256 frames in total, including reading, writing, crafting and tea breaks.');
-    find('.pet-generation-info').insertAdjacentHTML('afterbegin','<p>'+tr('每个动作单独生成，共使用 16 次图像生成额度，比旧版耗时更长。可以边生成边预览；失败后只重试未完成的动作。','Each action is generated separately, using 16 image generations and taking longer than older packs. Preview as they arrive; retries keep completed actions.')+'</p>');
+    function showEditingMode() {
+      root.classList.add('is-editing-companion');
+      find('.pet-drag').textContent=tr('调整伙伴动作','REFINE COMPANION ACTIONS');
+      find('.pet-create-intro h2').textContent=tr('调整伙伴的动作','Refine your companion’s actions');
+      find('.pet-create-intro p').textContent=tr('选择想改进的动作，单独重新生成。保存修改前，原伙伴和养成进度保持不变。','Choose an action to regenerate. Your saved companion and care progress stay unchanged until you save these edits.');
+      find('.pet-create-field[for="pet-photo"] small').textContent=tr('使用已保存的伙伴形象作为参考，无需重新上传原始照片。','Uses the saved companion as the reference; no original photo is needed.');
+      find('.pet-create-field[for="pet-photo"]').hidden=true;
+      find('.pet-create-field[for="pet-custom-kind"]').hidden=true;
+      find('.pet-create-preview figure figcaption').textContent=tr('已有伙伴形象','Existing companion');
+      find('.pet-features-field').hidden=true;
+    }
+    if(editingId)showEditingMode();
+    find('.pet-generation-info').insertAdjacentHTML('afterbegin','<p>'+tr('创建完整新伙伴需要 16 次图像生成；单组重画只请求选中的一个动作。生成失败时保留已有动作，重试不会重新生成其他组。','Creating a complete new companion uses 16 image generations. Regenerating one action requests only that group. Existing actions are kept if generation fails; retries do not regenerate other groups.')+'</p>');
     const privacy=find('.pet-generation-privacy'), details=document.createElement('details');
     details.className='pet-generation-details';
     details.innerHTML='<summary>'+tr('使用与隐私说明','Usage & privacy')+'</summary>';
@@ -87,7 +101,7 @@
       if (!pages[pageIndex]) return;
       clearPreview(); previewAction=action; previewBroken=false;
       const version=previewVersion;
-      previewPlayer=TracerPetAnimation.createPage(pages[pageIndex],pageIndex,{version:animationVersion,label:values().name,onError:()=>{
+      previewPlayer=TracerPetAnimation.createPage(pages[pageIndex],pageIndex,{version:animationVersion,retainedFrames:retainedFrames[pageIndex],label:values().name,onError:()=>{
         if (destroyed || version!==previewVersion) return;
         previewBroken=true; find('.pet-adopt').hidden=true;
         error(tr('动作预览暂时无法读取，已生成的动作仍然保留。请检查连接后重新加载预览，无需重新生成。','The preview could not be loaded. Your generated actions are still here. Check the connection and reload the preview; there is no need to regenerate.'));
@@ -104,6 +118,8 @@
     function invalidate() {
       pages=[]; image=''; clearPreview(); previewAction='idle'; previewBroken=false;
       generationId=newId(); pageAttempts=Array(groupCount).fill(0); completedGeneration=''; restartSuggested=false;
+      generationIdentity=''; pendingReplacement=null;
+      retainedFrames=Array(groupCount).fill(16);
       find('.pet-animation-preview').hidden=true; find('.pet-animation-progress').hidden=true; find('.pet-animation-progress').value=0;
       find('.pet-result-empty').hidden = false; find('.pet-adopt').hidden = true; find('.pet-create-status').textContent = '';
       renderControls();
@@ -111,14 +127,23 @@
     function renderControls() {
       const locked=busy||photoLoading||confirming, complete=pages.length===groupCount;
       root.setAttribute('aria-busy', String(busy||photoLoading));
-      root.querySelectorAll('input,textarea,select,.pet-generate,.pet-adopt,.pet-restart-generation,.pet-reload-preview,.pet-discard-draft,details').forEach(el => { if ('disabled' in el) el.disabled = locked; });
+      root.querySelectorAll('input,textarea,select,.pet-generate,.pet-adopt,.pet-restart-generation,.pet-reload-preview,.pet-discard-draft,.pet-regenerate-action,.pet-keep-action,details').forEach(el => { if ('disabled' in el) el.disabled = locked; });
       find('#pet-preview-action').disabled=false;
-      find('.pet-restart-generation').hidden=busy||(!pages.length&&!restartSuggested);
+      if(editingId) for(const selector of ['#pet-photo','#pet-custom-kind','#pet-distinctive-features'])find(selector).disabled=true;
+      const currentIndex=actions.indexOf(previewAction), retryCurrent=pendingReplacement?.pageIndex===currentIndex;
+      find('.pet-regenerate-action').disabled=locked||!pages[currentIndex]||!!pendingReplacement&&!retryCurrent;
+      find('.pet-regenerate-action').textContent=retryCurrent?tr('重试此动作','Retry this action'):tr('重新生成此动作','Regenerate this action');
+      find('.pet-keep-action').hidden=!pendingReplacement||locked;
+      find('.pet-action-regeneration-help').textContent=pendingReplacement
+        ? tr('正在重画：','Replacing: ')+tr(...actionLabels[actions[pendingReplacement.pageIndex]])+tr('。原动作保留，重试会继续同一组；也可以选择保留原动作。','. The original stays available. Retry this group or keep the original action.')
+        : tr('不满意时可只重画当前动作的 16 帧，其他动作保持不变。','Regenerate only this action’s 16 frames; keep all other actions.');
+      find('.pet-restart-generation').hidden=!!editingId||busy||(!pages.length&&!restartSuggested);
       find('.pet-reload-preview').hidden=!previewBroken;
       find('.pet-discard-draft').hidden=!options.onDiscard||locked||!status().hasDraft;
       find('.pet-adopt').hidden=!complete||previewBroken;
-      find('.pet-adopt').textContent=saving?tr('保存中…','Saving…'):tr('保存并陪伴我','Save & bring to life');
-      find('.pet-generate').textContent = busy&&!saving ? tr('生成中…','Generating…') : complete ? tr('查看动作预览','Preview actions') : pages.length ? tr('继续生成','Continue generation')+' · '+pages.length+'/'+groupCount : tr('生成像素伙伴','Generate pixel companion');
+      find('.pet-adopt').disabled=busy||photoLoading||confirming||!!pendingReplacement;
+      find('.pet-adopt').textContent=saving?tr('保存中…','Saving…'):editingId?tr('保存动作修改','Save action changes'):tr('保存并陪伴我','Save & bring to life');
+      find('.pet-generate').textContent = busy&&!saving ? tr('生成中…','Generating…') : pendingReplacement ? tr('重试单组动作','Retry action')+' · '+tr(...actionLabels[actions[pendingReplacement.pageIndex]]) : complete ? tr('查看动作预览','Preview actions') : pages.length ? tr('继续生成','Continue generation')+' · '+pages.length+'/'+groupCount : tr('生成像素伙伴','Generate pixel companion');
     }
     function setBusy(value, isSaving = false) {
       busy=value; saving=value&&isSaving; renderControls(); notifyChange();
@@ -126,11 +151,11 @@
     function status() {
       const data=destroyed ? lastDraft || {} : values();
       const hasSettings=(data.kind&&data.kind!=='creature')||(data.imageSource&&data.imageSource!=='codex')||(data.imageModel!==undefined&&data.imageModel!=='gpt-image-2.5-flare');
-      return {busy:busy||photoLoading,completed:pages.length,total:groupCount,ready:pages.length===groupCount&&!previewBroken,hasDraft:!!(photo||pages.length||data.name||data.personality||data.distinctiveFeatures||hasSettings),...(errorMessage?{error:errorMessage}:{})};
+      return {busy:busy||photoLoading,completed:pages.length,total:groupCount,ready:pages.length===groupCount&&!previewBroken&&!pendingReplacement,hasDraft:!!(photo||pages.length||data.name||data.personality||data.distinctiveFeatures||hasSettings),...(pendingReplacement?{replacementAction:actions[pendingReplacement.pageIndex],replacementLabel:tr(...actionLabels[actions[pendingReplacement.pageIndex]])}:{}),...(errorMessage?{error:errorMessage}:{})};
     }
     function read() {
       if (destroyed) return lastDraft;
-      return {...values(),recordId,generationId,pageAttempts:[...pageAttempts],photo,image,animationVersion,pages:[...pages],source,wasBusy:busy,previewAction,...(errorMessage?{error:errorMessage}:{})};
+      return {...values(),recordId,editingId,editingSignature,generationId,generationIdentity,retainedFrames:[...retainedFrames],pendingReplacement:pendingReplacement?{...pendingReplacement}:null,pageAttempts:[...pageAttempts],photo,image,animationVersion,pages:[...pages],source,wasBusy:busy,previewAction,...(errorMessage?{error:errorMessage}:{})};
     }
     function notifyChange() {
       if (!initialized || destroyed) return;
@@ -162,7 +187,7 @@
     async function loadPhoto(event) {
       const file=event.target.files[0];
       syncSourceInput();
-      if (!file || busy || confirming || photoLoading || destroyed) return;
+      if (!file || busy || confirming || photoLoading || destroyed || editingId) return;
       const version=++photoVersion;
       if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 10*1024*1024) { error(tr('请选择不超过 10 MB 的 JPG、PNG 或 WebP 图片。','Choose a JPG, PNG or WebP image under 10 MB.')); return; }
       photoLoading=true; renderControls(); error('');
@@ -187,6 +212,9 @@
     }
     function values() { return { name: find('#pet-custom-name').value.trim(), kind: find('#pet-custom-kind').value, personality: find('#pet-custom-personality').value.trim(), distinctiveFeatures:find('#pet-distinctive-features').value.trim(), imageSource:find('#pet-image-source').value, imageModel: find('#pet-image-model').value.trim() }; }
     const errors = {
+      'animation-load-failed':['暂时无法读取已生成的动作图片。原动作仍保留，请检查连接后重试，将继续读取本次结果。','The generated action image could not be loaded. Your original action is kept. Check the connection and retry to retrieve this result.'],
+      'custom-edit-missing':['原伙伴已被移除，当前修改草稿仍然保留；未重新创建伙伴或覆盖其他伙伴。','The original companion was removed. This editing draft is kept; no companion was recreated or overwritten.'],
+      'custom-edit-conflict':['原伙伴已在别处被修改。为避免覆盖，当前修改草稿仍然保留，尚未保存到伙伴。','The original companion was changed elsewhere. This draft is kept, and its edits have not overwritten the companion.'],
       'pet-draft-clear-failed':['伙伴已保存，但本机恢复草稿还未清理。请再次点击保存重试清理，无需重新生成。','Your companion is saved, but its recovery draft could not be removed. Save again to retry cleanup; no regeneration is needed.'],
       'draft-checkpoint-failed':['无法保存本机恢复草稿，已暂停后续生成以免继续消耗额度。照片和已完成动作仍保留在当前窗口，请检查本机存储后重试。','The recovery draft could not be saved on this device. Generation has paused to avoid using more allowance. Your photo and completed actions are still in this window. Check local storage and retry.'],
       'generation-attempt-limit':['当前动作已达到重试上限，已完成动作仍保留。请检查生成设置，或在确认后重新生成全部动作。','This action has reached its retry limit. Completed actions are still here. Review your generation settings or explicitly choose to regenerate all actions.'],
@@ -218,8 +246,62 @@
       'invalid-identity-image': ['作为参考的伙伴图像无法读取，照片和已完成动作仍保留。请检查本机图片文件；如需重新生成，请明确点击“重新生成全部动作”并确认。','The companion reference could not be read. Your photo and completed actions are kept. Check the local image files; to regenerate, explicitly choose Regenerate all actions and confirm.'],
       'custom-limit': ['最多保存 12 位自定义伙伴。请先从图鉴移除一位。','You can keep up to 12 custom companions. Remove one from your collection first.']
     };
+    async function requestPage(data,pageIndex,attempt,identityImage) {
+      controller=new AbortController(); const timeout=setTimeout(()=>controller.abort(),330000);
+      try {
+        const response=await fetch('/api/ai/'+data.imageSource+'-pet-image',{method:'POST',headers:{'Content-Type':'application/json','x-tracer-ai':'1'},body:JSON.stringify({...data,photo,animationVersion,animationPage:pageIndex,generationId,generationAttempt:attempt,...(identityImage?{identityImage}:{})}),signal:controller.signal});
+        const result=await response.json(); if(!response.ok)throw new Error(result.error||'generation-failed');
+        if(!safeImage(result.image)||result.animationPage!==pageIndex||result.animationVersion!==animationVersion)throw new Error('invalid-animation-response');
+        if(destroyed)return;
+        await TracerPetAnimation.validatePage(result.image,{version:animationVersion});
+        return result;
+      } finally {clearTimeout(timeout);controller=undefined;}
+    }
+    async function regenerateAction() {
+      if(busy||confirming||photoLoading||destroyed)return;
+      const pageIndex=pendingReplacement?.pageIndex??actions.indexOf(previewAction), data=values();
+      if(!pages[pageIndex])return;
+      if(!photo||!data.name||(data.imageSource==='personal'&&!data.imageModel)){error(tr('请先填写伙伴名字并确认图像服务设置。','Enter a companion name and check the image provider settings first.'));return;}
+      if(pageAttempts[pageIndex]>=1000){error(tr(...errors['generation-attempt-limit']));return;}
+      const label=tr(...actionLabels[actions[pageIndex]]);
+      if(!pendingReplacement) {
+        if(!await confirmAction(tr('只重新生成「','Regenerate only “')+label+tr('」的 16 帧动作，将使用一次图像生成额度。其他动作保持不变，当前动作会保留到新图生成成功。继续吗？','” (16 frames), using one image generation? Other actions stay unchanged, and the original remains until its replacement succeeds.'))||destroyed)return;
+        pageAttempts[pageIndex]++;
+        pendingReplacement={pageIndex,attempt:pageAttempts[pageIndex],identityImage:generationIdentity};
+      }
+      showPreview(actions[pageIndex]);error('');setBusy(true);
+      find('.pet-create-status').textContent=tr('正在单独重画：','Regenerating: ')+label+tr('。原动作和其他动作仍然保留。','. The original and all other actions are kept.');
+      let complete=false;
+      try {
+        await checkpoint();
+        const result=await requestPage(data,pageIndex,pendingReplacement.attempt,pendingReplacement.identityImage);
+        if(destroyed)return;
+        pages[pageIndex]=result.image;retainedFrames[pageIndex]=16;image=pages.length===groupCount?pages[0]:'';pendingReplacement=null;
+        showPreview(actions[pageIndex]);notifyChange();await checkpoint();
+        find('.pet-create-status').textContent=tr('已更新「','Updated “')+label+tr('」。其他动作保持不变，请预览后保存。','”. Other actions are unchanged. Preview and save your changes.');
+        complete=true;
+      } catch(e) {
+        if(destroyed)return;
+        if(pendingReplacement&&['invalid-animation-image','invalid-animation-sheet','invalid-animation-response'].includes(e.message)) {
+          pendingReplacement.attempt=pageAttempts[pageIndex]=Math.min(1000,pageAttempts[pageIndex]+1);
+          notifyChange();try {await checkpoint();}catch(checkpointError){e=checkpointError;}
+        }
+        find('.pet-create-status').textContent=pendingReplacement
+          ?tr('原动作和其他动作都已保留。可以重试这一组，或保留原动作。','The original and all other actions are kept. Retry this group or keep the original action.')
+          :tr('新动作已生成，草稿暂存需要重试。请保持应用打开后重试保存。','The new action is ready, but draft backup needs a retry. Keep the app open and retry saving.');
+        error(['pet-generation-conflict','pet-generation-journal-corrupt','pet-generation-art-missing','invalid-identity-image'].includes(e.message)
+          ?tr('此动作的本机生成记录暂时无法复用。可以先保留原动作，再重新选择单组重画；其他动作不会改变。','The local record for this replacement could not be reused. Keep the original action, then start a new replacement for this group; other actions will not change.')
+          :errors[e.message]?tr(...errors[e.message]):tr('此动作暂未重新生成成功，请检查连接、图像服务或额度后重试。','This action could not be regenerated. Check your connection, image provider or allowance and retry.'));
+      } finally {
+        if(!destroyed) {
+          setBusy(false);
+          if(complete)try {Promise.resolve(options.onComplete?.(read(),status(),{type:'replacement',action:actions[pageIndex],label})).catch(()=>{});}catch{}
+        }
+      }
+    }
     async function generate(event) {
       event.preventDefault(); if (busy || confirming || photoLoading || destroyed) return;
+      if(pendingReplacement){await regenerateAction();return;}
       if (pages.length===groupCount) { error(''); showPreview(previewAction); find('#pet-preview-action').focus(); return; }
       if (!photo) { error(tr('请先上传可用的参考照片。','Upload a readable reference photo first.')); return; }
       const data = values();
@@ -234,23 +316,19 @@
           if (destroyed) return;
           const names=tr(...actionLabels[actions[pageIndex]]);
           find('.pet-create-status').textContent=tr('正在生成动作 ','Generating action ')+(pageIndex+1)+'/'+groupCount+' — '+names;
-          controller=new AbortController(); const timeout=setTimeout(()=>controller.abort(),330000);
           let result;
           try {
-            const response = await fetch('/api/ai/'+data.imageSource+'-pet-image', { method:'POST',headers:{'Content-Type':'application/json','x-tracer-ai':'1'},body:JSON.stringify({...data,photo,animationVersion,animationPage:pageIndex,generationId,generationAttempt:pageAttempts[pageIndex],...(pageIndex?{identityImage:pages[0]}:{})}),signal:controller.signal });
-            result=await response.json(); if (!response.ok) throw new Error(result.error || 'generation-failed');
-            if (!safeImage(result.image)||result.animationPage!==pageIndex||result.animationVersion!==animationVersion) throw new Error('invalid-animation-response');
-            if (destroyed) return;
-            await TracerPetAnimation.validatePage(result.image,{version:animationVersion});
+            result=await requestPage(data,pageIndex,pageAttempts[pageIndex],pageIndex?generationIdentity:'');
           } catch (e) {
             if (!destroyed && ['invalid-animation-image','invalid-animation-sheet','invalid-animation-response'].includes(e.message)) {
               pageAttempts[pageIndex]=Math.min(1000,pageAttempts[pageIndex]+1);
               notifyChange(); await checkpoint();
             }
             throw e;
-          } finally { clearTimeout(timeout); controller=undefined; }
+          }
           if (destroyed) return;
           pages.push(result.image); image=pages.length===groupCount?pages[0]:''; find('.pet-animation-progress').value=pages.length;
+          if(pageIndex===0)generationIdentity=result.image;
           showPreview(actions[pageIndex]);
           notifyChange(); await checkpoint();
         }
@@ -276,13 +354,22 @@
       if (b.dataset.act === 'cancel-create') { options.onClose?.(); return; }
       if (b.dataset.act === 'open-ai') { options.onAI?.(find('#pet-image-source').value); return; }
       if (busy || confirming || photoLoading || destroyed) return;
+      if(b.dataset.act==='regenerate-action') {await regenerateAction();return;}
+      if(b.dataset.act==='keep-action'&&pendingReplacement) {
+        const previous=pendingReplacement;pendingReplacement=null;error('');setBusy(true,true);
+        try {await checkpoint();find('.pet-create-status').textContent=tr('已保留原动作，其他动作也没有改变。','Kept the original action. All other actions are unchanged.');}
+        catch {pendingReplacement=previous;error(tr(...errors['draft-checkpoint-failed']));}
+        finally {if(!destroyed)setBusy(false);}
+        return;
+      }
       if (b.dataset.act === 'restart-generation') {
+        if(editingId)return;
         if (await confirmAction(replacementMessage()) && !destroyed) { invalidate(); error(''); }
         return;
       }
       if (b.dataset.act === 'reload-preview') { error(''); showPreview(previewAction); notifyChange(); return; }
       if (b.dataset.act === 'discard-draft' && options.onDiscard) {
-        if (!await confirmAction(tr('确定放弃这份草稿吗？本机暂存的参考照片、设置和全部生成进度都将移除。','Discard this draft? The locally stored reference photo, settings and all generation progress will be removed.')) || destroyed) return;
+        if (!await confirmAction(editingId?tr('放弃本次动作修改吗？原伙伴和养成进度会保留，只移除这份编辑草稿。','Discard these action edits? Your saved companion and care progress stay unchanged; only this editing draft is removed.'):tr('确定放弃这份草稿吗？本机暂存的参考照片、设置和全部生成进度都将移除。','Discard this draft? The locally stored reference photo, settings and all generation progress will be removed.')) || destroyed) return;
         let discarded=false;
         setBusy(true,true);
         try { await options.onDiscard(); discarded=true; }
@@ -292,12 +379,12 @@
         }
         return;
       }
-      if (b.classList.contains('pet-adopt') && image && pages.length===groupCount && !previewBroken) {
+      if (b.classList.contains('pet-adopt') && image && pages.length===groupCount && !previewBroken && !pendingReplacement) {
         if (!values().name) { error(tr('请填写伙伴名字。','Enter a companion name.')); find('#pet-custom-name').focus(); return; }
         let adopted=false;
         error(''); setBusy(true,true);
         try {
-          await options.onAdopt({ id:recordId,...values(),image,animation:{version:animationVersion,pages:[...pages]} });
+          await options.onAdopt({ id:recordId,...values(),image,animation:{version:animationVersion,pages:[...pages],...(retainedFrames.some(count=>count!==16)?{retainedFrames:[...retainedFrames]}:{})} });
           adopted=true;
         } catch (e) {
           if (!destroyed) error(errors[e.message] ? tr(...errors[e.message]) : tr('未能保存伙伴，照片和全部动作已保留。请检查本机存储后再次点击保存。','Could not save your companion. Your photo and all actions are still here. Check local storage, then save again.'));
@@ -316,6 +403,13 @@
       if (destroyed) return;
       if (busy || confirming || photoLoading) { input.value=before; return; }
       if (next===before) return;
+      if(editingId&&['#pet-custom-kind','#pet-distinctive-features'].includes(selector)){input.value=before;return;}
+      if(editingId&&['#pet-image-source','#pet-image-model'].includes(selector)) {
+        input.value=before;
+        if(pendingReplacement&&!await confirmAction(tr('更换图像服务会结束当前待重试的请求，已经生成的所有动作仍会保留。继续吗？','Changing image settings ends the pending retry. All existing actions will be kept. Continue?')))return;
+        if(destroyed)return;
+        input.value=next;generationId=newId();pageAttempts=Array(groupCount).fill(0);pendingReplacement=null;affectsImages=false;
+      }
       if (affectsImages) {
         input.value=before;
         if (!await confirmReplacement(replacementMessage()) || destroyed) return;
@@ -336,13 +430,18 @@
       if (draft.photo) { photo=draft.photo; find('.pet-photo-preview').src=photo; find('.pet-photo-preview').hidden=false; find('.pet-photo-empty').hidden=true; }
       if (draft.animationVersion===animationVersion && Array.isArray(draft.pages) && draft.pages.length<=groupCount && draft.pages.every(safeImage)) {
         pages=[...draft.pages]; image=pages.length===groupCount?pages[0]:'';
+        generationIdentity=safeImage(draft.generationIdentity)?draft.generationIdentity:pages[0]||'';
+        if(Array.isArray(draft.retainedFrames)&&draft.retainedFrames.length===groupCount&&draft.retainedFrames.every(count=>[1,4,16].includes(count)))retainedFrames=[...draft.retainedFrames];
+        const pending=draft.pendingReplacement;
+        if(pending&&Number.isInteger(pending.pageIndex)&&pages[pending.pageIndex]&&pending.attempt===pageAttempts[pending.pageIndex]&&pending.attempt>0&&pending.identityImage===generationIdentity)pendingReplacement={pageIndex:pending.pageIndex,attempt:pending.attempt,identityImage:pending.identityImage};
         if (pages.length) {
-          showPreview(pages[actions.indexOf(draft.previewAction)]?draft.previewAction:'idle');
+          showPreview(pendingReplacement?actions[pendingReplacement.pageIndex]:pages[actions.indexOf(draft.previewAction)]?draft.previewAction:'idle');
           find('.pet-animation-progress').value=pages.length; find('.pet-animation-progress').hidden=false;
           find('.pet-create-status').textContent=pages.length===groupCount
             ? tr('全部动作已恢复，可以预览并保存伙伴。','All actions have been restored. Preview them and save your companion.')
             : tr('已恢复 ','Restored ')+pages.length+'/'+groupCount+tr(' 个动作；点击继续生成剩余动作。',' actions. Continue to generate the remaining actions.');
           if (pages.length===groupCount) completedGeneration=generationId;
+          if(pendingReplacement)find('.pet-create-status').textContent=tr('单组重画尚未完成，原动作和其他动作已恢复。可继续重试，或保留原动作。','The action replacement is unfinished. The original and all other actions are restored. Retry or keep the original action.');
         }
       }
       if (typeof draft.error==='string' && draft.error) error(draft.error);
@@ -355,6 +454,10 @@
     initialized=true;
     return {
       read, status,
+      markSaved(signature) {
+        if(destroyed||!/^[a-f0-9]{64}$/.test(signature))return;
+        editingId=recordId;editingSignature=signature;showEditingMode();renderControls();
+      },
       focus() { if (!destroyed) (find('.pet-adopt').hidden ? find('#pet-custom-name').value ? find('.pet-generate') : find('#pet-custom-name') : find('.pet-adopt')).focus(); },
       destroy() {
         if (destroyed) return;

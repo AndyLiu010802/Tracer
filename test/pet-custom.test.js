@@ -120,6 +120,18 @@ test('sixteen-frame action manifests retain their version and independent page c
   assert.deepEqual(restored.customs[0].animation,original);
 });
 
+test('saved companions retain mixed original frame counts without sharing mutable manifest metadata', () => {
+  const s=P.fresh(now), retainedFrames=[1,4,16,...Array(13).fill(4)];
+  const record=profile(1,{animation:{version:2,pages:Array.from({length:16},(_,index)=>profile(index+1).image),retainedFrames}});
+  P.addCustom(s,record,now);retainedFrames[0]=16;
+  const restored=P.read(JSON.parse(JSON.stringify(s)),now);
+  assert.deepEqual(restored.customs[0].animation.retainedFrames,[1,4,16,...Array(13).fill(4)]);
+  const catalog=P.catalog(restored);catalog.find(item=>item.id===record.id).animation.retainedFrames[1]=16;
+  assert.equal(restored.customs[0].animation.retainedFrames[1],4);
+  const invalid=profile(2,{animation:{version:2,pages:Array.from({length:16},(_,index)=>profile(index+2).image),retainedFrames:Array(16).fill(8)}});
+  assert.equal(P.customProfile(invalid),null);
+});
+
 test('malformed supplied animations reject the profile instead of silently becoming static', () => {
   const s = P.fresh(now), pages = [profile(1).image, profile(2).image, profile(3).image];
   for (const animation of [null, {}, { version: 2, pages }, { version: 1, pages: pages.slice(0, 2) },

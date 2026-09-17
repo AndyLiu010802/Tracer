@@ -61,7 +61,8 @@
         for (const [index, item] of candidate.artwork.images.entries()) {
           const binary = atob(item.data), bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
           const blob = new Blob([bytes], {type:'image/png'});
-          if (summary.animated) await TracerPetAnimation.validateBlob(blob, { version: summary.animationVersion });
+          if (summary.animated) await TracerPetAnimation.validateBlob(blob, { version: summary.animationVersion,
+            ...(summary.animationVersion === 2 ? { retainedFrames: candidate.artwork.retainedFrames?.[index] ?? 16 } : {}) });
           if (destroyed) return;
           // Validation already decodes each animated sheet; only the thumbnail needs a bitmap.
           if (index === 0) {

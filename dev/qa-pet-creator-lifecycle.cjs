@@ -16,6 +16,119 @@ async function idle(page) { await page.waitForFunction(()=>!window.creator.statu
 async function generate(page) { await page.locator('.pet-generate').click(); await idle(page); }
 async function snapshot(page) { return page.evaluate(()=>({draft:creator.read(),status:creator.status(),calls:mock.calls,completions:mock.completions,changes:mock.changes,confirmations:mock.confirmations})); }
 
+async function singleActionCases(page) {
+  await page.evaluate(()=>{mock.accept=false;mount(fixtureDraft(16));});
+  await page.selectOption('#pet-preview-action','fishing');
+  const original=await snapshot(page),identity=original.draft.pages[0];
+  await page.click('.pet-regenerate-action');await idle(page);
+  let state=await snapshot(page);
+  assert.equal(state.calls.length,original.calls.length,'cancelled action replacement makes no request');
+  assert.deepEqual(state.draft.pages,original.draft.pages);
+  assert.deepEqual(state.draft.pageAttempts,original.draft.pageAttempts);
+
+  await page.evaluate(()=>{mock.accept=true;mock.holdNext=true;mock.imageOverrides[8]=sheetURL(72);});
+  await page.click('.pet-regenerate-action');
+  await page.waitForFunction(()=>!!mock.releaseRequest);
+  state=await snapshot(page);
+  assert.deepEqual(state.draft.pages,original.draft.pages,'all old pages remain available while replacing one action');
+  assert.equal(state.status.busy,true);
+  assert.equal(await page.locator('.pet-adopt').isDisabled(),true);
+  assert.equal(await page.locator('.pet-regenerate-action').isDisabled(),true);
+  assert.equal(await page.locator('.pet-keep-action').isDisabled(),true);
+  assert.equal(state.calls.length,original.calls.length+1);
+  assert.equal(state.calls.at(-1).animationPage,8);
+  assert.equal(state.calls.at(-1).generationAttempt,1);
+  assert.equal(state.calls.at(-1).generationId,original.draft.generationId);
+  assert.equal(state.calls.at(-1).identityImage,identity);
+  assert.deepEqual(state.draft.pendingReplacement,{pageIndex:8,attempt:1,identityImage:identity});
+  assert.ok(await page.evaluate(before=>mock.checkpoints.some(value=>value.pendingReplacement?.pageIndex===8&&value.pendingReplacement.attempt===1&&value.calls===before),original.calls.length),'the new action attempt is checkpointed before its POST');
+  await page.evaluate(()=>mock.releaseRequest());await idle(page);
+  state=await snapshot(page);
+  const expected=original.draft.pages.slice();expected[8]=await page.evaluate(()=>sheetURL(72));
+  assert.deepEqual(state.draft.pages,expected,'successful replacement changes exactly the selected page');
+  assert.equal(state.draft.pendingReplacement,null);
+  assert.equal(state.draft.generationIdentity,identity);
+  const replacementCompletions=state.completions.slice(original.completions.length);
+  assert.equal(replacementCompletions.length,1);
+  assert.deepEqual(replacementCompletions.map(({pages,busy,wasBusy,info})=>({pages,busy,wasBusy,type:info?.type,action:info?.action})),[{pages:16,busy:false,wasBusy:false,type:'replacement',action:'fishing'}]);
+
+  await page.evaluate(()=>{mock.serviceError='network';mock.imageOverrides[9]=sheetURL(73);});
+  await page.selectOption('#pet-preview-action','exercise');await page.click('.pet-regenerate-action');await idle(page);
+  state=await snapshot(page);
+  assert.deepEqual(state.draft.pages,expected,'network failure retains every old page');
+  assert.deepEqual(state.draft.pendingReplacement,{pageIndex:9,attempt:1,identityImage:identity});
+  await page.evaluate(()=>{mock.accept=false;mount(creator.read());});
+  const restored=await snapshot(page);
+  await generate(page);
+  state=await snapshot(page);expected[9]=await page.evaluate(()=>sheetURL(73));
+  assert.equal(state.calls.length,restored.calls.length+1,'the primary button retries only the pending replacement');
+  assert.equal(state.calls.at(-1).animationPage,9);
+  assert.equal(state.calls.at(-1).generationAttempt,1,'restored network retry reuses its billable attempt');
+  assert.equal(state.confirmations.length,restored.confirmations.length,'retrying pending work does not ask for another replacement');
+  assert.deepEqual(state.draft.pages,expected);
+
+  await page.evaluate(()=>{mock.accept=true;mock.serviceError='codex-image-no-result';});
+  await page.selectOption('#pet-preview-action','farming');await page.click('.pet-regenerate-action');await idle(page);
+  state=await snapshot(page);assert.equal(state.draft.pendingReplacement.pageIndex,10);
+  await page.selectOption('#pet-preview-action','mining');
+  assert.equal(await page.locator('.pet-regenerate-action').isDisabled(),true,'another action cannot supersede an unresolved replacement');
+  const beforeKeep=state.calls.length;
+  await page.click('.pet-keep-action');await idle(page);
+  state=await snapshot(page);
+  assert.equal(state.draft.pendingReplacement,null);
+  assert.equal(state.draft.pageAttempts[10],1,'keeping the old action never reuses an already consumed attempt');
+  assert.equal(state.calls.length,beforeKeep);
+  assert.deepEqual(state.draft.pages,expected);
+  await page.evaluate(()=>{mock.imageOverrides[10]=sheetURL(74);});
+  await page.selectOption('#pet-preview-action','farming');await page.click('.pet-regenerate-action');await idle(page);
+  state=await snapshot(page);assert.equal(state.calls.at(-1).generationAttempt,2);
+
+  await page.evaluate(()=>{mock.imageOverrides[0]=sheetURL(64);mock.imageOverrides[12]=sheetURL(76);});
+  await page.selectOption('#pet-preview-action','idle');await page.click('.pet-regenerate-action');await idle(page);
+  state=await snapshot(page);
+  assert.equal(state.calls.at(-1).animationPage,0);
+  assert.equal(state.calls.at(-1).identityImage,identity,'even idle replacement uses the original generation identity');
+  assert.equal(state.draft.pages[0],await page.evaluate(()=>sheetURL(64)));
+  assert.equal(state.draft.image,state.draft.pages[0]);
+  assert.equal(state.draft.generationIdentity,identity);
+  await page.selectOption('#pet-preview-action','reading');await page.click('.pet-regenerate-action');await idle(page);
+  assert.equal((await snapshot(page)).calls.at(-1).identityImage,identity,'later actions keep the fixed identity after idle changes');
+
+  for(const error of ['invalid-animation-image','invalid-animation-sheet','invalid-animation-response']) {
+    await page.evaluate(error=>{
+      mount(fixtureDraft(3));mock.accept=true;mock.imageOverrides[1]=sheetURL(65);
+      if(error==='invalid-animation-response')mock.badResponse=true;else mock.validationError=error;
+    },error);
+    const before=await snapshot(page);
+    await page.selectOption('#pet-preview-action','pet');await page.click('.pet-regenerate-action');await idle(page);
+    state=await snapshot(page);
+    assert.deepEqual(state.draft.pages,before.draft.pages,error+' never overwrites old artwork');
+    assert.equal(state.draft.pages.length,3,'an existing action in a partial draft can be replaced independently');
+    assert.deepEqual(state.draft.pendingReplacement,{pageIndex:1,attempt:2,identityImage:identity});
+    assert.deepEqual(state.draft.pageAttempts,Array.from({length:16},(_,index)=>index===1?2:0));
+    await generate(page);state=await snapshot(page);
+    assert.equal(state.calls.length,before.calls.length+2,'invalid-art retry consumes only the selected action');
+    assert.deepEqual(state.calls.slice(before.calls.length).map(call=>[call.animationPage,call.generationAttempt]),[[1,1],[1,2]]);
+    assert.equal(state.draft.pages.length,3,'resolving a partial replacement does not generate remaining actions');
+    const partialPages=before.draft.pages.slice();partialPages[1]=await page.evaluate(()=>sheetURL(65));
+    assert.deepEqual(state.draft.pages,partialPages);
+    assert.equal(state.draft.pendingReplacement,null);
+  }
+  await page.evaluate(()=>{mount(fixtureDraft(3));mock.accept=true;mock.imageOverrides[1]=sheetURL(66);mock.validationError='animation-load-failed';});
+  const beforeLoadFailure=await snapshot(page);
+  await page.selectOption('#pet-preview-action','pet');await page.click('.pet-regenerate-action');await idle(page);
+  state=await snapshot(page);
+  assert.deepEqual(state.draft.pages,beforeLoadFailure.draft.pages,'a temporary image read failure keeps all old actions');
+  assert.deepEqual(state.draft.pendingReplacement,{pageIndex:1,attempt:1,identityImage:identity});
+  assert.deepEqual(state.draft.pageAttempts,Array.from({length:16},(_,index)=>index===1?1:0),'temporary image loading does not consume another generation attempt');
+  await generate(page);state=await snapshot(page);
+  assert.deepEqual(state.calls.slice(beforeLoadFailure.calls.length).map(call=>[call.animationPage,call.generationAttempt]),[[1,1],[1,1]],'loading failure retries the exact cached replacement attempt');
+  const loadedPages=beforeLoadFailure.draft.pages.slice();loadedPages[1]=await page.evaluate(()=>sheetURL(66));
+  assert.deepEqual(state.draft.pages,loadedPages);
+  assert.equal(state.draft.pendingReplacement,null);
+  console.log('PASS single-action confirmation, busy protection, exact-page replacement, fixed identity, pending retry/keep, partial drafts, invalid-art attempts and recoverable image loading');
+}
+
 (async()=>{
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const browser=await chromium.launch({channel:process.env.TRACER_QA_BROWSER||'msedge',headless:true});
@@ -31,7 +144,8 @@ async function snapshot(page) { return page.evaluate(()=>({draft:creator.read(),
       const canvas=document.createElement('canvas');canvas.width=canvas.height=16;
       canvas.getContext('2d').fillRect(3,3,10,10);
       const photo=canvas.toDataURL('image/png');
-      window.mock={calls:[],changes:[],completions:[],checkpoints:[],confirmations:[],adoptions:[],accept:false,validationError:'',serviceError:'',badResponse:false,saveError:false,previewError:null};
+      window.mock={calls:[],changes:[],completions:[],checkpoints:[],confirmations:[],adoptions:[],accept:false,validationError:'',serviceError:'',badResponse:false,saveError:false,previewError:null,imageOverrides:{},holdNext:false,releaseRequest:null};
+      window.sheetURL=sheet;
       window.TracerPetAnimation={actions,
         async validatePage() { if(mock.validationError){const value=mock.validationError;mock.validationError='';throw new Error(value);} },
         createPage(_image,_index,options) {
@@ -44,6 +158,7 @@ async function snapshot(page) { return page.evaluate(()=>({draft:creator.read(),
         if(url.endsWith('-status'))return{ok:true,json:async()=>({account:{type:'chatgpt'},imageGeneration:true,configured:true,url:'https://mock.invalid'})};
         if(!url.endsWith('-pet-image'))throw new Error('Unexpected request: '+url);
         const request=JSON.parse(options.body);mock.calls.push(request);
+        if(mock.holdNext){mock.holdNext=false;await new Promise(resolve=>mock.releaseRequest=resolve);mock.releaseRequest=null;}
         if(mock.serviceError) {
           const value=mock.serviceError;mock.serviceError='';
           if(value==='network')throw new TypeError('Failed to fetch');
@@ -51,17 +166,17 @@ async function snapshot(page) { return page.evaluate(()=>({draft:creator.read(),
         }
         const animationPage=mock.badResponse?request.animationPage+1:request.animationPage;
         mock.badResponse=false;
-        return {ok:true,json:async()=>({image:sheet(request.animationPage),animationVersion:2,animationPage})};
+        return {ok:true,json:async()=>({image:mock.imageOverrides[request.animationPage]||sheet(request.animationPage),animationVersion:2,animationPage})};
       };
-      window.fixtureDraft=(count=3)=>({name:'Recovery companion',kind:'creature',personality:'Curious',distinctiveFeatures:'Glasses',imageSource:'codex',imageModel:'gpt-image-2.5-flare',recordId:'custom_'+'a'.repeat(32),generationId:'b'.repeat(32),pageAttempts:Array(16).fill(0),photo,animationVersion:2,pages:Array.from({length:count},(_,index)=>sheet(index))});
+      window.fixtureDraft=(count=3)=>({name:'Recovery companion',kind:'creature',personality:'Curious',distinctiveFeatures:'Glasses',imageSource:'codex',imageModel:'gpt-image-2.5-flare',recordId:'custom_'+'a'.repeat(32),generationId:'b'.repeat(32),generationIdentity:count?sheet(0):'',pendingReplacement:null,pageAttempts:Array(16).fill(0),photo,animationVersion:2,pages:Array.from({length:count},(_,index)=>sheet(index))});
       window.mount=draft=>{
         window.creator?.destroy();
         const root=document.getElementById('fixture');
         window.creator=TracerPetCreator(root,{language:'en',draft,
           confirmDiscard:async message=>{mock.confirmations.push(message);return mock.accept;},
           onChange:(value,status)=>mock.changes.push({pages:value.pages.length,attempts:value.pageAttempts,busy:status.busy,error:status.error}),
-          onCheckpoint:async(value,status)=>mock.checkpoints.push({pages:value.pages.length,attempts:value.pageAttempts,busy:status.busy}),
-          onComplete:(value,status)=>mock.completions.push({pages:value.pages.length,busy:status.busy,wasBusy:value.wasBusy}),
+          onCheckpoint:async(value,status)=>mock.checkpoints.push({pages:value.pages.length,attempts:value.pageAttempts,busy:status.busy,pendingReplacement:value.pendingReplacement,calls:mock.calls.length}),
+          onComplete:(value,status,info)=>mock.completions.push({pages:value.pages.length,busy:status.busy,wasBusy:value.wasBusy,...(info?{info}:{})}),
           onAdopt:async record=>{
             mock.adoptions.push(record);await Promise.resolve();
             if(mock.saveError){mock.saveError=false;throw new Error('disk-full');}
@@ -174,6 +289,7 @@ async function snapshot(page) { return page.evaluate(()=>({draft:creator.read(),
     assert.notEqual(state.draft.generationId,original.generationId);
     assert.equal(state.draft.recordId,original.recordId);
     assert.equal(state.draft.photo,original.photo);
+    await singleActionCases(page);
     assert.deepEqual(rendererErrors,[]);
     console.log('PASS creator attempt recovery, rejected-art retries, confirmation cancellation, metadata/photo preservation, preview recovery, completion timing and asynchronous save identity');
   } finally {

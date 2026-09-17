@@ -85,6 +85,7 @@
         + '</section></div>';
       find('[data-pane=collection]').insertAdjacentHTML('afterbegin','<button class="pet-create-entry" data-act="open-create">✦ '+tr('用照片创造伙伴','Create from a photo')+'</button><p class="pet-custom-count"></p>');
       find('.pet-custom-count').insertAdjacentHTML('beforebegin','<div class="pet-share-actions"><button type="button" data-act="open-import">↓ '+tr('导入伙伴','Import companion')+'</button><button type="button" data-act="open-export" hidden>↑ '+tr('导出当前伙伴','Export current companion')+'</button></div>');
+      find('.pet-share-actions').insertAdjacentHTML('beforeend','<button type="button" data-act="open-edit-actions" hidden>↻ '+tr('调整当前伙伴动作','Refine this companion’s actions')+'</button>');
       find('[data-pane=collection]').insertAdjacentHTML('beforeend','<button class="pet-text-button pet-remove-custom" data-act="open-remove" hidden>'+tr('移除当前自定义伙伴','Remove this custom companion')+'</button>');
       find('.pet-bond').insertAdjacentHTML('afterend','<details class="pet-traits" hidden><summary>'+tr('伙伴性格','Personality')+'</summary><p></p></details>');
       find('.pet-bond').insertAdjacentHTML('afterend','<details class="pet-personality-card" hidden><summary class="pet-personality-title"></summary><p class="pet-personality-bio"></p><dl><dt>'+tr('喜欢','Loves')+'</dt><dd class="pet-personality-likes"></dd><dt>'+tr('小习惯','Little ritual')+'</dt><dd class="pet-personality-habit"></dd></dl></details>');
@@ -341,6 +342,7 @@
       text('.pet-custom-count',tr('自定义伙伴 ','Custom companions ')+customCount+' / '+TracerPetModel.customLimit);
       find('.pet-remove-custom').hidden=!p.custom;
       find('[data-act=open-export]').hidden=!p.custom;
+      find('[data-act=open-edit-actions]').hidden=!p.custom;
       const key=JSON.stringify([snapshot.unlocked,snapshot.metrics,p.id,language,catalog]);
       if(collection.dataset.key!==key) {
         collection.dataset.key=key; collection.replaceChildren();

@@ -55,6 +55,37 @@ test('sixteen-frame action packages preserve version, every ordered sheet and id
   assert.ok(Packages.LIMIT <= 257*1024*1024,'the larger package limit remains bounded');
 });
 
+test('mixed retained legacy frames and newly drawn actions survive sharing without changing pure dense package identities',async t=>{
+  const raw=packet(16,2), denseId=Packages.inspect(raw).profile.id;
+  const explicitDense=clone(raw);explicitDense.artwork.retainedFrames=Array(16).fill(16);
+  assert.equal(Packages.inspect(explicitDense).profile.id,denseId,'explicit default metadata retains the existing dense duplicate identity');
+  assert.equal(Packages.inspect(explicitDense).retainedFrames,undefined);
+  raw.artwork.retainedFrames=[1,4,16,...Array(13).fill(4)];
+  const inspected=Packages.inspect(raw), dir=room(t), original=clone(raw);
+  assert.notEqual(inspected.profile.id,denseId,'a retained-frame declaration is part of the portable artwork identity');
+  assert.deepEqual(inspected.retainedFrames,raw.artwork.retainedFrames);
+  inspected.retainedFrames[0]=16;assert.equal(raw.artwork.retainedFrames[0],1,'inspection metadata is a defensive copy');
+  const imported=await Packages.importPackage(dir,raw);
+  assert.deepEqual(imported.animation.retainedFrames,original.artwork.retainedFrames);
+  assert.deepEqual(await Packages.exportPackage(dir,imported),original);
+  const copied=await Packages.importPackage(room(t),await Packages.exportPackage(dir,imported));
+  assert.equal(copied.id,imported.id);assert.deepEqual(copied.animation.retainedFrames,original.artwork.retainedFrames);
+  for(const [index,url]of imported.animation.pages.entries()) assert.deepEqual(await Images.readAsset(dir,url),Buffer.from(original.artwork.images[index].data,'base64'));
+  const denseProfile=await Packages.importPackage(room(t),explicitDense);
+  assert.equal(denseProfile.animation.retainedFrames,undefined,'all-sixteen defaults are omitted from normalized manifests');
+});
+
+test('retained metadata rejects malformed and legacy-version declarations before writing assets',async t=>{
+  const raw=packet(16,2);let writes=0;
+  for(const retainedFrames of [undefined,null,[],Array(15).fill(4),Array(17).fill(4),Array(16),Array(16).fill(0),Array(16).fill(2),Array(16).fill('4'),Array(16).fill({count:4})])
+    await assert.rejects(Packages.importPackage(room(t),{...raw,artwork:{...raw.artwork,retainedFrames}},async()=>{writes++;}),/invalid-pet-package/);
+  for(const count of [1,3,4]) {
+    const legacy=packet(count);legacy.artwork.retainedFrames=Array(16).fill(count===1?1:4);
+    await assert.rejects(Packages.importPackage(room(t),legacy,async()=>{writes++;}),/invalid-pet-package/);
+  }
+  assert.equal(writes,0);
+});
+
 test('mixed package versions, layouts and animation counts are rejected before writing any artwork',async t=>{
   const raw=packet(16,2), invalids=[];
   for(const mutate of [
@@ -113,6 +144,12 @@ test('local sharing endpoints require no AI setup and enforce origin, body and r
   const denseImported=await post('import',dense);assert.equal(denseImported.status,200);
   const denseProfile=await denseImported.json();assert.equal(denseProfile.animation.version,2);assert.equal(denseProfile.animation.pages.length,16);
   const denseExported=await post('export',denseProfile);assert.equal(denseExported.status,200);assert.deepEqual(await denseExported.json(),dense);
+  const retained=clone(dense);retained.artwork.retainedFrames=[1,4,16,...Array(13).fill(4)];
+  const retainedPreview=await post('inspect',retained);assert.equal(retainedPreview.status,200);
+  assert.equal((await retainedPreview.json()).animationVersion,2);
+  const retainedImported=await post('import',retained);assert.equal(retainedImported.status,200);
+  const retainedProfile=await retainedImported.json();assert.deepEqual(retainedProfile.animation.retainedFrames,retained.artwork.retainedFrames);
+  const retainedExported=await post('export',retainedProfile);assert.equal(retainedExported.status,200);assert.deepEqual(await retainedExported.json(),retained);
   process.env.DOCS_PORTAL_READONLY_STORE='1';delete require.cache[require.resolve('../server')];const readonly=require('../server').server;
   await new Promise(resolve=>readonly.listen(0,'127.0.0.1',resolve));
   try {

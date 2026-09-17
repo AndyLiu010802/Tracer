@@ -51,6 +51,76 @@ test('provider and request changes cannot reuse a generation key, while explicit
   assert.ok(fs.existsSync(journal(dir, 0, 1)));
 });
 
+test('replacing one action preserves the other fifteen journals and the first idle identity across reloads and idle redraws', async t => {
+  const dir = room(t), jobs = createJobs(dir), initial = []; let calls = 0;
+  const generate = page => async () => { calls++; return result(dir, page); };
+  for (let page = 0; page < 16; page++) {
+    initial.push(await jobs.run(action, request({ animationPage: page, ...(page ? { identityImage: initial[0].image } : {}) }), generate(page)));
+  }
+  const identity = initial[0].image;
+  const originals = initial.map((_, page) => ({ bytes: fs.readFileSync(journal(dir, page)), modified: fs.statSync(journal(dir, page)).mtimeMs }));
+  const assertOriginals = () => originals.forEach((original, page) => {
+    assert.deepEqual(fs.readFileSync(journal(dir, page)), original.bytes, 'original page ' + page + ' journal is preserved');
+    assert.equal(fs.statSync(journal(dir, page)).mtimeMs, original.modified, 'original page ' + page + ' journal is not rewritten');
+  });
+
+  const replacementRequest = request({ animationPage: 7, generationAttempt: 1, identityImage: identity });
+  const entered = deferred(), finish = deferred();
+  const replacement = jobs.run(action, replacementRequest, async () => { calls++; entered.resolve(); await finish.promise; return result(dir, 7); });
+  await entered.promise;
+  const concurrent = createJobs(dir).run(action, replacementRequest, () => { throw new Error('concurrent replacement must share provider work'); });
+  assert.equal(concurrent, replacement);
+  finish.resolve();
+  const replaced = await replacement;
+  assert.deepEqual(await concurrent, replaced); assert.notEqual(replaced.image, initial[7].image); assert.equal(calls, 17);
+  assertOriginals();
+  assert.equal(fs.readdirSync(path.join(dir, '.pet-generation-jobs')).length, 17, 'only the selected action gains a replacement journal');
+
+  delete require.cache[require.resolve('../lib/pet-generation-jobs')];
+  const reopened = require('../lib/pet-generation-jobs').createJobs(dir);
+  const noGenerate = () => { calls++; throw new Error('completed action must be restored without another provider call'); };
+  assert.deepEqual(await reopened.run(action, replacementRequest, noGenerate), replaced);
+  const idleRequest = request({ generationAttempt: 1, identityImage: identity });
+  const redrawnIdle = await reopened.run(action, idleRequest, generate(0));
+  assert.notEqual(redrawnIdle.image, identity);
+  assert.deepEqual(await reopened.run(action, request(), noGenerate), initial[0]);
+  for (let page = 1; page < 16; page++) {
+    assert.deepEqual(await reopened.run(action, request({ animationPage: page, identityImage: identity }), noGenerate), initial[page]);
+  }
+  const nextRequest = request({ animationPage: 12, generationAttempt: 1, identityImage: identity });
+  const nextReplacement = await reopened.run(action, nextRequest, generate(12));
+  assert.notEqual(nextReplacement.image, initial[12].image); assert.equal(calls, 19);
+  for (const originalRequest of [replacementRequest, idleRequest, nextRequest, request({ animationPage: 1, identityImage: identity })]) {
+    await assert.rejects(reopened.run(action, { ...originalRequest, identityImage: redrawnIdle.image }, noGenerate), /pet-generation-conflict/);
+  }
+  assert.deepEqual(await reopened.run(action, replacementRequest, noGenerate), replaced, 'a conflicting identity does not poison the original replacement');
+  assert.deepEqual(await reopened.run(action, nextRequest, noGenerate), nextReplacement);
+  assert.equal(calls, 19); assertOriginals();
+  assert.equal(fs.readdirSync(path.join(dir, '.pet-generation-jobs')).length, 19);
+});
+
+test('a failed action replacement keeps the accepted action available and retries only the replacement attempt', async t => {
+  const dir = room(t), jobs = createJobs(dir); let calls = 0;
+  const generate = page => async () => { calls++; return result(dir, page); };
+  const idle = await jobs.run(action, request(), generate(0));
+  const originalRequest = request({ animationPage: 5, identityImage: idle.image });
+  const original = await jobs.run(action, originalRequest, generate(5));
+  const originalJournal = fs.readFileSync(journal(dir, 5));
+  const replacementRequest = { ...originalRequest, generationAttempt: 1 }, unavailable = new Error('replacement-provider-unavailable');
+  await assert.rejects(jobs.run(action, replacementRequest, () => { calls++; throw unavailable; }), failure => failure === unavailable);
+  assert.equal(fs.existsSync(journal(dir, 5, 1)), false);
+  const noGenerate = () => { calls++; throw new Error('accepted action must not be regenerated'); };
+  assert.deepEqual(await createJobs(dir).run(action, originalRequest, noGenerate), original);
+  assert.deepEqual(await createJobs(dir).run(action, request(), noGenerate), idle);
+  assert.equal(calls, 3);
+  const replacement = await createJobs(dir).run(action, replacementRequest, generate(5));
+  assert.notEqual(replacement.image, original.image); assert.equal(calls, 4);
+  assert.deepEqual(await createJobs(dir).run(action, replacementRequest, noGenerate), replacement);
+  assert.deepEqual(await createJobs(dir).run(action, originalRequest, noGenerate), original);
+  assert.deepEqual(fs.readFileSync(journal(dir, 5)), originalJournal);
+  assert.equal(calls, 4);
+});
+
 test('provider failures retry but a journal write failure retains the paid result for persistence retry', async t => {
   const dir = room(t), jobs = createJobs(dir); let calls = 0;
   const unavailable = new Error('provider-unreachable');

@@ -8,14 +8,14 @@ const animation = () => ({ version: 1, pages: [asset(1), asset(2), asset(3), ass
 const denseAnimation = () => ({ version: 2, pages: Array.from({ length: 16 }, (_, i) => asset(i + 1)) });
 const clone = value => JSON.parse(JSON.stringify(value));
 
-function browser({ pixels, width = 1024, height = 1024, broken = false, reduced = false, hidden = false, autoLoad = true } = {}) {
-  const timers = new Map(), delays = [], documentListeners = new Map(), motionListeners = new Set(), preloads = []; let id = 0;
+function browser({ pixels, width = 1024, height = 1024, broken = false, decodeBroken = false, pixelsBroken = false, hanging = false, reduced = false, hidden = false, autoLoad = true } = {}) {
+  const timers = new Map(), delays = [], documentListeners = new Map(), motionListeners = new Set(), preloads = [], revoked = []; let id = 0;
   class Element {
     constructor(tag) { this.tagName = tag; this.children = []; this.attributes = {}; this.dataset = {}; this.style = { setProperty(name, value, priority) { this[name] = value; this[name + 'Priority'] = priority; } }; }
     appendChild(child) { this.children.push(child); }
     setAttribute(key, value) { this.attributes[key] = value; if (autoLoad && this.tagName === 'img' && key === 'src') this.onload?.(); }
     getAttribute(key) { return this.attributes[key]; }
-    getContext() { return { drawImage() {}, getImageData: () => ({ data: pixels }) }; }
+    getContext() { return { drawImage() {}, getImageData: () => { if (pixelsBroken) throw new Error('canvas-unavailable'); return { data: pixels }; } }; }
   }
   const document = {
     visibilityState: hidden ? 'hidden' : 'visible',
@@ -26,13 +26,14 @@ function browser({ pixels, width = 1024, height = 1024, broken = false, reduced 
   const motion = { matches: reduced, addEventListener: (_name, fn) => motionListeners.add(fn), removeEventListener: (_name, fn) => motionListeners.delete(fn) };
   class Image {
     constructor() { this.naturalWidth = width; this.naturalHeight = height; preloads.push(this); }
-    set src(value) { if (value) Promise.resolve().then(() => broken ? this.onerror?.() : this.onload?.()); }
-    async decode() { if (broken) throw new Error('decode-failed'); }
+    set src(value) { if (value && !hanging) Promise.resolve().then(() => broken ? this.onerror?.() : this.onload?.()); }
+    async decode() { if (broken || decodeBroken) throw new Error('decode-failed'); }
   }
-  const context = { document, Image, matchMedia: () => motion, setTimeout: (callback, delay) => { delays.push(delay); timers.set(++id, callback); return id; }, clearTimeout: timer => timers.delete(timer) };
+  const context = { document, Image, Blob, URL: { createObjectURL: () => 'blob:test-sheet', revokeObjectURL: value => revoked.push(value) },
+    matchMedia: () => motion, setTimeout: (callback, delay) => { delays.push(delay); timers.set(++id, callback); return id; }, clearTimeout: timer => timers.delete(timer) };
   vm.runInNewContext(source, context);
   return {
-    api: context.TracerPetAnimation, timers, delays, documentListeners, motionListeners, preloads,
+    api: context.TracerPetAnimation, timers, delays, documentListeners, motionListeners, preloads, revoked,
     tick() { const next = timers.entries().next().value; if (next) { timers.delete(next[0]); next[1](); } },
     visibility(hidden) { document.visibilityState = hidden ? 'hidden' : 'visible'; for (const fn of documentListeners.get('visibilitychange') || []) fn(); },
     motion(reduced) { motion.matches = reduced; for (const fn of motionListeners) fn(); }
@@ -53,6 +54,19 @@ function sheet(mode = 'poses') {
     rect(x + 60, y + 30, mode === 'dense' ? 8 + (row * 4 + frame) * 2 : mode === 'dense-holds' ? 8 + Math.min(11, row * 4 + frame) * 2 : mode === 'poses' ? 10 + frame * 9 : mode === 'holds' && frame === 3 ? 37 : 10, 15, [230, 180, 100, 255]);
   }
   return data;
+}
+
+function retainedSheet(count, mode = 'poses') {
+  const source = sheet(mode), edge = 768, cell = 192, result = new Uint8ClampedArray(source.length);
+  for (let target = 0; target < 16; target++) {
+    const frame = count === 1 ? 0 : Math.floor(target / 4);
+    for (let y = 0; y < cell; y++) {
+      const from = (y * edge + frame * cell) * 4;
+      const to = ((Math.floor(target / 4) * cell + y) * edge + target % 4 * cell) * 4;
+      result.set(source.subarray(from, from + cell * 4), to);
+    }
+  }
+  return result;
 }
 
 test('animation manifests accept legacy and expanded packs with bounded local assets and defensive copies', () => {
@@ -136,6 +150,64 @@ test('dense validation requires real in-between poses, retaining seams and allow
   const crossing = sheet('dense'); paint(crossing, 60, 191, 50, 5);
   await assert.rejects(browser({ pixels: crossing }).api.validatePage(asset(1), { version: 2 }), /invalid-animation-sheet/);
   await assert.rejects(browser({ pixels: sheet('dense') }).api.validatePage(asset(1), { version: 3 }), /invalid-animation-sheet/);
+});
+
+test('retained frame metadata is bounded, copied and canonical without changing existing dense manifests', () => {
+  const retainedFrames = Array(16).fill(16); retainedFrames[0] = 1; retainedFrames[4] = 4;
+  const raw = { ...denseAnimation(), retainedFrames }, normalized = Animation.normalize(raw);
+  assert.deepEqual(normalized, raw); retainedFrames[0] = 16; assert.equal(normalized.retainedFrames[0], 1);
+  assert.deepEqual(Animation.normalize({ ...denseAnimation(), retainedFrames: Array(16).fill(16) }), denseAnimation());
+  for (const value of [undefined, null, [], Array(15).fill(4), Array(17).fill(4), Array(16), Array(16).fill(0), Array(16).fill(2), Array(16).fill('4')])
+    assert.equal(Animation.normalize({ ...denseAnimation(), retainedFrames: value }), null);
+  assert.equal(Animation.normalize({ ...animation(), retainedFrames: Array(16).fill(4) }), null);
+});
+
+test('retained legacy motion keeps the original loop duration and static actions do not schedule duplicate frames', () => {
+  const b = browser(), retainedFrames = Array(16).fill(16); retainedFrames[0] = 4; retainedFrames[1] = 1;
+  const player = b.api.create({ image: asset(1), animation: { ...denseAnimation(), retainedFrames } });
+  let elapsed = 0;
+  for (let frame = 0; frame < 16; frame++) { elapsed += b.delays.at(-1); b.tick(); }
+  assert.equal(elapsed, Animation.clips.idle.frameMs.reduce((total, value) => total + value, 0));
+  assert.equal(player.element.dataset.frame, '0');
+  player.setAction('pet'); assert.equal(b.timers.size, 0); assert.equal(player.element.dataset.playback, 'static');
+  player.setAction('feed'); assert.equal(b.timers.size, 1); assert.equal(b.delays.at(-1), Animation.denseClips.feed.frameMs[0]);
+  player.destroy();
+  const preview = b.api.createPage(asset(5), 4, { version: 2, retainedFrames: 4 });
+  let previewDuration = 0;
+  for (let frame = 0; frame < 16; frame++) { previewDuration += b.delays.at(-1); b.tick(); }
+  assert.equal(previewDuration, Animation.clips.sleep.frameMs.reduce((total, value) => total + value, 0));
+  preview.destroy();
+});
+
+test('converted legacy sheets require the declared exact repeat layout and never pass strict new-pose validation', async () => {
+  for (const mode of ['poses', 'repeated', 'translated']) {
+    const pixels = retainedSheet(4, mode);
+    await browser({ pixels }).api.validatePage(asset(1), { version: 2, retainedFrames: 4 });
+    await assert.rejects(browser({ pixels }).api.validatePage(asset(1), { version: 2 }), /invalid-animation-sheet/);
+  }
+  const portrait = retainedSheet(1);
+  await browser({ pixels: portrait }).api.validatePage(asset(1), { version: 2, retainedFrames: 1 });
+  await assert.rejects(browser({ pixels: portrait }).api.validatePage(asset(1), { version: 2 }), /invalid-animation-sheet/);
+  await assert.rejects(browser({ pixels: retainedSheet(4) }).api.validatePage(asset(1), { version: 2, retainedFrames: 1 }), /invalid-animation-sheet/);
+  await assert.rejects(browser({ pixels: sheet('poses') }).api.validatePage(asset(1), { version: 2, retainedFrames: 4 }), /invalid-animation-sheet/, 'interleaving old poses is not the declared consecutive-repeat encoding');
+  await assert.rejects(browser({ pixels: sheet('dense') }).api.validatePage(asset(1), { version: 2, retainedFrames: 4 }), /invalid-animation-sheet/, 'metadata cannot waive mismatched frame content');
+});
+
+test('converted legacy validation preserves transparency, visible content and frame boundary checks', async () => {
+  const crossing = retainedSheet(4); paint(crossing, 60, 191, 50, 5);
+  const changedCopy = retainedSheet(1); paint(changedCopy, 250, 120, 1, 1);
+  for (const pixels of [crossing, sheet('empty'), sheet('opaque'), changedCopy])
+    await assert.rejects(browser({ pixels }).api.validatePage(asset(1), { version: 2, retainedFrames: 1 }), /invalid-animation-sheet/);
+  for (const retainedFrames of [0, 2, 12, 17, '4', null, [], {}])
+    await assert.rejects(browser({ pixels: retainedSheet(4) }).api.validatePage(asset(1), { version: 2, retainedFrames }), /invalid-animation-sheet/);
+  await assert.rejects(browser({ pixels: sheet() }).api.validatePage(asset(1), { version: 1, retainedFrames: 4 }), /invalid-animation-sheet/);
+});
+
+test('blob import validation uses explicit retained counts and revokes object URLs on success and failure', async () => {
+  const b = browser({ pixels: retainedSheet(4) }), blob = new Blob(['synthetic decoded fixture'], { type: 'image/png' });
+  await b.api.validateBlob(blob, { version: 2, retainedFrames: 4 });
+  await assert.rejects(b.api.validateBlob(blob, { version: 2 }), /invalid-animation-sheet/);
+  assert.deepEqual(b.revoked, ['blob:test-sheet', 'blob:test-sheet']);
 });
 
 test('hidden and reduced-motion views pause without losing their current action; static page previews do not animate', () => {
@@ -242,6 +314,9 @@ test('legacy rendering masks only small separated strips continuing from an adja
     const b = browser({ pixels }), player = b.api.create({ image: asset(1), animation: animation() });
     player.setAction('pet'); b.tick();
     const insets = player.element.style.clipPath.match(/[\d.]+/g).map(Number);
+    const conversionInsets = clone(b.api.frameInsetsForImage(player.element.children[0]));
+    assert.equal(conversionInsets.length, 16);
+    assert.deepEqual(conversionInsets[5], insets.map(value => value / 100), 'conversion uses precisely the player mask in full-cell coordinates');
     assert.ok(insets[side] > 0 && insets[side] <= 8, 'masks the contaminated edge ' + side);
     assert.ok(insets.every((value, index) => index === side || value === 0));
     assert.deepEqual(pixels, original, 'saved artwork is never edited');
@@ -260,6 +335,7 @@ test('legacy rendering masks only small separated strips continuing from an adja
     const b = browser({ pixels }), player = b.api.create({ image: asset(1), animation: animation() });
     player.setAction('pet'); b.tick();
     assert.equal(player.element.style.clipPath, 'inset(0% 0% 0% 0%)', 'ambiguous or connected artwork is preserved');
+    assert.deepEqual(clone(b.api.frameInsetsForImage(player.element.children[0]))[5], [0, 0, 0, 0], 'conversion also preserves ambiguous or connected artwork');
     player.destroy();
   }
 });
@@ -286,10 +362,23 @@ test('transparent atlases need visible distinct poses in every row, not repeated
   await assert.rejects(browser({ pixels: transparentNoise }).api.validatePage(asset(1)), /invalid-animation-sheet/);
 });
 
-test('animation page validation rejects invalid assets, decode failures and undersized or nonsquare sheets', async () => {
-  for (const dimensions of [{ width: 767 }, { height: 600 }, { width: 1600, height: 1024 }, { width: 4097, height: 4097 }, { broken: true }]) {
+test('animation page validation rejects invalid assets and undersized or nonsquare sheets', async () => {
+  for (const dimensions of [{ width: 767 }, { height: 600 }, { width: 1600, height: 1024 }, { width: 4097, height: 4097 }]) {
     await assert.rejects(browser({ pixels: sheet(), ...dimensions }).api.validatePage(asset(1)), /invalid-animation-sheet/);
   }
   await assert.rejects(browser().api.validatePage('https://example.com/photo.png'), /invalid-animation-sheet/);
   await assert.rejects(Animation.validatePage(asset(1)), /invalid-animation-sheet/, 'Node callers cannot bypass browser decoding');
+});
+
+test('image loading, decoding and pixel-read failures remain retryable without declaring the cached artwork invalid', async () => {
+  for (const failure of [{ broken: true }, { decodeBroken: true }, { pixelsBroken: true }]) {
+    const b = browser({ pixels: sheet('dense'), ...failure });
+    await assert.rejects(b.api.validatePage(asset(1), { version: 2 }), /animation-load-failed/);
+    assert.equal(b.timers.size, 0);
+    const blob = new Blob(['synthetic fixture'], { type: 'image/png' });
+    await assert.rejects(b.api.validateBlob(blob, { version: 2 }), /animation-load-failed/);
+    assert.deepEqual(b.revoked, ['blob:test-sheet']);
+  }
+  const delayed = browser({ hanging: true }), pending = delayed.api.validatePage(asset(1), { version: 2 });
+  delayed.tick(); await assert.rejects(pending, /animation-load-failed/); assert.equal(delayed.timers.size, 0);
 });

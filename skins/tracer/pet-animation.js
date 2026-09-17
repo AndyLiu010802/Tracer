@@ -21,10 +21,11 @@
     return [action, Object.freeze({ page, row: 0, frames: 16, frameMs: Object.freeze(frameMs) })];
   })));
   const invalid = () => new Error('invalid-animation-sheet');
+  const loadFailed = () => new Error('animation-load-failed');
   const noCrop = 'inset(0% 0% 0% 0%)';
   // Older generated sheets can cross a grid line. Hide only a small, disconnected
   // strip that demonstrably continues from the neighboring cell; never resize art.
-  function frameInsets(data, edge) {
+  function frameInsets(data, edge, numeric = false) {
     const size = edge / 4, band = Math.floor(size * .08) - 1, gap = Math.ceil(size * .02), result = [];
     const alpha = (x, y) => data[(y * edge + x) * 4 + 3];
     for (let row = 0; row < 4; row++) for (let column = 0; column < 4; column++) {
@@ -55,7 +56,8 @@
           if (end && clear >= gap) { insets[side] = (end + 1) * 100 / size; trimmed += area; break; }
         }
       }
-      result.push(trimmed > total * .1 ? noCrop : 'inset(' + insets.map(value => value + '%').join(' ') + ')');
+      const safeInsets = trimmed > total * .1 ? [0, 0, 0, 0] : insets;
+      result.push(numeric ? safeInsets.map(value => value / 100) : 'inset(' + safeInsets.map(value => value + '%').join(' ') + ')');
     }
     return result;
   }
@@ -66,13 +68,22 @@
     context.imageSmoothingEnabled = false; context.drawImage(image, 0, 0, 768, 768);
     return context.getImageData(0, 0, 768, 768).data;
   }
+  // Conversion reuses the exact display mask before adding padding. Fractions
+  // use top/right/bottom/left order and retain the original full-cell coordinates.
+  function frameInsetsForImage(image) {
+    try { return frameInsets(sheetPixels(image), 768, true); }
+    catch { throw loadFailed(); }
+  }
   function normalize(raw) {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw) || ![1, 2].includes(raw.version) ||
-      Object.keys(raw).some(key => key !== 'version' && key !== 'pages') || !Array.isArray(raw.pages) || !(raw.version === 2 ? raw.pages.length === actions.length : [3, 4].includes(raw.pages.length)) ||
+      Object.keys(raw).some(key => key !== 'version' && key !== 'pages' && key !== 'retainedFrames') || !Array.isArray(raw.pages) || !(raw.version === 2 ? raw.pages.length === actions.length : [3, 4].includes(raw.pages.length)) ||
       !Array.from({ length: raw.pages.length }, (_, i) => i).every(i => typeof raw.pages[i] === 'string' && asset.test(raw.pages[i]))) return null;
-    return { version: raw.version, pages: raw.pages.slice() };
+    if (Object.prototype.hasOwnProperty.call(raw, 'retainedFrames') && (raw.version !== 2 || !Array.isArray(raw.retainedFrames) || raw.retainedFrames.length !== actions.length ||
+      !Array.from({ length: actions.length }, (_, i) => i).every(i => [1, 4, 16].includes(raw.retainedFrames[i])))) return null;
+    const retainedFrames = raw.retainedFrames?.some(count => count !== 16) ? raw.retainedFrames.slice() : null;
+    return { version: raw.version, pages: raw.pages.slice(), ...(retainedFrames ? { retainedFrames } : {}) };
   }
-  function player(pages, options, firstPage, version = 1) {
+  function player(pages, options, firstPage, version = 1, retainedFrames = []) {
     const selectedClips = version === 2 ? denseClips : clips, firstAction = actions[firstPage * (version === 2 ? 1 : 4)];
     const doc = root.document;
     if (!doc || typeof doc.createElement !== 'function') throw invalid();
@@ -135,15 +146,17 @@
       crop();
     }
     function stop() { if (timer !== null) root.clearTimeout(timer); timer = null; }
-    function paused() { return destroyed || unavailable || loading || options.animated === false || motion?.matches || doc.visibilityState === 'hidden'; }
+    function retainedCount() { return version === 2 ? retainedFrames[selectedClips[action].page] || 16 : 4; }
+    function staticAction() { return options.animated === false || (version === 2 && retainedCount() === 1); }
+    function paused() { return destroyed || unavailable || loading || staticAction() || motion?.matches || doc.visibilityState === 'hidden'; }
     function schedule() {
       stop();
-      element.dataset.playback = destroyed ? 'destroyed' : unavailable ? 'image-unavailable' : loading ? 'loading' : options.animated === false ? 'static' : motion?.matches ? 'reduced-motion' : doc.visibilityState === 'hidden' ? 'hidden' : 'playing';
+      element.dataset.playback = destroyed ? 'destroyed' : unavailable ? 'image-unavailable' : loading ? 'loading' : staticAction() ? 'static' : motion?.matches ? 'reduced-motion' : doc.visibilityState === 'hidden' ? 'hidden' : 'playing';
       if (!paused()) timer = root.setTimeout(() => {
         timer = null;
         if (paused()) { schedule(); return; }
         frame = (frame + 1) % selectedClips[action].frames; draw(); schedule();
-      }, selectedClips[action].frameMs[frame]);
+      }, version === 2 && retainedCount() === 4 ? clips[action].frameMs[Math.floor(frame / 4)] / 4 : selectedClips[action].frameMs[frame]);
     }
     function changed() { if (destroyed) return; if (motion?.matches) { frame = 0; draw(); } schedule(); }
     if (animated) doc.addEventListener('visibilitychange', changed);
@@ -174,16 +187,18 @@
   function create(options = {}) {
     const animation = normalize(options.animation);
     if (!animation || options.image !== animation.pages[0]) throw invalid();
-    return player(animation.pages, options, 0, animation.version);
+    return player(animation.pages, options, 0, animation.version, animation.retainedFrames);
   }
   function createPage(image, pageIndex, options = {}) {
     const version = options.version === undefined ? 1 : options.version;
     if (![1, 2].includes(version) || typeof image !== 'string' || !asset.test(image) || !Number.isInteger(pageIndex) || pageIndex < 0 || pageIndex >= actions.length / (version === 2 ? 1 : 4)) throw invalid();
+    if (options.retainedFrames !== undefined && (version !== 2 || ![1, 4, 16].includes(options.retainedFrames))) throw invalid();
     const pages = []; pages[pageIndex] = image;
-    return player(pages, options, pageIndex, version);
+    const retainedFrames = []; retainedFrames[pageIndex] = options.retainedFrames;
+    return player(pages, options, pageIndex, version, retainedFrames);
   }
   // Pixel checks establish a usable transparent atlas, not semantic pose quality or likeness.
-  function inspectPixels(data, edge, version) {
+  function inspectPixels(data, edge, version, retainedFrames = 16) {
     const cells = [], size = edge / 4, count = size * size;
     for (let row = 0; row < 4; row++) for (let column = 0; column < 4; column++) {
       const pixels = new Uint8ClampedArray(count * 4);
@@ -216,6 +231,16 @@
       return false;
     }
     if (version === 2) {
+      if (retainedFrames !== 16) {
+        // Converted artwork declares its original frame count. Every repeated
+        // slot must contain the same visible pixels; this never creates new poses.
+        const copies = 16 / retainedFrames;
+        for (let first = 0; first < 16; first += copies) for (let copy = first + 1; copy < first + copies; copy++) {
+          const a = cells[first].pixels, b = cells[copy].pixels;
+          for (let index = 0; index < a.length; index++) if (a[index] !== b[index]) throw invalid();
+        }
+        return;
+      }
       const distinct = [];
       for (const cell of cells) if (distinct.every(other => differs(cell, other, false) && differs(cell, other, true))) distinct.push(cell);
       // A few held poses are allowed; repeating four pictures into sixteen slots is not.
@@ -234,29 +259,32 @@
   }
   async function validatePage(imageURL, options = {}) {
     if (typeof imageURL !== 'string' || !asset.test(imageURL) || !root.document || typeof root.Image !== 'function') throw invalid();
-    return validateImage(imageURL, options.version === undefined ? 1 : options.version);
+    return validateImage(imageURL, options.version === undefined ? 1 : options.version, options.retainedFrames);
   }
   async function validateBlob(blob, options = {}) {
     if (!(blob instanceof root.Blob) || blob.type !== 'image/png' || blob.size > 12 * 1024 * 1024) throw invalid();
     const url = root.URL.createObjectURL(blob);
-    try { return await validateImage(url, options.version === undefined ? 1 : options.version); } finally { root.URL.revokeObjectURL(url); }
+    try { return await validateImage(url, options.version === undefined ? 1 : options.version, options.retainedFrames); } finally { root.URL.revokeObjectURL(url); }
   }
-  async function validateImage(imageURL, version) {
-    if (![1, 2].includes(version)) throw invalid();
+  async function validateImage(imageURL, version, retainedFrames) {
+    if (![1, 2].includes(version) || (retainedFrames !== undefined && (version !== 2 || ![1, 4, 16].includes(retainedFrames)))) throw invalid();
     const image = new root.Image();
     try {
       await new Promise((resolve, reject) => {
-        const timer = root.setTimeout(() => { image.onload = image.onerror = null; image.src = ''; reject(invalid()); }, 20000);
+        const timer = root.setTimeout(() => { image.onload = image.onerror = null; image.src = ''; reject(loadFailed()); }, 20000);
         image.onload = () => { root.clearTimeout(timer); image.onload = image.onerror = null; resolve(); };
-        image.onerror = () => { root.clearTimeout(timer); image.onload = image.onerror = null; reject(invalid()); };
+        image.onerror = () => { root.clearTimeout(timer); image.onload = image.onerror = null; reject(loadFailed()); };
         image.src = imageURL;
       });
       if (typeof image.decode === 'function') await image.decode();
-      const width = image.naturalWidth, height = image.naturalHeight;
-      if (!Number.isFinite(width) || !Number.isFinite(height) || Math.min(width, height) < 768 || Math.max(width, height) > 4096 || Math.abs(width - height) / Math.max(width, height) > .01) throw invalid();
-      inspectPixels(sheetPixels(image), 768, version);
-      return { width, height, columns: 4, rows: 4, frames: 16 };
-    } catch { throw invalid(); }
+    } catch { throw loadFailed(); }
+    const width = image.naturalWidth, height = image.naturalHeight;
+    if (!Number.isFinite(width) || !Number.isFinite(height) || Math.min(width, height) < 768 || Math.max(width, height) > 4096 || Math.abs(width - height) / Math.max(width, height) > .01) throw invalid();
+    let pixels;
+    try { pixels = sheetPixels(image); } catch { throw loadFailed(); }
+    try { inspectPixels(pixels, 768, version, retainedFrames); }
+    catch (error) { if (error?.message === 'invalid-animation-sheet') throw error; throw loadFailed(); }
+    return { width, height, columns: 4, rows: 4, frames: 16 };
   }
-  return { normalize, actions, clips, denseClips, create, createPage, validatePage, validateBlob };
+  return { normalize, actions, clips, denseClips, create, createPage, validatePage, validateBlob, frameInsetsForImage };
 });

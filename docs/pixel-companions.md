@@ -263,7 +263,7 @@ desktop windows require Electron.
 - `node dev/qa-pet-dense-release.cjs` smoke-tests the packaged Windows app
   in an isolated profile: built-in and generated 16-frame loops in the workspace
   and native desktop window, live care, real file export/import, legacy artwork
-  and saved selection. It defaults to `dist/0.3.7-final/win-unpacked/Tracer.exe`;
+  and saved selection. It defaults to `dist/0.3.8-final/win-unpacked/Tracer.exe`;
   pass another packaged executable path as the first argument if needed.
 - `node dev/qa-pet-frame-boundaries.cjs` verifies cross-cell fragment masking,
   preservation of character and prop pixels at 70/100/180% scale, transparent
@@ -308,3 +308,35 @@ desktop windows require Electron.
   settings recovery and quiet compact views.
 - The QA scripts accept `TRACER_QA_PLAYWRIGHT` for an existing Playwright
   installation and never use the user's profile or real AI credentials.
+
+## Replacing an individual action (0.3.8)
+
+The creator can regenerate the selected action in a new companion draft or an
+existing custom companion. It checkpoints `pendingReplacement` before the
+request, keeps the old page until the new image passes validation, and changes
+only the selected page after success. A retry uses the same page attempt and
+fixed `generationIdentity`; only a rejected image or a new explicit replacement
+advances the attempt. Image transport/decode failures use `animation-load-failed`
+and do not advance it. The user can explicitly keep the original action instead.
+
+Saved-companion edits carry `editingId` and a SHA-256 `editingSignature` of the
+original normalized profile. Saving replaces that custom profile in place and
+preserves care state. Missing or concurrently changed profiles are not silently
+recreated or overwritten. After collection persistence, `markSaved()` updates
+the editing base before clearing the recovery draft, so a failed clear can be
+retried without losing subsequent edits. Version 2 draft records include these
+fields and `retainedFrames`; version 1 recovery records are migrated on load.
+
+`pet-edit-draft.js` reuses version 2 page URLs. For old four-frame or static
+companions it copies existing pixels into editable action sheets without AI,
+using the same edge masks as the player. Optional version 2
+`animation.retainedFrames` / `artwork.retainedFrames` has 16 entries of 1, 4 or
+16. Retained one/four-frame sheets must exactly encode their repeated frames;
+four-frame actions preserve their old timing and one-frame actions stay still.
+Newly generated actions always use the strict sixteen-pose validation. Replacing
+one action changes only its retained count to 16. Mixed exports require 0.3.8
+or newer; all-16 manifests keep the existing package format and identifiers.
+
+The generation-recovery browser QA covers single-action interruption and
+resumption, saved edits and conflict handling, failed collection/draft writes,
+and export/import of edited legacy and static companions using synthetic images.

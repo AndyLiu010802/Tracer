@@ -6,7 +6,9 @@
   'use strict';
   const databaseName = 'tracer-pet-generation', storeName = 'drafts', recordKey = 'draft';
   const photoLimit = 6 * 1024 * 1024;
-  const fields = ['name', 'kind', 'personality', 'distinctiveFeatures', 'imageSource', 'imageModel', 'photo', 'pages', 'pageAttempts', 'animationVersion', 'recordId', 'generationId', 'wasBusy'];
+  const legacyFields = ['name', 'kind', 'personality', 'distinctiveFeatures', 'imageSource', 'imageModel', 'photo', 'pages', 'pageAttempts', 'animationVersion', 'recordId', 'generationId', 'wasBusy'];
+  const fields = [...legacyFields, 'generationIdentity', 'pendingReplacement', 'editingId', 'editingSignature', 'retainedFrames'];
+  const safeImage = value => typeof value === 'string' && /^\/api\/pet-art\/[a-f0-9]{32}\.png$/.test(value);
   const queues = new WeakMap();
   let defaultStorage;
   function failure(code, cause) {
@@ -28,10 +30,27 @@
     if (!['creature', 'humanoid'].includes(kind) || !['codex', 'personal'].includes(imageSource) || animationVersion !== 2 || typeof wasBusy !== 'boolean') throw failure('pet-draft-invalid');
     const recordId = text('recordId', 39), generationId = text('generationId', 32);
     if ((recordId && !/^custom_[a-f0-9]{32}$/.test(recordId)) || (generationId && !/^[a-f0-9]{32}$/.test(generationId))) throw failure('pet-draft-invalid');
+    const editingId = text('editingId', 39), editingSignature = text('editingSignature', 64);
+    if (editingId ? !/^custom_[a-f0-9]{32}$/.test(editingId) || editingId !== recordId || !/^[a-f0-9]{64}$/.test(editingSignature) : editingSignature !== '') throw failure('pet-draft-invalid');
     const pages = raw.pages === undefined ? [] : raw.pages;
-    if (!Array.isArray(pages) || pages.length > 16 || !Array.from({ length: pages.length }, (_, i) => i).every(i => typeof pages[i] === 'string' && /^\/api\/pet-art\/[a-f0-9]{32}\.png$/.test(pages[i]))) throw failure('pet-draft-invalid');
+    if (!Array.isArray(pages) || pages.length > 16 || !Array.from({ length: pages.length }, (_, i) => i).every(i => safeImage(pages[i]))) throw failure('pet-draft-invalid');
     const pageAttempts = raw.pageAttempts === undefined ? Array(16).fill(0) : raw.pageAttempts;
     if (!Array.isArray(pageAttempts) || pageAttempts.length !== 16 || !Array.from({ length: 16 }, (_, i) => i).every(i => Number.isInteger(pageAttempts[i]) && pageAttempts[i] >= 0 && pageAttempts[i] <= 1000)) throw failure('pet-draft-invalid');
+    const retainedFrames = raw.retainedFrames === undefined ? Array(16).fill(16) : raw.retainedFrames;
+    if (!Array.isArray(retainedFrames) || retainedFrames.length !== 16 || !Array.from({ length: 16 }, (_, i) => i).every(i => [1, 4, 16].includes(retainedFrames[i]) && (i < pages.length || retainedFrames[i] === 16))) throw failure('pet-draft-invalid');
+    // Keep the first accepted idle sheet as a stable reference even after idle is
+    // replaced. Older drafts acquire that reference from their original first page.
+    const generationIdentity = raw.generationIdentity === undefined ? pages[0] || '' : raw.generationIdentity;
+    if (pages.length ? !safeImage(generationIdentity) : generationIdentity !== '') throw failure('pet-draft-invalid');
+    let pendingReplacement = null;
+    if (raw.pendingReplacement !== undefined && raw.pendingReplacement !== null) {
+      const pending = raw.pendingReplacement;
+      if (!object(pending) || Object.keys(pending).length !== 3 || !['pageIndex', 'attempt', 'identityImage'].every(key => Object.prototype.hasOwnProperty.call(pending, key)) ||
+          !Number.isInteger(pending.pageIndex) || pending.pageIndex < 0 || pending.pageIndex >= pages.length ||
+          !Number.isInteger(pending.attempt) || pending.attempt < 1 || pending.attempt > 1000 || pending.attempt !== pageAttempts[pending.pageIndex] ||
+          pending.identityImage !== generationIdentity || !safeImage(pending.identityImage) || !generationId) throw failure('pet-draft-invalid');
+      pendingReplacement = { pageIndex: pending.pageIndex, attempt: pending.attempt, identityImage: pending.identityImage };
+    }
     const photo = raw.photo === undefined ? '' : raw.photo;
     if (typeof photo !== 'string' || photo.length > photoLimit) throw failure('pet-draft-invalid');
     if (photo) {
@@ -42,12 +61,15 @@
       if (match[1] === 'png' ? !header.startsWith('\x89PNG\r\n\x1a\n') : match[1] === 'jpeg' ? !header.startsWith('\xff\xd8\xff') : !(header.startsWith('RIFF') && header.slice(8, 12) === 'WEBP')) throw failure('pet-draft-invalid');
     }
     // Whitelist only recovery data. File objects, account settings and API keys never enter storage.
-    return { name, kind, personality, distinctiveFeatures, imageSource, imageModel, photo, pages: pages.slice(), pageAttempts: pageAttempts.slice(), animationVersion, recordId, generationId, wasBusy };
+    return { name, kind, personality, distinctiveFeatures, imageSource, imageModel, photo, pages: pages.slice(), pageAttempts: pageAttempts.slice(), animationVersion, recordId, generationId, wasBusy, generationIdentity, pendingReplacement, editingId, editingSignature, retainedFrames: retainedFrames.slice() };
   }
   function inspect(record) {
     try {
-      if (!object(record) || Object.keys(record).length !== 3 || !['version', 'savedAt', 'draft'].every(key => Object.prototype.hasOwnProperty.call(record, key)) || record.version !== 1 || !Number.isSafeInteger(record.savedAt) || record.savedAt < 0 || !object(record.draft) ||
-          Object.keys(record.draft).length !== fields.length || !fields.every(key => Object.prototype.hasOwnProperty.call(record.draft, key))) throw failure('pet-draft-corrupt');
+      if (!object(record) || Object.keys(record).length !== 3 || !['version', 'savedAt', 'draft'].every(key => Object.prototype.hasOwnProperty.call(record, key)) || ![1, 2].includes(record.version) || !Number.isSafeInteger(record.savedAt) || record.savedAt < 0 || !object(record.draft)) throw failure('pet-draft-corrupt');
+      const expectedFields = record.version === 1 ? legacyFields : fields;
+      if (Object.keys(record.draft).length !== expectedFields.length || !expectedFields.every(key => Object.prototype.hasOwnProperty.call(record.draft, key)) ||
+          (record.version === 2 && (typeof record.draft.generationIdentity !== 'string' || record.draft.pendingReplacement === undefined ||
+            typeof record.draft.editingId !== 'string' || typeof record.draft.editingSignature !== 'string' || !Array.isArray(record.draft.retainedFrames)))) throw failure('pet-draft-corrupt');
       return normalize(record.draft);
     } catch (error) { throw failure('pet-draft-corrupt', error); }
   }
@@ -114,7 +136,7 @@
     return {
       load() { return enqueue(async () => { const record = await storage.get(); return record == null ? null : inspect(record); }, 'pet-draft-read-failed'); },
       async save(raw) {
-        const draft = normalize(raw), record = { version: 1, savedAt: Date.now(), draft };
+        const draft = normalize(raw), record = { version: 2, savedAt: Date.now(), draft };
         return enqueue(async () => { await storage.put(record); return normalize(draft); }, 'pet-draft-save-failed');
       },
       clear() { return enqueue(async () => { await storage.delete(); }, 'pet-draft-clear-failed'); },

@@ -7,6 +7,7 @@ const assert = require('node:assert/strict');
 const { chromium } = require(process.env.TRACER_QA_PLAYWRIGHT || 'playwright');
 const Images = require('../lib/pet-image');
 const { fixtures } = require('./qa-pet-dense-animation.cjs');
+const { fixtures: legacyFixtures } = require('./qa-pet-animation.cjs');
 const root = path.resolve(__dirname, '..');
 const actions = ['idle','pet','feed','play','sleep','wake','focus','drag','fishing','exercise','farming','mining','reading','writing','crafting','tea'];
 const sequence = (start = 0, end = 16) => Array.from({ length: end - start }, (_, i) => i + start);
@@ -27,10 +28,10 @@ async function ready(page, origin) {
 }
 
 async function draftAt(page, completed) {
-  await page.waitForFunction(async expected => {
-    const draft = await TracerPetGenerationDraft.create().load();
-    return expected === null ? draft === null : draft?.pages?.length === expected;
-  }, completed, { polling: 100 });
+  await until(async()=>{
+    const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());
+    return completed===null?draft===null:draft?.pages?.length===completed;
+  },'durable draft reaches '+String(completed)+' pages');
   return page.evaluate(() => TracerPetGenerationDraft.create().load());
 }
 
@@ -63,6 +64,15 @@ async function acceptDiscard(page) {
     await dialog.accept();
   });
   await Promise.all([opened, page.click('.pet-discard-draft', { noWaitAfter: true })]);
+}
+
+async function acceptActionReplacement(page) {
+  const opened=page.waitForEvent('dialog').then(async dialog=>{
+    assert.equal(dialog.type(),'confirm');
+    assert.match(dialog.message(),/action|动作/i);
+    await dialog.accept();
+  });
+  await Promise.all([opened,page.click('.pet-regenerate-action',{noWaitAfter:true})]);
 }
 
 async function delayNextDraftDelete(page) {
@@ -179,7 +189,7 @@ async function assertComplete(page, mock, name, photo, paths) {
 
 async function mockContext(browser, origin, paths) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' });
-  const calls = [], errors = [], unexpected = [], blockedExternal = [], holds = new Set(), held = new Map();
+  const calls = [], errors = [], unexpected = [], blockedExternal = [], holds = new Set(), held = new Map(), responses = new Map();
   let failOnce = -1;
   // One catch-all interceptor prevents accidental access to a configured local
   // AI account and to every remote endpoint, even if the app adds new routes.
@@ -207,7 +217,7 @@ async function mockContext(browser, origin, paths) {
       await new Promise(resolve => held.set(call.animationPage, resolve));
       held.delete(call.animationPage);
     }
-    await route.fulfill({ json: { image: paths[call.animationPage], animationPage: call.animationPage, animationVersion: 2, model: 'synthetic-recovery-fixture' } });
+    await route.fulfill({ json: { image: responses.get(call.animationPage)||paths[call.animationPage], animationPage: call.animationPage, animationVersion: 2, model: 'synthetic-recovery-fixture' } });
   });
   const page = await context.newPage();
   page.on('pageerror', error => errors.push(error.message));
@@ -216,6 +226,7 @@ async function mockContext(browser, origin, paths) {
     context, page, calls, errors, unexpected, blockedExternal,
     hold(index) { holds.add(index); },
     fail(index) { failOnce = index; },
+    respond(index,image) { responses.set(index,image); },
     waiting(index) { return held.has(index); },
     release(index) { assert.ok(held.has(index), 'a request is held for action ' + index); held.get(index)(); },
     async close() { for (const resolve of held.values()) resolve(); await context.close(); }
@@ -554,6 +565,301 @@ async function emptyAndCorruptDrafts(browser, origin, paths, profile) {
   } finally { await corrupt.close(); }
 }
 
+async function editSavedActions(page,mock,saved,replacementImage,profile) {
+  const startCalls=mock.calls.length;
+  await page.evaluate(()=>Tracer.pet.action('pet'));
+  const bond=await page.evaluate(()=>TracerPetModel.current(Tracer.pet.read()).bond);
+  await page.click('#pet-open');await page.click('[data-tab="collection"]');
+  await page.click('[data-act="open-edit-actions"]');
+  await page.locator('.pet-create-form').waitFor({state:'visible'});
+  const editing=await draftAt(page,16);
+  assert.equal(editing.editingId,saved.id);
+  assert.equal(editing.recordId,saved.id);
+  assert.match(editing.editingSignature,/^[a-f0-9]{64}$/);
+  assert.deepEqual(editing.pages,saved.animation.pages);
+  assert.notEqual(editing.pages[8],replacementImage,'saved editing has a distinct replacement fixture');
+  assert.equal(mock.calls.length,startCalls,'opening saved actions never requests AI');
+  for(const selector of ['#pet-photo','#pet-custom-kind','#pet-distinctive-features'])assert.equal(await page.locator(selector).isDisabled(),true);
+  assert.equal(await page.locator('.pet-restart-generation').isVisible(),false,'saved action editing cannot accidentally regenerate the whole companion');
+  mock.respond(8,replacementImage);
+  await page.selectOption('#pet-preview-action','fishing');await acceptActionReplacement(page);
+  await until(async()=>{const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());return draft?.pendingReplacement===null&&draft?.pages?.[8]===replacementImage;},'saved action replacement is durable');
+  assert.equal(mock.calls.length,startCalls+1);
+  assert.equal(mock.calls.at(-1).animationPage,8);
+  assert.deepEqual(await page.evaluate(id=>Tracer.pet.read().customs.find(pet=>pet.id===id),saved.id),saved,'generating a replacement leaves the saved collection record unchanged until Save');
+  const changed=saved.animation.pages.slice();changed[8]=replacementImage;
+  assert.deepEqual((await draftAt(page,16)).pages,changed);
+
+  await page.evaluate(({id,replacement})=>{
+    window.__savedEditSetItem=Storage.prototype.setItem;
+    Storage.prototype.setItem=function(key,value){
+      if(key==='tracer.pet.v1'&&JSON.parse(value).customs?.some(pet=>pet.id===id&&pet.animation?.pages?.[8]===replacement))throw new DOMException('Synthetic saved edit failure','QuotaExceededError');
+      return window.__savedEditSetItem.call(this,key,value);
+    };
+  },{id:saved.id,replacement:replacementImage});
+  await page.click('.pet-adopt');
+  await page.waitForFunction(()=>!document.querySelector('.pet-adopt').disabled&&/save|保存/i.test(document.querySelector('.pet-create-error').textContent));
+  assert.deepEqual(await page.evaluate(id=>Tracer.pet.read().customs.find(pet=>pet.id===id),saved.id),saved,'a failed update preserves the original saved profile');
+  assert.deepEqual((await draftAt(page,16)).pages,changed);
+  await page.evaluate(()=>{Storage.prototype.setItem=window.__savedEditSetItem;delete window.__savedEditSetItem;});
+  await page.reload();await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+  await page.evaluate(()=>Tracer.pet.action('open-create'));await page.locator('.pet-create-form').waitFor({state:'visible'});
+  const restored=await draftAt(page,16);
+  assert.equal(restored.editingId,saved.id,'an edit draft is not mistaken for an already adopted new companion');
+  assert.equal(restored.editingSignature,editing.editingSignature);
+  assert.deepEqual(restored.pages,changed);
+  assert.deepEqual(await page.evaluate(id=>Tracer.pet.read().customs.find(pet=>pet.id===id),saved.id),saved);
+  assert.equal(mock.calls.length,startCalls+1,'restoring a saved-companion edit does not repeat generation');
+  await page.selectOption('#pet-preview-action','fishing');
+  await page.locator('.pet-create-preview').scrollIntoViewIfNeeded();
+  await page.screenshot({path:path.join(profile,'saved-companion-action-edit-restored.png'),animations:'disabled'});
+  await page.click('.pet-adopt');await page.locator(entry).waitFor({state:'hidden'});await draftAt(page,null);
+  const updated=await page.evaluate(()=>Tracer.pet.read().customs);
+  assert.equal(updated.length,1,'saving an edited companion never creates a duplicate');
+  assert.equal(updated[0].id,saved.id);
+  assert.deepEqual(updated[0].animation.pages,changed);
+  assert.equal(await page.evaluate(()=>TracerPetModel.current(Tracer.pet.read()).bond),bond,'action updates preserve the original care progress');
+  await page.reload();await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+  assert.deepEqual(await page.evaluate(()=>Tracer.pet.read().customs),updated);
+
+  await page.click('#pet-open');await page.click('[data-tab="collection"]');await page.click('[data-act="open-edit-actions"]');
+  await page.locator('.pet-create-form').waitFor({state:'visible'});await draftAt(page,16);
+  // Model a second window changing the profile while this editor is open.
+  // Storage events are the application's normal cross-window update channel.
+  await page.evaluate(id=>{
+    const key='tracer.pet.v1',oldValue=localStorage.getItem(key),state=JSON.parse(oldValue);
+    state.customs.find(pet=>pet.id===id).personality='Changed in another isolated window';
+    const newValue=JSON.stringify(state);localStorage.setItem(key,newValue);
+    window.dispatchEvent(new StorageEvent('storage',{key,oldValue,newValue,storageArea:localStorage}));
+  },saved.id);
+  await page.click('.pet-adopt');
+  await page.waitForFunction(()=>!document.querySelector('.pet-adopt').disabled&&/changed|conflict|变化|修改|冲突/i.test(document.querySelector('.pet-create-error').textContent));
+  assert.equal(await page.evaluate(id=>Tracer.pet.read().customs.find(pet=>pet.id===id).personality,saved.id),'Changed in another isolated window','a stale editor never overwrites another window’s saved changes');
+  assert.equal((await draftAt(page,16)).editingId,saved.id);
+
+  await closeCreator(page);await page.click('#pet-open');await page.click('[data-tab="collection"]');
+  await page.click('[data-act="open-remove"]');await page.locator('.modal-actions .btn-danger').click();
+  await page.waitForFunction(()=>Tracer.pet.read().customs.length===0);
+  await page.keyboard.press('Escape');await page.click(entry);await page.locator('.pet-create-form').waitFor({state:'visible'});
+  await page.click('.pet-adopt');
+  await page.waitForFunction(()=>!document.querySelector('.pet-adopt').disabled&&/removed|missing|no longer|不存在|删除|移除/i.test(document.querySelector('.pet-create-error').textContent));
+  assert.equal(await page.evaluate(()=>Tracer.pet.read().customs.length),0,'saving an edit never recreates a deleted companion');
+  assert.equal((await draftAt(page,16)).editingId,saved.id,'the failed edit remains recoverable for review');
+  await acceptDiscard(page);await draftAt(page,null);await page.locator(entry).waitFor({state:'hidden'});
+  assert.equal(mock.calls.length,startCalls+1,'saved editor success, failures and conflicts consume only its one selected action');
+  console.log('PASS saved companion action editing, deferred same-ID update, failed-save reload, care preservation and explicit conflict/deleted-original protection');
+}
+
+async function actionReplacementRecovery(browser,origin,paths,portrait,replacementImage,savedReplacementImage,profile) {
+  const mock=await mockContext(browser,origin,paths),{page}=mock;
+  try {
+    await ready(page,origin);
+    const name='Maple Single Action',photo=await openNew(page,portrait,name);
+    await page.click('.pet-generate');
+    await assertComplete(page,mock,name,photo,paths);
+    const original=await draftAt(page,16);
+    assert.deepEqual(mock.calls.map(call=>call.animationPage),sequence());
+    await page.selectOption('#pet-preview-action','fishing');
+    await dismissRestart(page,'.pet-regenerate-action',mock);
+    assert.deepEqual((await draftAt(page,16)).pages,paths);
+    assert.equal(mock.calls.length,16);
+
+    mock.fail(8);mock.respond(8,replacementImage);
+    await acceptActionReplacement(page);
+    await page.waitForFunction(()=>!document.querySelector('.pet-generate').disabled&&document.querySelector('.pet-create-error').textContent.includes('returned no image'));
+    await until(async()=>{const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());return draft?.pendingReplacement?.pageIndex===8;},'failed replacement checkpoint is durable');
+    const failed=await draftAt(page,16);
+    assert.deepEqual(failed.pages,paths,'a failed single action leaves all saved draft images intact');
+    assert.deepEqual(failed.pendingReplacement,{pageIndex:8,attempt:1,identityImage:paths[0]});
+    assert.equal(failed.generationId,original.generationId);
+    assert.equal(failed.generationIdentity,paths[0]);
+    assert.deepEqual(mock.calls.slice(16).map(call=>[call.animationPage,call.generationAttempt]),[[8,1]]);
+    await page.reload();
+    await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+    await page.evaluate(()=>Tracer.pet.action('open-create'));
+    await page.locator('.pet-create-form').waitFor({state:'visible'});
+    const restored=await draftAt(page,16);
+    assert.deepEqual(restored.pendingReplacement,failed.pendingReplacement,'reload retains the exact selected action retry');
+    assert.deepEqual(restored.pages,paths);
+    assert.equal(mock.calls.length,17,'restoring pending replacement does not request AI automatically');
+    await page.selectOption('#pet-preview-action','fishing');
+    mock.hold(8);
+    // Retrying the pending action needs no second confirmation and must reuse
+    // the same attempt, allowing the backend to recover an already paid result.
+    await page.click('.pet-regenerate-action');
+    await until(()=>mock.waiting(8),'restored action replacement request');
+    assert.equal(await page.locator('.pet-adopt').isDisabled(),true);
+    assert.deepEqual((await draftAt(page,16)).pages,paths);
+    assert.equal(await page.locator('.pet-result-frame .pet-animation-sheet').getAttribute('src'),paths[8],'old fishing frames remain visible during replacement');
+    assert.equal(mock.calls.length,18);
+    assert.equal(mock.calls.at(-1).generationAttempt,1);
+    assert.equal(mock.calls.at(-1).generationId,original.generationId);
+    assert.equal(mock.calls.at(-1).identityImage,paths[0]);
+    await closeCreator(page,'backdrop');mock.release(8);
+    await page.locator('.pet-adopt').waitFor({state:'visible'});
+    const replaced=paths.slice();replaced[8]=replacementImage;
+    await until(async()=>{const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());return draft?.pendingReplacement===null&&draft?.pages?.[8]===replacementImage;},'replacement result is durable');
+    await assertComplete(page,mock,name,photo,replaced);
+    const finalDraft=await draftAt(page,16);
+    assert.deepEqual(finalDraft.pageAttempts,Array.from({length:16},(_,index)=>index===8?1:0));
+    assert.equal(finalDraft.recordId,original.recordId);
+    assert.equal(finalDraft.generationIdentity,paths[0]);
+    assert.deepEqual(mock.calls.slice(16).map(call=>[call.animationPage,call.generationAttempt]),[[8,1],[8,1]],'no other action is regenerated');
+    await page.selectOption('#pet-preview-action','fishing');
+    assert.equal(await page.locator('.pet-result-frame .pet-animation-sheet').getAttribute('src'),replacementImage);
+    await page.locator('.pet-create-preview').scrollIntoViewIfNeeded();
+    await page.screenshot({path:path.join(profile,'single-action-replaced.png'),animations:'disabled'});
+    await page.click('.pet-adopt');await page.locator(entry).waitFor({state:'hidden'});await draftAt(page,null);
+    const saved=await page.evaluate(()=>Tracer.pet.read().customs[0]);
+    assert.equal(saved.id,original.recordId);assert.deepEqual(saved.animation.pages,replaced);
+    await page.reload();await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+    assert.deepEqual(await page.evaluate(()=>Tracer.pet.read().customs[0].animation.pages),replaced);
+    await editSavedActions(page,mock,saved,savedReplacementImage,profile);
+    assert.deepEqual(mock.errors,[]);assert.deepEqual(mock.unexpected,[]);assert.deepEqual(mock.blockedExternal,[]);
+    console.log('PASS isolated single-action replacement, old-page retention, exact pending retry after reload, background completion and saving only the chosen page');
+  } finally {await mock.close();}
+}
+
+async function savedDraftCleanupRecovery(browser,origin,paths,portrait,replacementImage,savedReplacementImage,profile) {
+  const mock=await mockContext(browser,origin,paths),{page}=mock;
+  try {
+    await ready(page,origin);
+    const seed={name:'Saved cleanup recovery',kind:'humanoid',personality:'A synthetic recovery fixture.',distinctiveFeatures:'Green shirt',imageSource:'codex',imageModel:'gpt-image-2.5-flare',photo:'data:image/png;base64,'+portrait.toString('base64'),pages:paths,pageAttempts:Array(16).fill(0),animationVersion:2,recordId:'custom_'+'e'.repeat(32),generationId:'e'.repeat(32),wasBusy:false,generationIdentity:paths[0],pendingReplacement:null,editingId:'',editingSignature:'',retainedFrames:Array(16).fill(16)};
+    await page.evaluate(draft=>TracerPetGenerationDraft.create().save(draft),seed);
+    await page.reload();await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+    await page.locator('.pet-create-form').waitFor({state:'visible'});await draftAt(page,16);
+    await page.evaluate(()=>{
+      window.__cleanupOriginalDelete=IDBObjectStore.prototype.delete;
+      IDBObjectStore.prototype.delete=function(...args){
+        if(this.name==='drafts'&&this.transaction.db.name==='tracer-pet-generation')throw new DOMException('Synthetic draft cleanup failure','QuotaExceededError');
+        return window.__cleanupOriginalDelete.apply(this,args);
+      };
+    });
+    await page.click('.pet-adopt');
+    await page.waitForFunction(()=>!document.querySelector('.pet-adopt').disabled&&/companion is saved.*draft could not be removed/.test(document.querySelector('.pet-create-error').textContent));
+    const firstSaved=await page.evaluate(()=>Tracer.pet.read().customs);
+    assert.equal(firstSaved.length,1);assert.equal(firstSaved[0].id,seed.recordId);assert.deepEqual(firstSaved[0].animation.pages,paths);
+    await until(async()=>{const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());return draft?.editingId===seed.recordId;},'cleanup failure persists the newly saved editing identity');
+    const firstDraft=await draftAt(page,16);
+    const firstSignature=await page.evaluate(record=>TracerPetEditDraft.signature(record),firstSaved[0]);
+    assert.equal(firstDraft.editingSignature,firstSignature,'the retained draft now refers to the profile that really reached collection storage');
+    assert.equal(await page.locator('.pet-restart-generation').isVisible(),false);
+    assert.equal(mock.calls.length,0,'recovering failed cleanup makes no AI requests');
+
+    // The creator remains open after a partial save. New edits must update that
+    // saved record, rather than take the duplicate-adoption shortcut.
+    mock.respond(8,replacementImage);
+    await page.selectOption('#pet-preview-action','fishing');await acceptActionReplacement(page);
+    await until(async()=>{const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());return draft?.pages?.[8]===replacementImage&&!draft.pendingReplacement;},'live post-save action change is durable');
+    assert.deepEqual(await page.evaluate(()=>Tracer.pet.read().customs),firstSaved,'redrawing after failed cleanup still waits for Save');
+    await page.click('.pet-adopt');
+    await page.waitForFunction(()=>!document.querySelector('.pet-adopt').disabled&&/companion is saved.*draft could not be removed/.test(document.querySelector('.pet-create-error').textContent));
+    const liveSaved=await page.evaluate(()=>Tracer.pet.read().customs),livePages=paths.slice();livePages[8]=replacementImage;
+    assert.equal(liveSaved.length,1);assert.equal(liveSaved[0].id,seed.recordId);assert.deepEqual(liveSaved[0].animation.pages,livePages,'saving a new action after failed cleanup actually replaces that action');
+    const liveSignature=await page.evaluate(record=>TracerPetEditDraft.signature(record),liveSaved[0]);
+    await until(async()=>{const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());return draft?.editingSignature===liveSignature;},'second partial save checkpoints its current signature');
+    assert.notEqual(liveSignature,firstSignature);
+    await page.evaluate(()=>{IDBObjectStore.prototype.delete=window.__cleanupOriginalDelete;delete window.__cleanupOriginalDelete;});
+    await page.reload();await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+    await page.locator('.pet-create-form').waitFor({state:'visible'});
+    const restored=await draftAt(page,16);
+    assert.equal(restored.editingId,seed.recordId);assert.equal(restored.editingSignature,liveSignature);assert.deepEqual(restored.pages,livePages,'reload retains the editing draft even when its current candidate is already saved');
+    assert.equal(mock.calls.length,1);
+    mock.respond(8,savedReplacementImage);
+    await page.selectOption('#pet-preview-action','fishing');await acceptActionReplacement(page);
+    await until(async()=>{const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());return draft?.pages?.[8]===savedReplacementImage&&!draft.pendingReplacement;},'restored post-save action change is durable');
+    await page.screenshot({path:path.join(profile,'saved-draft-cleanup-recovered.png'),animations:'disabled'});
+    await page.click('.pet-adopt');await page.locator(entry).waitFor({state:'hidden'});await draftAt(page,null);
+    const finalSaved=await page.evaluate(()=>Tracer.pet.read().customs),finalPages=paths.slice();finalPages[8]=savedReplacementImage;
+    assert.equal(finalSaved.length,1);assert.equal(finalSaved[0].id,seed.recordId);assert.deepEqual(finalSaved[0].animation.pages,finalPages);
+    assert.deepEqual(mock.calls.map(call=>[call.animationPage,call.generationAttempt]),[[8,1],[8,2]]);
+
+    // A stale pre-editing draft with the same ID is safe to clear only if its
+    // complete candidate matches the collection record. Different artwork must
+    // remain reviewable, and must never silently overwrite the saved profile.
+    await page.evaluate(draft=>TracerPetGenerationDraft.create().save(draft),{...seed,pages:livePages});
+    await page.reload();await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+    await page.locator('.pet-create-form').waitFor({state:'visible'});
+    const conflicted=await draftAt(page,16);assert.equal(conflicted.editingId,'');assert.deepEqual(conflicted.pages,livePages);
+    await page.click('.pet-adopt');
+    await page.waitForFunction(()=>!document.querySelector('.pet-adopt').disabled&&/changed|conflict/i.test(document.querySelector('.pet-create-error').textContent));
+    assert.deepEqual(await page.evaluate(()=>Tracer.pet.read().customs),finalSaved,'a same-ID draft with different artwork cannot overwrite saved actions');
+    assert.deepEqual((await draftAt(page,16)).pages,livePages);
+    await acceptDiscard(page);await draftAt(page,null);await page.locator(entry).waitFor({state:'hidden'});
+    await page.evaluate(draft=>TracerPetGenerationDraft.create().save(draft),{...seed,pages:finalPages});
+    await page.reload();await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+    await draftAt(page,null);assert.equal(await page.locator(entry).isVisible(),false,'an exactly matching non-editing draft is safely cleared after reload');
+    assert.deepEqual(await page.evaluate(()=>Tracer.pet.read().customs),finalSaved);
+    assert.equal(mock.calls.length,2);assert.deepEqual(mock.errors,[]);assert.deepEqual(mock.unexpected,[]);assert.deepEqual(mock.blockedExternal,[]);
+    console.log('PASS collection save with failed draft cleanup, live and restored same-ID action updates, exact candidate cleanup and conflicting same-ID draft preservation');
+  } finally {await mock.close();}
+}
+
+async function legacyReplacementRoundTrips(browser,origin,paths,staticImage,legacyPages,replacementImage,profile) {
+  for(const kind of ['static','legacy']) {
+    const sender=await mockContext(browser,origin,paths),{page}=sender;
+    let recipient;
+    try {
+      await ready(page,origin);
+      const retained=kind==='static'?1:4;
+      const original={id:'custom_'+(kind==='static'?'c':'d').repeat(32),name:'Retained '+kind,kind:'humanoid',personality:'A locally drawn compatibility fixture.',image:kind==='static'?staticImage:legacyPages[0],...(kind==='legacy'?{animation:{version:1,pages:legacyPages}}:{})};
+      await page.evaluate(record=>{
+        const state=Tracer.pet.read();TracerPetModel.addCustom(state,record);state.pets[record.id].bond=41;
+        const value=JSON.stringify(state);localStorage.setItem('tracer.pet.v1',value);dispatchEvent(new StorageEvent('storage',{key:'tracer.pet.v1',newValue:value}));Tracer.pet.refresh(true);
+      },original);
+      await page.click('#pet-open');await page.click('[data-tab="collection"]');await page.click('[data-act="open-edit-actions"]');
+      await page.locator('.pet-create-form').waitFor({state:'visible'});
+      const prepared=await draftAt(page,16);
+      assert.equal(prepared.editingId,original.id);
+      assert.deepEqual(prepared.retainedFrames,Array(16).fill(retained),kind+' preparation retains the old number of actual poses');
+      assert.equal(sender.calls.length,0,'compatibility preparation uses local artwork without AI');
+      assert.deepEqual(await page.evaluate(()=>Tracer.pet.read().customs[0]),original,'preparing compatibility artwork does not replace the saved profile');
+      sender.respond(8,replacementImage);
+      await page.selectOption('#pet-preview-action','fishing');await acceptActionReplacement(page);
+      await until(async()=>{const draft=await page.evaluate(()=>TracerPetGenerationDraft.create().load());return draft?.pendingReplacement===null&&draft?.pages?.[8]===replacementImage;},kind+' replacement becomes durable');
+      const changed=prepared.pages.slice();changed[8]=replacementImage;
+      const expectedFrames=Array.from({length:16},(_,index)=>index===8?16:retained);
+      const draft=await draftAt(page,16);
+      assert.deepEqual(draft.pages,changed,kind+' replacement preserves all fifteen converted pages');
+      assert.deepEqual(draft.retainedFrames,expectedFrames);
+      assert.deepEqual(sender.calls.map(call=>call.animationPage),[8]);
+      assert.equal(sender.calls[0].identityImage,prepared.generationIdentity);
+      await page.click('.pet-adopt');await page.locator(entry).waitFor({state:'hidden'});await draftAt(page,null);
+      const saved=await page.evaluate(()=>Tracer.pet.read().customs[0]);
+      assert.equal(saved.id,original.id);assert.equal(saved.animation.version,2);
+      assert.deepEqual(saved.animation.pages,changed);assert.deepEqual(saved.animation.retainedFrames,expectedFrames);
+      assert.equal(await page.evaluate(()=>TracerPetModel.current(Tracer.pet.read()).bond),41);
+      await page.evaluate(()=>Tracer.pet.open());await page.click('[data-tab="collection"]');await page.click('[data-act="open-export"]');
+      const downloading=page.waitForEvent('download');await page.click('.pet-transfer-submit');
+      const download=await downloading,file=path.join(profile,kind+'-one-action.tracer-pet');await download.saveAs(file);
+      const pack=JSON.parse(fs.readFileSync(file,'utf8'));
+      assert.equal(pack.version,2);assert.equal(pack.artwork.images.length,16);assert.deepEqual(pack.artwork.retainedFrames,expectedFrames);
+      recipient=await mockContext(browser,origin,paths);const receiver=recipient.page;
+      await ready(receiver,origin);await receiver.click('#pet-open');await receiver.click('[data-tab="collection"]');await receiver.click('[data-act="open-import"]');
+      await receiver.locator('#pet-package-file').setInputFiles(file);
+      await receiver.locator('.pet-transfer-submit:not([disabled])').waitFor();await receiver.click('.pet-transfer-submit');
+      await receiver.locator('.pet-character .pet-animated-sprite').waitFor();
+      const imported=await receiver.evaluate(()=>Tracer.pet.read().customs[0]);
+      assert.equal(imported.animation.version,2);assert.equal(imported.animation.pages.length,16);assert.deepEqual(imported.animation.retainedFrames,expectedFrames);
+      await receiver.evaluate(record=>{
+        const host=document.createElement('div');host.id='compatibility-action-preview';document.body.appendChild(host);
+        window.__compatibilityPlayer=TracerPetAnimation.create(record);host.appendChild(window.__compatibilityPlayer.element);window.__compatibilityPlayer.setAction('fishing');
+      },imported);
+      await receiver.waitForFunction(()=>document.querySelector('#compatibility-action-preview .pet-animated-sprite')?.dataset.playback==='playing');
+      const frame=await receiver.locator('#compatibility-action-preview .pet-animated-sprite').getAttribute('data-frame');
+      await receiver.waitForFunction(frame=>document.querySelector('#compatibility-action-preview .pet-animated-sprite').dataset.frame!==frame,frame);
+      await receiver.evaluate(()=>window.__compatibilityPlayer.setAction('reading'));
+      await receiver.waitForFunction(expected=>document.querySelector('#compatibility-action-preview .pet-animated-sprite')?.dataset.playback===expected,retained===1?'static':'playing');
+      await receiver.evaluate(()=>window.__compatibilityPlayer.destroy());
+      await receiver.reload();await receiver.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+      assert.deepEqual(await receiver.evaluate(()=>Tracer.pet.read().customs[0].animation.retainedFrames),expectedFrames);
+      assert.deepEqual(sender.calls.map(call=>call.animationPage),[8]);assert.deepEqual(recipient.calls,[]);
+      for(const mock of [sender,recipient]){assert.deepEqual(mock.errors,[]);assert.deepEqual(mock.unexpected,[]);assert.deepEqual(mock.blockedExternal,[]);}
+      console.log('PASS '+kind+' saved artwork: local conversion, one-action update, same-ID care preservation and real mixed-frame export/import');
+    } finally {await recipient?.close();await sender.close();}
+  }
+}
+
 async function main() {
   fs.mkdirSync(path.join(root, '.cache'), { recursive: true });
   const profile = fs.mkdtempSync(path.join(root, '.cache/pet-generation-recovery-'));
@@ -568,14 +874,32 @@ async function main() {
   let browser;
   try {
     browser = await chromium.launch({ channel: process.env.TRACER_QA_BROWSER || 'msedge', headless: true });
-    const page = await browser.newPage(), art = await fixtures(page), paths = [];
+    const page = await browser.newPage(), art = await fixtures(page), legacy=await legacyFixtures(page), paths = [],legacyPages=[];
+    const replacementBytes=Buffer.from(await page.evaluate(async base64=>{
+      const image=new Image();image.src='data:image/png;base64,'+base64;await image.decode();
+      const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+      const context=canvas.getContext('2d');context.drawImage(image,0,0);
+      const pixels=context.getImageData(0,0,canvas.width,canvas.height);
+      for(let index=0;index<pixels.data.length;index+=4)if(pixels.data[index]===107&&pixels.data[index+1]===160&&pixels.data[index+2]===141){pixels.data[index]=95;pixels.data[index+1]=132;pixels.data[index+2]=200;}
+      context.putImageData(pixels,0,0);return canvas.toDataURL('image/png').split(',')[1];
+    },art.sheets[8].toString('base64')),'base64');
+    assert.equal(replacementBytes.equals(art.sheets[8]),false,'replacement fixture contains genuinely different pixels');
     await page.close();
     for (const sheet of art.sheets) paths.push(await Images.storeGenerated(data, sheet));
+    const replacementImage=await Images.storeGenerated(data,replacementBytes);
+    const savedReplacementImage=await Images.storeGenerated(data,art.sheets[8]);
+    const staticImage=await Images.storeGenerated(data,art.portrait);
+    for(const sheet of legacy.sheets.slice(0,3))legacyPages.push(await Images.storeGenerated(data,sheet));
     const origin = 'http://127.0.0.1:' + server.address().port;
-    await backgroundAndComplete(browser, origin, paths, art.portrait, profile);
-    await partialResume(browser, origin, paths, art.portrait, profile);
-    await checkpointAndDiscard(browser, origin, paths, art.portrait, profile);
-    await emptyAndCorruptDrafts(browser, origin, paths, profile);
+    if(!process.argv.includes('--single-action')) {
+      await backgroundAndComplete(browser, origin, paths, art.portrait, profile);
+      await partialResume(browser, origin, paths, art.portrait, profile);
+      await checkpointAndDiscard(browser, origin, paths, art.portrait, profile);
+      await emptyAndCorruptDrafts(browser, origin, paths, profile);
+    }
+    await actionReplacementRecovery(browser,origin,paths,art.portrait,replacementImage,savedReplacementImage,profile);
+    await savedDraftCleanupRecovery(browser,origin,paths,art.portrait,replacementImage,savedReplacementImage,profile);
+    await legacyReplacementRoundTrips(browser,origin,paths,staticImage,legacyPages,replacementImage,profile);
     console.log('Artifacts: ' + profile);
   } finally {
     await browser?.close();
