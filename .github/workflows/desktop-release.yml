@@ -70,6 +70,15 @@ jobs:
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
         run: node dev/qa-pet-dense-release.cjs '${{ matrix.executable }}'
+      - name: Install recovery test browser
+        run: node .cache/release-qa/node_modules/playwright/cli.js install chromium
+      - name: Verify companion draft recovery and background generation
+        env:
+          TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
+          TRACER_QA_BROWSER: chromium
+        run: |
+          node dev/qa-pet-generation-recovery.cjs
+          node dev/qa-pet-creator-lifecycle.cjs
       - uses: actions/upload-artifact@v4
         with:
           name: Tracer-${{ matrix.platform }}-${{ matrix.arch }}
@@ -91,6 +100,7 @@ jobs:
           path: |
             .cache/pet-dense-release-*/*.png
             .cache/pet-dense-release-*/launch.log
+            .cache/pet-generation-recovery-*/*.png
 
   publish:
     needs: build

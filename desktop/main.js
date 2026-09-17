@@ -108,6 +108,7 @@ function createWindow() {
       backgroundThrottling: false,
     },
   });
+  require('./pet-generation-exit').attachPetGenerationExit(win, { dialog, onStay: () => { isQuitting = false; showWindow(); } });
   installApplicationMenu({ platform: process.platform, Menu, showWindow, enableInput: () => startHook(true) });
   win.webContents.setWindowOpenHandler(({ url }) => {
     // OAuth authorization belongs in the user's normal browser, never an embedded login page.
@@ -199,7 +200,10 @@ function bootApp() {
 
 // 任何退出路径（托盘菜单、Cmd/Ctrl+Q、系统关机）都先把标记立起来，
 // 免得 close 事件又把窗口拦回托盘。
-app.on('before-quit', function () { isQuitting = true; require('../lib/ai-gateway').closeCodex(); });
+app.on('before-quit', function () { isQuitting = true; });
+// A renderer may still cancel quit to preserve its companion draft. Stop the AI
+// runtime only after the windows have accepted unloading and quitting proceeds.
+app.on('will-quit', function () { require('../lib/ai-gateway').closeCodex(); });
 
 // 不在关掉最后一个窗口时退出——那正是「缩进托盘后台跑」要的效果。
 // 退出只由托盘菜单的「退出」触发。

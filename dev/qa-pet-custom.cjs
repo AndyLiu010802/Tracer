@@ -119,7 +119,7 @@ async function openCreator(page, source = 'personal') {
     assert.ok((await page.locator('#ai-mode-api').getAttribute('class')).includes('btn-primary'), 'personal generation opens the API connection settings');
     assert.equal(await page.evaluate(() => localStorage.getItem('tracer.ai.mode')), 'api');
     await page.click('#ai-close');
-    await page.click('#pet-open');
+    await page.click('#pet-generation-status');
     await page.locator('.pet-create-form').waitFor();
     assert.equal(await page.inputValue('#pet-custom-name'), 'Robin');
     assert.equal(await page.inputValue('#pet-custom-kind'), 'humanoid');
@@ -127,10 +127,11 @@ async function openCreator(page, source = 'personal') {
     assert.equal(await page.inputValue('#pet-custom-personality'), 'Curious, thoughtful, and fond of quiet puzzles.');
     assert.equal(await page.inputValue('#pet-distinctive-features'), distinctiveFeatures);
     assert.equal(await page.inputValue('#pet-image-model'), originalImageModel);
-    assert.equal(await page.locator('.pet-photo-preview').getAttribute('src'), uploadedPreview, 'opening AI settings preserves the in-memory source photo');
+    assert.equal(await page.locator('.pet-photo-preview').getAttribute('src'), uploadedPreview, 'opening AI settings preserves the recoverable source photo draft');
     assert.equal(await page.locator('.pet-photo-preview').isVisible(), true);
     assert.equal(calls.length, 0, 'opening settings and restoring a draft must not generate automatically');
-    assert.equal(await page.evaluate(photo => Object.keys(localStorage).some(key => (localStorage.getItem(key) || '').includes(photo)), uploadedPreview), false, 'source photo draft is never written to local storage');
+    assert.equal(await page.evaluate(photo => Object.keys(localStorage).some(key => (localStorage.getItem(key) || '').includes(photo)), uploadedPreview), false, 'the recovery photo uses IndexedDB rather than synchronous localStorage');
+    assert.match(await page.locator('.pet-generation-privacy').textContent(), /local recovery draft.*removes the reference photo/, 'privacy explains recoverable local photo storage and removal');
     await page.click('.pet-generate');
     await page.locator('.pet-result-frame .pet-animated-sprite').waitFor({ state: 'visible' });
     await page.waitForFunction(() => !document.querySelector('.pet-generate').disabled);
@@ -176,9 +177,17 @@ async function openCreator(page, source = 'personal') {
       await page.screenshot({ path: path.join(profile, 'generated-comparison-' + width + '.png'), animations: 'disabled' });
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
-    assert.match(await page.locator('.pet-generate').innerText(), /Regenerate all actions/);
+    assert.match(await page.locator('.pet-generate').innerText(), /Preview actions/);
+    await page.click('.pet-generate');
+    assert.equal(calls.length, 16, 'the completed primary button previews without spending image allowance');
+    const kindConfirmation=page.waitForEvent('dialog').then(async dialog=>{
+      assert.match(dialog.message(),/clear.*16.*allowance/);
+      await dialog.accept();
+    });
     await page.selectOption('#pet-custom-kind', 'creature');
-    assert.equal(await page.locator('.pet-adopt').isVisible(), false, 'changing kind invalidates artwork generated for the old kind');
+    await kindConfirmation;
+    await page.locator('.pet-adopt').waitFor({state:'hidden'});
+    assert.equal(await page.locator('.pet-adopt').isVisible(), false, 'confirming a kind change clears artwork generated for the old kind');
     assert.equal(await page.locator('.pet-result-frame .pet-animated-sprite').count(), 0);
     await page.selectOption('#pet-custom-kind', 'humanoid');
     // Regeneration needs an explicit click and adopting uses the latest result.
@@ -293,7 +302,7 @@ async function openCreator(page, source = 'personal') {
     assert.equal(await page.locator('#ai-url').count(), 0, 'subscription generation opens subscription settings instead of API credentials');
     assert.equal(await page.evaluate(() => localStorage.getItem('tracer.ai.mode')), 'codex');
     await page.click('#ai-close');
-    await page.click('#pet-open');
+    await page.click('#pet-generation-status');
     await page.locator('.pet-create-form').waitFor();
     assert.equal(await page.inputValue('#pet-image-source'), 'codex');
     assert.equal(await page.inputValue('#pet-custom-name'), 'Willow');
@@ -348,10 +357,11 @@ async function openCreator(page, source = 'personal') {
     assert.equal(await page.evaluate(() => Tracer.pet.read().customs.length), 3, 'a failed image request does not add an empty companion');
     await page.locator('.pet-create-error').scrollIntoViewIfNeeded();
     await page.screenshot({ path:path.join(profile,'subscription-no-image.png'), animations:'disabled' });
-    await page.locator('[data-act="cancel-create"]').first().click();
+    let discardConfirmation=page.waitForEvent('dialog').then(dialog=>dialog.accept());
+    await page.click('.pet-discard-draft'); await discardConfirmation;
+    await page.locator('.pet-create-form').waitFor({state:'hidden'});
     // Both languages retain the original label-spacing fix in the new form.
     for (const language of ['en','zh']) {
-      await page.click('[data-act="close"]');
       await page.setViewportSize({ width: 1440, height: 1000 });
       await page.selectOption('#language-select', language); await page.click('#pet-open');
       await openCreator(page);
@@ -368,12 +378,14 @@ async function openCreator(page, source = 'personal') {
       await page.setViewportSize({ width: 360, height: 1000 });
       await page.locator('.modal').evaluate(el => el.scrollTop = 0);
       await page.screenshot({ path: path.join(profile, 'custom-form-' + language + '.png'), animations: 'disabled' });
-      await page.locator('[data-act="cancel-create"]').first().click();
+      discardConfirmation=page.waitForEvent('dialog').then(dialog=>dialog.accept());
+      await page.click('.pet-discard-draft'); await discardConfirmation;
+      await page.locator('.pet-create-form').waitFor({state:'hidden'});
     }
     assert.equal(calls.length, 49, 'layout checks and canceled uploads make no provider calls');
     assert.equal(codexCalls.length, 18, 'layout checks and canceled uploads make no subscription calls');
     assert.deepEqual(errors, [], 'no renderer errors');
-    console.log('PASS custom upload, concise destination disclosure, memory-only settings draft, generation/regeneration, subscription quota/no-image errors without API fallback, preview/adoption, persistence, humanoid/creature behavior, personality, pending-chat switching and bilingual layouts at 360–1440px');
+    console.log('PASS custom upload, local recovery disclosure, preserved settings draft, confirmed regeneration, subscription quota/no-image errors without API fallback, preview/adoption, persistence, humanoid/creature behavior, personality, pending-chat switching and bilingual layouts at 360–1440px');
     console.log('Artifacts: ' + profile);
   } finally {
     await browser.close(); await new Promise(resolve => server.close(resolve));

@@ -80,6 +80,7 @@ function isGameAsset(pathname) {
 const DATA_DIR = process.env.DOCS_PORTAL_DATA_DIR || path.join(ROOT, 'data');
 const cloudSync = require('./lib/cloud-sync').createBridge(DATA_DIR);
 const aiGateway = require('./lib/ai-gateway').createGateway(DATA_DIR);
+const petGenerationJobs = require('./lib/pet-generation-jobs').createJobs(DATA_DIR);
 const STORE_NAME_RE = /^[a-z][a-z0-9-]{0,31}$/;
 // 只读存储开关：置 1 时 /api/store/* 和 /api/state 的写操作一律拒写（读不受影响）。
 // 给探针、审查脚本、自动化冒烟用——它们该设 DOCS_PORTAL_DATA_DIR 指向临时目录，
@@ -208,7 +209,10 @@ async function handleRequest(req, res) {
       if (['status', 'personal-status', 'codex-status'].includes(action) && req.method === 'GET') { send(200, await aiGateway.handle(action)); return; }
       if (READONLY_STORE || req.method !== 'POST' || !String(req.headers['content-type']).startsWith('application/json')) { send(403, { error: 'forbidden' }); return; }
       const data = JSON.parse(await readBody(req, action === 'extract' ? 14500000 : ['personal-pet-image', 'codex-pet-image'].includes(action) ? 5700000 : 900000));
-      send(200, action === 'extract' ? await require('./lib/ai-extract').extract(data) : await aiGateway.handle(action, data));
+      send(200, action === 'extract' ? await require('./lib/ai-extract').extract(data) :
+        ['personal-pet-image', 'codex-pet-image'].includes(action)
+          ? await petGenerationJobs.run(action, data, () => aiGateway.handle(action, data))
+          : await aiGateway.handle(action, data));
     } catch (e) { send(400, { error: /^[a-z-]{3,50}$/.test(e.message) ? e.message : 'request-failed' }); }
     return;
   }

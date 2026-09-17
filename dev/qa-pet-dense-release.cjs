@@ -6,7 +6,7 @@ const {chromium}=require(process.env.TRACER_QA_PLAYWRIGHT||'playwright');
 const {fixtures:denseFixtures}=require('./qa-pet-dense-animation.cjs');
 const {fixtures:legacyFixtures}=require('./qa-pet-animation.cjs');
 const root=path.resolve(__dirname,'..'),version=require('../package.json').version;
-const executable=path.resolve(process.argv[2]||path.join(root,'dist',version,'win-unpacked/Tracer.exe'));
+const executable=path.resolve(process.argv[2]||path.join(root,'dist',version+'-final','win-unpacked/Tracer.exe'));
 fs.mkdirSync(path.join(root,'.cache'),{recursive:true});
 const profile=fs.mkdtempSync(path.join(root,'.cache/pet-dense-release-')),sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');

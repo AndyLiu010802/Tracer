@@ -2,6 +2,72 @@
   'use strict';
   const T=window.Tracer, P=window.TracerPetModel, KEY='tracer.pet.v1';
   let state, view=null, closeHome=null, reminder=null, lastSaved=0, lastSnapshot=null, creatorDraft=null, feedback=null, feedbackSequence=0, settingsChat=null;
+  let creator=null, creatorHost=null, creatorStatus=null, creatorLanguage='', draftError='', recoveryError=false, draftLoadCode='', pendingComplete=false, adopting=false, draftEpoch=0;
+  const draftStore=TracerPetGenerationDraft.create(), modalRoot=document.getElementById('modal-root');
+  const tr=(zh,en)=>TracerLocale.language()==='zh'?zh:en;
+  function generationStatus() {
+    return creator?.status()||creatorStatus||{busy:false,completed:creatorDraft?.pages?.length||0,total:16,ready:creatorDraft?.pages?.length===16,hasDraft:!!creatorDraft};
+  }
+  function renderGeneration() {
+    const entry=document.getElementById('pet-generation-status'); if(!entry) return;
+    const status=generationStatus(), visible=!!(status.hasDraft||status.busy||status.completed||draftError);
+    entry.hidden=!visible;
+    entry.dataset.state=draftError?'error':status.busy?'generating':status.ready?'ready':status.completed?'paused':'draft';
+    const count=status.completed+'/'+status.total;
+    const label=draftError?tr('伙伴暂存需重试','Retry companion backup'):status.busy?tr('伙伴生成中','Creating companion'):status.ready?tr('伙伴已就绪 · 待保存','Companion ready · Save'):status.completed?tr('伙伴生成已暂停','Generation paused'):tr('伙伴草稿','Companion draft');
+    entry.querySelector('.pet-generation-label').textContent=label;
+    entry.querySelector('.pet-generation-count').textContent=count;
+    const progress=entry.querySelector('progress'); progress.max=status.total; progress.value=status.completed;
+    progress.setAttribute('aria-label',tr('伙伴动作生成进度','Companion action progress'));
+    entry.setAttribute('aria-label',label+' '+count+tr('，点击查看','; view progress'));
+    entry.title=draftError||tr('点击返回生成窗口；关闭窗口不会取消生成。','Return to generation. Closing the panel does not cancel it.');
+    if(creatorHost) {
+      let warning=creatorHost.querySelector('.pet-draft-warning');
+      if(!warning) { warning=document.createElement('p');warning.className='pet-draft-warning';warning.setAttribute('role','alert');creatorHost.appendChild(warning); }
+      warning.textContent=draftError; warning.hidden=!draftError;
+    }
+  }
+  async function persistDraft(draft,status) {
+    if(adopting) return;
+    creatorDraft=status.hasDraft||status.busy||status.completed?draft:null; creatorStatus=status; renderGeneration();
+    const epoch=draftEpoch;
+    try {
+      if(creatorDraft) await draftStore.save({...draft,wasBusy:status.busy});
+      else await draftStore.clear();
+      if(epoch===draftEpoch) { draftError='';renderGeneration(); }
+    } catch(error) {
+      if(epoch===draftEpoch) {
+        draftError=tr('草稿暂存失败。生成结果仍在当前窗口，请保持应用打开并重试保存。','Draft backup failed. Your results remain in this window. Keep the app open and retry saving.');
+        renderGeneration();
+      }
+      throw error;
+    }
+  }
+  async function restoreDraft() {
+    try {
+      const draft=await draftStore.load();
+      if(draft?.recordId&&state.customs.some(pet=>pet.id===draft.recordId)) {
+        await draftStore.clear();creatorDraft=null;creatorStatus=null;recoveryError=false;draftError='';renderGeneration();return;
+      }
+      creatorDraft=draft; recoveryError=false;draftLoadCode='';draftError='';
+      if(draft?.pages?.length===16) { pendingComplete=true;queueCompletion(); }
+      renderGeneration();
+    } catch (error) {
+      recoveryError=true;draftLoadCode=error.code||'';
+      draftError=tr('未能读取伙伴草稿。点击此处重试；已有草稿不会被覆盖。','Could not read the companion draft. Click to retry; the existing draft will not be overwritten.');
+      renderGeneration();
+    }
+  }
+  function queueCompletion() {
+    queueMicrotask(()=>{
+      if(!pendingComplete||adopting) return;
+      if(creatorHost?.isConnected) { pendingComplete=false;return; }
+      // Wait for unrelated editors to close; completing a companion must not erase their draft.
+      if(!modalRoot.hidden) return;
+      pendingComplete=false;create();
+    });
+  }
+  new MutationObserver(()=>{renderGeneration();queueCompletion();}).observe(modalRoot,{childList:true,attributes:true,attributeFilter:['hidden']});
   try { state=P.read(JSON.parse(localStorage.getItem(KEY))); } catch { state=P.fresh(); }
   function save() {
     try { localStorage.setItem(KEY,JSON.stringify(state)); lastSaved=Date.now(); }
@@ -29,10 +95,10 @@
     const zh=lastSnapshot.language==='zh';
     const entry=document.getElementById('pet-open'); if(entry) entry.textContent=zh?'✦ 桌宠小屋':'✦ Companions';
     const garden=document.getElementById('garden-pet-open'); if(garden) garden.textContent=zh?'✦ 我的桌宠 · '+state.unlocked.length+'/'+catalog.length:'✦ Companions · '+state.unlocked.length+'/'+catalog.length;
+    renderGeneration();
     if(force || now-lastSaved>30000) save();
   }
   function open() {
-    if(creatorDraft) { create(); return; }
     if(closeHome) closeHome();
     T.ui.modal((box,close)=>{
       box.classList.add('pet-dialog'); box.setAttribute('aria-label',TracerLocale.language()==='zh'?'桌宠小屋':'Companion home');
@@ -43,20 +109,81 @@
       refresh();
     });
   }
-  function create() {
-    if(state.customs.length>=P.customLimit) { T.ui.notice(TracerLocale.language()==='zh'?'已保存 12 位自定义伙伴，请先从图鉴移除一位。':'You have 12 custom companions. Remove one from your collection first.'); return; }
+  async function create() {
+    await draftReady;
+    if(recoveryError) {
+      await restoreDraft();
+      if(recoveryError) {
+        if(draftLoadCode!=='pet-draft-corrupt'||!window.confirm(tr('这份伙伴草稿已损坏，无法自动恢复。放弃它并新建吗？这会移除该草稿及恢复进度；已保存的伙伴不受影响。','This companion draft is damaged and cannot be restored. Discard it and start a new one? Its recovery progress will be removed; saved companions are unaffected.'))) {T.ui.notice(draftError);return;}
+        try {await draftStore.clear();creatorDraft=null;creatorStatus=null;recoveryError=false;draftLoadCode='';draftError='';renderGeneration();}
+        catch {T.ui.notice(draftError);return;}
+      }
+    }
+    if(draftError&&creator) persistDraft(creator.read(),creator.status()).catch(()=>{});
+    if(creatorHost?.isConnected) { creatorHost.querySelector('.pet-adopt:not([hidden]),input')?.focus();return; }
+    if(creator&&!creator.status().busy&&creatorLanguage!==TracerLocale.language()) {
+      creatorDraft=creator.read();creator.destroy();creator=null;creatorHost=null;
+    }
+    if(!creatorDraft&&!creator&&state.customs.length>=P.customLimit) { T.ui.notice(TracerLocale.language()==='zh'?'已保存 12 位自定义伙伴，请先从图鉴移除一位。':'You have 12 custom companions. Remove one from your collection first.'); return; }
     if(closeHome) closeHome();
     T.ui.modal((box,close)=>{
       box.classList.add('pet-dialog','pet-create-dialog');
       box.setAttribute('aria-label',TracerLocale.language()==='zh'?'创造伙伴':'Create a companion');
-      const host=document.createElement('div'); box.appendChild(host); closeHome=close;
-      const creator=TracerPetCreator(host,{language:TracerLocale.language(),draft:creatorDraft,onClose:()=>{close();open();},onAI:source=>{creatorDraft=creator.read();action('open-ai',source);},onAdopt:record=>{
-        const next=P.read(state); P.addCustom(next,record);
-        localStorage.setItem(KEY,JSON.stringify(next)); state=next; lastSaved=Date.now();
-        close(); open(); refresh(true);
-      }});
-      creatorDraft=null;
-      box.beforeClose=()=>{creator.destroy();closeHome=null;return true;};
+      closeHome=close;
+      if(!creator) {
+        creatorHost=document.createElement('div');
+        creatorLanguage=TracerLocale.language();
+        creator=TracerPetCreator(creatorHost,{
+          language:TracerLocale.language(),draft:creatorDraft,
+          onClose:()=>{if(closeHome)closeHome();},
+          onAI:source=>action('open-ai',source),
+          onChange:(draft,status)=>{persistDraft(draft,status).catch(()=>{});},
+          onCheckpoint:persistDraft,
+          onDiscard:async()=>{
+            adopting=true;draftEpoch++;
+            try {
+              await draftStore.clear();
+              const visible=creatorHost?.isConnected;
+              creator.destroy();creator=null;creatorDraft=null;creatorStatus=null;draftError='';pendingComplete=false;
+              if(visible&&closeHome)closeHome();creatorHost=null;renderGeneration();
+            } finally {adopting=false;}
+          },
+          onComplete:(draft,status)=>{
+            creatorDraft=draft;creatorStatus=status;pendingComplete=true;renderGeneration();queueCompletion();
+            T.ui.notice(tr('伙伴的 16 种动作已就绪，请预览并保存。','All 16 companion actions are ready. Preview and save your companion.'));
+          },
+          onAdopt:async record=>{
+            adopting=true;draftEpoch++;
+            try {
+              const next=P.read(state);
+              if(next.customs.some(pet=>pet.id===record.id)) P.act(next,'select',record.id);
+              else P.addCustom(next,record);
+              localStorage.setItem(KEY,JSON.stringify(next));state=next;lastSaved=Date.now();
+              // Collection persistence must succeed before the recoverable draft is removed.
+              await draftStore.clear();
+              const visible=creatorHost?.isConnected;
+              creator.destroy();creator=null;creatorDraft=null;creatorStatus=null;draftError='';pendingComplete=false;
+              if(visible&&closeHome)closeHome();creatorHost=null;renderGeneration();
+              if(visible||modalRoot.hidden)open();
+              else T.ui.notice(tr('伙伴已保存，可在伙伴小屋中查看。','Companion saved. Find it in your companion collection.'));
+              refresh(true);
+            } finally {adopting=false;}
+          }
+        });
+      }
+      box.appendChild(creatorHost);renderGeneration();
+      box.beforeClose=()=>{
+        if(creator&&!adopting) {
+          const status=creator.status();persistDraft(creator.read(),status).catch(()=>{});
+          if(status.hasDraft||status.busy) {
+            const message=status.busy?tr('伙伴继续在后台生成，点击导航栏进度可随时返回。','Your companion is still generating. Return through the navigation progress bar.'):
+              status.ready?tr('伙伴尚未保存，已保留预览和草稿。请从导航栏返回后点击“保存并陪伴我”。','Your companion is not saved yet. Its preview and draft are kept; return through the navigation bar to save it.'):
+              tr('照片、设置和已完成动作已保留，可从导航栏继续。','Your photo, settings and completed actions are kept. Continue through the navigation bar.');
+            setTimeout(()=>T.ui.notice(draftError||message),0);
+          }
+        }
+        creatorHost?.remove();closeHome=null;renderGeneration();return true;
+      };
     });
   }
   function transfer(exporting) {
@@ -114,8 +241,14 @@
   T.pet={open,refresh,read:()=>P.read(state),action};
   document.getElementById('pet-open').onclick=open;
   document.getElementById('garden-pet-open').onclick=open;
+  document.getElementById('pet-generation-status').onclick=create;
   if(window.TracerPet) window.TracerPet.onAction(message=>{ if(message) action(message.type,message.value); });
   window.addEventListener('storage',event=>{if(event.key===KEY){try{state=P.read(JSON.parse(event.newValue));refresh();}catch{}}});
-  window.addEventListener('beforeunload',save);
+  window.addEventListener('beforeunload',event=>{
+    save();
+    const status=generationStatus();
+    if(status.busy||status.hasDraft||status.ready||draftError) {event.preventDefault();event.returnValue='';}
+  });
+  const draftReady=restoreDraft();
   T.ready.then(()=>{refresh(true);setInterval(refresh,1000);});
 })();

@@ -53,6 +53,20 @@ async function ready(page,origin) {
   await page.goto(origin);await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);await page.selectOption('#language-select','en');
 }
 
+async function waitForPlayback(sprite,expected) {
+  // emulateMedia schedules a native browser change event. Advancing the paused
+  // Playwright clock does not wait for that event; poll from Node's real clock
+  // so this observation neither advances nor restarts the sprite's animation.
+  const deadline=Date.now()+5000;
+  let actual;
+  do {
+    actual=await sprite.getAttribute('data-playback');
+    if(actual===expected) return;
+    await new Promise(resolve=>setTimeout(resolve,20));
+  } while(Date.now()<deadline);
+  assert.equal(actual,expected,'playback responds to the native media preference change');
+}
+
 async function playback(browser,origin,profile,record,legacyPages) {
   const page=await browser.newPage({viewport:{width:1100,height:900}});
   await ready(page,origin);
@@ -89,11 +103,11 @@ async function playback(browser,origin,profile,record,legacyPages) {
     assert.equal(pictures.size,16,action+' displays sixteen distinct actual image frames');
   }
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.clock.runFor(50);
+  await waitForPlayback(sprite,'reduced-motion');
   assert.equal(await sprite.getAttribute('data-playback'),'reduced-motion');assert.equal(await sprite.getAttribute('data-frame'),'0');
   const still=await sprite.screenshot();await page.clock.runFor(10000);assert.deepEqual(await sprite.screenshot(),still);
   await page.emulateMedia({reducedMotion:'no-preference'});
-  await page.clock.runFor(50);
+  await waitForPlayback(sprite,'playing');
   for(const count of [3,4]) {
     await page.evaluate(pages=>{
       window.__densePlayer.destroy();document.querySelector('#dense-qa').replaceChildren();

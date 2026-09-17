@@ -100,10 +100,11 @@ connection. Review the paired reference and generated
 previews and use the **Action** selector to inspect every behavior. Once all
 16 behaviors are ready, choose **Save & bring to life** to add the companion
 to the collection. Failed requests keep the photo, form values and completed
-groups; retry continues with the missing groups. **Start over** clears a
-partial result while keeping your photo and settings, and makes no request
-until you choose Generate. **Regenerate all actions** explicitly starts a new
-complete pack. Up to 12 custom
+groups; retry continues with the missing groups. **Start over** asks for
+confirmation before clearing a partial result, keeps your photo and settings,
+and makes no request until you choose Generate. **Regenerate all actions**
+also requires confirmation. The primary button on a complete result opens
+the preview without generating again. Up to 12 custom
 companions can be saved on this device.
 
 The app checks sheet dimensions, transparency, populated frames, clear frame
@@ -116,11 +117,27 @@ saved single-image companions and four-frame animation packs continue to work
 with their original artwork. To give a previously generated companion the new
 intermediate poses, generate a new complete pack from its reference photo.
 
-Opening **Set up My AI** keeps the creation draft in memory. After closing
-the settings, open **Companions** to return to the same photo and preferences.
-The draft is not saved across a reload or app restart.
+Closing the creation panel, pressing Escape or clicking its backdrop only
+minimizes it. Generation continues, and a progress bar in the navigation area
+shows completed actions out of 16. Click it to return to the same draft.
+Completion reopens the preview automatically. If another editor is open,
+the ready indicator remains visible and the preview opens after that editor
+closes. Closing an unsaved result displays a reminder; it does not discard it.
 
-The app does not retain the source photo. Generated artwork is stored locally
+The resized reference photo, settings and completed action URLs are backed up
+in a local IndexedDB draft, including before paid generation starts and after
+each accepted action. Reloading or restarting restores that draft. Incomplete
+drafts require an explicit **Continue generation** click; the app never starts
+new paid work merely because it reopened. Requests use stable IDs so a
+reconnected page can retrieve a completed server result without generating it
+again. Force-quitting the entire application can interrupt an action that has
+not finished; already checkpointed actions remain available.
+
+Saving the companion removes the local recovery draft and its reference
+photo. **Discard draft** removes it only after confirmation. Storage failures
+leave the in-memory preview available and display a warning to keep the app
+open. Choosing a photo or backing up a draft does not upload it anywhere.
+Generated artwork is stored locally
 in the app's data directory; companion names, personality, type and care
 state are stored in this device's preferences. Custom companions can use
 the same focus timer, task reminders and desktop window as earned companions.
@@ -233,6 +250,10 @@ desktop windows require Electron.
 
 ## Verification
 
+- `node dev/qa-pet-generation-recovery.cjs` checks background generation,
+  navigation progress, completion reopening, unsaved reminders, local draft
+  recovery, completed-action reuse, explicit discard confirmation and failed
+  collection saves using isolated profiles and synthetic artwork.
 - `node dev/qa-pet-dense-animation.cjs` checks all 256 generated image frames,
   correct frame order across all four sheet rows, loop wrapping, reduced motion,
   16-request creation with a failed-action retry, saved manifests and actual
@@ -242,7 +263,7 @@ desktop windows require Electron.
 - `node dev/qa-pet-dense-release.cjs` smoke-tests the packaged Windows app
   in an isolated profile: built-in and generated 16-frame loops in the workspace
   and native desktop window, live care, real file export/import, legacy artwork
-  and saved selection. It defaults to `dist/0.3.6/win-unpacked/Tracer.exe`;
+  and saved selection. It defaults to `dist/0.3.7-final/win-unpacked/Tracer.exe`;
   pass another packaged executable path as the first argument if needed.
 - `node dev/qa-pet-frame-boundaries.cjs` verifies cross-cell fragment masking,
   preservation of character and prop pixels at 70/100/180% scale, transparent
