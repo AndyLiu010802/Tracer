@@ -62,6 +62,16 @@ test('Responses protocol uses strict plan schema, respects refusal, and rejects 
   await assert.rejects(api.handle('personal-plan', { goal: 'Report', constraints }), /invalid-plan/);
 });
 
+test('companion chat uses both configured protocols without sending workspace data', async t => {
+ for(const protocol of ['chat','responses']) {
+  let captured;
+  const api=createPersonal(temp(t),{request:async(url,opts)=>{captured=JSON.parse(opts.body);return protocol==='chat'?chat('Hello!'):new Response(JSON.stringify({output:[{content:[{type:'output_text',text:'Hello!'}]}]}));}});
+  await api.handle('personal-configure',{...settings,protocol});
+  const result=await api.handle('personal-chat',{pet:'miso',messages:[{role:'user',content:'Hi'}],tasks:[{title:'Private task'}]});
+  assert.equal(result.reply,'Hello!');assert.equal(JSON.stringify(captured).includes('Private task'),false);if(protocol==='responses')assert.equal(captured.store,false);
+ }
+});
+
 test('provider errors cannot leak credentials; oversized replies and concurrent calls are rejected', async t => {
   let finish, response = new Response('secret-error-' + settings.apiKey, { status: 401 });
   const api = createPersonal(temp(t), { request: async () => response });

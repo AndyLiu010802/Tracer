@@ -1,8 +1,8 @@
 (function (root, factory) {
-  var api = factory();
+  var api = factory(typeof module === 'object' && module.exports ? require('./project-deletion') : root.ProjectDeletion);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.TaskHistory = api;
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Deletion) {
   'use strict';
   function snapshot(ws, task) {
     if (!task || !Number.isFinite(task.doneAt) || task.doneAt <= 0) return null;
@@ -31,9 +31,11 @@
   }
   function preserve(previous, next) {
     if (!next || !Array.isArray(next.tasks)) return next;
+    var deletions = Deletion.merge(previous, next);
+    if (deletions.length) next.projectDeletions = deletions;
     next.completionHistory = union(previous && all(previous), all(next));
     if (!next.completionHistory.length && !(previous && previous.completionHistory)) delete next.completionHistory;
-    return next;
+    return Deletion.apply(next);
   }
   function validate(rows) {
     if (rows === undefined) return [];

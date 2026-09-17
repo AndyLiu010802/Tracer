@@ -139,6 +139,18 @@
   text-align: left;
 }
 .proj-add:hover { color: var(--accent); }
+.proj-row { display: flex; align-items: center; gap: 3px; min-width: 0; }
+button.proj-item { border: 0; background: transparent; font-family: inherit; text-align: left; width: 100%; min-width: 0; }
+.proj-row .proj-item { flex: 1; }
+.proj-name { min-width: 0; overflow-wrap: anywhere; }
+button.proj-item:hover { background: var(--surface); }
+button.proj-item.active { background: var(--accent-soft); }
+.proj-delete { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border: 0; border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; }
+.proj-delete:hover { color: #e86a8a; background: #e86a8a18; }
+.proj-delete:focus-visible, .proj-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.project-delete-dialog { overflow-wrap: anywhere; }
+.project-delete-dialog .project-delete-name { color: var(--fg); font-weight: 600; }
+.project-delete-dialog .modal-actions { flex-wrap: wrap; }
 
 /* ---------- 顶栏 +New ---------- */
 .new-btn {

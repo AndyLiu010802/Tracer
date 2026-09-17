@@ -1,7 +1,7 @@
 {
   "name": "tracer-desktop",
   "private": true,
-  "version": "0.3.4",
+  "version": "0.3.6",
   "description": "Tracer bilingual task manager with ChatGPT subscription login, personal AI APIs and simple planning.",
   "main": "desktop/main.js",
   "author": {
@@ -80,9 +80,7 @@
         {
           "from": ".cache/codex-runtime/package/vendor/x86_64-pc-windows-msvc",
           "to": "codex",
-          "filter": [
-            "**/*"
-          ]
+          "filter": ["**/*"]
         }
       ],
       "target": [
@@ -93,10 +91,7 @@
       "category": "public.app-category.productivity",
       "icon": "build/app-icon.png",
       "artifactName": "Tracer-${version}-mac-${arch}.${ext}",
-      "target": [
-        "dmg",
-        "zip"
-      ],
+      "target": ["dmg", "zip"],
       "hardenedRuntime": true,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
@@ -104,24 +99,14 @@
         {
           "from": ".cache/codex-runtime/darwin-${arch}/runtime",
           "to": "codex",
-          "filter": [
-            "**/*"
-          ]
+          "filter": ["**/*"]
         }
       ]
     },
     "dmg": {
       "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
+        { "x": 130, "y": 220 },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
       ]
     },
     "nsis": {

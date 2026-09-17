@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  var lang = 'zh';
+  var lang = 'en';
   try { var saved = localStorage.getItem('tracer.language'); if (saved === 'en' || saved === 'zh') lang = saved; } catch (e) {}
   var I = window.TaskI18n;
   function t(key, values) { return I.t(lang, key, values); }

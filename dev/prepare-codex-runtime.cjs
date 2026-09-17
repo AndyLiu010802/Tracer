@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto'), cp = require('node:child_process');
 const { runtimeTarget, developmentRuntime } = require('../lib/desktop-platform');
 const root = path.resolve(__dirname, '..');

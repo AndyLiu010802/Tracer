@@ -1,0 +1,95 @@
+/* Idle scenes use the existing companion image. All art stays inside its button. */
+.pet-home .pet-character:has(.pet-idle-scene){position:relative;isolation:isolate}
+.pet-idle-scene{display:none;position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.pet-idle-canvas{display:block;width:100%;height:100%;overflow:visible;image-rendering:pixelated}
+.pet-idle-vignette{display:none}
+.pet-idle-scene :is(.idle-fishing-paw,.idle-digging-paw,.idle-mining-paw)>path:nth-child(2){fill:var(--pet-accent,#bad4b0)}
+
+.pet-home:is([data-idle=fishing],[data-idle=exercise],[data-idle=farming],[data-idle=mining]):not(.is-dragging):not([data-action]:not([data-action=""])):not([data-mood=sleeping]):not([data-mood=focusing]) .pet-idle-scene{display:block}
+.pet-home[data-kind=humanoid][data-idle=fishing] [data-idle-kind=humanoid][data-idle-activity=fishing],
+.pet-home[data-kind=creature][data-idle=fishing] [data-idle-kind=creature][data-idle-activity=fishing],
+.pet-home[data-kind=humanoid][data-idle=exercise] [data-idle-kind=humanoid][data-idle-activity=exercise],
+.pet-home[data-kind=creature][data-idle=exercise] [data-idle-kind=creature][data-idle-activity=exercise],
+.pet-home[data-kind=humanoid][data-idle=farming] [data-idle-kind=humanoid][data-idle-activity=farming],
+.pet-home[data-kind=creature][data-idle=farming] [data-idle-kind=creature][data-idle-activity=farming],
+.pet-home[data-kind=humanoid][data-idle=mining] [data-idle-kind=humanoid][data-idle-activity=mining],
+.pet-home[data-kind=creature][data-idle=mining] [data-idle-kind=creature][data-idle-activity=mining]{display:inline}
+
+.pet-home[data-kind=humanoid][data-idle=fishing]{--pet-idle-motion:pet-idle-human-fish;--pet-idle-duration:4.8s}
+.pet-home[data-kind=creature][data-idle=fishing]{--pet-idle-motion:pet-idle-creature-fish;--pet-idle-duration:3.6s}
+.pet-home[data-kind=humanoid][data-idle=exercise]{--pet-idle-motion:pet-idle-human-lift;--pet-idle-duration:2.4s}
+.pet-home[data-kind=creature][data-idle=exercise]{--pet-idle-motion:pet-idle-creature-hop;--pet-idle-duration:2s}
+.pet-home[data-kind=humanoid][data-idle=farming]{--pet-idle-motion:pet-idle-human-garden;--pet-idle-duration:4s}
+.pet-home[data-kind=creature][data-idle=farming]{--pet-idle-motion:pet-idle-creature-dig;--pet-idle-duration:2.6s}
+.pet-home[data-kind=humanoid][data-idle=mining]{--pet-idle-motion:pet-idle-human-mine;--pet-idle-duration:2.8s}
+.pet-home[data-kind=creature][data-idle=mining]{--pet-idle-motion:pet-idle-creature-mine;--pet-idle-duration:3.2s}
+.pet-home:is([data-idle=fishing],[data-idle=exercise],[data-idle=farming],[data-idle=mining]):not(.is-dragging):not([data-action]:not([data-action=""])):not([data-mood=sleeping]):not([data-mood=focusing]) .pet-character>.pet-sprite{animation:var(--pet-idle-motion) var(--pet-idle-duration,3s) steps(5,end) infinite;transform-origin:50% 85%}
+.pet-home:is([data-idle=fishing],[data-idle=exercise],[data-idle=farming],[data-idle=mining]):not(.is-dragging):not([data-action]:not([data-action=""])):not([data-mood=sleeping]):not([data-mood=focusing]) .pet-character>.pet-sprite .pet-body{animation:none}
+
+.pet-home[data-idle=fishing] .idle-water-glint{animation:pet-idle-water 2.4s steps(2,end) infinite}
+.pet-home[data-kind=humanoid][data-idle=fishing] .idle-rod{transform-origin:103px 112px;animation:pet-idle-cast 4.8s steps(6,end) infinite}
+.pet-home[data-kind=humanoid][data-idle=fishing] .idle-float{animation:pet-idle-float 2.4s steps(3,end) infinite}
+.pet-home[data-kind=humanoid][data-idle=fishing] .idle-fish{animation:pet-idle-fish-swim 4.8s steps(4,end) infinite}
+.pet-home[data-kind=creature][data-idle=fishing] .idle-fishing-paw{transform-origin:100px 106px;animation:pet-idle-paw-fish 3.6s steps(5,end) infinite}
+.pet-home[data-kind=creature][data-idle=fishing] .idle-fish{animation:pet-idle-fish-leap 3.6s steps(6,end) infinite}
+.pet-home[data-kind=creature][data-idle=fishing] .idle-water-splash{animation:pet-idle-splash 3.6s steps(4,end) infinite}
+
+.pet-home[data-kind=humanoid][data-idle=exercise] .idle-dumbbell{animation:pet-idle-lift 2.4s steps(6,end) infinite}
+.pet-home[data-kind=humanoid][data-idle=exercise] .idle-dumbbell-right{animation-delay:-.1s}
+.pet-home[data-idle=exercise] .idle-effort-marks{animation:pet-idle-effort 2.4s steps(2,end) infinite}
+.pet-home[data-kind=creature][data-idle=exercise] .idle-exercise-trail{animation:pet-idle-trail 2s steps(4,end) infinite}
+.pet-home[data-kind=creature][data-idle=exercise] .idle-hurdle{transform-origin:126px 145px;animation:pet-idle-hurdle 2s steps(4,end) infinite}
+
+.pet-home[data-kind=humanoid][data-idle=farming] .idle-watering-can{transform-origin:127px 115px;animation:pet-idle-water-can 4s steps(5,end) infinite}
+.pet-home[data-kind=humanoid][data-idle=farming] .idle-watering-drops{animation:pet-idle-water-drops 1s steps(4,end) infinite}
+.pet-home[data-kind=humanoid][data-idle=farming] .idle-hoe{transform-origin:30px 105px;animation:pet-idle-hoe 4s steps(5,end) infinite}
+.pet-home[data-idle=farming] .idle-sprouts{transform-origin:80px 141px;animation:pet-idle-sprout 3s steps(3,end) infinite}
+.pet-home[data-kind=creature][data-idle=farming] .idle-digging-paw{transform-origin:100px 105px;animation:pet-idle-paw-dig 2.6s steps(5,end) infinite}
+.pet-home[data-kind=creature][data-idle=farming] .idle-soil-dust{animation:pet-idle-dirt 2.6s steps(4,end) infinite}
+.pet-home[data-kind=creature][data-idle=farming] .idle-seeds{animation:pet-idle-seed-fall 2.6s steps(4,end) infinite}
+.pet-home[data-kind=creature][data-idle=farming] .idle-garden-splash{animation:pet-idle-splash 2.6s steps(4,end) infinite}
+
+.pet-home[data-kind=humanoid][data-idle=mining] .idle-pickaxe{translate:12px 6px;scale:.85;transform-origin:108px 113px;animation:pet-idle-pickaxe 2.8s steps(6,end) infinite}
+.pet-home[data-kind=humanoid][data-idle=mining] .idle-crystal-sparks,.pet-home[data-kind=humanoid][data-idle=mining] .idle-soil-dust{animation:pet-idle-mining-sparks 2.8s steps(4,end) infinite}
+.pet-home[data-kind=creature][data-idle=mining] .idle-mining-paw{transform-origin:100px 108px;animation:pet-idle-paw-mine 3.2s steps(5,end) infinite}
+.pet-home[data-kind=creature][data-idle=mining] .idle-ore-scratches{animation:pet-idle-scratches 3.2s steps(3,end) infinite}
+.pet-home[data-kind=creature][data-idle=mining] .idle-crystal-sparks{animation:pet-idle-mining-sparks 3.2s steps(4,end) infinite}
+.pet-home[data-kind=creature][data-idle=mining] .idle-found-crystal{animation:pet-idle-found-gem 3.2s steps(4,end) infinite}
+
+@keyframes pet-idle-human-fish{0%,65%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-2px) rotate(-1deg)}80%{transform:translateY(1px) rotate(2deg)}}
+@keyframes pet-idle-creature-fish{0%,100%{transform:translateX(0)}35%,55%{transform:translateX(5px) rotate(3deg)}70%{transform:translateY(-4px)}}
+@keyframes pet-idle-human-lift{0%,100%{transform:translateY(1px) scaleY(.98)}45%,60%{transform:translateY(-3px) scaleY(1.02)}}
+@keyframes pet-idle-creature-hop{0%,100%{transform:translateY(0)}20%{transform:translateY(2px) scaleY(.96)}45%{transform:translate(6px,-12px) rotate(3deg)}70%{transform:translate(9px,0) scaleY(.97)}}
+@keyframes pet-idle-human-garden{0%,100%{transform:rotate(0)}20%,38%{transform:rotate(-2deg) translateY(2px)}65%,85%{transform:rotate(2deg) translateY(1px)}}
+@keyframes pet-idle-creature-dig{0%,100%{transform:rotate(0)}25%,55%{transform:translate(4px,2px) rotate(3deg)}40%,70%{transform:translate(1px,1px) rotate(1deg)}}
+@keyframes pet-idle-human-mine{0%,100%{transform:rotate(0)}28%{transform:rotate(-2deg) translateY(-2px)}50%{transform:rotate(3deg) translateY(2px)}65%{transform:rotate(0)}}
+@keyframes pet-idle-creature-mine{0%,100%{transform:translateX(0)}25%{transform:translateX(5px) rotate(2deg)}45%,65%{transform:translate(3px,2px) rotate(3deg)}55%{transform:translateX(1px)}}
+@keyframes pet-idle-water{50%{opacity:.45;transform:translateX(2px)}}
+@keyframes pet-idle-cast{0%,60%,100%{transform:rotate(0)}20%{transform:rotate(-9deg)}35%{transform:rotate(3deg)}80%{transform:rotate(-4deg)}}
+@keyframes pet-idle-float{50%{transform:translateY(3px)}}
+@keyframes pet-idle-fish-swim{0%,100%{transform:translateX(0);opacity:.65}50%{transform:translateX(-9px);opacity:1}}
+@keyframes pet-idle-fish-leap{0%,30%,100%{transform:translate(0,0)}45%{transform:translate(3px,-13px) rotate(-5deg)}65%{transform:translate(-4px,-5px)}}
+@keyframes pet-idle-paw-fish{0%,100%{transform:rotate(-8deg)}35%,50%{transform:translate(4px,7px) rotate(12deg)}65%{transform:translate(-1px,-3px) rotate(-10deg)}}
+@keyframes pet-idle-splash{0%,25%,100%{opacity:0;transform:translateY(5px)}45%{opacity:1;transform:translateY(-3px)}70%{opacity:.4;transform:translateY(2px)}}
+@keyframes pet-idle-lift{0%,100%{transform:translateY(4px)}45%,60%{transform:translateY(-17px)}}
+@keyframes pet-idle-effort{0%,100%{opacity:.2}45%,65%{opacity:1;transform:translateY(-3px)}}
+@keyframes pet-idle-trail{0%,100%{opacity:0}30%{opacity:.8}70%{opacity:.25;transform:translateX(-4px)}}
+@keyframes pet-idle-hurdle{0%,50%,100%{transform:rotate(0)}70%{transform:rotate(3deg)}}
+@keyframes pet-idle-water-can{0%,40%,100%{transform:rotate(0)}60%,80%{transform:rotate(-18deg)}}
+@keyframes pet-idle-water-drops{0%{opacity:0;transform:translateY(-5px)}35%{opacity:1}100%{opacity:0;transform:translate(-4px,7px)}}
+@keyframes pet-idle-hoe{0%,40%,100%{transform:rotate(0)}15%{transform:rotate(12deg) translateY(-5px)}28%{transform:rotate(-8deg) translateY(2px)}}
+@keyframes pet-idle-sprout{50%{transform:scaleY(1.06)}}
+@keyframes pet-idle-paw-dig{0%,100%{transform:translateY(-3px)}25%,55%{transform:translate(5px,8px) rotate(8deg)}40%,70%{transform:translate(-1px,1px) rotate(-5deg)}}
+@keyframes pet-idle-dirt{0%,15%,100%{opacity:0}35%,60%{opacity:1;transform:translate(3px,-5px)}80%{opacity:0;transform:translate(6px,3px)}}
+@keyframes pet-idle-seed-fall{0%,30%,100%{opacity:0;transform:translateY(-5px)}50%{opacity:1}75%{opacity:0;transform:translate(3px,12px)}}
+@keyframes pet-idle-pickaxe{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg) translateY(-3px)}48%{transform:rotate(23deg) translateY(3px)}62%{transform:rotate(5deg)}}
+@keyframes pet-idle-mining-sparks{0%,35%,100%{opacity:0;transform:translateY(3px)}52%{opacity:1;transform:translateY(-3px)}75%{opacity:0;transform:translateY(-7px)}}
+@keyframes pet-idle-paw-mine{0%,100%{transform:rotate(-5deg)}35%,55%{transform:translate(8px,9px) rotate(8deg)}45%,65%{transform:translate(4px,3px) rotate(0)}}
+@keyframes pet-idle-scratches{0%,30%,100%{opacity:0}45%,65%{opacity:1}85%{opacity:.3}}
+@keyframes pet-idle-found-gem{0%,35%,100%{transform:translateY(0);opacity:.4}65%{transform:translateY(-5px);opacity:1}}
+
+@media(prefers-reduced-motion:reduce){
+  .pet-home:is([data-idle=fishing],[data-idle=exercise],[data-idle=farming],[data-idle=mining]) .pet-idle-scene *,
+  .pet-home:is([data-idle=fishing],[data-idle=exercise],[data-idle=farming],[data-idle=mining]) .pet-character>.pet-sprite{animation:none!important;transform:none!important}
+  .pet-idle-scene .idle-water-splash,.pet-idle-scene .idle-crystal-sparks,.pet-idle-scene .idle-effort-marks{opacity:.75}
+}

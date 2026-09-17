@@ -1,9 +1,10 @@
 (function (root, factory) {
   'use strict';
-  var api = factory(typeof module === 'object' && module.exports ? require('./task-history') : root.TaskHistory);
+  var api = factory(typeof module === 'object' && module.exports ? require('./task-history') : root.TaskHistory,
+    typeof module === 'object' && module.exports ? require('./project-deletion') : root.ProjectDeletion);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.TracerModel = api;
-})(typeof self !== 'undefined' ? self : this, function (History) {
+})(typeof self !== 'undefined' ? self : this, function (History, Deletion) {
   'use strict';
 
   // ---------- 日月轮回 ----------
@@ -613,7 +614,7 @@
     addTask: addTask, findTask: findTask, tasksByStatus: tasksByStatus,
     moveTask: moveTask, updateTask: updateTask, deleteTask: deleteTask,
     taskDueState: taskDueState, filterTasks: filterTasks, blockers: blockers, PRIORITIES: PRIORITIES, TASK_TYPES: TASK_TYPES,
-    addProject: addProject,
+    addProject: addProject, deleteProject: Deletion.remove,
     addInbox: addInbox, deleteInbox: deleteInbox,
     inboxToTask: inboxToTask, inboxToNote: inboxToNote,
     renderMarkdown: renderMarkdown, safeUrl: safeUrl,

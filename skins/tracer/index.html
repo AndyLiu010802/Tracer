@@ -29,6 +29,13 @@
 <link rel="stylesheet" href="/wellness.css">
 <link rel="stylesheet" href="/crystal.css">
 <link rel="stylesheet" href="/ai-assistant.css">
+<link rel="stylesheet" href="/pet.css">
+<link rel="stylesheet" href="/pet-interactions.css">
+<link rel="stylesheet" href="/pet-idle.css">
+<link rel="stylesheet" href="/pet-animation.css">
+<link rel="stylesheet" href="/pet-transfer.css">
+<link rel="stylesheet" href="/pet-character-motion.css">
+<link rel="stylesheet" href="/pet-chat.css">
 <link rel="stylesheet" href="/window-controls.css">
 </head>
 <body>
@@ -61,7 +68,8 @@
     <button class="new-btn" id="daily-card-toggle" aria-controls="daily-card" aria-expanded="true"></button>
     <button class="new-btn" id="focus-open-compact" hidden></button>
     <button class="new-btn" id="ai-open">✦ AI 计划</button>
-    <select class="new-btn" id="language-select" aria-label="Language"><option value="zh">中文</option><option value="en">English</option></select>
+    <button class="new-btn" id="pet-open">✦ Companions</button>
+    <select class="new-btn" id="language-select" aria-label="Language"><option value="en">English</option><option value="zh">中文</option></select>
     <button class="new-btn" id="new-btn" title="New task">+ New</button>
     <span class="dial"><span class="sundial" id="sundial"></span><span class="clock" id="clock"></span></span>
     <span class="avatar-wrap">
@@ -160,7 +168,7 @@
       </div>
     </section>
     <section class="sec" id="sec-garden">
-      <header class="sec-head"><h1>Garden</h1><span class="sec-sub">A quiet corner of the workspace</span></header>
+      <header class="sec-head"><h1>Garden</h1><span class="sec-sub">A quiet corner of the workspace</span><button class="btn" id="garden-pet-open">✦ Companions</button></header>
       <div class="garden-wrap">
         <aside class="garden-side">
           <div class="garden-shop" id="garden-shop"></div>
@@ -203,6 +211,7 @@
 
 <div id="modal-root" hidden></div>
 
+<script src="/project-deletion.js"></script>
 <script src="/task-history.js"></script>
 <script src="/model.js"></script>
 <script src="/workspace-sync.js"></script>
@@ -241,5 +250,16 @@
 <script src="/wellness.js"></script>
 <script src="/ai-planner.js"></script>
 <script src="/ai-assistant.js"></script>
+<script src="/pet-animation.js"></script>
+<script src="/pet-personalities.js"></script>
+<script src="/pet-model.js"></script>
+<script src="/pet-art.js"></script>
+<script src="/pet-builtin-animation.js"></script>
+<script src="/pet-idle.js"></script>
+<script src="/pet-idle-art.js"></script>
+<script src="/pet-view.js"></script>
+<script src="/pet-creator.js"></script>
+<script src="/pet-transfer.js"></script>
+<script src="/pet.js"></script>
 </body>
 </html>

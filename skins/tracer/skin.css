@@ -101,18 +101,18 @@ body::after {
   opacity: .5;
   transition: background 2s ease;
 }
-.top-left { display: flex; align-items: center; gap: 9px; }
+.top-left { display: flex; align-items: center; flex-shrink: 0; gap: 10px; white-space: nowrap; }
 .top-mid { flex: 1; }
 .top-right { display: flex; align-items: center; gap: 14px; }
 .mark {
-  display: inline-flex; width: 19px; height: 19px;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 28px; width: 28px; height: 28px;
   color: var(--accent);
-  filter: drop-shadow(0 0 6px var(--glow));
-  transition: color 2s ease, filter 2s ease;
 }
-.mark svg { width: 100%; height: 100%; }
+.mark :is(img, svg) { display: block; flex: none; width: 100%; height: 100%; object-fit: contain; }
+.mark img { border-radius: 7px; }
 .crumb { color: var(--muted); }
-.crumb-strong { color: var(--fg); font-weight: 650; letter-spacing: .3px; font-size: 14.5px; }
+.crumb-strong { color: var(--fg); font-weight: 650; letter-spacing: 0; font-size: 14.5px; line-height: 28px; }
 .crumb-sep { color: var(--muted); opacity: .55; }
 
 /* 日晷胶囊：地平线 + 渐变弧线 + 刻度 + 带光晕的日/月 + 时间，一件仪器 */

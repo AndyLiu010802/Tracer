@@ -1,0 +1,14 @@
+.pet-home .pet-chat-log .pet-chat-thinking { color:#abc4b2; background:#b7dac10a; font-size:11px; }
+.pet-home .pet-chat-thinking::before { content:''; display:inline-block; width:5px; height:5px; margin:0 7px 2px 0; border-radius:50%; background:currentColor; animation:pet-chat-wait 1.2s ease-in-out infinite alternate; }
+.pet-home .pet-chat-user[data-status=failed] { border:1px solid #d5a58655; }
+.pet-home .pet-chat-delivery { align-self:flex-end; display:flex; align-items:center; flex-wrap:wrap; gap:8px; max-width:100%; margin-top:-6px; color:#d5b69b; font-size:10px; }
+.pet-home .pet-chat-delivery .pet-chat-retry { font-size:10px; padding:3px 8px; line-height:1.4; }
+.pet-home .pet-chat-hint { display:block; color:#8fa397; font-size:10px; line-height:1.6; margin:6px 0 10px; }
+.pet-home .pet-personality-card { margin:12px 0; padding:12px; border:1px solid #b7dac124; border-radius:10px; background:#b7dac107; }
+.pet-home .pet-personality-card summary { color:#bfd7c2; font-size:12px; line-height:1.6; cursor:pointer; }
+.pet-home .pet-personality-card p { font-size:11px; line-height:1.65; color:#aebeb1; margin:10px 0 0; }
+.pet-home .pet-personality-card dl { display:grid; grid-template-columns:max-content minmax(0,1fr); gap:6px 10px; font-size:11px; line-height:1.6; margin:12px 0 0; }
+.pet-home .pet-personality-card dt { color:#c6d9bc; }
+.pet-home .pet-personality-card dd { margin:0; color:#aabdaf; }
+@keyframes pet-chat-wait { from { opacity:.35; } to { opacity:1; } }
+@media(prefers-reduced-motion:reduce) { .pet-home .pet-chat-thinking::before { animation:none; } }

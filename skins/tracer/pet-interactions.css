@@ -1,0 +1,46 @@
+.pet-home .pet-character{position:relative;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-app-region:no-drag;overflow:visible}
+.pet-character>.pet-sprite{pointer-events:none;-webkit-user-drag:none;transform-origin:50% 80%}
+.pet-native .pet-character{cursor:grab}.pet-native.is-dragging .pet-character{cursor:grabbing}
+.pet-native.is-dragging .pet-character>.pet-sprite{animation:pet-lift .8s ease-in-out infinite alternate!important}
+.pet-effects{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.pet-effects>*{display:none;position:absolute;image-rendering:pixelated;filter:drop-shadow(0 2px 0 #152b2544)}
+.pet-food-prop{width:30%;height:30%;left:53%;top:54%}.pet-ball-prop{width:25%;height:25%;left:73%;top:65%}
+.pet-heart{color:#efa8af;font:24px/1 ui-monospace,monospace;left:12%;top:40%;text-shadow:2px 2px #643e50}.pet-heart-two{left:76%;top:27%;font-size:17px}
+.pet-play-star{color:#f2da91;font-size:28px;left:12%;top:15%}.pet-rest-cloud{font:600 22px ui-monospace,monospace;color:#c2b6e4;right:2%;top:10%}
+.pet-home[data-action=feed] .pet-food-prop{display:block;animation:pet-nibble 1s steps(4,end) infinite}
+.pet-home[data-action=feed] .pet-character>.pet-sprite{animation:pet-munch .55s ease-in-out infinite}
+.pet-home[data-action=play] .pet-ball-prop{display:block;animation:pet-toss 1.3s ease-in-out infinite}
+.pet-home[data-action=play] .pet-play-star{display:block;animation:pet-sparkle 1.3s steps(3,end) infinite}
+.pet-home[data-action=play] .pet-character>.pet-sprite{animation:pet-play-hop .9s ease-in-out infinite}
+.pet-home[data-kind=humanoid][data-action=play] .pet-character>.pet-sprite{animation-name:pet-high-five;animation-duration:1.2s}
+.pet-home[data-action=pet] .pet-heart{display:block;animation:pet-heart-rise 1.6s ease-out infinite}.pet-home[data-action=pet] .pet-heart-two{animation-delay:.6s}
+.pet-home[data-action=pet] .pet-character>.pet-sprite{animation:pet-nuzzle 1s ease-in-out infinite}
+.pet-home[data-kind=humanoid][data-action=pet] .pet-character>.pet-sprite{animation-name:pet-high-five}
+.pet-home[data-action=wake] .pet-play-star{display:block;animation:pet-sparkle 1s ease-in-out infinite}
+.pet-home[data-action=wake] .pet-character>.pet-sprite{animation:pet-stretch 1.4s ease-in-out 3}
+.pet-home[data-action=sleep] .pet-character>.pet-sprite{animation:pet-settle 1.2s ease-out both}
+.pet-home[data-mood=sleeping] .pet-rest-cloud{display:block;animation:pet-dream 3s ease-in-out infinite}
+.pet-home[data-mood=sleeping] .pet-character:has(.pet-custom-sprite)::after{content:none}
+.pet-home[data-action=feed] .pet-body,.pet-home[data-action=play] .pet-body,.pet-home[data-action=pet] .pet-body,.pet-home[data-action=wake] .pet-body{animation:none}
+.pet-quick-actions{display:none}.pet-native .pet-quick-actions{display:flex;justify-content:center;gap:6px;width:100%;min-width:0}
+.pet-native .pet-quick-actions button{flex:1;min-width:0;font-size:11px;line-height:1.35;padding:6px 5px;background:#192b24f5;border-color:#b3cdb547;color:#e1eddf;white-space:normal}
+.pet-native .pet-quick-actions button:hover{background:#365040;border-color:#c2ddc6}.pet-native .pet-quick-actions button:active{transform:translateY(1px)}
+.pet-stage-footer{display:flex;align-items:center;justify-content:center;gap:8px;max-width:100%;margin-top:8px}
+.pet-interaction-hint{color:#9caf9f;font-size:10px;line-height:1.4}.pet-home .pet-stage-footer .pet-panel-toggle{padding:3px 8px;font-size:10px;background:#1a2924e8}
+.pet-home:not(.pet-native) .pet-panel-toggle{display:none}.pet-native .pet-stage-footer{margin-top:0;width:100%;justify-content:space-between}
+.pet-native:not(.is-expanded) .pet-stage{grid-template-rows:minmax(0,48px) minmax(36px,1fr) auto auto auto auto;gap:4px}
+.pet-native:not(.is-expanded) .pet-character{max-height:150px}.pet-native .pet-interaction-hint{font-size:9px}
+.pet-native.is-expanded .pet-stage{gap:5px}.pet-native.is-expanded .pet-character{height:100px;width:115px}.pet-native.is-expanded .pet-quick-actions{max-width:270px}
+@keyframes pet-munch{50%{transform:translateY(4px) scale(1.035,.97) rotate(-2deg)}}
+@keyframes pet-nibble{0%,100%{transform:translate(4px,6px) rotate(-12deg);opacity:1}50%{transform:translate(-12px,-10px) rotate(12deg);opacity:.8}}
+@keyframes pet-play-hop{0%,100%{transform:translateX(-8px) rotate(-6deg)}45%{transform:translate(10px,-13px) rotate(7deg)}75%{transform:translate(5px,2px) scale(1.03,.97)}}
+@keyframes pet-toss{0%,100%{transform:translate(-8px,0) rotate(0)}50%{transform:translate(-48px,-58px) rotate(180deg)}}
+@keyframes pet-nuzzle{0%,100%{transform:rotate(-5deg)}50%{transform:translateY(-5px) rotate(6deg) scale(1.03)}}
+@keyframes pet-high-five{0%,100%{transform:rotate(-2deg)}45%{transform:translateY(-9px) rotate(5deg)}70%{transform:translateY(-4px) rotate(-4deg)}}
+@keyframes pet-heart-rise{0%{transform:translateY(5px) scale(.6);opacity:0}20%{opacity:1}100%{transform:translateY(-34px) scale(1.2);opacity:0}}
+@keyframes pet-sparkle{0%,100%{transform:scale(.55) rotate(-20deg);opacity:.3}50%{transform:scale(1.15) rotate(20deg);opacity:1}}
+@keyframes pet-stretch{45%{transform:translateY(-7px) scale(.94,1.09)}75%{transform:scale(1.04,.97)}}
+@keyframes pet-settle{to{transform:translateY(7px) rotate(7deg) scale(1.04,.93)}}
+@keyframes pet-dream{50%{transform:translateY(-8px);opacity:.5}}
+@keyframes pet-lift{from{transform:translateY(-4px) rotate(-4deg)}to{transform:translateY(-4px) rotate(4deg)}}
+@media(prefers-reduced-motion:reduce){.pet-home .pet-effects>*{animation:none!important}.pet-home[data-action=pet] .pet-heart{opacity:1}.pet-native.is-dragging .pet-character>.pet-sprite{animation:none!important}}

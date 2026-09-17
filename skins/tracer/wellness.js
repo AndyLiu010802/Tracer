@@ -40,7 +40,7 @@
   function locked(callback) { return navigator.locks ? navigator.locks.request('tracer-focus-state', callback) : Promise.resolve().then(callback); }
   function change(callback) {
     return locked(function () {
-      state = load(); flushActivity(state); F.settle(state, Date.now()); callback(state);
+      state = load(); pruneDeletedTasks(state); flushActivity(state); F.settle(state, Date.now()); callback(state); pruneDeletedTasks(state);
       localStorage.setItem(KEY, JSON.stringify(state));
     }).then(function () { draw(); maybeAlert(); }).catch(function () { showError(L('timerStorageError')); });
   }
@@ -210,8 +210,14 @@
   document.getElementById('focus-alarm-dismiss').onclick = function () { change(function (s) { s.alarm = null; }); };
   document.getElementById('ambient-shuffle').onclick = function () { appearance.scene = D.nextScene(appearance.scene, Math.random()); appearance.enabled = true; saveAppearance(); drawDaily(); };
   document.getElementById('ambient-toggle').onclick = function () { appearance.enabled = !appearance.enabled; saveAppearance(); drawDaily(); };
-  T.refreshWellness = function () { drawDaily(); draw(); if (T.music) T.music.refreshLabels(); };
-  T.focus = { open: openTimer, read: function () { return F.read(state); } };
+  function pruneDeletedTasks(value) {
+    var ids = new Set();
+    ((T.store.data || {}).projectDeletions || []).forEach(function (row) { row.taskIds.forEach(function (id) { ids.add(id); }); });
+    F.removeTasks(value, ids);
+  }
+  T.refreshWellness = function () { pruneDeletedTasks(state); change(function () {}); drawDaily(); draw(); if (T.music) T.music.refreshLabels(); };
+  T.ready.then(function () { T.refreshWellness(); });
+  T.focus = { open: openTimer, toggle: startPause, read: function () { return F.read(state); } };
   window.addEventListener('storage', function (event) { if (event.key === KEY || !event.key) { state = load(); draw(); } if (event.key === APPEARANCE || !event.key) { appearance = loadAppearance(); drawDaily(); } });
   function tick() {
     drawDaily();

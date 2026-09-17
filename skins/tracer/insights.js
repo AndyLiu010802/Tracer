@@ -24,10 +24,11 @@
   }
   function render() {
     var ws = T.store.data; if (!ws) return;
+    var projects = new Map(); ws.projects.forEach(function (p) { projects.set(p.id, p.name); }); H.completed(ws).forEach(function (h) { if (h.projectId && !projects.has(h.projectId)) projects.set(h.projectId, h.projectName); });
+    if (project && !projects.has(project)) project = '';
     if (period !== 'custom') dates = A.range(period === 'all' ? 0 : Number(period), M.todayISO());
     data = A.analyze(ws, { from: dates.from, to: dates.to, query: query, project: project }, T.focus ? T.focus.read() : null);
     page = Math.min(page, Math.max(0, Math.ceil(data.rows.length / 15) - 1));
-    var projects = new Map(); ws.projects.forEach(function (p) { projects.set(p.id, p.name); }); H.completed(ws).forEach(function (h) { if (h.projectId && !projects.has(h.projectId)) projects.set(h.projectId, h.projectName); });
     sec.innerHTML = '<header class="ins-header"><div><div class="ins-eyebrow">' + L('insEyebrow') + '</div><h1>' + L('insights') + '</h1><p>' + L('insSubtitle') + '</p></div><div class="ins-periods" aria-label="' + L('insRange') + '">' + ['7', '30', '90', 'all'].map(function (v) { return '<button data-period="' + v + '" aria-pressed="' + (period === v) + '">' + L(v === 'all' ? 'insAll' : 'insDays', { count: v }) + '</button>'; }).join('') + '</div></header>'
       + '<div class="ins-filters"><label>' + L('insFrom') + '<input id="ins-from" type="date" value="' + dates.from + '"></label><span class="ins-date-sep">—</span><label>' + L('insTo') + '<input id="ins-to" type="date" value="' + dates.to + '"></label><label class="ins-project-filter">' + L('projects') + '<select id="ins-project"><option value="">' + L('allProjects') + '</option>' + Array.from(projects).map(function (p) { return '<option value="' + esc(p[0]) + '">' + esc(p[1]) + '</option>'; }).join('') + '</select></label><span class="ins-local-note">' + L('insHistorySafe') + '</span></div>'
       + '<div class="ins-tiles">' + tile('✓', 'insPeriodCompleted', data.rows.length, L('insEventsHint'), '#85ceb1') + tile('◇', 'insUnique', data.unique, L('insUniqueHint'), '#86b6ec') + tile('◷', 'insFocus', Math.round(data.focusMinutes), L('insFocusCount', { count: data.focusCount }), '#dcc17c') + tile('◌', 'insActive', data.total - data.counts.done, L('insCurrentHint'), '#c4a2eb') + '</div>'

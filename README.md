@@ -2,20 +2,26 @@
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[下载 Windows 桌面版](https://github.com/AndyLiu010802/Tracer/releases/latest)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.4 更新说明](docs/desktop-release-0.3.4.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[下载 Tracer 0.3.6：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.6 更新说明](docs/desktop-release-0.3.6.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-**macOS（Apple 芯片 / Intel）**：**[下载 0.3.4 Mac 测试版](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.4-mac-preview.3)**。打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两种架构均已通过原生云端构建和启动检查；这是尚未获得 Apple 公证的测试版，首次打开可能被 macOS 拦截，详见 [Mac 安装指南](docs/macos-install.md)。本地 0.3.5 也已加入构建支持，其未发布功能不包含在本次 0.3.4 测试包中。
+0.3.6 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。以下为本次统一发布入口；云端工作流只有在三个平台全部检查通过后才会发布附件，尚未出现附件表示构建或发布还未完成。
 
-在 Releases 中下载 **`Tracer-Setup-0.3.4-x64.exe`**，运行后按提示安装。安装程序创建桌面和开始菜单快捷方式，不需要另装 Node.js 或 Codex。更新已有版本前，请先从系统托盘退出 Tracer，再安装到原来的位置。
+| 电脑类型 | 安装包 | 备用压缩包 |
+| --- | --- | --- |
+| Windows x64 | [Tracer-Setup-0.3.6-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-Setup-0.3.6-x64.exe) | — |
+| Mac：Apple 芯片（M 系列） | [Tracer-0.3.6-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.zip) |
+| Mac：Intel | [Tracer-0.3.6-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.zip) |
 
-0.3.2 的源码交互检查及安装包内容核对已通过，但本机 Device Guard 阻止了打包程序启动，安装版启动验证尚未完成，详见[验证限制](docs/desktop-release-0.3.2.md#本机验证限制)。
+Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置；任务、设置、桌宠和个人工作区保留。
 
-- **无边框全屏**：0.3.2 启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
+本地 Windows 0.3.6 已通过真实打包应用的全新用户目录启动与交互检查。Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证；首次打开可能被 macOS 拦截，真实账号登录和系统权限界面仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。云端结果以本次 **Desktop release** 工作流记录为准。
+
+- **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
 - **本地数据**：任务、完成历史和设置保存在 `%APPDATA%\tracer-desktop\`。升级及正常卸载保留用户数据；分享的安装包使用接收者自己的工作区。
-- **核对下载**：安装程序目前未签名。发布附件提供 `SHA256SUMS-0.3.4.txt`，可核对下载文件的 SHA-256。
+- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.3.6.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/SHA256SUMS-0.3.6.txt)，覆盖 Windows EXE 和两种 Mac 架构的 DMG、ZIP。
 
 ## 功能
 
@@ -26,6 +32,7 @@ Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、�
 - 可隐藏的每日名言与自然风景玻璃卡片，中英文界面切换。
 - 独立 Chromium 参考浏览器，支持页面脚本、登录、后退前进和下载；网站自身的访问限制与网络条件仍然适用。
 - AI 计划助手：读取本地 PDF、Word 和文本资料，根据截止日期和可投入工时预览任务拆解与排程。
+- 桌面伙伴：6 个内置伙伴的 16 种动作各有 16 帧；更新后新生成的伙伴每个动作也使用 16 张连续图像，共 256 帧。旧照片与旧 4 帧动作包继续兼容，安装更新不会自动调用 AI 或重绘已有伙伴。
 
 ### AI 服务状态
 
@@ -57,7 +64,7 @@ npm run dist:mac
 node dev/verify-macos-release.cjs
 ```
 
-也可使用仓库的 **Actions → macOS desktop** 分别在 Apple 芯片和 Intel 云端构建机上构建。默认生成测试包；正式签名、公证和 Release 草稿所需配置见 [Mac 发布流程](docs/macos-install.md#维护者构建与发布)。
+统一发布使用仓库的 **Actions → Desktop release**（`.github/workflows/desktop-release.yml`）：推送到 `codex/release-*` 分支或手动运行，会在 Windows、Apple 芯片 Mac 和 Intel Mac 上分别原生构建与验证；三个平台全部通过后，才发布同一个版本的安装包和合并后的 SHA-256 文件。独立 Mac 签名、公证测试仍可使用 **macOS desktop** 工作流，配置见 [Mac 发布流程](docs/macos-install.md#维护者构建与发布)。
 
 ### 浏览器开发模式
 

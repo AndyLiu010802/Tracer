@@ -36,6 +36,7 @@ require('../lib/ai-gateway').setSecureStorage(require('electron').safeStorage);
 
 let win = null;
 let tray = null;
+let companion = null;
 // 只有走了「退出」这条路才真的退。关窗口默认只是缩进托盘，isQuitting 用来区分两者。
 let isQuitting = false;
 
@@ -68,7 +69,7 @@ function startHook(prompt = false) {
   catch (e) {
     uIOhook.removeAllListeners('keydown');
     uIOhook.removeAllListeners('mousedown');
-    console.error('[farm] Global input hook unavailable; counting only in-app input: ' + e.message);
+    console.error('[farm] 全局输入钩子启动失败，仅统计窗口内输入：' + e.message);
     return;
   }
   app.on('will-quit', function () { try { uIOhook.stop(); } catch (e) {} });
@@ -121,6 +122,7 @@ function createWindow() {
   require('./preferences-import').attachPreferencesImport(win, userData, 'http://' + config.host + ':' + config.port);
   const reference = require('./browser').attachBrowser(win, 'http://' + config.host + ':' + config.port);
   require('./window-controls').attachWindowControls(win, 'http://' + config.host + ':' + config.port, [reference.contents]);
+  companion = require('./pet').attachPet(win, 'http://' + config.host + ':' + config.port, userData, showWindow);
   win.loadURL('http://' + config.host + ':' + config.port + '/');
 
   // 关闭窗口 = 缩进托盘继续后台计数，不是退出。真正退出走托盘菜单的「退出」。
@@ -148,6 +150,7 @@ function createTray() {
   tray.setToolTip('Tracer');
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: '打开面板', click: showWindow },
+    { label: 'Desktop companion / 桌宠', click: function () { if (companion) companion.show(); } },
     { type: 'separator' },
     { label: '退出', click: function () { isQuitting = true; app.quit(); } },
   ]));

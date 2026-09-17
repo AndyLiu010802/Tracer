@@ -2,7 +2,7 @@ const I = require('./task-i18n');
 function language() {
   const saved = wx.getStorageSync('tracer-language');
   if (saved === 'en' || saved === 'zh') return saved;
-  return 'zh';
+  return 'en';
 }
 function apply() {
   wx.setTabBarItem({ index: 0, text: t('tasks') });

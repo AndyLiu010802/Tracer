@@ -1,8 +1,9 @@
 (function (root, factory) {
-  var api = factory(typeof module === 'object' && module.exports ? require('./task-history') : root.TaskHistory);
+  var api = factory(typeof module === 'object' && module.exports ? require('./task-history') : root.TaskHistory,
+    typeof module === 'object' && module.exports ? require('./project-deletion') : root.ProjectDeletion);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.WorkspaceSync = api;
-})(typeof self !== 'undefined' ? self : this, function (History) {
+})(typeof self !== 'undefined' ? self : this, function (History, Deletion) {
   'use strict';
   var collections = ['tasks', 'projects', 'notes', 'inbox'];
   function clone(value) { return value === undefined ? undefined : JSON.parse(JSON.stringify(value)); }
@@ -16,6 +17,12 @@
   function safeKey(k) { return k !== '__proto__' && k !== 'prototype' && k !== 'constructor'; }
   function merge(base, local, remote, choices) {
     base = base || empty(); local = local || empty(); remote = remote || empty();
+    var deletions = Deletion.merge(base, local, remote);
+    if (deletions.length) {
+      base = Deletion.apply(Object.assign(clone(base), { projectDeletions: deletions }));
+      local = Deletion.apply(Object.assign(clone(local), { projectDeletions: deletions }));
+      remote = Deletion.apply(Object.assign(clone(remote), { projectDeletions: deletions }));
+    }
     var out = empty(), conflicts = [];
     collections.forEach(function (name) {
       var bm = Object.create(null), lm = Object.create(null), rm = Object.create(null);
@@ -60,12 +67,15 @@
     });
     var history = History.union(History.all(base), History.all(remote), History.all(local));
     if (history.length) out.completionHistory = history;
+    if (deletions.length) out.projectDeletions = Deletion.merge(base, local, remote);
+    Deletion.apply(out);
     return { workspace: out, conflicts: conflicts };
   }
   // Normalize only known fields before cloud persistence; never accept arbitrary object keys.
   function validate(input) {
     if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Invalid workspace');
     var output = empty();
+    if (input.projectDeletions !== undefined) output.projectDeletions = Deletion.validate(input.projectDeletions);
     if (input.completionHistory !== undefined) output.completionHistory = History.validate(input.completionHistory);
     var textFields = { tasks: ['seq', 'title', 'notes', 'projectId', 'priority', 'scheduled', 'due', 'status', 'assignee', 'acceptance', 'type'],
       projects: ['name', 'color', 'status', 'start', 'end'], notes: ['title', 'body', 'projectId'], inbox: ['text'] };
@@ -131,7 +141,7 @@
       var n = input.meta && input.meta[key];
       output.meta[key] = Number.isSafeInteger(n) && n >= 0 ? n : 0;
     });
-    return output;
+    return Deletion.apply(output);
   }
   function validDate(s) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;

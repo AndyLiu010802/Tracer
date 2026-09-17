@@ -1,0 +1,15 @@
+/* Generated actions are actual sprite frames, with props drawn into their frames. */
+.pet-home.has-animation-pack .pet-character > .pet-animated-sprite {
+  animation:none!important; transform:none!important; filter:none;
+}
+.pet-home.has-animation-pack .pet-effects,
+.pet-home.has-animation-pack .pet-idle-scene { display:none!important; }
+.pet-home .pet-animated-sprite { flex:none; aspect-ratio:1; image-rendering:pixelated; }
+.pet-home .pet-unlock > .pet-animated-sprite { display:block; width:52px; height:52px; }
+.pet-result-frame .pet-animated-sprite { width:min(100%,290px); height:auto; }
+.pet-animation-preview { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
+.pet-home .pet-animation-preview label { margin:0; font-size:11px; color:#b7cdb8; line-height:1.6; }
+.pet-home .pet-animation-preview select { min-width:0; flex:1; max-width:100%; margin:0; padding:8px 10px; border:1px solid #adc7b02c; border-radius:8px; background:#0f171c; color:#e3ebdf; font:inherit; font-size:12px; line-height:1.5; }
+.pet-home .pet-animation-preview button { flex:none; font-size:11px; padding:7px 10px; }
+.pet-home .pet-animation-progress { display:block; grid-column:1/-1; width:100%; height:5px; accent-color:#b7dac1; margin:8px 0; }
+.pet-home .pet-animation-progress[hidden], .pet-home .pet-animation-preview[hidden] { display:none; }

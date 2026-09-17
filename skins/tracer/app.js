@@ -284,10 +284,13 @@
       });
     });
     store.data.completionHistory = next.completionHistory;
+    store.data.projectDeletions = next.projectDeletions;
     store.data.meta = next.meta; store.epoch++;
   }
   function redraw() {
     if (window.Tracer.renderProjects) window.Tracer.renderProjects();
+    if (window.Tracer.refreshWellness) window.Tracer.refreshWellness();
+    if (window.Tracer.pet) window.Tracer.pet.refresh();
     fireAll(current);
   }
   function restoreDraft() {
