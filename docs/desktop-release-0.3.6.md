@@ -2,7 +2,7 @@
 
 ## 下载与升级
 
-[0.3.6 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)将提供同一版本的 Windows 和两种 Mac 架构安装包。附件由 **Desktop release** 云端工作流在三个平台的构建、测试和安装包检查全部通过后发布；附件尚未出现时，表示构建或发布仍未完成。
+[0.3.6 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)提供同一版本的 Windows 和两种 Mac 架构安装包。三个平台的原生构建、测试和安装包检查均已通过，附件由 **Desktop release** 云端工作流统一发布。
 
 | 平台 | 安装包 | 备用格式 |
 | --- | --- | --- |
@@ -20,11 +20,14 @@
 - 旧单张照片和每动作 4 帧的动画包继续兼容，保留原始图像与帧数。256 帧格式用于更新后新生成的伙伴。
 - 保留动作边界检查，以及对旧图集跨格残片的保守遮罩处理。新图集需要不同的过渡姿态，不能把 4 张图片重复填入 16 个格子。
 - 导出与导入保留两种动画格式；播放遵循减少动态效果设置，并在窗口隐藏、静态图鉴预览和图像加载期间正确暂停。
+- 修复系统临时目录别名导致的桌宠图片读取和导入导出失败，覆盖 macOS 的 `/var`、`/tmp` 别名与 Windows TEMP 的 8.3 短路径拼写。
 
 ## 验证与发布状态
 
-本地 Windows 0.3.6 已完成真实打包应用在全新用户目录中的启动和交互检查，包括主窗口、桌宠播放及伙伴导入导出。打包检查覆盖源码一致性、内置运行时校验值，以及不包含个人数据；本地产物位于 `dist/0.3.6`。
+Windows x64、Mac arm64 与 Mac x64 均在各自原生云端构建机通过 549 项核心测试和 13 项桌面测试（每个平台 562 项）。三个平台还完成了真实打包应用在全新用户目录中的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入，以及动画资源、源码一致性、内置运行时校验值和个人数据排除检查。三个平台使用相同的 252 个应用源码文件。完整结果见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35165754413)。
 
-统一云端发布由 `.github/workflows/desktop-release.yml` 的 **Desktop release** 工作流执行。推送到 `codex/release-*` 分支或手动运行后，Windows x64、Mac arm64 与 Mac x64 分别原生构建和验证，三个平台全部通过后才生成公开附件与合并校验文件。云端是否完成以对应工作流记录为准，本说明不代表本次 Mac 云端检查已经运行通过。
+本地最终 Windows 安装包位于 `dist/0.3.6-final`，已通过包内容与校验值检查。本机 Windows Application Control 阻止了这个最终版本的原生执行，因此最终版本的启动与交互通过结论来自上述云端原生验证，不代表本机已执行通过。
 
-Windows 安装程序目前未签名。Mac 安装包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证；Mac 真实账号 AI 登录和系统权限界面仍需实机验收。下载、首次启动和权限说明见 [Mac 安装指南](https://github.com/AndyLiu010802/Tracer/blob/v0.3.6/docs/macos-install.md)与 [Mac 测试包说明](https://github.com/AndyLiu010802/Tracer/blob/v0.3.6/docs/macos-preview-notes.md)。
+统一云端发布由 `.github/workflows/desktop-release.yml` 的 **Desktop release** 工作流执行。推送到 `codex/release-*` 分支或手动运行后，Windows x64、Mac arm64 与 Mac x64 分别原生构建和验证，三个平台全部通过后才生成公开附件与合并校验文件。
+
+Windows 安装程序目前未签名。Mac 安装包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证；真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收。下载、首次启动和权限说明见 [Mac 安装指南](https://github.com/AndyLiu010802/Tracer/blob/v0.3.6/docs/macos-install.md)与 [Mac 测试包说明](https://github.com/AndyLiu010802/Tracer/blob/v0.3.6/docs/macos-preview-notes.md)。

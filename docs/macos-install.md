@@ -6,9 +6,11 @@
 
 0.3.6 Mac 包使用与 Windows 相同版本的功能，包括内置伙伴的 16 帧动作、更新后生成伙伴的 256 帧格式，以及旧照片和旧 4 帧动作包的兼容支持。安装更新不会自动调用 AI 或重绘已有伙伴。
 
-**Desktop release** 工作流会在三个平台分别原生构建与验证，并且只有全部成功后才发布附件；发布页尚未出现附件时，表示构建或发布还未完成。本次云端验证结果以工作流记录为准，本说明不代表 0.3.6 Mac 云端检查已经运行通过。本地 Windows 0.3.6 的真实打包应用已通过全新用户目录启动与交互检查。
+Windows x64、Mac arm64 与 Mac x64 各自通过 549 项核心测试和 13 项桌面测试（每个平台 562 项），以及真实打包应用在全新用户目录中的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源和源码一致性检查。三个平台使用相同的 252 个应用源码文件。见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35165754413)。
 
-**Mac 包为 ad-hoc 签名，尚未经过 Apple Developer ID 签名与公证。** GUI 实机操作、真实账号 AI 和后台输入权限仍待验收。首次打开的系统提示见 [测试包说明](macos-preview-notes.md)。Windows 的 `.exe` 不能用于 Mac。
+本地最终 Windows 产物 `dist/0.3.6-final` 已通过包内容与校验值检查，但本机 Windows Application Control 阻止了它的原生执行；最终版本的启动与交互验证结论来自上述云端原生检查。
+
+**Mac 包为 ad-hoc 签名，尚未经过 Apple Developer ID 签名与公证。** 真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收。首次打开的系统提示见 [测试包说明](macos-preview-notes.md)。Windows 的 `.exe` 不能用于 Mac。
 
 ## 选择下载文件
 

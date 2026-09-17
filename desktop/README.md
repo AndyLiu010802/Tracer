@@ -1,10 +1,12 @@
 # Tracer 桌面版
 
-Tracer 将任务管理、完成历史、番茄钟、音频、笔记、参考浏览器和桌面伙伴放在独立桌面应用中。默认以无边框全屏启动，使用黑底金色星月 Logo。[0.3.6 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)提供 Windows x64、Apple 芯片 Mac 和 Intel Mac 的同版本安装包；**Desktop release** 工作流只有在三个平台全部构建与检查通过后才会发布附件，尚未出现附件表示发布仍未完成。
+Tracer 将任务管理、完成历史、番茄钟、音频、笔记、参考浏览器和桌面伙伴放在独立桌面应用中。默认以无边框全屏启动，使用黑底金色星月 Logo。[0.3.6 统一发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)提供 Windows x64、Apple 芯片 Mac 和 Intel Mac 的同版本安装包；三个平台均已通过原生云端构建与验证。
 
-**[Mac 安装、权限与构建指南](../docs/macos-install.md)**：下载 [Apple 芯片 DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.dmg) 或 [Intel DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.dmg)，发布页也提供对应的 ZIP。安装时将 Tracer 拖入「应用程序」。Mac 本地数据位于 `~/Library/Application Support/tracer-desktop/`；关闭窗口后可点击 Dock 图标恢复，使用 **Command+Q** 完全退出。Mac 上支持 **Control+Command+F** 全屏切换和系统编辑菜单。Mac 包使用 ad-hoc 签名，尚未获得 Developer ID 签名与 Apple 公证；GUI 实机操作、真实账号 AI 登录和系统权限仍待验收。
+**[Mac 安装、权限与构建指南](../docs/macos-install.md)**：下载 [Apple 芯片 DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-arm64.dmg) 或 [Intel DMG](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-0.3.6-mac-x64.dmg)，发布页也提供对应的 ZIP。安装时将 Tracer 拖入「应用程序」。Mac 本地数据位于 `~/Library/Application Support/tracer-desktop/`；关闭窗口后可点击 Dock 图标恢复，使用 **Command+Q** 完全退出。Mac 上支持 **Control+Command+F** 全屏切换和系统编辑菜单。Mac 包使用 ad-hoc 签名，尚未获得 Developer ID 签名与 Apple 公证；真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍待实机验收。
 
-**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-Setup-0.3.6-x64.exe)**：安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。本地 Windows 0.3.6 已通过真实打包应用在全新用户目录中的启动和交互检查。升级前从托盘退出旧版，安装到原位置可保留任务、设置、桌宠与完成历史。
+**[下载 Windows x64 安装包](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.6/Tracer-Setup-0.3.6-x64.exe)**：安装后通过桌面或开始菜单的「Tracer」打开；终端用户不需要安装 Node.js。升级前从托盘退出旧版，安装到原位置可保留任务、设置、桌宠与完成历史。
+
+Windows x64、Mac arm64 与 Mac x64 各自通过 549 项核心测试和 13 项桌面测试（每个平台 562 项），以及打包应用的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源和源码一致性检查；三个平台使用相同的 252 个应用源码文件。见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35165754413)。本地最终 Windows 产物 `dist/0.3.6-final` 已通过包内容与校验值检查，但本机 Windows Application Control 阻止了它的原生执行；最终版本的启动与交互验证结论来自云端原生检查。
 
 0.3.6 的 6 个内置伙伴每动作有 16 个姿态帧；更新后生成的伙伴每个动作有 16 张连续图像，共 256 帧。旧照片和旧 4 帧动作包继续兼容，安装升级不会自动调用 AI 或重绘已有伙伴。
 

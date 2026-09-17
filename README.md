@@ -6,7 +6,7 @@ Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、�
 
 ## 下载与安装
 
-0.3.6 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。以下为本次统一发布入口；云端工作流只有在三个平台全部检查通过后才会发布附件，尚未出现附件表示构建或发布还未完成。
+0.3.6 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.6)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。三个平台均已通过原生云端构建与验证，附件共用一份 SHA-256 校验文件。
 
 | 电脑类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
@@ -16,7 +16,9 @@ Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、�
 
 Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置；任务、设置、桌宠和个人工作区保留。
 
-本地 Windows 0.3.6 已通过真实打包应用的全新用户目录启动与交互检查。Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证；首次打开可能被 macOS 拦截，真实账号登录和系统权限界面仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。云端结果以本次 **Desktop release** 工作流记录为准。
+Windows x64、Mac arm64 与 Mac x64 各自通过 549 项核心测试和 13 项桌面测试（每个平台 562 项），以及打包应用的主窗口、原生桌宠窗口 16 帧播放、新格式导入导出和旧格式导入、动画资源和源码一致性检查；三个平台使用相同的 252 个应用源码文件。见 [Desktop release 构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35165754413)。
+
+本地最终 Windows 产物 `dist/0.3.6-final` 已通过包内容与校验值检查，但本机 Windows Application Control 阻止了它的原生执行；最终版本的启动与交互验证结论来自上述云端原生检查。Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证；真实账号登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
 
 - **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
