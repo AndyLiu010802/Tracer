@@ -1,24 +1,24 @@
 # Tracer
 
-当前源码的「伙伴家园」已改为任务花园：任务开始进行时自动种下随机种子，完成收获后积累植物图鉴；项目完成归档后生成可旋转浏览的花朵星球。花圃按页展示，项目可以拥有多株植物。当前选择的内置或自定义伙伴继续住在家园。旧休闲区的农场、钓鱼、挖矿和冒险已移除，旧存档保留在本机；下方安装链接仍指向已发布的 0.3.10。
+当前源码的「伙伴家园」已改为任务花园：任务开始进行时自动种下随机种子，完成收获后积累植物图鉴；项目完成归档后生成可旋转浏览的花朵星球。花圃按页展示，项目可以拥有多株植物。当前选择的内置或自定义伙伴继续住在家园。旧休闲区的农场、钓鱼、挖矿和冒险已移除，旧存档保留在本机。0.4.0 同时加入本地账户、30 款壁纸与材质、笔记贴纸及九款异色伙伴专属拖尾。
 
 仍可单独重新生成不满意的伙伴动作，保存前保留原动作和养成进度；含保留旧帧与新动作的导出文件，最低仍需 Tracer 0.3.8 打开。
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[Tracer 0.3.10 发布入口：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.3.10 更新说明](docs/desktop-release-0.3.10.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[Tracer 0.4.0 发布入口：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.4.0 更新说明](docs/desktop-release-0.4.0.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-**0.3.10 已发布并完成验证。** [统一下载页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)提供 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三个平台均通过 **647 项核心测试、16 项桌面测试**，以及实际打包应用中的伙伴动画、家园种植、任务盛放和重启去重验收；七项公开附件、下载地址与统一 SHA-256 校验值已核验。[查看本次构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35178952827)。
+**0.4.0 已发布并完成验证。** [统一下载页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)提供 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三个平台均通过 **654 项核心测试、23 项桌面测试**，以及实际打包应用中的账户隔离、九款拖尾、伙伴动画、保存恢复和后台计时验收；七项公开附件、下载地址与统一 SHA-256 校验值已核验。[查看本次构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35834504837)。
 
-0.3.10 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.3.10)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
+0.4.0 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
 
 | 电脑类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Windows x64 | [Tracer-Setup-0.3.10-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-Setup-0.3.10-x64.exe) | — |
-| Mac：Apple 芯片（M 系列） | [Tracer-0.3.10-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-arm64.zip) |
-| Mac：Intel | [Tracer-0.3.10-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-0.3.10-mac-x64.zip) |
+| Windows x64 | [Tracer-Setup-0.4.0-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-Setup-0.4.0-x64.exe) | — |
+| Mac：Apple 芯片（M 系列） | [Tracer-0.4.0-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-arm64.zip) |
+| Mac：Intel | [Tracer-0.4.0-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-x64.zip) |
 
 Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置；任务、设置、桌宠和个人工作区保留。
 
@@ -28,10 +28,13 @@ Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Ap
 - **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
 - **本地数据**：任务、完成历史和设置保存在 `%APPDATA%\tracer-desktop\`。升级及正常卸载保留用户数据；分享的安装包使用接收者自己的工作区。
-- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.3.10.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/SHA256SUMS-0.3.10.txt)，覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.3.10/Tracer-Setup-0.3.10-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。
+- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.4.0.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/SHA256SUMS-0.4.0.txt)，覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-Setup-0.4.0-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。
 
 ## 功能
 
+- 本地账户与资料、头像和星座图案；账户隔离工作区、金币、收藏与偏好，保留云服务接口。
+- 种植金币购买静态壁纸、动态壁纸及材质外观各 10 款；笔记专属贴纸与悬浮背包。
+- 九款异色伙伴专属鼠标拖尾，可在伙伴面板中分别开关并记住设置。
 - 任务搜索、状态与优先级筛选、拖拽看板；任务支持截止日期、计划日期、估时、依赖、清单和验收要求。
 - 项目、日程、时间线、笔记与完成历史统计。
 - 笔记列表支持收起、拖动调宽并记住偏好；窄布局自动为正文留出完整宽度。

@@ -32,3 +32,9 @@
 更新前从系统托盘完全退出旧版，再安装到原位置。已有任务、笔记、账户、伙伴和购买记录保留；无需另装 Node.js 或 Codex。
 
 Windows 安装包目前未签名；Mac 使用 ad-hoc 签名，尚无 Apple Developer ID 签名与公证。真实账号 AI 登录、系统输入授权与第三方独占全屏软件不在自动化测试覆盖范围内。
+
+## 发布验证记录
+
+Windows x64、Apple Silicon arm64 与 Intel x64 均通过 654 项核心测试、23 项桌面测试及发布界面回归。原生打包应用覆盖账户隔离、九款拖尾、伙伴动画、保存恢复和后台计时。七项下载附件及 SHA-256 校验已核验。
+
+[构建与测试记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35834504837) · [发布源码](https://github.com/AndyLiu010802/Tracer/commit/c7f377b22c4661671b58af8d8887ea21410fc703) · [Mac 安装说明](https://github.com/AndyLiu010802/Tracer/blob/main/docs/macos-install.md)

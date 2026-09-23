@@ -35,4 +35,4 @@
 
 `dev/qa-garden-trails.cjs` 使用生产 Canvas 引擎检查九种不同画面、粒子上限和动画结束清理，并生成截图与视频。`dev/qa-garden-trail.cjs` 使用独立用户目录启动真实 Electron，通过伙伴图鉴和开关逐款验证，并检查重载后的设置记忆。测试收获记录和 IPC 坐标仅在隔离进程内注入，不更改日常账户。
 
-2026-09-23：`npm test` 654 项、`npm run test:desktop` 20 项全部通过。九款画布效果与 Windows Electron 实测通过，包含悬浮伙伴窄面板、主窗口隐藏时切换开关和页面重载记忆；本次未进行 macOS 真机验证。
+2026-09-23：0.4.0 发布复验中，654 项核心测试、23 项桌面测试全部通过。九款画布效果与 Windows Electron 实测通过，包含悬浮伙伴窄面板、主窗口隐藏时切换开关和页面重载记忆；Mac arm64 与 Mac x64 云端原生运行环境也通过相同的打包应用检查。[查看验收记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35834504837)。
