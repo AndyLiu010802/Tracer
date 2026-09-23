@@ -2,11 +2,11 @@
 const test=require('node:test'),assert=require('node:assert/strict'),{EventEmitter}=require('node:events');
 const {eligible,localPoint,attachGardenTrail}=require('../garden-trail');
 const valid={trailEnabled:true,pet:{id:'garden_apple_shiny'},unlocked:['garden_apple_shiny']};
-function fixture(){
+function fixture(offsetY=0){
   const windows=[],timers=new Map(),ipcMain=new EventEmitter(),powerMonitor=new EventEmitter(),main=new EventEmitter();let serial=0,point={x:-50,y:80};
   class Window extends EventEmitter{
     constructor(options){super();this.options=options;this.webContents=new EventEmitter();this.webContents.mainFrame={};this.webContents.setWindowOpenHandler=handler=>{this.open=handler;};this.messages=[];this.webContents.send=(...args)=>this.messages.push(args);windows.push(this);}
-    isDestroyed(){return !!this.dead;}setIgnoreMouseEvents(value){this.ignores=value;}setAlwaysOnTop(value,level){this.top=[value,level];}setVisibleOnAllWorkspaces(){}setBounds(bounds){this.bounds=bounds;}showInactive(){this.visible=true;}hide(){this.visible=false;}loadFile(){return Promise.resolve();}destroy(){this.dead=true;this.emit('closed');}
+    isDestroyed(){return !!this.dead;}setIgnoreMouseEvents(value){this.ignores=value;}setAlwaysOnTop(value,level){this.top=[value,level];}setVisibleOnAllWorkspaces(){}setBounds(bounds){this.bounds={...bounds,y:bounds.y+offsetY};}getBounds(){return this.bounds;}showInactive(){this.visible=true;}hide(){this.visible=false;}loadFile(){return Promise.resolve();}destroy(){this.dead=true;this.emit('closed');}
   }
   const screen={getCursorScreenPoint:()=>point,getDisplayNearestPoint:p=>p.x<0?{id:1,bounds:{x:-1920,y:0,width:1920,height:1080}}:{id:2,bounds:{x:0,y:0,width:2560,height:1440}}};
   const trail=attachGardenTrail(main,{BrowserWindow:Window,screen,ipcMain,powerMonitor,clock:{setInterval(fn){const id=++serial;timers.set(id,fn);return id;},clearInterval(id){timers.delete(id);}}});
@@ -34,6 +34,14 @@ test('switching owned shiny companions changes the trail at a stationary pointer
   assert.deepEqual(w.messages.at(-1)[1],{x:1870,y:80,reset:true,kind:'cherry'});
   const count=w.messages.length;f.trail.update({...valid,pet:{id:'garden_cherry_shiny'},unlocked:['garden_cherry_shiny']});assert.equal(w.messages.length,count);
   f.trail.update({...valid,pet:{id:'garden_cherry'},unlocked:['garden_cherry']});assert.equal(w.dead,true);assert.equal(f.timers.size,0);
+  f.trail.destroy();
+});
+
+test('native menu-bar constraints do not shift the pointer trail on either monitor',()=>{
+  const f=fixture(25);f.trail.update(valid);const w=f.windows[0];w.webContents.emit('did-finish-load');
+  assert.deepEqual(w.messages.at(-1)[1],{x:1870,y:55,reset:true,kind:'apple'});
+  f.move({x:120,y:130});assert.deepEqual(w.messages.at(-1)[1],{x:120,y:105,reset:true,kind:'apple'});
+  f.move({x:125,y:135});assert.deepEqual(w.messages.at(-1)[1],{x:125,y:110,reset:false,kind:'apple'});
   f.trail.destroy();
 });
 test('screen lock, sleep and trusted reduced-motion settings suspend sampling without losing the chosen reward',()=>{

@@ -12,6 +12,10 @@ async function until(read,check=Boolean){for(let i=0;i<150;i++){const value=awai
   const env={...process.env,TRACER_USER_DATA_DIR:profile,TRACER_DISABLE_INPUT_HOOK:'1',DOCS_PORTAL_PORT:String(port),DOCS_PORTAL_HOST:'127.0.0.1',DOCS_PORTAL_DATA_DIR:path.join(profile,'data'),DOCS_PORTAL_STATE_FILE:path.join(profile,'bookmarks.json')};delete env.ELECTRON_RUN_AS_NODE;
   console.log('Launch isolated native test: '+profile);
   const executable=process.argv[2],app=await _electron.launch({executablePath:executable?path.resolve(executable):require('electron'),args:executable?[]:[root],env,timeout:60000}),errors=[];
+  // Inject cursor positions at the native screen boundary, leaving the real
+  // sampler, display selection, coordinate conversion and IPC in the test.
+  // Physical mouse activity on a developer machine cannot erase test particles.
+  await app.evaluate(({screen})=>{globalThis.qaNativeCursor=screen.getCursorScreenPoint();screen.getCursorScreenPoint=()=>({...globalThis.qaNativeCursor});});
   const overlay=()=>app.context().pages().find(p=>p.url().endsWith('/garden-trail.html'));
   const count=()=>app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().filter(w=>w.webContents.getURL().endsWith('/garden-trail.html')).length);
   try{
@@ -39,23 +43,36 @@ async function until(read,check=Boolean){for(let i=0;i<150;i++){const value=awai
       await trail.waitForFunction(kind=>document.querySelector('canvas')?.dataset.trailKind===kind,item.id);
       assert.equal(await toggle.getAttribute('aria-pressed'),'true');
       assert.equal(await count(),1);
-      // Real native IPC -> sandboxed preload -> production canvas, with known coordinates.
-      await app.evaluate(({BrowserWindow},kind)=>{
-        const w=BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/garden-trail.html'));
-        w.webContents.send('tracer-garden-trail-frame',{x:120,y:120,reset:true,kind});
-        w.webContents.send('tracer-garden-trail-frame',{x:320,y:180,reset:false,kind});
-      },item.id);
-      await trail.waitForFunction(()=>{const c=document.querySelector('canvas'),a=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<a.length;i+=4)if(a[i])return true;return false;});
+      await trail.evaluate(()=>{if(!window.qaPointListener){window.qaPointListener=true;GardenTrail.onFrame(point=>{window.qaNativePoint=point;});}});
+      // Observe while points are emitted: trails are intentionally short lived,
+      // so an inspector round trip must not make the test miss a rendered frame.
+      const painted=trail.waitForFunction(()=>{const c=document.querySelector('canvas'),a=c.getContext('2d').getImageData(0,0,Math.min(c.width,850),Math.min(c.height,550)).data;for(let i=3;i<a.length;i+=4)if(a[i])return true;return false;});
+      for(const [x,y]of [[120,120],[320,180]]){
+        await app.evaluate(({BrowserWindow},{x,y})=>{const bounds=BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/garden-trail.html')).getBounds();globalThis.qaNativeCursor={x:bounds.x+x,y:bounds.y+y};},{x,y});
+        await trail.waitForFunction(({x,y})=>window.qaNativePoint?.x===x&&qaNativePoint.y===y,{x,y});
+      }
+      await painted;
       console.log('PASS native '+item.id+' / '+item.name[0]);
     }
     const trail=overlay();
     const properties=await app.evaluate(({BrowserWindow,screen})=>{
       const w=BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/garden-trail.html')),p=w.webContents.getLastWebPreferences();
-      return {id:w.id,focusable:w.isFocusable(),top:w.isAlwaysOnTop(),bounds:w.getBounds(),display:screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).bounds,node:p.nodeIntegration,sandbox:p.sandbox,isolated:p.contextIsolation};
+      const display=screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+      return {id:w.id,focusable:w.isFocusable(),top:w.isAlwaysOnTop(),bounds:w.getBounds(),display:display.bounds,workArea:display.workArea,node:p.nodeIntegration,sandbox:p.sandbox,isolated:p.contextIsolation};
     });
-    assert.equal(properties.focusable,false);assert.equal(properties.top,true);assert.equal(properties.node,false);assert.equal(properties.sandbox,true);assert.equal(properties.isolated,true);assert.deepEqual(properties.bounds,properties.display);
+    assert.equal(properties.focusable,false);assert.equal(properties.top,true);assert.equal(properties.node,false);assert.equal(properties.sandbox,true);assert.equal(properties.isolated,true);
+    if(process.platform==='darwin'){
+      assert.deepEqual({...properties.bounds,y:properties.display.y},properties.display);
+      assert.ok(properties.bounds.y>=properties.display.y&&properties.bounds.y<=properties.workArea.y,'only the native menu-bar constraint may move the overlay');
+    }else assert.deepEqual(properties.bounds,properties.display);
     // Both are already enabled: switch species without creating a second overlay.
     await select('garden_cherry_shiny');await trail.waitForFunction(()=>document.querySelector('canvas').dataset.trailKind==='cherry');
+    await trail.waitForFunction(()=>window.qaNativePoint?.kind==='cherry');
+    const expectedPoint=await app.evaluate(({BrowserWindow,screen})=>{
+      const bounds=BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/garden-trail.html')).getBounds(),point=screen.getCursorScreenPoint();
+      return {x:point.x-bounds.x,y:point.y-bounds.y};
+    });
+    assert.deepEqual(await trail.evaluate(()=>({x:qaNativePoint.x,y:qaNativePoint.y})),expectedPoint,'native cursor stays aligned after menu-bar constraints');
     assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/garden-trail.html')).id),properties.id);
     assert.equal(await toggle.getAttribute('aria-pressed'),'true');
     await toggle.click();await until(count,n=>n===0);
@@ -92,6 +109,9 @@ async function until(read,check=Boolean){for(let i=0;i<150;i++){const value=awai
     assert.deepEqual(errors,[]);
     console.log('PASS ordinary companions hide trail controls; reload preserves preferences; standalone narrow panel toggles while workspace is hidden; no renderer errors');
   }catch(error){
+    console.error('Native trail failure:',error);
+    console.error('Native window diagnostics:',await app.evaluate(({BrowserWindow,screen})=>({cursor:screen.getCursorScreenPoint(),windows:BrowserWindow.getAllWindows().map(w=>({url:w.webContents.getURL(),bounds:w.getBounds(),visible:w.isVisible()}))})));
+    const failedTrail=overlay();if(failedTrail)console.error('Trail renderer diagnostics:',await failedTrail.evaluate(()=>({hidden:document.hidden,point:window.qaNativePoint,canvas:document.querySelector('canvas')?.getBoundingClientRect().toJSON(),kind:document.querySelector('canvas')?.dataset.trailKind,ratio:devicePixelRatio,media:matchMedia('(prefers-reduced-motion: reduce)').matches})));
     for(const [i,p]of app.context().pages().entries()){try{await p.screenshot({path:path.join(profile,'failure-'+i+'.png')});}catch{}}
     throw error;
   }finally{await require('./close-qa-electron.cjs')(app);}

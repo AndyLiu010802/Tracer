@@ -31,7 +31,7 @@ const stage=message=>console.log('[lifecycle QA] '+new Date().toISOString()+' '+
     await page.waitForFunction(()=>window.lifecycleDraws>6);
     await page.evaluate(()=>{const f=TracerFocus.fresh();f.duration=f.remaining=2000;TracerFocus.start(f,Date.now(),'lifecycle-focus');localStorage.setItem('tracer.focus.v1',JSON.stringify(f));dispatchEvent(new StorageEvent('storage',{key:'tracer.focus.v1'}));});
     stage('minimize and verify paused graphics with live focus timer');
-    await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/')).minimize());
+    await page.locator('#window-minimize').click();
     await page.waitForFunction(()=>document.tracerHidden===true);await page.waitForTimeout(200);
     const paused=await page.evaluate(()=>({draws:lifecycleDraws,material:lifecycleMaterial.stats().draws}));await page.waitForTimeout(2600);
     assert.deepEqual(await page.evaluate(()=>({draws:lifecycleDraws,material:lifecycleMaterial.stats().draws})),paused,'hidden wallpaper and material stop rendering');

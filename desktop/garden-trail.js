@@ -14,7 +14,9 @@ function attachGardenTrail(main,dependencies=require('electron')){
     const reset=displayId!==display.id;displayId=display.id;
     if(reset)overlay.setBounds(bounds,false);
     if(!reset&&last?.x===point.x&&last?.y===point.y)return;
-    last=point;overlay.webContents.send('tracer-garden-trail-frame',{...localPoint(point,bounds),reset,kind});
+    // macOS may constrain the requested origin below its menu bar. Pointer
+    // coordinates must use the actual native window, not the requested display.
+    last=point;overlay.webContents.send('tracer-garden-trail-frame',{...localPoint(point,overlay.getBounds()),reset,kind});
   }
   function reconcile(){
     if(closed||!enabled){stop();if(overlay&&!overlay.isDestroyed())overlay.destroy();overlay=null;ready=false;return;}

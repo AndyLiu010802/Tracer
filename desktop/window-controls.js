@@ -1,10 +1,23 @@
 'use strict';
 
-const { ipcMain } = require('electron');
-
 // Native window actions are available only to the trusted main application page.
 // Remote reference pages and child frames never receive this capability.
-function attachWindowControls(win, appOrigin, extraContents = []) {
+function attachWindowControls(win, appOrigin, extraContents = [], dependencies = require('electron')) {
+  const { ipcMain } = dependencies, platform = dependencies.platform || process.platform;
+  let minimizePending = false;
+  function finishMinimize() {
+    if (!minimizePending || win.isDestroyed()) return;
+    minimizePending = false;
+    win.minimize();
+  }
+  function minimize() {
+    if (minimizePending) return;
+    if (platform === 'darwin' && win.isFullScreen()) {
+      minimizePending = true;
+      win.once('leave-full-screen', finishMinimize);
+      win.setFullScreen(false);
+    } else win.minimize();
+  }
   function trusted(event) {
     if (win.isDestroyed() || event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame) return false;
     try { const url = new URL(event.senderFrame.url); return url.origin === appOrigin && !url.pathname.startsWith('/r/'); } catch { return false; }
@@ -22,7 +35,7 @@ function attachWindowControls(win, appOrigin, extraContents = []) {
   function command(event, action) {
     if (!trusted(event)) return;
     if (action === 'toggle-fullscreen') toggle();
-    else if (action === 'minimize') win.minimize();
+    else if (action === 'minimize') minimize();
     else if (action === 'close') win.close();
     else if (action === 'state') report();
   }
@@ -34,6 +47,8 @@ function attachWindowControls(win, appOrigin, extraContents = []) {
   win.webContents.on('did-finish-load', report);
   ipcMain.on('tracer-window-action', command);
   win.once('closed', () => {
+    minimizePending = false;
+    win.removeListener('leave-full-screen', finishMinimize);
     ipcMain.removeListener('tracer-window-action', command);
     contents.forEach(wc => { if (!wc.isDestroyed()) wc.removeListener('before-input-event', input); });
   });
