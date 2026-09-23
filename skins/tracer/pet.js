@@ -6,6 +6,7 @@
   let preparingEdit=false;
   const draftStore=TracerPetGenerationDraft.create(), modalRoot=document.getElementById('modal-root');
   const tr=(zh,en)=>TracerLocale.language()==='zh'?zh:en;
+  const setText=(node,value)=>{if(node&&node.textContent!==value)node.textContent=value;};
   function generationStatus() {
     return creator?.status()||creatorStatus||{busy:preparingEdit,completed:creatorDraft?.pages?.length||0,total:16,ready:creatorDraft?.pages?.length===16&&!creatorDraft?.pendingReplacement,hasDraft:!!creatorDraft,...(creatorDraft?.pendingReplacement?{replacementAction:TracerPetAnimation.actions[creatorDraft.pendingReplacement.pageIndex]}:{})};
   }
@@ -16,8 +17,8 @@
     entry.dataset.state=draftError?'error':status.busy?'generating':status.ready?'ready':status.completed?'paused':'draft';
     const count=status.replacementAction?'0/1':status.completed+'/'+status.total;
     const label=draftError?tr('伙伴暂存需重试','Retry companion backup'):preparingEdit?tr('正在准备动作编辑','Preparing action editor'):status.replacementAction?(status.busy?tr('单组动作重画中','Regenerating action'):tr('单组动作待重试','Action retry pending'))+(status.replacementLabel?' · '+status.replacementLabel:''):status.busy?tr('伙伴生成中','Creating companion'):status.ready?tr('伙伴已就绪 · 待保存','Companion ready · Save'):status.completed?tr('伙伴生成已暂停','Generation paused'):tr('伙伴草稿','Companion draft');
-    entry.querySelector('.pet-generation-label').textContent=label;
-    entry.querySelector('.pet-generation-count').textContent=count;
+    setText(entry.querySelector('.pet-generation-label'),label);
+    setText(entry.querySelector('.pet-generation-count'),count);
     const progress=entry.querySelector('progress'); progress.max=status.replacementAction?1:status.total; progress.value=status.replacementAction?0:status.completed;
     progress.setAttribute('aria-label',tr('伙伴动作生成进度','Companion action progress'));
     entry.setAttribute('aria-label',label+' '+count+tr('，点击查看','; view progress'));
@@ -101,18 +102,21 @@
     if(next) { reminder={...next,title:next.title.slice(0,200),at:now}; force=true; }
     if(unlocked.length) force=true;
     const catalog=P.catalog(state);
-    lastSnapshot={language:TracerLocale.language(),native:!!window.TracerPet,pet:catalog.find(p=>p.id===state.selected),catalog,needs:{...P.current(state)},unlocked:state.unlocked.slice(),metrics,trailEnabled:localStorage.getItem('tracer.garden.trail.v1')==='true',
+    lastSnapshot={accountScope:window.TracerAccount?.scope||'guest',language:TracerLocale.language(),native:!!window.TracerPet,pet:catalog.find(p=>p.id===state.selected),catalog,needs:{...P.current(state)},unlocked:state.unlocked.slice(),metrics,
       mood:P.mood(state,focus.running),focus:{running:focus.running,completed:focus.completed,clock:TracerFocus.format(TracerFocus.remaining(focus,now))},
       task:P.nextTask(ws.tasks),reminder,reminders:state.reminders,snoozedUntil:state.snoozedUntil,lastAction:state.lastAction,lastActionAt:state.lastActionAt,
       feedback:feedback&&now-feedback.at<6500?feedback:null};
+    const trailPreferences=TracerGardenTrails.preferences(localStorage.getItem(TracerGardenTrails.key),localStorage.getItem('tracer.garden.trail.v1'));
+    lastSnapshot.trailEnabled=!!(TracerGardenTrails.kindForPet(lastSnapshot.pet)&&state.unlocked.includes(state.selected)&&trailPreferences.enabled[state.selected]);
     // Native windows only need the reminder's display fields, not task notes.
     if(lastSnapshot.task) { const task=lastSnapshot.task; lastSnapshot.task={id:task.id,title:task.title.slice(0,200),due:task.due,scheduled:task.scheduled}; }
-    if(view) view.update(lastSnapshot);
+    if(view&&!document.hidden&&!document.tracerHidden) view.update(lastSnapshot);
     if(window.TracerPet) window.TracerPet.send({type:'snapshot',value:lastSnapshot});
     const zh=lastSnapshot.language==='zh';
-    const entry=document.getElementById('pet-open'); if(entry) entry.textContent=zh?'✦ 桌宠小屋':'✦ Companions';
-    const garden=document.getElementById('garden-pet-open'); if(garden) garden.textContent=zh?'✦ 我的桌宠 · '+state.unlocked.length+'/'+catalog.length:'✦ Companions · '+state.unlocked.length+'/'+catalog.length;
+    const entry=document.getElementById('pet-open'); setText(entry,zh?'✦ 桌宠小屋':'✦ Companions');
+    const garden=document.getElementById('garden-pet-open'); setText(garden,zh?'✦ 我的桌宠 · '+state.unlocked.length+'/'+catalog.length:'✦ Companions · '+state.unlocked.length+'/'+catalog.length);
     renderGeneration();
+    if(force)T.garden?.refresh();
     if(force || now-lastSaved>30000) save();
   }
   function open() {
@@ -268,8 +272,8 @@
   }
   async function action(type,value) {
     if(type==='toggle-trail'){
-      const pet=P.catalog(state).find(pet=>pet.id===state.selected);if(!pet?.shiny)return;
-      try{localStorage.setItem('tracer.garden.trail.v1',String(localStorage.getItem('tracer.garden.trail.v1')!=='true'));refresh(true);}
+      const pet=P.catalog(state).find(pet=>pet.id===state.selected);if(!TracerGardenTrails.kindForPet(pet)||!state.unlocked.includes(state.selected)||!window.TracerPet)return;
+      try{const prefs=TracerGardenTrails.preferences(localStorage.getItem(TracerGardenTrails.key),localStorage.getItem('tracer.garden.trail.v1'));prefs.enabled[state.selected]=!prefs.enabled[state.selected];localStorage.setItem(TracerGardenTrails.key,JSON.stringify(prefs));refresh(true);}
       catch{T.ui.notice(tr('拖尾设置未保存，请重试。','Trail preference was not saved. Please retry.'));}return;
     }
     if(type==='create-work') { const result=await T.applyCompanionWork(value); refresh(true); return result; }
@@ -305,21 +309,23 @@
     if(type==='select') {feedback=null;T.garden?.refresh();}
     refresh(true);
   }
-  T.pet={open,refresh,read:()=>P.read(state),action};
+  T.pet={open,refresh,read:()=>P.read(state),action,canSwitchAccount:()=>{const s=generationStatus();return !s.busy&&!draftError&&!adopting&&!preparingEdit;},prepareAccountSwitch:async()=>{await draftReady;await draftStore.flush();if(!T.pet.canSwitchAccount())throw new Error('generation-pending');}};
   document.getElementById('pet-open').onclick=open;
   document.getElementById('garden-pet-open').onclick=open;
   document.getElementById('pet-generation-status').onclick=create;
   if(window.TracerPet) window.TracerPet.onAction(message=>{ if(message) action(message.type,message.value); });
   if(window.TracerPet?.onWorkRequest) window.TracerPet.onWorkRequest(async message=>{
     if(!message || typeof message.token!=='string') return;
+    if(window.TracerAccount?.locked||(message.accountScope||'guest')!==(window.TracerAccount?.scope||'guest')){window.TracerPet.workResult({token:message.token,ok:false,error:'workspace-busy'});return;}
     try { const result=await action('create-work',message.value); window.TracerPet.workResult({token:message.token,ok:true,result}); }
     catch(error) { window.TracerPet.workResult({token:message.token,ok:false,error:error.message}); }
   });
   window.addEventListener('storage',event=>{if(event.key===KEY){try{state=P.read(JSON.parse(event.newValue));refresh();}catch{}}});
+  window.addEventListener('storage',event=>{if(event.key===TracerGardenTrails.key||event.key==='tracer.garden.trail.v1')refresh(true);});
   window.addEventListener('beforeunload',event=>{
     save();
     const status=generationStatus();
-    if(status.busy||status.hasDraft||status.ready||draftError) {event.preventDefault();event.returnValue='';}
+    if(!window.TracerAccount?.switching&&(status.busy||status.hasDraft||status.ready||draftError)) {event.preventDefault();event.returnValue='';}
   });
   const draftReady=restoreDraft();
   T.ready.then(()=>{refresh(true);setInterval(refresh,1000);});

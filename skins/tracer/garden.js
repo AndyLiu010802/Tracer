@@ -2,7 +2,7 @@
   'use strict';
   const T=window.Tracer,M=window.TracerModel,G=window.TaskGarden;
   const home=document.getElementById('garden-home-root'),planetHost=document.getElementById('garden-planets-root');
-  let view=null,planetView=null,initialized=false,error='',busy=false;
+  let view=null,planetView=null,storeView=null,initialized=false,error='',busy=false;
   const tr=(zh,en)=>TracerLocale.language()==='zh'?zh:en;
   const accepted=()=>T.store.base||T.store.data;
   function failure(){return tr('更改尚未保存。请保持窗口打开并重试，已有花朵和收藏不会被重新抽取。','Changes have not been saved. Keep this window open and retry. Existing seeds and collections keep their original draw.');}
@@ -51,18 +51,21 @@
     const deletedProjects=new Set((ws.projectDeletions||[]).map(row=>row.id));
     const events=data.seeds.filter(seed=>!seed.forgottenAt&&seed.title&&!deletedProjects.has(seed.projectId)&&(seed.harvestedAt||seed.completedAt||seed.state==='growing')).map(seed=>({type:seed.harvestedAt?'harvest':seed.completedAt?'bloom':'seed',title:seed.title,at:seed.harvestedAt||seed.completedAt||seed.plantedAt,projectName:M.findProject(ws,seed.projectId)?.name||''})).sort((a,b)=>b.at-a.at).slice(0,5);
     return {language:TracerLocale.language(),plots,collection,harvests:{total:collected.length},events,
-      inventory:G.inventory(ws),economy:G.economy(ws),farms:G.farms(ws),
+      inventory:G.inventory(ws),economy:G.economy(ws),farms:G.farms(ws),collectibles:G.collectibles(ws),stickers:G.stickers(ws),wallpapers:data.market.wallpapers||null,companionPlacement:G.companionPlacement(ws),
       journey:{level:index+1,xp,next,progress:next===null?1:(xp-thresholds[index])/(next-thresholds[index]),milestones:[]},
       today:{tasks:todayTasks,minutes:focus.history.filter(row=>TracerFocus.dayKey(row.endedAt)===today).reduce((sum,row)=>sum+row.minutes,0)},
       pet,petSleeping:!!(pets&&TracerPetModel.current(pets).sleeping),focus:{running:focus.running&&focus.mode==='focus',clock:TracerFocus.format(TracerFocus.remaining(focus,now))},
       error:error||(T.store.dirty&&!T.store.inflight?tr('有更改等待保存，收藏以已保存的记录为准。','Some changes await saving. Collections reflect saved records.') :''),busy:busy||T.store.inflight};
   }
   function render(){
-    if(document.hidden||!T.store.data||!T.focus)return;
+    if((document.hidden || document.tracerHidden)||!T.store.data||!T.focus)return;
     try{
       if(T.currentSec()==='garden'){
         if(!view)view=TracerGardenHomeView(home,action);
         view.update(snapshot());
+      }else if(T.currentSec()==='shop'){
+        if(!storeView)storeView=TracerGardenStoreView(document.getElementById('garden-store-root'),action);
+        storeView.update(snapshot());
       }else if(T.currentSec()==='planets'){
         if(!planetView)planetView=TracerGardenPlanetsView(planetHost,planetAction);
         planetView.update({language:TracerLocale.language(),planets:G.read(accepted()).planets,error:error||(T.store.dirty&&!T.store.inflight?failure():'')});
@@ -70,9 +73,11 @@
     }catch(err){error=failure();console.error('[task garden]',err);}
   }
   function refresh(){initialize();if(error===failure()&&!busy&&!T.store.dirty&&!T.store.inflight&&!T.store.conflict&&!T.store.lost)error='';render();return Promise.resolve();}
-  function stop(){view?.destroy();view=null;planetView?.destroy();planetView=null;}
+  function stop(){view?.destroy();view=null;planetView?.destroy();planetView=null;storeView?.destroy();storeView=null;}
   function open(taskId){T.show('garden');if(taskId)view?.selectTask?.(taskId);}
   function action(type,value){
+    if(type==='open-shop')return T.show('shop');
+    if(type==='open-garden')return T.show('garden');
     if(type==='open-companion')return T.pet?.open();
     if(type==='open-planets')return T.show('planets');
     if(type==='open-board'||type==='add-plot')return T.show('board');
@@ -80,10 +85,10 @@
     if(type==='focus-task'||type==='focus-project'){if(M.findTask(T.store.data,value))T.focus.openForTask(value);return;}
     if(type==='retry-save')return change(()=>{});
     if(type==='harvest')return change(ws=>G.harvest(ws,value));
-    if(['sell-plants','buy-farm','equip-farm'].includes(type)){
+    if(['sell-plants','buy-farm','equip-farm','buy-collectible','equip-collectible','wish-collectible','layout-collectible','layout-companion','buy-sticker'].includes(type)){
       if(busy||T.store.inflight||T.store.dirty||T.store.conflict||T.store.lost){error=failure();render();return;}
       return change(ws=>{
-        const result=type==='sell-plants'?G.sell(ws,value.plantKind,value.quantity):type==='buy-farm'?G.buyFarm(ws,value.farmId):G.equipFarm(ws,value.farmId);
+        const result=type==='buy-sticker'?G.buySticker(ws,value.itemId):type==='sell-plants'?G.sell(ws,value.plantKind,value.quantity):type==='buy-farm'?G.buyFarm(ws,value.farmId):type==='equip-farm'?G.equipFarm(ws,value.farmId):type==='buy-collectible'?G.buyCollectible(ws,value.itemId):type==='equip-collectible'?G.equipCollectible(ws,value.itemId):type==='layout-collectible'?G.layoutCollectible(ws,value):type==='layout-companion'?G.layoutCompanion(ws,value):G.wishCollectible(ws,value.itemId);
         if(!result?.ok)throw new Error(result?.reason||'market-action-failed');
       });
     }
@@ -112,8 +117,8 @@
     }
   }
   T.garden={refresh,read:()=>G.read(accepted()),open,harvest:id=>action('harvest',id)};
-  T.onShow('garden',refresh);T.onShow('planets',refresh);
-  T.sections.forEach(name=>T.onShow(name,()=>{if(name!=='garden'){view?.destroy();view=null;}if(name!=='planets'){planetView?.destroy();planetView=null;}}));
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else refresh();});
+  T.onShow('shop',refresh);T.onShow('garden',refresh);T.onShow('planets',refresh);
+  T.sections.forEach(name=>T.onShow(name,()=>{if(name!=='garden'){view?.destroy();view=null;}if(name!=='planets'){planetView?.destroy();planetView=null;}if(name!=='shop'){storeView?.destroy();storeView=null;}}));
+  document.addEventListener('tracer-visibilitychange',()=>{if((document.hidden || document.tracerHidden))stop();else refresh();});
   T.ready.then(ws=>{if(ws)refresh();});
 })();

@@ -117,6 +117,8 @@
 
   grip.addEventListener('pointerdown', function (e) {
     if (e.button) return;   // 只认主键（左键/触控/笔的主接触）
+    // In the stacked layout the reader spans the viewport; horizontal resizing is meaningless.
+    if (window.matchMedia('(max-width:720px)').matches) return;
     // 收起态下把手渲染宽度是 6px，拿它当拖拽基准会把「无意义的 6」当成用户
     // 想要的宽度写回去。收起态只认双击/键盘展开，不认拖拽——先展开，展开
     // 之后再来一次 pointerdown 才是合法的拖拽起点。

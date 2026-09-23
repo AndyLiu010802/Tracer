@@ -47,10 +47,10 @@
   }
   function pixelMarkup(value,level=0,rare=false){
     const kind=kinds.includes(value)?value:'wildflower',stage=Number.isFinite(level)?Math.max(0,Math.min(4,Math.floor(level))):0,tree=kinds.indexOf(kind)>=3;
+    if(stage===0)return `<svg class="garden-home-plant-art garden-pixel-plant garden-seed-art" data-kind="${kind}" data-rare="false" viewBox="0 0 160 176" fill="none" aria-hidden="true"><ellipse cx="80" cy="151" rx="25" ry="5" fill="#493e2b" opacity=".2"/><g data-plant-part="body" style="transform-origin:80px 151px"><path d="M61 140c-8-15 5-32 32-40 1 15 14 26 7 40-7 15-31 15-39 0Z" fill="#805034" stroke="#583f2c" stroke-width="2" stroke-linejoin="round"/><path d="M64 136c-4-13 8-25 26-32-4 14 0 30-17 40-4-1-7-4-9-8Z" fill="#bf8953"/><path d="M68 126c3-8 10-13 18-17-6 8-8 17-14 24-4 2-6-3-4-7Z" fill="#e8bc7f"/><path d="M91 105c-9 21-4 31-18 41" stroke="#f3ce94" stroke-width="2.3" stroke-linecap="round"/><path d="M95 116c7 13 4 23-8 28" stroke="#a96d42" stroke-width="3" stroke-linecap="round"/><path d="m66 140 3 3m26-12 1 3" stroke="#e0ac70" stroke-width="1.5" stroke-linecap="round"/></g></svg>`;
     const shadow='<ellipse cx="80" cy="151" rx="39" ry="8" fill="#375c35" opacity=".15"/>';
     let body='',head='',left='',right='',headOrigin='80px 93px',eyesY=67;
-    if(stage===0){body=path('#8b633f','M71 128h17v5h5v12h-6v5H70v-6h-5v-10h6Z')+path('#c39258','M73 129h12v6h4v8H76v-4h-6v-6h3Z')+path('#e6bb78','M74 131h5v9h-5Z');}
-    else {
+    {
       body=tree&&stage>=2?path('#745537','M74 83h13v61h9v8H64v-6h10Z')+path('#aa7e47','M76 87h6v57h6v4H73v-8h3Z')+path('#d0a062','M76 92h3v29h-3Z'):
         path('#49773b','M77 80h7v64h7v7H67v-6h10Z')+path('#8db854','M79 82h3v62h-3Z');
       if(stage===1){body=path('#507c3d','M78 116h5v33h-5Z');left=leaf();right=leaf(true);head='';}

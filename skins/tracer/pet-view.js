@@ -5,7 +5,7 @@
     const idle = TracerPetIdle.create();
     const collectionAnimations=[];
     function clearCollectionAnimations(){for(const player of collectionAnimations.splice(0))player.destroy();}
-    let characterAnimation = null, companionPreview = null;
+    let characterAnimation = null, companionPreview = null, trailPreview=null, trailPreviewKind='';
     let chatDraft = '', draftRevision = 0, messageSequence = 0, composing = false;
     let work=null, proposalContext=null, creating=false, chatStore=null, storageFailed=false, destroyed=false;
     const tr = (zh,en) => language === 'zh' ? zh : en;
@@ -104,6 +104,7 @@
     function shell() {
       clearCollectionAnimations();
       companionPreview?.destroy(); companionPreview=null;
+      trailPreview?.destroy();trailPreview=null;trailPreviewKind='';
       characterAnimation?.destroy(); characterAnimation=null;
       pauseIdle();
       sizeOpen=false; messageKey=''; messageUntil=0;
@@ -124,7 +125,7 @@
         companionPreview=TracerGardenCompanionPreview.create(host,{beforePlay:pauseIdle,isBlocked:()=>!!(drag||snapshot?.needs.sleeping||snapshot?.focus.running)});
       }
       find('.pet-bond').insertAdjacentHTML('afterend','<details class="pet-traits" hidden><summary>'+tr('伙伴性格','Personality')+'</summary><p></p></details>');
-      find('.pet-bond').insertAdjacentHTML('afterend','<button type="button" class="pet-trail-toggle" data-act="toggle-trail" hidden></button>');
+      find('.pet-bond').insertAdjacentHTML('afterend','<section class="pet-trail-card" hidden><div class="pet-trail-heading"><span class="pet-trail-badge"></span><strong class="pet-trail-name"></strong></div><canvas class="pet-trail-preview" aria-hidden="true"></canvas><p class="pet-trail-description"></p><button type="button" class="pet-trail-toggle" data-act="toggle-trail" aria-pressed="false"></button><small class="pet-trail-hint"></small></section>');
       find('.pet-bond').insertAdjacentHTML('afterend','<details class="pet-personality-card" hidden><summary class="pet-personality-title"></summary><p class="pet-personality-bio"></p><dl><dt>'+tr('喜欢','Loves')+'</dt><dd class="pet-personality-likes"></dd><dt>'+tr('小习惯','Little ritual')+'</dt><dd class="pet-personality-habit"></dd></dl></details>');
       text('.pet-chat-privacy',tr('使用“我的 AI”中的服务。发送当前对话、伙伴名字、类型及可选性格；不会自动发送任务或照片。每次发送可能使用套餐额度或 API 费用。','Uses your My AI connection. Sends this conversation, companion name, type and optional personality. Tasks and photos are never sent automatically. Sending may use plan allowance or incur API charges.'));
       find('.pet-chat-form').insertAdjacentHTML('beforebegin','<section class="pet-work-preview" hidden aria-live="polite"></section>');
@@ -452,10 +453,19 @@
       text('.pet-personality-title',personality?TracerPetPersonalities.text(p.id,'tagline',language):'');
       for(const field of ['bio','likes','habit']) text('.pet-personality-'+field,personality?TracerPetPersonalities.text(p.id,field,language):'');
       text('.pet-bond',tr('默契值 ','Bond ')+Math.round(state.bond)+' / 100');
-      find('.pet-trail-toggle').hidden=!p.shiny;
-      find('.pet-trail-toggle').disabled=!desktop&&!snapshot.native;
-      find('.pet-trail-toggle').setAttribute('aria-pressed',String(!!snapshot.trailEnabled));
-      text('.pet-trail-toggle',!desktop&&!snapshot.native?tr('全桌面拖尾需桌面版','Desktop app required for cursor trail'):snapshot.trailEnabled?tr('关闭全桌面星光拖尾','Turn off desktop starlight trail'):tr('开启全桌面星光拖尾','Turn on desktop starlight trail'));
+      const trailKind=TracerGardenTrails.kindForPet(p),trail=TracerGardenTrails.profile(trailKind),ownedTrail=!!trail&&snapshot.unlocked.includes(p.id);
+      find('.pet-trail-card').hidden=!ownedTrail;
+      if(ownedTrail){
+        find('.pet-trail-card').style.setProperty('--trail-color',trail.colors[0]);
+        text('.pet-trail-badge',tr('异色专属拖尾','SHINY EXCLUSIVE'));
+        text('.pet-trail-name',trail.name[language==='zh'?0:1]);text('.pet-trail-description',trail.description[language==='zh'?0:1]);
+        if(trailPreviewKind!==trailKind){trailPreview?.destroy();trailPreview=TracerGardenTrails.preview(find('.pet-trail-preview'),trailKind);trailPreviewKind=trailKind;}
+        find('.pet-trail-toggle').disabled=!desktop&&!snapshot.native;
+        find('.pet-trail-toggle').setAttribute('aria-pressed',String(!!snapshot.trailEnabled));
+        find('.pet-trail-toggle').setAttribute('aria-label',(snapshot.trailEnabled?tr('关闭','Turn off '):tr('开启','Turn on '))+trail.name[language==='zh'?0:1]+tr('鼠标拖尾',' cursor trail'));
+        text('.pet-trail-toggle',!desktop&&!snapshot.native?tr('全桌面拖尾需桌面版','Desktop app required'):snapshot.trailEnabled?tr('已开启 · 点击关闭','On · Turn off'):tr('开启专属拖尾','Turn on this trail'));
+        text('.pet-trail-hint',tr('分别记住每位伙伴的开关 · 切换伙伴即更换拖尾','Saved for each companion · Changes with your companion'));
+      }else if(trailPreview){trailPreview.destroy();trailPreview=null;trailPreviewKind='';}
       text('.pet-task',snapshot.task?snapshot.task.title:tr('今天没有待提醒的任务','No tasks need a nudge today'));
       find('.pet-task').disabled=!snapshot.task;
       text('.pet-task-date',snapshot.task?(snapshot.task.due||snapshot.task.scheduled||''):'');
@@ -486,6 +496,6 @@
         }
       }
     }
-    return { update, readChat:()=>({petId:selected,...readState()}), destroy:()=>{persistChat();destroyed=true;generation++;chatController?.abort();companionPreview?.destroy();characterAnimation?.destroy();clearCollectionAnimations();if(desktop)window.removeEventListener('blur',blurSize);if(drag?.moved)dispatch('drag-end');drag=null;root.replaceChildren();} };
+    return { update, readChat:()=>({petId:selected,...readState()}), destroy:()=>{persistChat();destroyed=true;generation++;chatController?.abort();companionPreview?.destroy();trailPreview?.destroy();characterAnimation?.destroy();clearCollectionAnimations();if(desktop)window.removeEventListener('blur',blurSize);if(drag?.moved)dispatch('drag-end');drag=null;root.replaceChildren();} };
   };
 })();

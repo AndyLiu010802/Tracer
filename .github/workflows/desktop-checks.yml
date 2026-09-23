@@ -1,0 +1,57 @@
+name: Desktop compatibility checks
+on:
+  push:
+    branches: ['codex/macos-vm-validation']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: desktop-checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-latest
+            arch: x64
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:desktop
+      - name: Build native Mac package
+        if: runner.os == 'macOS'
+        run: npm run dist:mac:${{ matrix.arch }}
+      - name: Verify Mac package and native binaries
+        if: runner.os == 'macOS'
+        run: node dev/verify-macos-release.cjs ${{ matrix.arch }}
+      - name: Install test driver without changing the lockfile
+        run: npm install --no-save --package-lock=false playwright@1.63.0
+      - name: Exercise Windows desktop lifecycle
+        if: runner.os == 'Windows'
+        run: node dev/qa-desktop-lifecycle.cjs
+      - name: Exercise packaged Mac lifecycle and background timing
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          folder=mac
+          if [[ '${{ matrix.arch }}' == arm64 ]]; then folder=mac-arm64; fi
+          node dev/qa-desktop-lifecycle.cjs "dist/$folder/Tracer.app/Contents/MacOS/Tracer"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: desktop-diagnostics-${{ matrix.arch }}-${{ runner.os }}
+          path: .cache/lifecycle-*/electron.log

@@ -94,6 +94,7 @@ test('the renderer crops four true frames of each selected behavior and cleans u
   assert.equal(b.timers.size, 1);
   for (const name of Animation.actions) {
     player.setAction(name); const clip = Animation.clips[name];
+    if(name==='sleep'){assert.equal(element.dataset.frame,'2');assert.equal(b.timers.size,0);continue;}
     assert.deepEqual(clone(element.dataset), { action: name, page: String(clip.page), row: String(clip.row), frame: '0', playback: 'playing' });
     assert.equal(image.getAttribute('src'), asset(clip.page + 1));
     for (let frame = 1; frame <= 4; frame++) {
@@ -117,6 +118,7 @@ test('dense packs route every action to sixteen consecutive cells without changi
   const image = player.element.children[0];
   for (const [index, action] of Animation.actions.entries()) {
     player.setAction(action);
+    if(action==='sleep'){assert.equal(player.element.dataset.frame,'12');assert.equal(b.timers.size,0);continue;}
     for (let frame = 0; frame < 16; frame++) {
       assert.equal(player.element.dataset.action, action);
       assert.equal(player.element.dataset.page, String(index));
@@ -173,9 +175,7 @@ test('retained legacy motion keeps the original loop duration and static actions
   player.setAction('feed'); assert.equal(b.timers.size, 1); assert.equal(b.delays.at(-1), Animation.denseClips.feed.frameMs[0]);
   player.destroy();
   const preview = b.api.createPage(asset(5), 4, { version: 2, retainedFrames: 4 });
-  let previewDuration = 0;
-  for (let frame = 0; frame < 16; frame++) { previewDuration += b.delays.at(-1); b.tick(); }
-  assert.equal(previewDuration, Animation.clips.sleep.frameMs.reduce((total, value) => total + value, 0));
+  assert.equal(preview.element.dataset.frame,'8');assert.equal(b.timers.size,0);
   preview.destroy();
 });
 
@@ -217,7 +217,7 @@ test('hidden and reduced-motion views pause without losing their current action;
   b.visibility(false); assert.equal(b.timers.size, 1); b.tick(); assert.equal(player.element.dataset.frame, '2');
   b.motion(true); assert.equal(b.timers.size, 0); assert.equal(player.element.dataset.frame, '0'); assert.equal(player.element.dataset.action, 'mining');
   player.setAction('sleep'); assert.equal(player.element.dataset.row, '0'); assert.equal(player.element.dataset.page, '1'); assert.equal(player.element.dataset.playback, 'reduced-motion');
-  b.motion(false); assert.equal(b.timers.size, 1); player.destroy();
+  b.motion(false); assert.equal(b.timers.size, 0); assert.equal(player.element.dataset.frame,'2'); player.destroy();
   const preview = b.api.createPage(asset(3), 2, { animated: false });
   assert.equal(b.documentListeners.get('visibilitychange').size, 0); assert.equal(b.motionListeners.size, 0);
   assert.equal(preview.element.style.width, undefined); assert.equal(preview.element.style.height, undefined, 'CSS controls main, collection and preview sizing');
@@ -268,7 +268,7 @@ test('missing displayed pages fall back once, show an accessible star if necessa
   player.setAction('pet'); assert.equal(image.getAttribute('src'), asset(1)); assert.notEqual(image.onload, fallbackLoad, 'a changed action can explicitly retry the same page');
   image.onload(); assert.equal(element.dataset.error, undefined); assert.equal(element.getAttribute('aria-label'), 'Maple');
   assert.equal(placeholder.style.display, 'none'); assert.equal(image.style.display, 'block'); assert.equal(b.timers.size, 1);
-  player.setAction('sleep'); image.onload(); b.tick(); assert.equal(element.dataset.action, 'sleep'); assert.equal(element.dataset.frame, '1');
+  player.setAction('sleep'); image.onload(); assert.equal(b.timers.size,0); assert.equal(element.dataset.action, 'sleep'); assert.equal(element.dataset.frame, '2');
   const lateError = image.onerror; player.destroy(); lateError();
   assert.equal(image.onload, null); assert.equal(image.onerror, null); assert.equal(b.timers.size, 0); assert.equal(errors.length, 2);
 });

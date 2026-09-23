@@ -131,7 +131,7 @@
     var box = document.getElementById('note-editor');
     if (!box) return;
     var n = currentId ? M.findNote(ws, currentId) : null;
-    if (!n) { box.innerHTML = '<div class="note-empty">' + L('选择或新建笔记', 'Select or create a page') + '</div>'; return; }
+    if (!n) { delete box.dataset.stickerKind;delete box.dataset.stickerTarget;box.innerHTML = '<div class="note-empty">' + L('选择或新建笔记', 'Select or create a page') + '</div>'; return; }
 
     if (preview) {
       box.innerHTML = '<div class="note-toolbar">'
@@ -149,7 +149,10 @@
         + '<textarea class="note-body" id="note-body" placeholder="' + L('用 Markdown 记录…（Ctrl/Cmd+E 切换预览）', 'Write in Markdown… (Ctrl/Cmd+E toggles preview)') + '"></textarea>';
       document.getElementById('note-body').value = n.body;
     }
+    box.dataset.stickerKind='note';box.dataset.stickerTarget=n.id;
+    var stickers=document.createElement('button');stickers.type='button';stickers.className='chip';stickers.textContent=L('✧ 贴纸','✧ Stickers');stickers.addEventListener('click',function(){T.stickers?.open();});box.querySelector('.note-toolbar').appendChild(stickers);
     wireEditor(ws, n);
+    T.stickers?.refresh();
   }
 
   function wireEditor(ws, n) {

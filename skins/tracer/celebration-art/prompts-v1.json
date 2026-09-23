@@ -1,0 +1,41 @@
+{
+  "tool": "Built-in image_gen",
+  "items": [
+    {
+      "id": "gold-foil",
+      "prompt": "Use case: stylized-concept. Asset type: premium 2.5D game UI confetti particle sprite for a cozy productivity app's project-completion celebration. Generate exactly ONE isolated tiny material piece described below, centered in a square canvas, occupying about 78 percent of image width/height. Genuine fully transparent RGBA background outside the object, preserve transparency; absolutely no checkerboard, background colour, drop shadow on a ground, scene, typography, watermark, other objects or border. Orthographic view slightly tilted toward the viewer; tactile meticulously crafted material, crisp silhouette, restrained soft studio highlights from upper left. Readable silhouette at 12-28 CSS pixels. No busy decorative patterns. Subject: One small champagne-gold metallic confetti rectangle, softly curled along one short edge, subtly hammered foil and crisp gold specular reflections. Rectangle proportions 1.5:1. Warm gold front and slightly darker amber back.",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-a6394921-60f4-4162-8b69-8c0c8c21b5ba.png",
+      "asset": "/celebration-art/gold-foil-v1.png"
+    },
+    {
+      "id": "coral-paper",
+      "prompt": "Use case: stylized-concept. Asset type: premium 2.5D game UI confetti particle sprite for a cozy productivity app's project-completion celebration. Generate exactly ONE isolated tiny material piece described below, centered in a square canvas, occupying about 78 percent of image width/height. Genuine fully transparent RGBA background outside the object, preserve transparency; absolutely no checkerboard, background colour, drop shadow on a ground, scene, typography, watermark, other objects or border. Orthographic view slightly tilted toward the viewer; tactile meticulously crafted material, crisp silhouette, restrained soft studio highlights from upper left. Readable silhouette at 12-28 CSS pixels. No busy decorative patterns. Subject: One small coral-pink washi paper confetti quadrilateral with a gently lifted corner, subtle handmade paper fibers, warm matte surface, thin cream paper edge. Nearly square, softly irregular cut edges.",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-ea7d8813-bd91-4ff1-b061-43d9fb075e8c.png",
+      "asset": "/celebration-art/coral-paper-v1.png"
+    },
+    {
+      "id": "opal-diamond",
+      "prompt": "Use case: stylized-concept. Asset type: premium 2.5D game UI confetti particle sprite for a cozy productivity app's project-completion celebration. Generate exactly ONE isolated tiny material piece described below, centered in a square canvas, occupying about 78 percent of image width/height. Genuine fully transparent RGBA background outside the object, preserve transparency; absolutely no checkerboard, background colour, drop shadow on a ground, scene, typography, watermark, other objects or border. Orthographic view slightly tilted toward the viewer; tactile meticulously crafted material, crisp silhouette, restrained soft studio highlights from upper left. Readable silhouette at 12-28 CSS pixels. No busy decorative patterns. Subject: One small iridescent holographic foil diamond confetti chip, simple rhombus silhouette, a shallow centre crease, refined lavender-cyan-pearl interference highlights, crisp facets, thin and lightweight.",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-aad564a5-38a9-422b-b34a-1ee7713e08d5.png",
+      "asset": "/celebration-art/opal-diamond-v1.png"
+    },
+    {
+      "id": "sage-leaf",
+      "prompt": "Use case: stylized-concept. Asset type: premium 2.5D game UI confetti particle sprite for a cozy productivity app's project-completion celebration. Generate exactly ONE isolated tiny material piece described below, centered in a square canvas, occupying about 78 percent of image width/height. Genuine fully transparent RGBA background outside the object, preserve transparency; absolutely no checkerboard, background colour, drop shadow on a ground, scene, typography, watermark, other objects or border. Orthographic view slightly tilted toward the viewer; tactile meticulously crafted material, crisp silhouette, restrained soft studio highlights from upper left. Readable silhouette at 12-28 CSS pixels. No busy decorative patterns. Subject: One small sage-green linen-paper confetti piece cut as a simple tapered leaf, subtly curved, fine visible natural fiber grain, mint highlight and deep sage fold. A paper cutout, not a real leaf, no stem.",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-ec080620-b288-4a6d-8fc7-fea5e5508596.png",
+      "asset": "/celebration-art/sage-leaf-v1.png"
+    },
+    {
+      "id": "pearl-disc",
+      "prompt": "Use case: stylized-concept. Asset type: premium 2.5D game UI confetti particle sprite for a cozy productivity app's project-completion celebration. Generate exactly ONE isolated tiny material piece described below, centered in a square canvas, occupying about 78 percent of image width/height. Genuine fully transparent RGBA background outside the object, preserve transparency; absolutely no checkerboard, background colour, drop shadow on a ground, scene, typography, watermark, other objects or border. Orthographic view slightly tilted toward the viewer; tactile meticulously crafted material, crisp silhouette, restrained soft studio highlights from upper left. Readable silhouette at 12-28 CSS pixels. No busy decorative patterns. Subject: One small ice-blue pearlescent paper confetti circle, slight saddle curl revealing a silver-white back edge, softly shimmering mother-of-pearl finish, clean round silhouette, a single thin paper disc.",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-474ddfae-974e-4a9e-9d20-f47a9fcda6db.png",
+      "asset": "/celebration-art/pearl-disc-v1.png"
+    },
+    {
+      "id": "rose-ribbon",
+      "prompt": "Use case: stylized-concept. Asset type: premium 2.5D game UI confetti particle sprite for a cozy productivity app's project-completion celebration. Generate exactly ONE isolated tiny material piece described below, centered in a square canvas, occupying about 78 percent of image width/height. Genuine fully transparent RGBA background outside the object, preserve transparency; absolutely no checkerboard, background colour, drop shadow on a ground, scene, typography, watermark, other objects or border. Orthographic view slightly tilted toward the viewer; tactile meticulously crafted material, crisp silhouette, restrained soft studio highlights from upper left. Readable silhouette at 12-28 CSS pixels. No busy decorative patterns. Subject: One short rose-gold satin ribbon confetti curl, a single loose shallow S bend, two cut ends, glossy silk weave with pale blush highlights and deeper rosy folds. Compact length about 2.5 times width, no bow, no coil.",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-33c0a953-c123-4e13-bba4-dd9058705897.png",
+      "asset": "/celebration-art/rose-ribbon-v1.png"
+    }
+  ]
+}

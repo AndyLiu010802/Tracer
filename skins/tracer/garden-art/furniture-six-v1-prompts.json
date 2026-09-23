@@ -1,0 +1,20 @@
+{
+  "prompt": "Use case: precise-object-edit. Input is the design reference for ONE collectible furniture object. Create a production sprite sheet showing that SAME exact object from SIX distinct horizontal rotation directions, clockwise at 60-degree steps. Layout: exactly THREE columns by TWO rows, six equally sized cells on a wide 3:2 canvas. Top row left to right directions 0,60,120; bottom row left to right 180,240,300. Keep camera elevation 25 degrees downward and object standing upright in every cell. Rotate the actual object around its vertical axis: include convincing side and BACK views, not six copies of the front and not flat tilted pictures. Preserve all materials, color, ornamentation and design identity from the reference. Keep identical object scale, center and feet baseline within every cell; full silhouette and all feet fully inside each cell with at least 10% transparent padding. Fine detailed cozy isometric game illustration, crisp edges and readable craft detail. GENUINELY TRANSPARENT alpha background throughout and between all cells, no checkerboard, no frames, no grid lines, no labels, no numbers or text. Six views only.",
+  "sources": {
+    "birdhouse": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-9d94531b-74ab-4e82-af57-490816d1b6ff.png",
+    "mushroom_lamp": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-fc351085-c2d9-4502-9638-454fe3476dd7.png",
+    "tea_table": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-175d17ea-aec1-4973-b4fa-db521a05ad2d.png",
+    "moon_lamp": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-98e7e50b-6062-4c36-adf4-9c8831001c67.png",
+    "moon_fountain": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-4fb41a57-9dbe-43cb-8841-924bdc0034f6.png",
+    "moon_gate": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-e1066c41-eea5-4e25-878c-5b3cb4cf73d9.png",
+    "star_scope": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-55872ef1-f528-4f7d-8e01-eecc9b7c570d.png",
+    "orrery": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-273718f1-f6fd-43d3-9860-739978dc3519.png",
+    "crystal_deer": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-14dd42f2-f816-4826-a400-a11e43149ce0.png",
+    "reading_bench": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-08364bcc-9b52-4aa8-93b6-25006ea54193.png",
+    "book_cabinet": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-3bd230cb-432c-4ee5-95f6-69cd842bc5da.png",
+    "wisteria_swing": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-837c483f-362b-40fb-a07f-eabc850041f0.png",
+    "flower_cart": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-548c11a9-80e0-49bd-80b4-024758cb2faf.png",
+    "glass_terrarium": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-5f3d33f5-79e8-44cd-bc4c-67fbc6a09ace.png",
+    "garden_greenhouse": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cba7-17f7-7d23-9f81-9d9ab01c4c3e\\exec-edfcc569-4925-406d-85a5-c9d31fc71ee0.png"
+  }
+}

@@ -70,6 +70,13 @@ jobs:
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
         run: node dev/qa-pet-dense-release.cjs '${{ matrix.executable }}'
+      - name: Verify packaged lifecycle, local accounts and nine shiny trails
+        env:
+          TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
+        run: |
+          node dev/qa-desktop-lifecycle.cjs '${{ matrix.executable }}'
+          node dev/qa-account-desktop.cjs '${{ matrix.executable }}'
+          node dev/qa-garden-trail.cjs '${{ matrix.executable }}'
       - name: Install recovery test browser
         run: node .cache/release-qa/node_modules/playwright/cli.js install chromium
       - name: Verify companion draft recovery and background generation
@@ -81,7 +88,11 @@ jobs:
           node dev/qa-pet-creator-lifecycle.cjs
           node dev/qa-companion-work.cjs
           node dev/qa-workspace-recovery.cjs
-          node dev/qa-garden-home.cjs
+          node dev/qa-task-garden-actions.cjs
+          node dev/qa-accounts.cjs
+          node dev/qa-wallpaper-shop.cjs
+          node dev/qa-stickers.cjs
+          node dev/qa-drag-anchor.cjs
       - uses: actions/upload-artifact@v4
         with:
           name: Tracer-${{ matrix.platform }}-${{ matrix.arch }}
@@ -107,6 +118,11 @@ jobs:
             .cache/companion-work-*/*.png
             .cache/workspace-recovery-*/*.png
             .cache/garden-home-*/*.png
+            .cache/lifecycle-*/electron.log
+            .cache/account-desktop-*/*.png
+            .cache/garden-trail-*/*.png
+            .cache/task-garden-actions-*/*.png
+            .cache/drag-anchor-*/*.png
 
   publish:
     needs: build

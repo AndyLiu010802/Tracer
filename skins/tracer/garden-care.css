@@ -1,0 +1,49 @@
+/* Crisp vector surfaces, anchored to the existing root at (80, 151). */
+.garden-world-ground{filter:none}
+.garden-ground-edge{fill:#795438}.garden-ground-side{fill:#60442f}
+.garden-ground-top{fill:#b68a58;stroke:#e4c08b;stroke-width:1.2;stroke-linejoin:round}
+.garden-ground-bed{fill:#947047}.garden-ground-furrow{stroke:#705136;stroke-width:3;stroke-linecap:round}
+.garden-ground-ridge{stroke:#c29a65;stroke-width:1.5;stroke-linecap:round}
+.garden-ground-grain{stroke:#dab889;stroke-width:1.2;stroke-linecap:round}
+.garden-ground-pebble{fill:#dcc39c}.garden-ground-rim{stroke:#efd19e;stroke-width:1;stroke-linejoin:round}
+.garden-world-plot[data-empty=true] .garden-ground-side,.garden-world-plot[data-empty=true] .garden-ground-detail{display:none}
+.garden-world[data-farm=cyber] .garden-ground-side{fill:#16383e}
+.garden-world[data-farm=cyber] .garden-ground-bed{fill:#244b4e}
+.garden-world[data-farm=cyber] .garden-ground-furrow{stroke:#14373d}
+.garden-world[data-farm=cyber] .garden-ground-ridge{stroke:#589993}
+.garden-world[data-farm=cyber] .garden-ground-pebble{fill:#9ccebd}
+.garden-world[data-farm=cyber] .garden-ground-rim{stroke:#a6dfcc}
+.garden-plant-sprite>.garden-seed-art{image-rendering:auto;shape-rendering:geometricPrecision}
+.garden-home .garden-world-plant .garden-seed-art{filter:none}
+.garden-task-plant-select{overflow:visible}
+.garden-home .garden-task-plant-card .garden-world-portrait{position:relative;filter:none}
+.garden-world .garden-world-effects,.garden-card-effects{position:absolute;inset:auto;left:50%;top:50%;width:155%;aspect-ratio:160/176;transform:translate(-50%,-85.795%);pointer-events:none;z-index:3;display:block}
+.garden-card-effects{width:100%;height:100%;top:0;left:0;transform:none;aspect-ratio:auto}
+.garden-world-effects>svg,.garden-card-effects>svg{display:block;width:100%;height:100%;overflow:visible}
+.garden-task-plant-care-button>svg{width:20px;height:20px;display:block;margin:auto}
+.care-water-can{transform-origin:108px 56px;animation:care-pour 3.6s ease-in-out both}
+.care-water-stream{stroke-dasharray:4 9;animation:care-stream 3.6s linear both}
+.care-water-drop{animation:care-drops 1s ease-in calc(.6s + var(--n)*.12s) 2 both}
+.care-water-soak{animation:care-soak 3.6s ease both}
+.care-water-ripple{transform-origin:80px 151px;animation:care-ripple 1.1s ease-out .95s 2 both}
+.care-music-ring{transform-origin:80px 85px;animation:care-sound 3.6s ease both}
+.care-music-note{color:#f4d698;animation:care-notes 2.7s ease-out calc(var(--n)*.3s) both}
+.care-music-note[style*="--n:1"]{color:#dab9dc}
+.care-music-glint{animation:care-glint 3.6s ease both}
+.care-wind-lines{stroke-dasharray:180;animation:care-wind 3.6s ease-in-out both}
+.care-wind-leaf{animation:care-leaf 2.9s ease-in-out calc(var(--n)*.35s) both}
+@keyframes care-pour{0%,100%{opacity:0;transform:translate(5px,-5px) rotate(0)}15%{opacity:1}28%,65%{opacity:1;transform:rotate(-14deg)}85%{opacity:1;transform:rotate(0)}}
+@keyframes care-stream{0%,20%,80%,100%{opacity:0}28%,68%{opacity:.85}0%{stroke-dashoffset:0}100%{stroke-dashoffset:-104}}
+@keyframes care-drops{0%{opacity:0;transform:translateY(-6px)}20%,75%{opacity:1}100%{opacity:0;transform:translateY(43px)}}
+@keyframes care-soak{0%,20%,100%{opacity:0}50%,80%{opacity:.35}}
+@keyframes care-ripple{0%{opacity:0;transform:scale(.45)}25%{opacity:.9}100%{opacity:0;transform:scale(1.25)}}
+@keyframes care-sound{0%,100%{opacity:0;transform:scale(.92)}35%,60%{opacity:.75}85%{transform:scale(1.06)}}
+@keyframes care-notes{0%{opacity:0;transform:translateY(8px) rotate(-8deg)}25%,65%{opacity:1}100%{opacity:0;transform:translateY(-24px) rotate(6deg)}}
+@keyframes care-glint{0%,100%{opacity:0}35%,60%{opacity:.9}}
+@keyframes care-wind{0%{opacity:0;stroke-dashoffset:180}30%,65%{opacity:.9}100%{opacity:0;stroke-dashoffset:-160}}
+@keyframes care-leaf{0%{opacity:0;transform:translate(-20px,7px) rotate(-15deg)}25%,65%{opacity:1}100%{opacity:0;transform:translate(27px,-9px) rotate(30deg)}}
+@media(prefers-reduced-motion:reduce){
+  .garden-world-effects svg *,.garden-card-effects svg *{animation:none!important}
+  .care-water-stream{opacity:.65}.care-water-soak{opacity:.25}.care-water-drop{display:none}
+  .care-music-ring{opacity:.5}.care-wind-lines{stroke-dasharray:none}
+}

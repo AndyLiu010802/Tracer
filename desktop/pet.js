@@ -9,6 +9,7 @@ function attachPet(main, origin, userData, showMain) {
   const trail=require('./garden-trail').attachGardenTrail(main);
   const file = path.join(userData, 'pet-window.json');
   let saved = {}, pet = null, snapshot = null, drag = null, expanded = false;
+  let accountPaused=false,petScope=null;
   const pendingWork = new Map();
   try { saved = JSON.parse(fs.readFileSync(file, 'utf8')); } catch {}
   if (!saved || typeof saved !== 'object' || Array.isArray(saved)) saved = {};
@@ -21,6 +22,9 @@ function attachPet(main, origin, userData, showMain) {
   function sendSnapshot() {
     if (snapshot && pet && !pet.isDestroyed()) pet.webContents.send('tracer-pet-snapshot', { ...snapshot, desktopSize: saved.size });
   }
+  function pauseAccount(){accountPaused=true;snapshot=null;drag=null;trail.update(null);for(const token of pendingWork.keys())settleWork(token,{ok:false,error:'workspace-busy'});if(pet&&!pet.isDestroyed())pet.hide();}
+  main.webContents.on('did-start-navigation',(_event,_url,inPlace,isMainFrame)=>{if(isMainFrame&&!inPlace)pauseAccount();});
+  main.webContents.on('did-finish-load',()=>{accountPaused=false;});
   function trusted(event, win, pathname) {
     if (!win || win.isDestroyed() || event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame) return false;
     try { const url = new URL(event.senderFrame.url); return url.origin === origin && url.pathname === pathname; } catch { return false; }
@@ -38,6 +42,7 @@ function attachPet(main, origin, userData, showMain) {
   }
   ipcMain.handle('tracer-pet-create-work', async (event, request) => {
     if (!trusted(event, pet, '/pet.html') || !request || !Work.validRequestId(request.requestId)) return { ok: false, error: 'invalid-companion-request-id' };
+    if(accountPaused||!snapshot||(request.accountScope||'guest')!==(snapshot.accountScope||'guest'))return{ok:false,error:'workspace-busy'};
     if (main.isDestroyed() || pendingWork.size >= 8) return { ok: false, error: 'workspace-busy' };
     let proposal;
     try { proposal = Work.normalize(request.proposal); } catch (error) { return { ok: false, error: error.message }; }
@@ -45,7 +50,7 @@ function attachPet(main, origin, userData, showMain) {
     return new Promise(resolve => {
       const timer = setTimeout(() => settleWork(token, { ok: false, error: 'companion-save-pending' }), 30000);
       pendingWork.set(token, { resolve, timer });
-      try { main.webContents.send('tracer-pet-work-request', { token, value: { requestId: request.requestId, proposal } }); }
+      try { main.webContents.send('tracer-pet-work-request', { token, accountScope:snapshot.accountScope||'guest', value: { requestId: request.requestId, proposal } }); }
       catch { settleWork(token, { ok: false, error: 'workspace-busy' }); }
     });
   });
@@ -98,10 +103,10 @@ function attachPet(main, origin, userData, showMain) {
     const { width, height } = dimensions(display);
     pet = new BrowserWindow({ width, height, x: Math.max(display.x,Math.min(x,display.x+display.width-width)), y: Math.max(display.y,Math.min(y,display.y+display.height-height)),
       transparent: true, frame: false, resizable: false, maximizable: false, fullscreenable: false, alwaysOnTop: true, skipTaskbar: true, show: false,
-      title: 'Tracer Companion', webPreferences: { preload: path.join(__dirname,'pet-preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, backgroundThrottling: false } });
+      title: 'Tracer Companion', webPreferences: { preload: path.join(__dirname,'pet-preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, backgroundThrottling: true } });
     pet.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
     pet.webContents.on('will-navigate', (event, url) => { endDrag(); if (url !== origin+'/pet.html') event.preventDefault(); });
-    pet.webContents.on('did-finish-load', sendSnapshot);
+    pet.webContents.on('did-finish-load', ()=>{sendSnapshot();if(!accountPaused&&saved.enabled&&pet&&!pet.isDestroyed())pet.showInactive();});
     pet.once('ready-to-show', () => { if (pet && !pet.isDestroyed()) pet.showInactive(); });
     pet.on('moved', () => { if (!drag) persist(pet.isVisible()); });
     pet.on('closed', () => { drag = null; pet = null; });
@@ -111,10 +116,19 @@ function attachPet(main, origin, userData, showMain) {
   function command(event, message) {
     if (!message || typeof message !== 'object') return;
     if (trusted(event, main, '/')) {
+      if(message.type==='account-lock'){pauseAccount();return;}
+      if(message.type==='account-unlock'){accountPaused=false;return;}
       if (message.type === 'show') show();
       if (message.type === 'hide') hide();
       if (message.type === 'snapshot' && message.value && JSON.stringify(message.value).length < 50000) {
+        if(accountPaused)return;
+        const nextScope=message.value.accountScope||'guest';
+        const scopeChanged=petScope!==nextScope;
+        petScope=nextScope;
         snapshot = message.value;
+        // The companion may open before the main page's first snapshot. Treat
+        // that unknown scope as needing a reload too, including a fast sign-in.
+        if(scopeChanged&&pet&&!pet.isDestroyed()){pet.hide();pet.webContents.reload();}
         trail.update(snapshot);
         sendSnapshot();
       }
@@ -137,6 +151,7 @@ function attachPet(main, origin, userData, showMain) {
       size(); sendSnapshot(); return;
     }
     if (message.type === 'ready') { sendSnapshot(); return; }
+    if(accountPaused||!snapshot||(message.accountScope||'guest')!==(snapshot.accountScope||'guest'))return;
     const allowed = ['feed','play','sleep','pet','toggle-trail','select','reminders','snooze','focus-toggle','open-task','open-ai','open-home','open-create','open-remove','open-import','open-export'];
     if (!allowed.includes(message.type)) return;
     if (message.type.startsWith('open-')) showMain();

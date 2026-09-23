@@ -71,6 +71,16 @@ const STORE_NAME_RE = /^[a-z][a-z0-9-]{0,31}$/;
 // DOCS_PORTAL_DATA_DIR 管，这个开关是它唯一的写保护，因此两个端点都要接进来，
 // 兜底的承诺才是真的。
 const READONLY_STORE = process.env.DOCS_PORTAL_READONLY_STORE === '1';
+const accounts = require('./lib/accounts').createLocalAccounts(DATA_DIR);
+const accountHttp = require('./lib/account-http').createAccountHttp(accounts, { readBody, readonly: READONLY_STORE });
+const accountServices = new Map([[DATA_DIR, { aiGateway, petGenerationJobs }]]);
+function servicesFor(dir) {
+  if (!accountServices.has(dir)) accountServices.set(dir, {
+    aiGateway: require('./lib/ai-gateway').createGateway(dir),
+    petGenerationJobs: require('./lib/pet-generation-jobs').createJobs(dir),
+  });
+  return accountServices.get(dir);
+}
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -180,7 +190,25 @@ async function handleRequest(req, res) {
   if (pathname[0] !== '/') pathname = '/' + pathname;
   const loopbackHost = /^(127\.0\.0\.1|localhost|\[::1\])(?::\d+)?$/i.test(req.headers.host || '');
 
+  if (await accountHttp(req, res, pathname)) return;
+  let activeDataDir = DATA_DIR, activeScope = 'guest';
+  const scopedRequest = /^\/api\/(store\/|ai\/|pet-art\/|pet-package\/|state$)/.test(pathname);
+  if (scopedRequest) {
+    const transport = require('./lib/account-http');
+    if (!transport.trusted(req)) { req.resume?.(); transport.send(res,403,{ok:false}); return; }
+    let context;
+    try { context = await accounts.context(accounts.tokenFrom(req)); }
+    catch { req.resume?.(); transport.send(res,503,{error:'account-storage-unavailable'}); return; }
+    activeScope = context.scope;
+    const expected = req.headers['x-tracer-scope'] || url.searchParams.get('__tracer_account');
+    if (activeScope === 'locked' || (expected && expected !== activeScope) || (!expected && activeScope !== 'guest' && !pathname.startsWith('/api/pet-art/'))) {
+      req.resume?.(); transport.send(res,activeScope === 'locked' ? 401 : 409,{error:'account-changed'}); return;
+    }
+    if (activeScope !== 'guest') activeDataDir = accounts.directory(activeScope);
+  }
+
   if (pathname.startsWith('/api/ai/')) {
+    const { aiGateway, petGenerationJobs } = servicesFor(activeDataDir);
     const send = (status, body) => { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); res.end(JSON.stringify(body)); };
     if (!loopbackHost || !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress) || req.headers['x-tracer-ai'] !== '1' || (req.headers.origin && req.headers.origin !== 'http://' + req.headers.host)) { send(403, { error: 'forbidden' }); return; }
     const action = pathname.slice('/api/ai/'.length);
@@ -207,8 +235,8 @@ async function handleRequest(req, res) {
     if (READONLY_STORE && action === 'import') { send(403, { error: 'readonly' }); return; }
     try {
       const data = JSON.parse(await readBody(req, action === 'export' ? 8192 : packages.LIMIT));
-      if (action === 'export') send(200, await packages.exportPackage(DATA_DIR, data));
-      else if (action === 'import') send(200, await packages.importPackage(DATA_DIR, data));
+      if (action === 'export') send(200, await packages.exportPackage(activeDataDir, data));
+      else if (action === 'import') send(200, await packages.importPackage(activeDataDir, data));
       else { const pack = packages.inspect(data); send(200, { profile: pack.profile, animated: pack.animated, behaviors: pack.behaviors,
         ...(pack.animated ? { animationVersion: pack.animationVersion } : {}) }); }
     } catch (e) { send(e.code === 'too-large' ? 413 : 400, { error: e.code === 'too-large' ? 'pet-package-too-large' : /^[a-z-]{3,50}$/.test(e.message) ? e.message : 'invalid-pet-package' }); }
@@ -220,10 +248,10 @@ async function handleRequest(req, res) {
         (req.headers.origin && req.headers.origin !== 'http://' + req.headers.host) ||
         (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site']))) { res.writeHead(403).end(); return; }
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405, { allow: 'GET, HEAD' }).end(); return; }
-    const image = await require('./lib/pet-image').readAsset(DATA_DIR, pathname);
+    const image = await require('./lib/pet-image').readAsset(activeDataDir, pathname);
     if (!image) { res.writeHead(404).end(); return; }
     res.writeHead(200, { 'content-type': 'image/png', 'x-content-type-options': 'nosniff',
-      'cross-origin-resource-policy': 'same-origin', 'cache-control': 'private, max-age=31536000, immutable' });
+      'cross-origin-resource-policy': 'same-origin', 'cache-control': activeScope === 'guest' ? 'private, max-age=31536000, immutable' : 'private, no-store', 'vary': 'Cookie' });
     res.end(req.method === 'HEAD' ? undefined : image); return;
   }
 
@@ -259,7 +287,9 @@ async function handleRequest(req, res) {
         return;
       }
       try {
-        await writeState(JSON.parse(await readBody(req)));
+        const nextState = JSON.parse(await readBody(req));
+        if (activeScope === 'guest') await writeState(nextState);
+        else await store.writeStore(activeDataDir, 'reader-state', JSON.stringify(nextState));
         res.writeHead(200, { 'content-type': 'application/json' }).end('{"ok":true}');
       } catch (err) {
         // readBody 超限时不再 destroy 连接、而是正常 reject 一个 too-large 错误，
@@ -270,7 +300,7 @@ async function handleRequest(req, res) {
       return;
     }
     res.writeHead(200, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
-    res.end(JSON.stringify(await readState()));
+    res.end(JSON.stringify(activeScope === 'guest' ? await readState() : (await store.readStore(activeDataDir, 'reader-state') || {})));
     return;
   }
 
@@ -317,7 +347,9 @@ async function handleRequest(req, res) {
       }
       let acceptedWorkspace;
       try {
-        await store.writeStore(DATA_DIR, name, body, name === 'workspace' ? (previous, next) => {
+        await store.writeStore(activeDataDir, name, body, name === 'workspace' ? (previous, next) => {
+          require('./lib/account-wallpapers').preserve(previous,next);
+          if (previous?.meta?.accountImport && previous.meta.accountImport !== next?.meta?.accountImport) throw Object.assign(new Error('workspace-stale'),{code:'workspace-stale'});
           const history = require('./public/task-history');
           if (next && next.completionHistory !== undefined) next.completionHistory = history.validate(next.completionHistory);
           const result = history.preserve(previous, next);
@@ -363,7 +395,7 @@ async function handleRequest(req, res) {
       // HEAD 走同一个分支：Node 会自动省略 body，不用额外处理。
       let data;
       try {
-        data = await store.readStore(DATA_DIR, name);
+        data = await store.readStore(activeDataDir, name);
       } catch (err) {
         if (err.code === 'store-corrupt') {
           // 坏档不能装成 200+null 的空工作区——客户端会以为从没写过，

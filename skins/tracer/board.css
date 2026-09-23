@@ -200,7 +200,8 @@ button.proj-item.active { background: var(--accent-soft); }
 .drop-target { background: var(--accent-soft) !important; border-color: var(--accent) !important; }
 .drag-source { display: none !important; }
 .drag-placeholder { box-sizing: border-box; min-height: 50px; flex: none; border: 2px dashed var(--accent); background: var(--accent-soft); border-radius: var(--radius); pointer-events: none; }
-.drag-ghost { position: fixed; box-sizing: border-box; z-index: 20000; pointer-events: none; margin: 0; transform: rotate(1.5deg); box-shadow: 0 18px 45px rgba(0,0,0,.4); border: 2px solid var(--accent); opacity: .97; }
+/* Keep the detached preview above later .card/.pl-card surface and hover rules. */
+.card.drag-ghost, .pl-card.drag-ghost { position: fixed; box-sizing: border-box; z-index: 20000; pointer-events: none; margin: 0; transform: none; transition: none; box-shadow: 0 18px 45px rgba(0,0,0,.4); border: 1px solid var(--accent); opacity: .97; }
 .drag-caption { font-size: 12px; padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--border); color: var(--accent); }
 .drop-invalid { border-color: #e86a8a; }
 .drop-invalid .drag-caption { color: #e86a8a; }

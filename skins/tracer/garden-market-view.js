@@ -24,6 +24,7 @@
     const wallet=el('div','garden-market-wallet',heading);icon(wallet,'coin');const walletCopy=el('div','garden-market-wallet-copy',wallet),walletLabel=el('span','garden-market-wallet-label',walletCopy),balance=el('strong','garden-market-balance',walletCopy);balance.setAttribute('aria-live','polite');balance.setAttribute('aria-atomic','true');
     const message=el('div','garden-market-message',market);message.hidden=true;message.setAttribute('role','status');const messageText=el('span','garden-market-message-text',message),retry=button(message,'garden-market-secondary','retry-save');
     const decision=el('section','garden-market-decision',market);decision.hidden=true;decision.setAttribute('role','dialog');decision.setAttribute('aria-modal','false');const decisionCopy=el('div','garden-market-decision-copy',decision),decisionTitle=el('h3','garden-market-decision-title',decisionCopy),decisionBody=el('p','garden-market-decision-body',decisionCopy),decisionNote=el('p','garden-market-decision-note',decisionCopy),decisionActions=el('div','garden-market-decision-actions',decision),cancel=button(decisionActions,'garden-market-secondary','cancel'),confirm=button(decisionActions,'garden-market-primary','confirm');
+    const collectionShop=options.collections===false?null:realm.TracerGardenCollectionShop?.(market,onAction);
     const summary=el('div','garden-market-summary',market),summaryStored=el('span','garden-market-summary-item',summary),summaryKinds=el('span','garden-market-summary-item',summary),summarySold=el('span','garden-market-summary-item',summary);
     const shelf=el('div','garden-market-shelf',market),empty=el('div','garden-market-empty',market);icon(empty,'box');const emptyTitle=el('h3','garden-market-empty-title',empty),emptyCopy=el('p','garden-market-empty-copy',empty);
     const shop=el('section','garden-market-shop',market),shopHeading=el('div','garden-market-shop-heading',shop),shopTitles=el('div','garden-market-shop-titles',shopHeading),shopTitle=el('h3','garden-market-shop-title',shopTitles),shopHelp=el('p','garden-market-shop-help',shopTitles),shopBadge=el('span','garden-market-shop-badge',shopHeading),shopGrid=el('div','garden-market-farms',shop);
@@ -92,6 +93,7 @@
     function render(){
       if(destroyed)return;market.lang=language==='en'?'en':'zh-CN';market.setAttribute('aria-label',tr('收获仓库与农场商店','Harvest warehouse and farm shop'));market.setAttribute('aria-busy',String(!!(snapshot.busy||localPending)));
       set(eyebrow,tr('让每一份努力，有新的去处','A LITTLE HARVEST, A NEW HORIZON'));set(title,tr('收获仓库','Harvest warehouse'));set(intro,tr('把成熟的植物收好，也把下一片风景慢慢攒起来。','Keep what you have grown, and save toward your next little landscape.'));set(walletLabel,tr('花园金币','Garden coins'));set(balance,n(snapshot.economy?.balance));
+      collectionShop?.update({...snapshot,language,busy:!!(snapshot.busy||localPending),error:snapshot.error||localError});
       const rows=(Array.isArray(snapshot.inventory)?snapshot.inventory:[]).filter(row=>row&&names[row.plantKind]&&(number(row.harvested)||number(row.available)||number(row.sold))),seen=new Set();let total=0,sold=0;
       rows.forEach((row,index)=>{if(seen.has(row.plantKind))return;seen.add(row.plantKind);let entry=stock.get(row.plantKind);if(!entry){entry=createStock(row.plantKind);stock.set(row.plantKind,entry);}updateStock(entry,row,index);total+=number(row.available);sold+=number(row.sold);});
       for(const[kind,entry]of stock)if(!seen.has(kind)){entry.card.remove();stock.delete(kind);}
@@ -130,7 +132,7 @@
     function keydown(event){if(event.key==='Escape'&&confirmation&&!snapshot.busy&&!localPending){event.preventDefault();closeConfirmation();}}
     market.addEventListener('click',click);market.addEventListener('input',input);market.addEventListener('change',change);market.addEventListener('keydown',keydown);
     function update(next={}){if(destroyed)return;snapshot=next;language=next.language==='en'?'en':'zh';if(!snapshot.error&&!snapshot.busy)localError='';render();}
-    function destroy(){if(destroyed)return;destroyed=true;requestSerial++;market.removeEventListener('click',click);market.removeEventListener('input',input);market.removeEventListener('change',change);market.removeEventListener('keydown',keydown);stock.clear();farmCards.clear();market.remove();}
+    function destroy(){if(destroyed)return;destroyed=true;requestSerial++;market.removeEventListener('click',click);market.removeEventListener('input',input);market.removeEventListener('change',change);market.removeEventListener('keydown',keydown);stock.clear();farmCards.clear();collectionShop?.destroy();market.remove();}
     update();return{element:market,update,destroy};
   }
   return{create};

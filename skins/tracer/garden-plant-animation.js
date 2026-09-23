@@ -8,6 +8,7 @@
   const frames=32,hubs=new WeakMap(),round=n=>Math.round(n*1000)/1000;
   const turn=(angle,x=0,y=0,sx=1,sy=1)=>`translate(${round(x)}px,${round(y)}px) rotate(${round(angle)}deg) scale(${round(sx)},${round(sy)})`;
   function sample(action,frame=0){
+    if(action==='rest')frame=0;
     action=actions.includes(action)?action:'idle';frame=Number.isFinite(frame)?frame:0;
     const p=((frame%frames)+frames)%frames/frames,w=Math.sin(p*Math.PI*2),e=Math.sin(p*Math.PI),fast=Math.sin(p*Math.PI*6);
     let head=w*1.4,left=w*3,right=-w*3,y=-e*e*.7,sy=1,eyes=1;
@@ -25,7 +26,7 @@
   function hubFor(doc){
     if(hubs.has(doc))return hubs.get(doc);
     const win=doc.defaultView,media=win.matchMedia('(prefers-reduced-motion: reduce)'),players=new Set();let raf=null,previous=null;
-    const runnable=()=>!doc.hidden&&!media.matches&&Array.from(players).some(p=>p.visible);
+    const runnable=()=>!(doc.hidden || doc.tracerHidden)&&!media.matches&&Array.from(players).some(p=>p.visible);
     function cancel(){if(raf!==null)win.cancelAnimationFrame(raf);raf=null;previous=null;}
     function tick(at){
       raf=null;if(!runnable()){previous=null;return;}
@@ -34,8 +35,8 @@
       if(runnable())raf=win.requestAnimationFrame(tick);else previous=null;
     }
     function refresh(){
-      for(const p of players)p.element.dataset.playback=doc.hidden?'hidden':media.matches?'reduced':!p.visible?'offscreen':'playing';
-      for(const p of players)if(doc.hidden||media.matches||!p.visible)p.suspend();
+      for(const p of players)p.element.dataset.playback=(doc.hidden || doc.tracerHidden)?'hidden':media.matches?'reduced':!p.visible?'offscreen':'playing';
+      for(const p of players)if((doc.hidden || doc.tracerHidden)||media.matches||!p.visible)p.suspend();
       if(!runnable())cancel();
       else if(raf===null)raf=win.requestAnimationFrame(tick);
     }
@@ -43,10 +44,10 @@
       for(const entry of entries)for(const p of players)if(p.element===entry.target)p.visible=entry.isIntersecting;
       refresh();
     },{rootMargin:'60px'}):null;
-    doc.addEventListener('visibilitychange',refresh);media.addEventListener('change',refresh);
+    ['visibilitychange','tracer-visibilitychange'].forEach(event=>doc.addEventListener(event,refresh));media.addEventListener('change',refresh);
     const hub={media,refresh,add(p){players.add(p);observer?.observe(p.element);refresh();},remove(p){
       observer?.unobserve(p.element);players.delete(p);
-      if(players.size)refresh();else{cancel();observer?.disconnect();doc.removeEventListener('visibilitychange',refresh);media.removeEventListener('change',refresh);hubs.delete(doc);}
+      if(players.size)refresh();else{cancel();observer?.disconnect();['visibilitychange','tracer-visibilitychange'].forEach(event=>doc.removeEventListener(event,refresh));media.removeEventListener('change',refresh);hubs.delete(doc);}
     }};hubs.set(doc,hub);return hub;
   }
   function create(options={}){
@@ -56,7 +57,7 @@
     element.dataset.shiny=String(!!options.shiny);
     const parts=Array.from(element.querySelectorAll('[data-plant-part]'));
     const motion=Companion?.supports(options)?Companion:Wildflower?.supports(options)?Wildflower:null;
-    const illustrated=options.animated!==false&&motion?motion.create(element,{...options,onReady:()=>render(!hub||hub.media.matches||doc.hidden||!player.visible)}):null;
+    const illustrated=options.animated!==false&&motion?motion.create(element,{...options,onReady:()=>render(!hub||hub.media.matches||(doc.hidden || doc.tracerHidden)||!player.visible)}):null;
     const clipDuration=action=>illustrated&&Object.hasOwn(motion.timings,action)?motion.duration(action):durations[action];
     let action='idle',base='idle',elapsed=Number(options.phase)||0,dead=false,finish=null,oneShot=false;
     const hub=options.animated===false?null:hubFor(doc);
@@ -75,7 +76,7 @@
     render();if(hub)hub.add(player);else element.dataset.playback='static';
     return {element,
       availableActions(){return illustrated?.available?.()||[];},
-      play(value,callback){if(dead||!actions.includes(value)||['focus','rest'].includes(base)||doc.hidden||!player.visible||hub?.media.matches)return false;if(oneShot&&action===value)return false;action=value;elapsed=0;oneShot=true;finish=typeof callback==='function'?callback:null;render();if(!hub)settle();return true;},
+      play(value,callback){if(dead||!actions.includes(value)||['focus','rest'].includes(base)||(doc.hidden || doc.tracerHidden)||!player.visible||hub?.media.matches)return false;if(oneShot&&action===value)return false;action=value;elapsed=0;oneShot=true;finish=typeof callback==='function'?callback:null;render();if(!hub)settle();return true;},
       preview(value,callback){if(!this.availableActions().includes(value))return false;illustrated?.retry?.(value);return this.play(value,callback);},
       setAction(value){if(dead)return;value=map(value);value=actions.includes(value)?value:'idle';base=value;const interrupted=oneShot&&['focus','rest'].includes(value);if(interrupted)cancelShot();if(oneShot||action===value&&!interrupted)return;action=value;elapsed=0;render(hub?.media.matches);},
       reset(){if(dead)return;finish=null;oneShot=false;action=base;elapsed=0;render(hub?.media.matches);},

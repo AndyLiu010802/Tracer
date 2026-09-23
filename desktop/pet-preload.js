@@ -9,6 +9,7 @@ if (process.isMainFrame) contextBridge.exposeInMainWorld('PetDesktop', {
   },
   send: message => {
     if (!message || !actions.has(message.type)) return;
+    const accountScope=typeof message.accountScope==='string'&&/^(guest|[a-f0-9-]{36})$/.test(message.accountScope)?message.accountScope:'guest';
     if (message.type === 'set-size') {
       if (!Number.isFinite(message.value)) return;
       ipcRenderer.send('tracer-pet-command',{type:message.type,value:Math.max(70,Math.min(180,Math.round(message.value)))}); return;
@@ -20,7 +21,7 @@ if (process.isMainFrame) contextBridge.exposeInMainWorld('PetDesktop', {
       ipcRenderer.send('tracer-pet-command',{type:message.type,value:{screenX:value.screenX,screenY:value.screenY}}); return;
     }
     const value=typeof message.value==='boolean'?message.value:typeof message.value==='string'?message.value.slice(0,100):undefined;
-    ipcRenderer.send('tracer-pet-command',{type:message.type,value});
+    ipcRenderer.send('tracer-pet-command',{type:message.type,value,accountScope});
   },
   onState: callback => {
     if (typeof callback !== 'function') return;

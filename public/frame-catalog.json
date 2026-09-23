@@ -1,0 +1,272 @@
+[
+  {
+    "id": "af01",
+    "type": "avatarFrame",
+    "frame": "laurel",
+    "name": "月桂来信",
+    "en": "Laurel Letter",
+    "price": 120,
+    "description": "一圈细金线，两枝月桂叶。把每一次小小的进步，戴成日常的勋章。",
+    "descriptionEn": "Fine gold rings and laurel leaves, a quiet medal for everyday progress.",
+    "colors": [
+      "#d5b46b",
+      "#758966",
+      "#f0dfab"
+    ],
+    "asset": "/frame-art/af01-v2.png",
+    "artVersion": 2,
+    "aperture": {
+      "cx": 0.5,
+      "cy": 0.43581,
+      "r": 0.33921
+    }
+  },
+  {
+    "id": "af02",
+    "type": "avatarFrame",
+    "frame": "orbit",
+    "name": "环游星夜",
+    "en": "Midnight Orbit",
+    "price": 180,
+    "description": "偏心星轨环绕深蓝银光，几颗星星停在边缘，为头像留出完整的舞台。",
+    "descriptionEn": "Silver-blue orbits and tiny stars leave your portrait at centre stage.",
+    "colors": [
+      "#9eb9ed",
+      "#5b6b9e",
+      "#e0e8ff"
+    ],
+    "asset": "/frame-art/af02-v2.png",
+    "artVersion": 2,
+    "aperture": {
+      "cx": 0.5012,
+      "cy": 0.48246,
+      "r": 0.38008
+    }
+  },
+  {
+    "id": "af03",
+    "type": "avatarFrame",
+    "frame": "pearl",
+    "name": "珍珠手札",
+    "en": "Pearl Keepsake",
+    "price": 220,
+    "description": "温润的珍珠颗粒串起香槟细边，像一件值得长久收藏的小首饰。",
+    "descriptionEn": "Luminous pearls around a fine champagne rim, made to keep.",
+    "colors": [
+      "#d4b891",
+      "#a18b91",
+      "#fff4de"
+    ],
+    "asset": "/frame-art/af03-v2.png",
+    "artVersion": 2,
+    "aperture": {
+      "cx": 0.4996,
+      "cy": 0.46611,
+      "r": 0.3903
+    }
+  },
+  {
+    "id": "af04",
+    "type": "avatarFrame",
+    "frame": "rose",
+    "name": "蔷薇缎带",
+    "en": "Rose Ribbon",
+    "price": 160,
+    "description": "烟玫瑰色的双层缎边，点缀细叶与小花，柔软而有分寸。",
+    "descriptionEn": "Muted rose ribbons, fine leaves and a small floral flourish.",
+    "colors": [
+      "#d49aa5",
+      "#786985",
+      "#f5d5d2"
+    ],
+    "asset": "/frame-art/af04-v2.png",
+    "artVersion": 2,
+    "aperture": {
+      "cx": 0.4988,
+      "cy": 0.48285,
+      "r": 0.36823
+    }
+  },
+  {
+    "id": "af05",
+    "type": "avatarFrame",
+    "frame": "sun",
+    "name": "日光徽记",
+    "en": "Solar Emblem",
+    "price": 240,
+    "description": "磨金圆环与错落的细光芒，为自己的空间留下一枚暖色印记。",
+    "descriptionEn": "Brushed gold and delicate rays, a warm signature for your space.",
+    "colors": [
+      "#e5be72",
+      "#a27340",
+      "#fff0b9"
+    ],
+    "asset": "/frame-art/af05-v2.png",
+    "artVersion": 2,
+    "aperture": {
+      "cx": 0.4996,
+      "cy": 0.48046,
+      "r": 0.30529
+    }
+  },
+  {
+    "id": "af06",
+    "type": "avatarFrame",
+    "frame": "jade",
+    "name": "青玉涟漪",
+    "en": "Jade Ripple",
+    "price": 200,
+    "description": "青玉色弧线与水滴珠光，疏密交错，清透安静。",
+    "descriptionEn": "Jade arcs and pearlescent drops in a calm, open composition.",
+    "colors": [
+      "#91c6b5",
+      "#53877b",
+      "#dbf1d9"
+    ],
+    "asset": "/frame-art/af06-v2.png",
+    "artVersion": 2,
+    "aperture": {
+      "cx": 0.51077,
+      "cy": 0.48006,
+      "r": 0.34984
+    }
+  },
+  {
+    "id": "tf01",
+    "type": "taskFrame",
+    "frame": "folio",
+    "name": "奶油书页",
+    "en": "Cream Folio",
+    "price": 140,
+    "description": "暖白纸页、细金双线和墨棕文字，让任务像一张认真写下的便笺。",
+    "descriptionEn": "Warm paper, fine double rules and ink-brown lettering.",
+    "palette": {
+      "bg": "#f5eddb",
+      "fg": "#413b30",
+      "muted": "#625b4d",
+      "accent": "#735a2e",
+      "line": "#b7a580",
+      "danger": "#a52d49",
+      "warning": "#845117",
+      "radius": "5px",
+      "shadow": "0 5px 12px #342e221c"
+    },
+    "asset": "/frame-art/tf01-v2.png",
+    "artVersion": 2
+  },
+  {
+    "id": "tf02",
+    "type": "taskFrame",
+    "frame": "nocturne",
+    "name": "黑金夜曲",
+    "en": "Gilded Nocturne",
+    "price": 220,
+    "description": "深墨色底与克制的香槟金边，文字清晰，留白从容。",
+    "descriptionEn": "Deep ink and restrained champagne trim, with room to breathe.",
+    "palette": {
+      "bg": "#20252c",
+      "fg": "#f1e8d7",
+      "muted": "#c4bdaf",
+      "accent": "#e3c17e",
+      "line": "#9c8253",
+      "danger": "#f1a1b5",
+      "warning": "#e9c18a",
+      "radius": "12px",
+      "shadow": "0 6px 18px #11182232"
+    },
+    "asset": "/frame-art/tf02-v2.png",
+    "artVersion": 2
+  },
+  {
+    "id": "tf03",
+    "type": "taskFrame",
+    "frame": "herbarium",
+    "name": "草木标本",
+    "en": "Herbarium",
+    "price": 180,
+    "description": "苔绿细框、柔和底纸与角落的叶脉，给忙碌的任务留一点自然。",
+    "descriptionEn": "Moss-green rules and a small leaf impression on soft paper.",
+    "palette": {
+      "bg": "#e8eddf",
+      "fg": "#314936",
+      "muted": "#4f6350",
+      "accent": "#376542",
+      "line": "#8fa486",
+      "danger": "#a52d49",
+      "warning": "#845117",
+      "radius": "14px",
+      "shadow": "0 4px 14px #29402e1c"
+    },
+    "asset": "/frame-art/tf03-v2.png",
+    "artVersion": 2
+  },
+  {
+    "id": "tf04",
+    "type": "taskFrame",
+    "frame": "blush",
+    "name": "玫瑰信笺",
+    "en": "Rose Correspondence",
+    "price": 180,
+    "description": "灰粉信纸配酒红细边，像一封写给未来自己的温柔来信。",
+    "descriptionEn": "Dusty rose paper with a fine burgundy edge.",
+    "palette": {
+      "bg": "#f2e4e7",
+      "fg": "#51323e",
+      "muted": "#72505c",
+      "accent": "#8e405f",
+      "line": "#bd91a1",
+      "danger": "#a52d49",
+      "warning": "#845117",
+      "radius": "18px",
+      "shadow": "0 6px 15px #63394a1c"
+    },
+    "asset": "/frame-art/tf04-v2.png",
+    "artVersion": 2
+  },
+  {
+    "id": "tf05",
+    "type": "taskFrame",
+    "frame": "blueprint",
+    "name": "蓝图工作室",
+    "en": "Blueprint Studio",
+    "price": 200,
+    "description": "深蓝底色、纤细网格和冰蓝角标，把想法收进自己的设计蓝图。",
+    "descriptionEn": "Deep blue, a fine drafting grid and ice-blue corner marks.",
+    "palette": {
+      "bg": "#162a3c",
+      "fg": "#e1edf6",
+      "muted": "#adc3d5",
+      "accent": "#a7d7e9",
+      "line": "#668fa7",
+      "danger": "#f1a1b5",
+      "warning": "#e9c18a",
+      "radius": "6px",
+      "shadow": "0 6px 18px #10233330"
+    },
+    "asset": "/frame-art/tf05-v2.png",
+    "artVersion": 2
+  },
+  {
+    "id": "tf06",
+    "type": "taskFrame",
+    "frame": "opal",
+    "name": "极光琉璃",
+    "en": "Opal Glass",
+    "price": 260,
+    "description": "紫蓝玻璃底与渐变虹彩描边，柔光停留在边缘，内容始终清楚。",
+    "descriptionEn": "Violet glass with an iridescent edge, keeping every word clear.",
+    "palette": {
+      "bg": "#292839",
+      "fg": "#eee9fa",
+      "muted": "#c3bbd6",
+      "accent": "#ccb7ef",
+      "line": "#aaa0d4",
+      "danger": "#f1a1b5",
+      "warning": "#e9c18a",
+      "radius": "15px",
+      "shadow": "0 7px 20px #19132530"
+    },
+    "asset": "/frame-art/tf06-v2.png",
+    "artVersion": 2
+  }
+]

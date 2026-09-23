@@ -69,6 +69,7 @@
       if (!result || !result.ok) { if (result && result.reason === 'unfinished') completeProjectDialog(id); else T.ui.notice(text('项目已变化，请刷新后重试。', 'The project changed. Refresh and try again.')); return; }
       filterId = null; T.touch(); T.redraw(); T.show('planets');
       T.ui.notice(text('正在保存项目归档，保存成功后星球会出现在收藏中。', 'Saving your archived project. Its planet appears in the collection once saved.'));
+      document.getElementById('task-notice').dataset.projectArchive=id;
     });
   }
 
@@ -79,13 +80,13 @@
     var scope = project ? text('项目「' + project.name + '」', 'project “' + project.name + '”') : text('所有进行中项目和未分组任务', 'all active projects and unassigned tasks');
     T.confirmTaskAction({ title: text('清除 ' + count + ' 项已完成任务？', 'Clear ' + count + ' completed tasks?'),
       body: text('清除范围：' + scope + '。这些任务将从任务列表移除，搜索和优先级筛选不会缩小此范围。', 'Scope: ' + scope + '. These tasks leave the task list; search and priority filters do not narrow this scope.'),
-      detail: text('成熟花朵会自动收获到仓库，图鉴次数、植物伙伴、项目花朵与完成历史都会保留。之后仍可完成项目并生成星球。', 'Mature flowers are harvested into your warehouse. Collection counts, companions, project flowers and completion history are kept. You can still archive the project as a planet later.'),
+      detail: text('成熟花朵会留在花园中，等你手动收获，不会被清除或自动收入仓库。已有收获、植物伙伴与完成历史都会保留，之后仍可完成项目并生成星球。', 'Mature flowers stay in your garden for you to harvest. They are neither removed nor harvested automatically. Existing harvests, companions and completion history are kept. You can still archive the project as a planet later.'),
       confirmText: text('清除已完成', 'Clear completed')
     }, function () {
       var result = M.clearCompletedTasks(T.store.data, projectId || undefined);
       if (!result || !result.ok) return;
       T.touch(); T.redraw(); if (T.renderBoard) T.renderBoard();
-      T.ui.notice(text('已清除 ' + result.count + ' 项任务，收获与完成记录已保留。', result.count + ' tasks cleared. Harvests and completion records are kept.'));
+      T.ui.notice(text('已清除 ' + result.count + ' 项任务，花园中的成熟花朵与完成记录已保留。', result.count + ' tasks cleared. Mature flowers remain in your garden and completion records are kept.'));
     });
   }
 

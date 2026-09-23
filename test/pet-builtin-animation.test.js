@@ -49,7 +49,7 @@ function browser(){
 test('player progresses through all poses, switches actions once, and releases listeners and cached frames',()=>{
   const b=browser(),p=b.api.create({pet:{id:'luna'},label:'Luna'}),el=p.element;
   assert.equal(el.attributes['aria-label'],'Luna');assert.equal(el.dataset.frames,'16');
-  for(const action of Animation.actions){p.setAction(action);assert.equal(el.dataset.frame,'0');for(let frame=1;frame<16;frame++){b.tick();assert.equal(el.dataset.frame,String(frame));p.setAction(action);assert.equal(el.dataset.frame,String(frame));}b.tick();assert.equal(el.dataset.frame,'0');assert.equal(b.timers.size,1);}
+  for(const action of Animation.actions){p.setAction(action);assert.equal(el.dataset.frame,'0');if(action==='sleep'){assert.equal(b.timers.size,0);assert.equal(el.dataset.playback,'sleeping');continue;}for(let frame=1;frame<16;frame++){b.tick();assert.equal(el.dataset.frame,String(frame));p.setAction(action);assert.equal(el.dataset.frame,String(frame));}b.tick();assert.equal(el.dataset.frame,'0');assert.equal(b.timers.size,1);}
   p.setAction('writing');const old=el.innerHTML;p.destroy();p.destroy();p.setAction('tea');
   assert.equal(el.innerHTML,old);assert.equal(el.dataset.playback,'destroyed');assert.equal(b.timers.size,0);assert.equal(b.listeners.size,0);assert.equal(b.motionListeners.size,0);
 });

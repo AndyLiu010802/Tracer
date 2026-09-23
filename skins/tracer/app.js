@@ -7,7 +7,7 @@
   var I = window.TracerLocale || { message: function (s) { return s; }, t: function (s) { return s; } };
 
   // ---------- 分区路由 ----------
-  var SECTIONS = ['inbox', 'notes', 'board', 'map', 'planner', 'timeline', 'insights', 'garden', 'planets'];
+  var SECTIONS = ['inbox', 'notes', 'board', 'map', 'planner', 'timeline', 'insights', 'garden', 'shop', 'planets'];
   var LS_SEC = 'tracer.sec';
   var current = null;
   var hooks = {};                       // {sec: [fn]}
@@ -204,7 +204,9 @@
       var savedMerge = Sync.merge(sent, store.data, accepted);
       adopt(savedMerge.workspace);
       if (notifyArchivedRecovery(savedMerge)) store.dirty = true;
+      var previousAccepted = store.base;
       store.base = Sync.clone(accepted);
+      if (window.Tracer.celebrations) window.Tracer.celebrations.accepted(previousAccepted, store.base);
       if (window.Tracer.garden) window.Tracer.garden.refresh();
       if (!store.dirty) adopt(Sync.clone(accepted));
       persistDraft();
@@ -239,7 +241,7 @@
       // Keyed garden controls must leave their saving state even when an input
       // or task dialog is focused and the broader workspace redraw is deferred.
       if (window.Tracer.garden) window.Tracer.garden.refresh();
-      if (!store.dragging && !store.dirty && modalRoot.hidden && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) redraw();
+      if (!store.dragging && !store.dirty && modalRoot.hidden && !document.body.classList.contains('sticker-decorating') && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) redraw();
       // 只补发「在途期间新产生的」改动。失败本身不在这里重试——catch 也会把 dirty
       // 置回 true，不加区分就是一个按往返延迟空转的热循环（实测持续 500 时 2 秒 52 个 PUT）。
       if (store.dirty && !failed) { clearTimeout(store.timer); store.timer = setTimeout(save, 0); }
@@ -424,7 +426,7 @@
   function notice(message, action) {
     var el = document.getElementById('task-notice');
     if (!el) { el = document.createElement('div'); el.id = 'task-notice'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
-    clearTimeout(noticeTimer); el.innerHTML = ''; el.hidden = false;
+    clearTimeout(noticeTimer); el.innerHTML = ''; el.hidden = false; if (el.dataset) delete el.dataset.projectArchive;
     var label = document.createElement('span'); label.textContent = message; el.appendChild(label);
     if (action) { var button = document.createElement('button'); button.className = 'btn'; button.textContent = I.t('undo'); button.onclick = function () { el.hidden = true; action(); }; el.appendChild(button); }
     noticeTimer = setTimeout(function () { el.hidden = true; }, 12000);
@@ -480,6 +482,8 @@
         var rect = dragging.getBoundingClientRect();
         ghost = dragging.cloneNode(true); ghost.classList.add('drag-ghost'); ghost.removeAttribute('id'); ghost.setAttribute('aria-hidden', 'true');
         ghost.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
+        // Drag coordinates belong to the viewport, regardless of a theme's card layout.
+        ghost.style.position = 'fixed';
         ghost.style.width = rect.width + 'px';
         var caption = document.createElement('div'); caption.className = 'drag-caption'; ghost.appendChild(caption); document.body.appendChild(ghost);
         placeholder = document.createElement('div'); placeholder.className = 'drag-placeholder'; placeholder.style.height = rect.height + 'px';
@@ -487,8 +491,10 @@
         container.classList.add('is-dragging'); document.body.classList.add('task-dragging');
       }
       e.preventDefault();
-      ghost.style.left = Math.max(8, Math.min(window.innerWidth - ghost.offsetWidth - 8, e.clientX - offsetX)) + 'px';
-      ghost.style.top = Math.max(8, Math.min(window.innerHeight - ghost.offsetHeight - 8, e.clientY - offsetY)) + 'px';
+      // Pointer coordinates and the fixed preview share the viewport coordinate
+      // space. Clamping the card to the viewport would detach the grab point.
+      ghost.style.left = (e.clientX - offsetX) + 'px';
+      ghost.style.top = (e.clientY - offsetY) + 'px';
       preview(e);
       var scroller = container.closest('.main');
       if (scroller) { var bounds = scroller.getBoundingClientRect(); if (e.clientY > bounds.bottom - 60) scroller.scrollTop += 18; else if (e.clientY < bounds.top + 60) scroller.scrollTop -= 18; }

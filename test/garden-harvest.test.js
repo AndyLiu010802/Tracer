@@ -46,12 +46,12 @@ test('all six ordinary plant kinds and all five growth stages contain no face; o
   }
   assert.doesNotMatch(A.markup('<script>',NaN),/<script>/);
 });
-test('nine animation clips articulate independent parts across 32 sampled poses with finite bounded values',()=>{
+test('active clips articulate bounded poses while rest keeps a stable sleeping pose',()=>{
   assert.equal(Motion.frames,32);
   for(const action of Motion.actions){
     const poses=Array.from({length:32},(_,frame)=>Motion.sample(action,frame));
     const shapes=new Set(poses.map(({frame,...pose})=>JSON.stringify(pose)));
-    assert.ok(shapes.size>=16,action+' must contain moving articulated poses');
+    if(action==='rest')assert.equal(shapes.size,1,'rest must stay still');else assert.ok(shapes.size>=16,action+' must contain moving articulated poses');
     assert.ok(poses.some(pose=>pose.head!==pose['leaf-left']),action);
     assert.doesNotMatch(JSON.stringify(poses),/NaN|Infinity/);
     assert.deepEqual(Motion.sample(action,32),Motion.sample(action,0));

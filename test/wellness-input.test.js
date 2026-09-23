@@ -12,7 +12,7 @@ test('focus keeps anonymous desktop and reader input after leisure rewards are r
   F.start(state, Date.now(), 'input-regression');
   const saved = new Map([[key, JSON.stringify(state)]]), windowListeners = {}, documentListeners = {}, elements = new Map();
   const reader = {}, origin = 'http://127.0.0.1:18159';
-  let timer, gardenRefreshes = 0, rewardCalls = 0;
+  let timer, gardenRefreshes = 0, rewardCalls = 0, storageReads = 0;
   const element = name => {
     if (!elements.has(name)) elements.set(name, { dataset: {}, style: {}, setAttribute() {} });
     return elements.get(name);
@@ -29,7 +29,7 @@ test('focus keeps anonymous desktop and reader input after leisure rewards are r
     document: { title: 'Tracer', body: { dataset: {} }, getElementById: element, querySelector: element,
       querySelectorAll: selector => selector === 'iframe' ? [{ contentWindow: reader }] : [],
       addEventListener(name, callback) { documentListeners[name] = callback; } },
-    localStorage: { getItem: key => saved.get(key) ?? null, setItem: (key, value) => saved.set(key, value) },
+    localStorage: { getItem: key => { storageReads++; return saved.get(key) ?? null; }, setItem: (key, value) => saved.set(key, value) },
     setInterval(callback) { timer = callback; }
   };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../skins/tracer/wellness.js'), 'utf8'), context);
@@ -37,6 +37,7 @@ test('focus keeps anonymous desktop and reader input after leisure rewards are r
     source, origin, data: { __aside: 1, type: 'farm', kind }, ...extra
   });
   const flush = async () => { timer(); await new Promise(resolve => setImmediate(resolve)); };
+  const readsBeforeInput = storageReads;
   pulse(window, 'click'); pulse(window, 'key');
   pulse(reader, 'click'); pulse(reader, 'key');
   pulse({}, 'click');
@@ -45,6 +46,7 @@ test('focus keeps anonymous desktop and reader input after leisure rewards are r
   pulse(window, 'click', { data: { __aside: 1, type: 'other', kind: 'click' } });
   for (const kind of [undefined, null, '', 'unknown', 'keypress', 1, {}]) pulse(window, kind);
   documentListeners.keydown({ code: 'KeyA' }); documentListeners.click();
+  assert.equal(storageReads, readsBeforeInput, 'keystrokes and clicks do not repeatedly parse stored focus history');
   await flush();
   assert.deepEqual(JSON.parse(saved.get(key)).activity, { keys: { LMB: 3, a: 1 }, clicks: 3, unknown: 2 });
 

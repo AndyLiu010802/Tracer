@@ -146,14 +146,14 @@
       element.innerHTML=cache.get(action)[frame];element.dataset.action=action;element.dataset.frame=String(frame);element.dataset.frames=String(frames);
     }
     function schedule(){
-      stop();const reason=destroyed?'destroyed':options.animated===false?'static':media?.matches?'reduced-motion':document.hidden?'hidden':'playing';
+      stop();const reason=destroyed?'destroyed':options.animated===false?'static':media?.matches?'reduced-motion':(document.hidden || document.tracerHidden)?'hidden':action==='sleep'?'sleeping':'playing';
       element.dataset.playback=reason;if(reason!=='playing')return;
       timer=setTimeout(()=>{timer=null;frame=(frame+1)%frames;draw();schedule();},duration(action,frame));
     }
     function visibility(){if(destroyed)return;if(media?.matches){frame=0;draw();}schedule();}
-    if(options.animated!==false){document.addEventListener('visibilitychange',visibility);media?.addEventListener?.('change',visibility);}
+    if(options.animated!==false){['visibilitychange','tracer-visibilitychange'].forEach(event=>document.addEventListener(event,visibility));media?.addEventListener?.('change',visibility);}
     draw();schedule();
-    return {element,setAction(value){if(destroyed)return;const next=actions.includes(value)?value:'idle';if(action===next)return;action=next;frame=0;draw();schedule();},destroy(){if(destroyed)return;destroyed=true;stop();cache.clear();document.removeEventListener('visibilitychange',visibility);media?.removeEventListener?.('change',visibility);element.dataset.playback='destroyed';}};
+    return {element,setAction(value){if(destroyed)return;const next=actions.includes(value)?value:'idle';if(action===next)return;action=next;frame=0;draw();schedule();},destroy(){if(destroyed)return;destroyed=true;stop();cache.clear();['visibilitychange','tracer-visibilitychange'].forEach(event=>document.removeEventListener(event,visibility));media?.removeEventListener?.('change',visibility);element.dataset.playback='destroyed';}};
   }
   return Object.freeze({actions,frames,snapshot,create,duration});
 });

@@ -43,18 +43,18 @@ test('six normal and shiny companions draw all sixteen independent source cells 
         assert.equal(element.children[0].children[1].getAttribute('transform'),'translate(0 0)','drawing changes cannot be replaced by a whole-image transform');at+=Motion.timings[action][frame];
       }
       assert.equal(seen.size,16);assert.equal(Motion.sample(action,Motion.duration(action)+100,false,false).frame,15,'a one-shot clamps to its final drawing');
-      assert.equal(Motion.sample(action,Motion.duration(action),false,true).frame,action==='rest'?8:0);
+      assert.equal(Motion.sample(action,Motion.duration(action),false,true).frame,action==='rest'?12:0);
     }
     layer.destroy();
   }
 });
 
-test('rest enters sleep once, loops only sleeping frames and preserves a complete one-shot',async()=>{
+test('rest holds a settled pose and preserves a complete explicit one-shot',async()=>{
   const total=Motion.duration('rest'),step=total/16;
   assert.deepEqual(Motion.sample('rest',0,true),{clip:'rest',frame:12});
   assert.deepEqual(Motion.sample('rest',total*3,true),{clip:'rest',frame:12});
-  for(let frame=0;frame<16;frame++)assert.equal(Motion.sample('rest',frame*step+1).frame,frame);
-  for(let frame=0;frame<32;frame++)assert.equal(Motion.sample('rest',total+frame*step+1).frame,8+frame%8);
+  for(let frame=0;frame<16;frame++)assert.equal(Motion.sample('rest',frame*step+1,false,false).frame,frame);
+  for(let frame=0;frame<32;frame++)assert.equal(Motion.sample('rest',total+frame*step+1).frame,12);
   assert.equal(Motion.sample('rest',total*4,false,false).frame,15,'one-shot never loops back into sleep');
   const env=browser(),player=Animation.create(options(env));await env.ready();player.setAction('rest');await env.ready();
   env.advance(total+step);assert.ok(Number(player.element.dataset.frame)>=8);

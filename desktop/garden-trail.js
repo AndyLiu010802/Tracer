@@ -1,12 +1,12 @@
 'use strict';
 const path=require('node:path');
-const shinyId=/^garden_(wildflower|sunflower|lavender|apple|peach|cherry|neon_orchid|volt_berry|crystal_tree)_shiny$/;
-function eligible(snapshot){return !!(snapshot?.trailEnabled===true&&shinyId.test(snapshot.pet?.id||'')&&Array.isArray(snapshot.unlocked)&&snapshot.unlocked.includes(snapshot.pet.id));}
+const {kindForPet}=require('../skins/tracer/garden-trails');
+function eligible(snapshot){return !!(snapshot?.trailEnabled===true&&kindForPet(snapshot.pet)&&Array.isArray(snapshot.unlocked)&&snapshot.unlocked.includes(snapshot.pet.id));}
 function localPoint(point,bounds){return {x:point.x-bounds.x,y:point.y-bounds.y};}
 function attachGardenTrail(main,dependencies=require('electron')){
   const {BrowserWindow,screen,ipcMain,powerMonitor}=dependencies;
   const clock=dependencies.clock||{setInterval,clearInterval};
-  let overlay=null,timer=null,enabled=false,suspended=false,motion=true,ready=false,last=null,displayId=null,closed=false;
+  let overlay=null,timer=null,enabled=false,suspended=false,motion=true,ready=false,last=null,displayId=null,closed=false,kind=null;
   function stop(){if(timer!==null)clock.clearInterval(timer);timer=null;last=null;}
   function sample(){
     if(!overlay||overlay.isDestroyed()||!ready)return;
@@ -14,13 +14,13 @@ function attachGardenTrail(main,dependencies=require('electron')){
     const reset=displayId!==display.id;displayId=display.id;
     if(reset)overlay.setBounds(bounds,false);
     if(!reset&&last?.x===point.x&&last?.y===point.y)return;
-    last=point;overlay.webContents.send('tracer-garden-trail-frame',{...localPoint(point,bounds),reset});
+    last=point;overlay.webContents.send('tracer-garden-trail-frame',{...localPoint(point,bounds),reset,kind});
   }
   function reconcile(){
     if(closed||!enabled){stop();if(overlay&&!overlay.isDestroyed())overlay.destroy();overlay=null;ready=false;return;}
     if(!overlay||overlay.isDestroyed()){
       const bounds=screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).bounds;
-      const win=new BrowserWindow({...bounds,transparent:true,frame:false,focusable:false,resizable:false,movable:false,maximizable:false,minimizable:false,fullscreenable:false,hasShadow:false,alwaysOnTop:true,skipTaskbar:true,show:false,backgroundColor:'#00000000',title:'Tracer Starlight Trail',
+      const win=new BrowserWindow({...bounds,transparent:true,frame:false,focusable:false,resizable:false,movable:false,maximizable:false,minimizable:false,fullscreenable:false,hasShadow:false,alwaysOnTop:true,skipTaskbar:true,show:false,backgroundColor:'#00000000',title:'Tracer Companion Trail',
         webPreferences:{preload:path.join(__dirname,'garden-trail-preload.js'),contextIsolation:true,sandbox:true,nodeIntegration:false,backgroundThrottling:false}});
       overlay=win;ready=false;displayId=null;motion=true;
       win.setIgnoreMouseEvents(true,{forward:true});win.setAlwaysOnTop(true,'screen-saver');
@@ -50,6 +50,11 @@ function attachGardenTrail(main,dependencies=require('electron')){
     for(const event of ['resume','unlock-screen'])powerMonitor?.removeListener(event,resume);
   }
   main.once('closed',destroy);
-  return {update(snapshot){if(closed)return;const next=eligible(snapshot);if(next===enabled&&overlay&&!overlay.isDestroyed())return;enabled=next;reconcile();},destroy};
+  return {update(snapshot){
+    if(closed)return;const next=eligible(snapshot),nextKind=next?kindForPet(snapshot.pet):null,changed=nextKind!==kind;
+    kind=nextKind;if(changed){last=null;displayId=null;}
+    if(next===enabled&&overlay&&!overlay.isDestroyed()){if(changed&&timer!==null)sample();return;}
+    enabled=next;reconcile();
+  },destroy};
 }
 module.exports={eligible,localPoint,attachGardenTrail};

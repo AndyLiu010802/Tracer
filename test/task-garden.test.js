@@ -86,13 +86,17 @@ test('deleted task IDs remain retired and cannot be reused to generate or harves
   G.reconcile(ws); assert.equal(G.active(ws).length, 0); assert.equal(G.read(ws).seeds.length, 1);
   M.moveTask(ws, task.id, 'done'); assert.equal(G.harvest(ws, task.id), null);
 });
-test('clear completed tasks harvests flowers and retains project credit and completion history', () => {
+test('clear completed tasks keeps mature flowers growing in place until harvest or project archival', () => {
   const ws = workspace(), project = M.addProject(ws, { name: 'Book' });
   const a = M.addTask(ws, { title: 'Chapter 1', status: 'doing', projectId: project.id });
   const b = M.addTask(ws, { title: 'Chapter 2', projectId: project.id });
   M.moveTask(ws, a.id, 'done'); const result = M.clearCompletedTasks(ws, project.id);
   assert.deepEqual(result, { ok: true, count: 1 }); assert.equal(ws.tasks.length, 1); assert.equal(ws.tasks[0].id, b.id);
-  assert.equal(H.completed(ws).length, 1); assert.equal(G.collection(ws).reduce((sum, row) => sum + row.total, 0), 1);
+  assert.equal(H.completed(ws).length, 1); assert.equal(G.collection(ws).reduce((sum, row) => sum + row.total, 0), 0);
+  const flower = G.active(ws).find(seed => seed.taskId === a.id);
+  assert.equal(flower.state, 'mature'); assert.equal(flower.harvestedAt, null); assert.equal(flower.retiredAt, null); assert.ok(flower.clearedAt);
+  const restored = S.validate(clone(ws)); G.reconcile(restored);
+  assert.deepEqual(G.active(restored), G.active(ws));
   M.moveTask(ws, b.id, 'doing'); M.moveTask(ws, b.id, 'done');
   const archived = M.completeProject(ws, project.id); assert.equal(archived.ok, true);
   assert.equal(archived.planet.taskCount, 2); assert.equal(archived.planet.flowers.length, 2);
@@ -162,7 +166,50 @@ test('clearing completed tasks keeps their titles for later planets, while delet
   assert.equal(M.findTask(ws, moved.id).projectId, b.id); assert.equal(M.findTask(ws, moved.id).title, 'Moved task content');
   const oldKeepsake = ws.taskGarden.seeds.find(row => row.taskId === moved.id);
   assert.equal(oldKeepsake.title, ''); assert.equal(oldKeepsake.projectId, null); assert.ok(oldKeepsake.forgottenAt);
-  assert.equal(G.collection(ws).reduce((sum, row) => sum + row.total, 0), 2);
+  assert.equal(G.collection(ws).reduce((sum, row) => sum + row.total, 0), 1);
+  assert.equal(G.active(ws).length, 0, 'explicit project deletion still removes unharvested flowers');
+});
+
+test('cleared mature flowers survive stale edits and can be harvested and sold only once', () => {
+  const base = workspace(), task = started(base, 'kept_flower', null, 2, 0);
+  change(base, task, 'done', 200); H.record(base, task);
+  const cleared = clone(base); M.clearCompletedTasks(cleared);
+  assert.equal(G.active(cleared)[0].state, 'mature');
+  const stale = clone(base); change(stale, stale.tasks[0], 'doing', Date.now() + 100000);
+  stale.tasks[0].title = 'Stale rename'; G.taskChanged(stale, stale.tasks[0]);
+  for (const [local, remote] of [[cleared, stale], [stale, cleared]]) {
+    const merged = S.merge(base, local, remote).workspace;
+    assert.equal(merged.tasks.length, 0, 'cleared task must not return');
+    assert.equal(G.active(merged).length, 1);
+    assert.equal(G.active(merged)[0].state, 'mature');
+    assert.equal(G.active(merged)[0].title, task.title);
+    assert.equal(G.active(merged)[0].variant, 'shiny');
+  }
+  const replay = clone(stale); G.preserve(cleared, replay); G.reconcile(replay);
+  assert.equal(replay.tasks.length, 0); assert.equal(G.active(replay)[0].state, 'mature');
+  const receipt = clone(G.harvest(replay, task.id));
+  assert.deepEqual(G.harvest(replay, task.id), receipt);
+  assert.equal(G.collection(replay).reduce((sum, row) => sum + row.total, 0), 1);
+  assert.equal(G.active(replay).length, 0);
+  assert.equal(G.sell(replay, receipt.plantKind, 1).ok, true);
+  assert.equal(G.sell(replay, receipt.plantKind, 1).ok, false);
+  const harvestedReplay = clone(cleared); G.preserve(replay, harvestedReplay);
+  assert.equal(G.active(harvestedReplay).length, 0);
+  assert.deepEqual(G.economy(harvestedReplay), G.economy(replay));
+});
+
+test('clearing one project leaves other mature flowers and unfinished dependencies intact', () => {
+  const ws = workspace(), project = M.addProject(ws, { name: 'Clear this project' });
+  const done = M.addTask(ws, { title: 'Done', status: 'doing', projectId: project.id });
+  const waiting = M.addTask(ws, { title: 'Next', projectId: project.id, dependsOn: [done.id] });
+  const outside = M.addTask(ws, { title: 'Elsewhere', status: 'doing' });
+  M.moveTask(ws, done.id, 'done'); M.moveTask(ws, outside.id, 'done');
+  const flowers = G.active(ws).map(seed => seed.taskId).sort();
+  assert.equal(M.clearCompletedTasks(ws, project.id).count, 1);
+  assert.ok(M.findTask(ws, outside.id)); assert.deepEqual(M.findTask(ws, waiting.id).dependsOn, []);
+  assert.deepEqual(G.active(ws).map(seed => seed.taskId).sort(), flowers);
+  assert.equal(M.clearCompletedTasks(ws, project.id).count, 0);
+  const snapshot = JSON.stringify(ws); assert.equal(M.clearCompletedTasks(ws, project.id).count, 0); assert.equal(JSON.stringify(ws), snapshot);
 });
 test('three-way merge keeps identities and one harvest despite concurrent status edits', () => {
   const base = workspace(), task = started(base), local = clone(base), remote = clone(base);
@@ -243,7 +290,9 @@ test('legacy flower import is idempotent, keeps pending harvests and never creat
 test('validation rejects invalid rarity, duplicate IDs, bad timestamps and malformed planet snapshots', () => {
   const ws = workspace(); started(ws);
   for (const mutate of [g => g.seeds.push(clone(g.seeds[0])), g => g.seeds[0].ticket = 10000, g => g.seeds[0].variant = 'shiny', g => g.seeds[0].plantedAt = -1,
-    g => g.seeds[0].state = 'harvested', g => g.deletedPlanets.push({ projectId: 'bad', deletedAt: 0 }), g => g.version = 2]) {
+    g => g.seeds[0].state = 'harvested', g => g.seeds[0].clearedAt = 0, g => g.seeds[0].clearedAt = 200,
+    g => { g.seeds[0].clearedAt = 150; g.seeds[0].completedAt = 200; g.seeds[0].state = 'mature'; },
+    g => g.deletedPlanets.push({ projectId: 'bad', deletedAt: 0 }), g => g.version = 2]) {
     const bad = clone(ws.taskGarden); mutate(bad); assert.throws(() => G.validate(bad), /Invalid task garden/);
   }
   const raw = clone(ws); raw.taskGarden.seeds[0].ticket = -1; assert.throws(() => S.validate(raw), /Invalid task garden/);

@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/render-activity.js"></script>
+<script src="/account-context.js"></script>
+<script src="/account-storage.js"></script>
+<link rel="stylesheet" href="/account.css">
 <!-- 标签页伪装：内部工程工作台。favicon 是半月，呼应日月轮回主题。 -->
 <title>Tracer — Engineering</title>
 <link rel="icon" href="/tracer-logo.png">
@@ -44,7 +48,12 @@
 <link rel="stylesheet" href="/garden-plant.css">
 <link rel="stylesheet" href="/garden-companion-preview.css">
 <link rel="stylesheet" href="/garden-task.css">
+<link rel="stylesheet" href="/garden-care.css">
 <link rel="stylesheet" href="/garden-market.css">
+<link rel="stylesheet" href="/garden-collection-shop.css">
+<link rel="stylesheet" href="/garden-store.css">
+<link rel="stylesheet" href="/stickers.css">
+<link rel="stylesheet" href="/material-preview.css">
 </head>
 <body>
 
@@ -79,7 +88,7 @@
     <button class="new-btn" id="new-btn" title="New task">+ New</button>
     <span class="dial"><span class="sundial" id="sundial"></span><span class="clock" id="clock"></span></span>
     <span class="avatar-wrap">
-      <span class="avatar" title="Signed in">AL</span>
+      <button type="button" class="avatar account-trigger" id="account-open" title="账户 / Account" aria-label="账户 / Account" aria-haspopup="dialog">☾</button>
       <button type="button" class="save-dot" id="save-dot" title="Saved locally" aria-label="Saved locally"></button>
     </span>
     <div class="window-controls" id="window-controls" role="group" aria-label="Window controls" hidden>
@@ -105,6 +114,7 @@
       <a class="nav-item" data-sec="timeline" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2 4h7M5 8h8M3 12h6"/><path d="M8 1.5v13" stroke-dasharray="1.5 2"/></svg>Timeline</a>
       <a class="nav-item" data-sec="insights" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2.5 13.5V9M6.2 13.5V5M9.9 13.5V7.5M13.5 13.5V3"/></svg>Insights</a>
       <a class="nav-item" data-sec="garden" role="tab" tabindex="0" id="nav-garden"><svg viewBox="0 0 16 16"><path d="M8 14V7M8 7C8 4 6 2 3 2c0 3 2 5 5 5M8 7c0-2.5 1.7-4.5 4.5-4.5C12.5 5 10.5 7 8 7"/></svg>Garden</a>
+      <a class="nav-item" data-sec="shop" role="tab" tabindex="0" id="nav-shop"><svg viewBox="0 0 16 16"><path d="M2 6h12l-1-4H3zM3 6v8h10V6M6 14V9h4v5"/></svg>Shop</a>
       <a class="nav-item" data-sec="planets" role="tab" tabindex="0" id="nav-planets"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4.5"/><ellipse cx="8" cy="8" rx="7" ry="2.4" transform="rotate(-25 8 8)"/></svg>Memory planets</a>
     </div>
     <div class="nav-label" id="projects-label">Projects</div>
@@ -178,6 +188,7 @@
       <header class="sec-head"><h1 id="garden-section-title">Companion home</h1><span class="sec-sub" id="garden-section-subtitle">A little place for the work you care about</span><button class="btn" id="garden-pet-open">✦ Companions</button></header>
       <div id="garden-home-root"></div>
     </section>
+    <section class="sec" id="sec-shop"><div id="garden-store-root"></div></section>
     <section class="sec" id="sec-planets"><div id="garden-planets-root"></div></section>
   </main>
 
@@ -240,6 +251,7 @@
 <script src="/garden-plant-animation.js"></script>
 <script src="/garden-harvest-model.js"></script>
 <script src="/pet-model.js"></script>
+<script src="/garden-trails.js"></script>
 <script src="/pet-art.js"></script>
 <script src="/pet-illustrated-atlas.js"></script>
 <script src="/pet-illustrated-animation.js"></script>
@@ -253,10 +265,23 @@
 <script src="/pet-transfer.js"></script>
 <script src="/pet-edit-draft.js"></script>
 <script src="/pet.js"></script>
-<script src="/garden-world-view.js"></script>
+<script src="/garden-care-art.js"></script>
+<script src="/garden-collection-art.js"></script>
+<script src="/garden-layout-editor.js"></script>
+  <script src="/garden-world-view.js"></script>
+<script src="/garden-collection-shop.js"></script>
 <script src="/garden-market-view.js"></script>
 <script src="/garden-home-view.js"></script>
 <script src="/garden-planets-view.js"></script>
+<script src="/sticker-shop.js"></script>
+<script src="/frames.js"></script><script src="/garden-store-view.js"></script>
 <script src="/garden.js"></script>
+<link rel="stylesheet" href="/wallpaper-shop.css"><link rel="stylesheet" href="/wallpaper-materials.css"><link rel="stylesheet" href="/material-contrast.css"><link rel="stylesheet" href="/frames.css">
+<script src="/wallpaper-motion.js"></script><script src="/wallpaper-optics.js"></script><script src="/wallpaper-shop.js"></script>
+<script src="/account.js"></script>
+<script src="/stickers.js"></script>
+<link rel="stylesheet" href="/celebrations.css">
+<script src="/celebrations-model.js"></script><script src="/celebrations.js"></script>
+<link rel="stylesheet" href="/workspace-layout.css">
 </body>
 </html>

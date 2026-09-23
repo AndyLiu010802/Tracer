@@ -20,11 +20,21 @@ test('desktop trails require an enabled and owned shiny garden companion',()=>{
 test('the trail window never takes focus/clicks, changes monitors, and stops on toggle or main-window disposal',()=>{
   const f=fixture();f.trail.update(valid);const w=f.windows[0];assert.equal(w.options.focusable,false);assert.equal(w.ignores,true);assert.equal(w.options.webPreferences.nodeIntegration,false);assert.equal(w.options.webPreferences.sandbox,true);
   w.webContents.emit('did-finish-load');assert.equal(f.timers.size,1);assert.equal(w.visible,true);
-  assert.deepEqual(w.messages.at(-1)[1],{x:1870,y:80,reset:true});
-  f.move({x:20,y:30});assert.equal(w.bounds.width,2560);assert.deepEqual(w.messages.at(-1)[1],{x:20,y:30,reset:true});
+  assert.deepEqual(w.messages.at(-1)[1],{x:1870,y:80,reset:true,kind:'apple'});
+  f.move({x:20,y:30});assert.equal(w.bounds.width,2560);assert.deepEqual(w.messages.at(-1)[1],{x:20,y:30,reset:true,kind:'apple'});
   const count=w.messages.length;f.move({x:20,y:30});assert.equal(w.messages.length,count,'stationary pointer sends no duplicate points');
   f.trail.update({...valid,trailEnabled:false});assert.equal(f.timers.size,0);assert.equal(w.dead,true);
   f.trail.update(valid);f.main.emit('closed');assert.equal(f.windows[1].dead,true);assert.equal(f.ipcMain.listenerCount('tracer-garden-trail-motion'),0);
+});
+
+test('switching owned shiny companions changes the trail at a stationary pointer without another overlay or timer',()=>{
+  const f=fixture();f.trail.update(valid);const w=f.windows[0];w.webContents.emit('did-finish-load');
+  f.trail.update({...valid,pet:{id:'garden_cherry_shiny'},unlocked:['garden_cherry_shiny']});
+  assert.equal(f.windows.length,1);assert.equal(f.timers.size,1);
+  assert.deepEqual(w.messages.at(-1)[1],{x:1870,y:80,reset:true,kind:'cherry'});
+  const count=w.messages.length;f.trail.update({...valid,pet:{id:'garden_cherry_shiny'},unlocked:['garden_cherry_shiny']});assert.equal(w.messages.length,count);
+  f.trail.update({...valid,pet:{id:'garden_cherry'},unlocked:['garden_cherry']});assert.equal(w.dead,true);assert.equal(f.timers.size,0);
+  f.trail.destroy();
 });
 test('screen lock, sleep and trusted reduced-motion settings suspend sampling without losing the chosen reward',()=>{
   const f=fixture();f.trail.update(valid);const w=f.windows[0];w.webContents.emit('did-finish-load');

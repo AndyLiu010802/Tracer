@@ -82,7 +82,7 @@
         const failed = cause => { if (!settled) { settled = true; reject(failure('pet-draft-unavailable', cause)); } };
         try {
           if (!root.indexedDB || typeof root.indexedDB.open !== 'function') throw failure('pet-draft-unavailable');
-          request = root.indexedDB.open(databaseName, 1);
+          request = root.indexedDB.open(root.TracerAccount ? root.TracerAccount.storageName(databaseName) : databaseName, 1);
           request.onupgradeneeded = () => {
             try { if (!request.result.objectStoreNames.contains(storeName)) request.result.createObjectStore(storeName); }
             catch (error) { failed(error); try { request.transaction?.abort(); } catch {} }

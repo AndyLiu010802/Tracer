@@ -303,3 +303,6 @@ body.is-resizing #aside-slot iframe { pointer-events: none; }
 @media (max-width: 1100px) {
   .shell { --rail-w: 320px; }
 }
+
+/* Hidden native windows keep focus timers alive but suspend decorative CSS motion. */
+html[data-render-paused] *,html[data-render-paused] *::before,html[data-render-paused] *::after{animation-play-state:paused!important}

@@ -116,6 +116,7 @@
       element.style.clipPath = loading ? noCrop : crops.get(pages[clip.page])?.[version === 2 ? frame : clip.row * 4 + frame] || noCrop;
     }
     function draw(reload = false) {
+      if(action==='sleep')frame=retainedCount()===1?0:version===2?(retainedCount()===4?8:12):2;
       const clip = selectedClips[action], row = version === 2 ? Math.floor(frame / 4) : clip.row, column = frame % 4;
       element.dataset.action = action; element.dataset.page = String(clip.page); element.dataset.row = String(row); element.dataset.frame = String(frame);
       if (reload || image.getAttribute('src') !== pages[clip.page]) {
@@ -148,10 +149,10 @@
     function stop() { if (timer !== null) root.clearTimeout(timer); timer = null; }
     function retainedCount() { return version === 2 ? retainedFrames[selectedClips[action].page] || 16 : 4; }
     function staticAction() { return options.animated === false || (version === 2 && retainedCount() === 1); }
-    function paused() { return destroyed || unavailable || loading || staticAction() || motion?.matches || doc.visibilityState === 'hidden'; }
+    function paused() { return destroyed || unavailable || loading || action === 'sleep' || staticAction() || motion?.matches || (doc.visibilityState === 'hidden' || doc.tracerHidden); }
     function schedule() {
       stop();
-      element.dataset.playback = destroyed ? 'destroyed' : unavailable ? 'image-unavailable' : loading ? 'loading' : staticAction() ? 'static' : motion?.matches ? 'reduced-motion' : doc.visibilityState === 'hidden' ? 'hidden' : 'playing';
+      element.dataset.playback = destroyed ? 'destroyed' : unavailable ? 'image-unavailable' : loading ? 'loading' : staticAction() ? 'static' : motion?.matches ? 'reduced-motion' : (doc.visibilityState === 'hidden' || doc.tracerHidden) ? 'hidden' : action === 'sleep' ? 'sleeping' : 'playing';
       if (!paused()) timer = root.setTimeout(() => {
         timer = null;
         if (paused()) { schedule(); return; }
@@ -159,7 +160,7 @@
       }, version === 2 && retainedCount() === 4 ? clips[action].frameMs[Math.floor(frame / 4)] / 4 : selectedClips[action].frameMs[frame]);
     }
     function changed() { if (destroyed) return; if (motion?.matches) { frame = 0; draw(); } schedule(); }
-    if (animated) doc.addEventListener('visibilitychange', changed);
+    if (animated) ['visibilitychange','tracer-visibilitychange'].forEach(event=>doc.addEventListener(event,changed));
     if (motion?.addEventListener) motion.addEventListener('change', changed);
     else motion?.addListener?.(changed);
     draw(); schedule();
@@ -175,7 +176,7 @@
       destroy() {
         if (destroyed) return;
         destroyed = true; stop(); loadSequence++; image.onload = image.onerror = null; element.dataset.playback = 'destroyed';
-        if (animated) doc.removeEventListener('visibilitychange', changed);
+        if (animated) ['visibilitychange','tracer-visibilitychange'].forEach(event=>doc.removeEventListener(event,changed));
         if (motion?.removeEventListener) motion.removeEventListener('change', changed);
         else motion?.removeListener?.(changed);
         for (const preload of preloads) preload.src = '';

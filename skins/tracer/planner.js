@@ -26,14 +26,15 @@
     var weekLabel = M.dayParts(days[0]).mon + ' ' + M.dayParts(days[0]).dom
       + ' – ' + M.dayParts(days[6]).mon + ' ' + M.dayParts(days[6]).dom;
 
-    var html = '<header class="sec-head"><h1>Planner</h1>'
+    var zh=window.TracerLocale.language()==='zh';
+    var html = '<header class="sec-head planner-heading"><div class="planner-heading-copy"><h1>'+(zh?'日程':'Planner')+'</h1>'
       + '<span class="sec-sub">' + weekLabel + '</span>'
-      + '<span style="flex:1"></span>'
-      + '<button class="chip" id="pl-prev">‹</button>'
-      + '<button class="chip" id="pl-today">Today</button>'
-      + '<button class="chip" id="pl-next">›</button></header>'
+      + '</div><div class="planner-navigation">'
+      + '<button class="chip" id="pl-prev" aria-label="'+(zh?'上一周':'Previous week')+'">‹</button>'
+      + '<button class="chip" id="pl-today">'+(zh?'今天':'Today')+'</button>'
+      + '<button class="chip" id="pl-next" aria-label="'+(zh?'下一周':'Next week')+'">›</button></div></header>'
       + '<div class="planner">'
-      + '<div class="pl-tray" data-day=""><div class="pl-col-head">Unscheduled</div>'
+      + '<div class="pl-tray" data-day=""><div class="pl-col-head">'+L('unscheduled')+'</div>'
       + '<div class="pl-body" data-day="">';
     M.unscheduledTasks(ws).forEach(function (t) { html += cardHtml(ws, t); });
     html += '</div></div>';
@@ -41,7 +42,7 @@
       var dp = M.dayParts(iso);
       var isToday = iso === today ? ' pl-is-today' : '';
       html += '<div class="pl-day' + isToday + '" data-day="' + iso + '">'
-        + '<div class="pl-col-head"><span class="pl-dow">' + dp.dow + '</span> <span class="pl-dom">' + dp.dom + '</span></div>'
+        + '<div class="pl-col-head"><span class="pl-dow">' + (zh?['周日','周一','周二','周三','周四','周五','周六'][new Date(iso+'T12:00:00').getDay()]:dp.dow) + '</span> <span class="pl-dom">' + dp.dom + '</span></div>'
         + '<div class="pl-body" data-day="' + iso + '">';
       M.tasksOnDay(ws, iso).forEach(function (t) { html += cardHtml(ws, t); });
       html += '</div></div>';

@@ -36,6 +36,7 @@
     const stats=el('div','garden-home-today',intro);stats.setAttribute('role','group');
     const stat=(icon)=>{const item=el('div','garden-home-stat',stats),mark=el('span','garden-home-icon',item);mark.innerHTML=icons[icon];return {value:el('strong','garden-home-stat-value',item),label:el('span','garden-home-stat-label',item)};};
     const todayTasks=stat('check'),todayFocus=stat('clock');
+    const collectGoal=button(intro,'garden-home-collect-goal','open-market');
     const world=realm.TracerGardenWorldView(hero,plantArt,(type,value)=>{
       if(type==='select-plant'){
         const index=(lastSnapshot?.plots||[]).findIndex(item=>item.projectId===value);
@@ -47,21 +48,22 @@
         activity=({water:'farming',music:'play',pet:'pet',greet:'wake',breeze:'tea'})[value]||'idle';
         if(lastPetSnapshot)updatePet(lastPetSnapshot.pet,lastPetSnapshot);
         clearTimeout(activityTimer);activityTimer=setTimeout(()=>{activity='';if(lastPetSnapshot&&!destroyed)updatePet(lastPetSnapshot.pet,lastPetSnapshot);},3300);return;
-      }onAction?.(type,value);
+      }return onAction?.(type,value);
     }),residence=world.surface;
     const companion=button(residence,'garden-home-companion','open-companion');companion.label.hidden=true;
     const companionArt=el('span','garden-home-companion-art',companion.node),companionCaption=el('div','garden-home-companion-caption',residence),companionName=el('strong','garden-home-companion-name',companionCaption),companionState=el('span','garden-home-companion-state',companionCaption);
+    world.attachCompanion(companion.node,companionCaption);
     const pages=el('nav','garden-task-pages',hero),pageInfo=el('span','garden-task-page-info',pages),pagePrev=button(pages,'garden-home-button','previous-page'),pageCount=el('span','garden-task-page-count',pages),pageNext=button(pages,'garden-home-button','next-page');
     world.surface.after(pages);
     pages.setAttribute('aria-label','Garden pages');
     const error=el('div','garden-home-error',home);error.hidden=true;error.setAttribute('role','alert');const errorText=el('span','garden-home-error-text',error),retry=button(error,'garden-home-button garden-home-retry','retry-save');
-    const marketHost=el('div','garden-home-market',home),market=realm.TracerGardenMarketView?.create(marketHost,{onAction,plantArt});
+    const market=null;
     const body=el('div','garden-home-body',home),garden=el('section','garden-home-garden',body),sectionHead=el('div','garden-home-section-head',garden),sectionTitles=el('div','garden-home-section-titles',sectionHead),gardenTitle=el('h2','garden-home-section-title',sectionTitles),gardenHelp=el('p','garden-home-section-help',sectionTitles),add=button(sectionHead,'garden-home-button garden-home-add','open-board','arrow'),grid=el('div','garden-home-plots garden-collection-grid',garden);
     const journal=el('aside','garden-home-journal',body),journalHeading=el('div','garden-home-journal-heading',journal),journalIcon=el('span','garden-home-icon',journalHeading);journalIcon.innerHTML=icons.leaf;
     const journalTitle=el('h2','garden-home-section-title',journalHeading),journalHelp=el('p','garden-home-section-help',journal),eventList=el('ol','garden-home-events',journal),journalEmpty=el('p','garden-home-journal-empty',journal),journalFoot=el('div','garden-home-journal-foot',journal);
     const stamp=el('span','garden-home-stamp',journalFoot);stamp.innerHTML=icons.bloom;const footnote=el('p','garden-home-footnote',journalFoot);
     host.appendChild(home);
-    function click(event){const node=event.target.closest?.('[data-home-action]');if(!node||!home.contains(node)||node.disabled||destroyed)return;const action=node.dataset.homeAction;if(action==='open-market'){marketHost.scrollIntoView({block:'start',behavior:realm.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});return;}if(action==='previous-page'||action==='next-page'){pageIndex+=action==='previous-page'?-1:1;update(lastSnapshot);return;}if(typeof onAction==='function')onAction(action,node.dataset.projectId||undefined);}
+    function click(event){const node=event.target.closest?.('[data-home-action]');if(!node||!home.contains(node)||node.disabled||destroyed)return;const action=node.dataset.homeAction;if(action==='open-market'){onAction?.('open-shop');return;}if(action==='previous-page'||action==='next-page'){pageIndex+=action==='previous-page'?-1:1;update(lastSnapshot);return;}if(typeof onAction==='function')onAction(action,node.dataset.projectId||undefined);}
     home.addEventListener('click',click);
     function date(value,includeTime=false){const at=new Date(value);if(!value||!Number.isFinite(at.getTime()))return '';try{return new Intl.DateTimeFormat(language==='zh'?'zh-CN':'en',{month:'short',day:'numeric',...(includeTime?{hour:'2-digit',minute:'2-digit'}:{})}).format(at);}catch{return '';}}
     function createCollection(kind){
@@ -119,7 +121,9 @@
     function update(snapshot={}){
       if(destroyed)return;lastSnapshot=snapshot;language=snapshot.language==='en'?'en':'zh';home.lang=language==='zh'?'zh-CN':'en';
       set(eyebrow,tr('每一点进展，都在生长','SMALL STEPS, GROWING THINGS'));
-      set(marketLink.label,tr('仓库与农场','Warehouse & farms'));
+      set(marketLink.label,tr('商店与收藏','Shop & collection'));
+      const nextTreasure=snapshot.collectibles?.target;collectGoal.node.hidden=!nextTreasure;
+      if(nextTreasure)set(collectGoal.label,tr('下一件心愿：','Your next treasure: ')+nextTreasure.name[language==='en'?1:0]+' · '+Math.min(snapshot.economy?.balance||0,nextTreasure.price)+' / '+nextTreasure.price+tr(' 金币 →',' coins →'));
       set(title,tr('伙伴家园','Companion garden'));set(description,tr('开始一项任务，种下一颗惊喜。每次完成，都有花朵替你记住。','Begin a task, plant a little surprise. Let each finished step leave a flower.'));set(planetLink.label,tr('花朵星球','Memory planets'));
       stats.setAttribute('aria-label',tr('今天的进展','Today’s progress'));set(todayTasks.value,number(snapshot.today?.tasks));set(todayTasks.label,tr('今天完成','tasks today'));set(todayFocus.value,number(snapshot.today?.minutes));set(todayFocus.label,tr('专注分钟','focus minutes'));
       set(gardenTitle,tr('植物图鉴','Botanical collection'));set(gardenHelp,tr('每一朵收获都留在这里。未知的轮廓，等待下一次发现。','Every harvest belongs here. Unfamiliar silhouettes await their first discovery.'));
@@ -142,9 +146,10 @@
       set(pageCount,(pageIndex+1)+' / '+pageTotal);updatePageLabels(items);
       const events=(Array.isArray(snapshot.events)?snapshot.events:[]).filter(item=>item&&['seed','harvest','bloom'].includes(item.type)).slice(0,5),signature=JSON.stringify([language,events]);
       if(signature!==eventSignature){eventSignature=signature;eventList.replaceChildren();for(const event of events){const row=el('li','garden-home-event',eventList);row.dataset.eventType=event.type;const mark=el('span','garden-home-event-icon',row);mark.innerHTML=icons[event.type==='harvest'?'check':event.type==='seed'?'leaf':'bloom'];const content=el('div','garden-home-event-content',row);el('span','garden-home-event-title',content,(event.type==='seed'?tr('种下 · ','Planted · '):event.type==='harvest'?tr('收藏 · ','Collected · '):tr('盛放 · ','Bloomed · '))+event.title);const details=el('span','garden-home-event-details',content);const parts=[String(event.projectName||''),date(event.at,true)].filter(Boolean);set(details,parts.join(' · '));}journalEmpty.hidden=events.length>0;}
+      updatePet(snapshot.pet||null,snapshot);
       world.update({...snapshot,plots:items,scenePlots:items.slice(pageIndex*6,pageIndex*6+6)});
-      market?.update({language,inventory:snapshot.inventory||[],economy:snapshot.economy||{},farms:snapshot.farms||[],busy:!!snapshot.busy,error:snapshot.error||''});
-      set(errorText,typeof snapshot.error==='string'?snapshot.error:'');set(retry.label,tr('重试保存','Retry save'));error.hidden=!errorText.textContent;updatePet(snapshot.pet||null,snapshot);
+      market?.update({language,collectibles:snapshot.collectibles,inventory:snapshot.inventory||[],economy:snapshot.economy||{},farms:snapshot.farms||[],busy:!!snapshot.busy,error:snapshot.error||''});
+      set(errorText,typeof snapshot.error==='string'?snapshot.error:'');set(retry.label,tr('重试保存','Retry save'));error.hidden=!errorText.textContent;
       if(completedTask)playResident('celebrate');
     }
     function destroy(){if(destroyed)return;destroyed=true;clearActivity();world.destroy();market?.destroy();player?.destroy();player=null;plots.clear();taskCounts.clear();home.removeEventListener('click',click);home.remove();}

@@ -244,17 +244,21 @@
     }).sort(function (a, b) { return a.order - b.order; });
   }
 
-  function deleteTask(ws, id) {
+  function removeTaskCard(ws, id) {
     var task = findTask(ws, id); if (task && task.status === 'done') History.record(ws, task);
-    Garden.retireTask(ws, id);
     ws.tasks = ws.tasks.filter(function (t) { return t.id !== id; });
     ws.tasks.forEach(function (t) { if ((t.dependsOn || []).indexOf(id) >= 0) { t.dependsOn = t.dependsOn.filter(function (v) { return v !== id; }); t.updatedAt = Date.now(); } });
+  }
+
+  function deleteTask(ws, id) {
+    Garden.retireTask(ws, id);
+    removeTaskCard(ws, id);
   }
 
   function clearCompletedTasks(ws, projectId) {
     var archived = new Set(ws.projects.filter(function (p) { return p.status === 'completed'; }).map(function (p) { return p.id; }));
     var ids = ws.tasks.filter(function (t) { return t.status === 'done' && !archived.has(t.projectId) && (!projectId || t.projectId === projectId); }).map(function (t) { return t.id; });
-    ids.forEach(function (id) { Garden.harvest(ws, id); deleteTask(ws, id); });
+    ids.forEach(function (id) { Garden.clearCompletedTask(ws, id); removeTaskCard(ws, id); });
     return { ok: true, count: ids.length };
   }
 

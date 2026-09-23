@@ -1,0 +1,47 @@
+/* Portraits are never covered: the ornament lives outside the image circle. */
+html[data-avatar-frame] :is(.account-trigger,.account-portrait,.account-avatar-preview),.frame-avatar{position:relative;overflow:visible;border-radius:50%;isolation:isolate}
+html[data-avatar-frame] :is(.account-trigger,.account-portrait,.account-avatar-preview){border:0;box-shadow:none}
+html[data-avatar-frame] :is(.account-trigger,.account-portrait,.account-avatar-preview)>img,.frame-avatar>img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+html[data-avatar-frame] :is(.account-trigger,.account-portrait,.account-avatar-preview)::after,.frame-avatar::after{content:"";position:absolute;left:var(--avatar-art-x);top:var(--avatar-art-y);width:var(--avatar-art-size);height:var(--avatar-art-size);background:var(--avatar-frame-image) center/100% 100% no-repeat;pointer-events:none;z-index:2}
+html[data-avatar-frame] .account-identity{padding-top:12px;gap:14px}
+html[data-avatar-frame] .account-avatar-editor{gap:28px;padding:8px 0}
+/* Every task owns its palette; the workspace's material cannot recolour it. */
+html:root[data-task-frame] :is(.card,.pl-card),.frame-task-sample{
+ --fg:var(--task-fg);--muted:var(--task-muted);--accent:var(--task-accent);--accent2:var(--task-accent);--border:var(--task-line);--surface:var(--task-bg);--panel:var(--task-bg);--danger:var(--task-danger);--warning:var(--task-warning);
+ --ui-fg:var(--task-fg);--ui-muted:var(--task-muted);--ui-card:var(--task-bg);--ui-line:var(--task-line);--texture:none;
+ color:var(--task-fg);background:var(--task-bg);border:1px solid var(--task-line);border-radius:var(--task-radius);box-shadow:var(--task-shadow);backdrop-filter:none;isolation:isolate;
+}
+/* Anchor ornaments on stationary cards without changing the viewport drag preview. */
+html:root[data-task-frame] :is(.card,.pl-card):not(.drag-ghost),.frame-task-sample{position:relative}
+html:root[data-task-frame] :is(.card,.pl-card) :is(.card-title,.pl-card-title,.card-type,.card-seq){color:var(--task-fg)}
+html:root[data-task-frame] :is(.card,.pl-card) :is(.card-preview,.card-label,.card-progress-caption,.card-owner,.card-kind,.card-scheduled,.card-hours,.card-proj,.drag-handle,.card-due,.pl-seq){color:var(--task-muted)}
+html:root[data-task-frame] :is(.card,.pl-card) :is(.card-status,.card-move,.status-select,.col-count){color:var(--task-fg)}
+html:root[data-task-frame] :is(.card,.pl-card) :is(.card-pri,.priority-urgent,.card-due.overdue){color:var(--task-danger)}
+html:root[data-task-frame] :is(.card,.pl-card) :is(.priority-low,.priority-medium){color:var(--task-muted);background:color-mix(in srgb,var(--task-line) 15%,transparent)}
+html:root[data-task-frame] :is(.card,.pl-card) .card-due.today{color:var(--task-accent)}
+html:root[data-task-frame] :is(.card,.pl-card) .card-blocked{color:var(--task-warning)}
+html:root[data-task-frame] :is(.card,.pl-card):focus-visible{outline:2px solid var(--task-accent);outline-offset:3px}
+/* The shop presents a portrait or a real card sample, never a flattened screenshot. */
+.frame-preview{box-sizing:border-box;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:26px;background:#e8e1d2;color:#4b5548;container-type:inline-size;overflow:hidden}
+.frame-avatar-stage{background:radial-gradient(ellipse at 50% 40%,#fff9eb,transparent 65%),repeating-linear-gradient(90deg,#7f775706 0 1px,transparent 1px 24px),#e8e1d2}
+.frame-series{font:9px/1.5 ui-monospace,monospace;letter-spacing:1.6px;color:#686554;text-align:center;flex:none}
+.frame-avatar{display:grid;place-items:center;width:clamp(58px,34cqw,138px);height:clamp(58px,34cqw,138px);flex:none;font:clamp(33px,17cqw,68px)/1 "Segoe UI Symbol",sans-serif;background:#cad7b5;color:#35462d;margin:7% 0;box-shadow:0 10px 22px #4b41361f}
+.frame-caption{font:11px/1.6 Georgia,'Noto Serif SC',serif;color:#65624e;letter-spacing:1px;text-align:center}
+.frame-task-stage{gap:13px;padding:22px;background:radial-gradient(ellipse at 20% 0,#fff9ec,transparent 85%),#e2ddcf}
+.frame-task-sample{box-sizing:border-box;align-self:center;width:min(100%,380px);padding:20px 22px 16px;text-align:left}
+.frame-sample-meta,.frame-sample-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;font:10px/1.5 ui-monospace,monospace;color:var(--task-muted)}
+.frame-sample-title{font:600 18px/1.6 var(--font-body,system-ui)!important;margin:19px 0 10px!important;color:var(--task-fg)!important;letter-spacing:0!important}
+.frame-sample-text{font:11px/1.8 var(--font-body,system-ui)!important;color:var(--task-muted)!important;margin:0 0 18px!important}
+.frame-sample-footer{border-top:1px solid color-mix(in srgb,var(--task-line) 40%,transparent);padding-top:12px;color:var(--task-accent)}
+.store-wall-card[data-frame-type] .store-wall-card-image{border:1px solid #b4a789;border-radius:8px;box-shadow:none;aspect-ratio:1.2}
+.store-wall-detail:has(.frame-preview) .store-wall-detail-image{aspect-ratio:16/10;max-height:470px}
+.frame-nav-avatar span{display:grid;place-items:center;width:42px;height:42px;border:3px double #ac8e50;border-radius:50%;outline:1px solid #c7b477;outline-offset:4px;background:#dde3c6;color:#67744c;font-size:27px;box-shadow:0 5px 8px #56442420}
+.frame-nav-task{display:flex!important;flex-direction:column;justify-content:center;gap:5px;padding:11px!important;border:3px double #b49a64;border-radius:4px;background:#faf2db;box-shadow:3px 3px 0 #c3b496;box-sizing:border-box;transform:rotate(-5deg);height:50px!important;margin:6px}
+.frame-nav-task i{height:2px!important;width:100%!important;background:#8a9875!important;border:0!important;border-radius:2px}.frame-nav-task i:last-child{width:65%!important}
+/* Nine-slice artwork: corners retain their proportions as task text grows. */
+html:root[data-task-frame] :is(.card,.pl-card){padding:19px 18px 8px}
+html:root[data-task-frame] :is(.card,.pl-card)::after,.frame-task-stage .frame-task-sample::after{content:"";position:absolute;inset:-5px;border:26px solid transparent;border-image:var(--task-art) 20% / 26px / 0 stretch;border-radius:0;background:none;pointer-events:none;z-index:0}
+.frame-task-stage .frame-task-sample{padding:25px 24px 21px;border-color:transparent;border-radius:8px}
+.frame-avatar-stage .frame-avatar{margin:12% 0 15%}
+.frame-avatar-stage{gap:10px}
+@container (max-width:280px){.frame-preview{padding:15px;gap:9px}.frame-series{font-size:7px;letter-spacing:1px}.frame-caption{font-size:9px}.frame-task-sample{padding:13px 14px 12px}.frame-sample-title{font-size:13px!important;margin:12px 0 7px!important}.frame-sample-text{font-size:9px!important;margin-bottom:10px!important}.frame-sample-meta,.frame-sample-footer{font-size:8px}.frame-sample-footer{padding-top:9px}}

@@ -119,6 +119,7 @@ function browser(){
     advance(milliseconds){const end=now+milliseconds;while(now<end){now=Math.min(end,now+20);for(const [id,fn]of [...raf]){raf.delete(id);fn(now);}}},
     reduced(value){media.matches=value;for(const fn of motionListeners)fn();},
     hidden(value){doc.hidden=value;for(const fn of listeners.get('visibilitychange')||[])fn();},
+    nativeHidden(value){doc.tracerHidden=value;for(const fn of listeners.get('tracer-visibilitychange')||[])fn();},
     visible(element,value){for(const observer of observers)if(observer.elements.has(element))observer.callback([{target:element,isIntersecting:value}]);}
   };
 }
@@ -173,8 +174,10 @@ for(const boundary of ['focus','rest','reduced motion','hidden document','offscr
 test('players share one scheduler and destroying the last player releases listeners and pending work',async()=>{
   const env=browser(),first=Animation.create(options(env)),second=Animation.create({...options(env),shiny:true});await env.ready();let finished=0;
   first.play('greet',()=>finished++);second.play('celebrate',()=>finished++);
-  assert.equal(env.raf.size,1);assert.equal(env.listeners(),1);assert.equal(env.motionListeners.size,1);
-  first.destroy();assert.equal(env.raf.size,1);assert.equal(env.listeners(),1);
+  assert.equal(env.raf.size,1);assert.equal(env.listeners(),2);assert.equal(env.motionListeners.size,1);
+  env.nativeHidden(true);assert.equal(env.doc.hidden,false);assert.equal(env.raf.size,0);assert.equal(first.element.dataset.playback,'hidden');
+  env.nativeHidden(false);assert.equal(env.raf.size,1,'native restore resumes one shared scheduler');
+  first.destroy();assert.equal(env.raf.size,1);assert.equal(env.listeners(),2);
   second.destroy();second.destroy();assert.equal(env.raf.size,0);assert.equal(env.listeners(),0);assert.equal(env.motionListeners.size,0);
   assert.ok(env.observers.every(observer=>observer.elements.size===0));
   env.advance(10000);assert.equal(finished,0);assert.equal(second.play('greet'),false);

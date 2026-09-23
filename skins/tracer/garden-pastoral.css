@@ -71,14 +71,6 @@
 .garden-world-rules,.garden-world-rules-text{color:#8b9871}
 .garden-world-toast{background:#fff1ba;color:#817044;border:1px solid #d8be76;box-shadow:0 3px 0 #c7b78366}
 .garden-world-effects{position:absolute;inset:-25% -15% -5%;pointer-events:none}
-.garden-world-particle{display:none;position:absolute;left:calc(16% + var(--n)*10%);top:14%;width:3px;height:7px;border-radius:1px;background:#a3d8ee;box-shadow:1px 1px 0 #609bbc}
-.garden-world-plot[data-interaction=water] .garden-world-particle{display:block;animation:garden-water 800ms linear 3;animation-delay:calc(var(--n)*70ms)}
-.garden-world-plot[data-interaction=music] .garden-world-particle{display:block;width:4px;height:4px;background:#e2b968;box-shadow:3px -5px 0 #e2b968;animation:garden-notes 1700ms ease-out 2;animation-delay:calc(var(--n)*90ms)}
-.garden-world-plot[data-interaction=pet] .garden-world-particle{display:block;background:#e7a5b5;width:5px;height:5px;box-shadow:3px -2px 0 #e7a5b5;animation:garden-notes 1400ms ease-out 2;animation-delay:calc(var(--n)*90ms)}
-.garden-world-plot[data-interaction=breeze] .garden-world-particle{display:block;background:#c6dc8b;width:5px;height:3px;box-shadow:none;animation:garden-leaves 1300ms ease-in-out 2;animation-delay:calc(var(--n)*90ms)}
-@keyframes garden-water{0%{translate:0 -10px;opacity:0}20%{opacity:1}100%{translate:-5px 55px;opacity:0}}
-@keyframes garden-notes{0%{translate:0 45px;opacity:0}20%{opacity:1}100%{translate:12px -20px;opacity:0}}
-@keyframes garden-leaves{0%{translate:-25px 15px;opacity:0;rotate:0deg}30%{opacity:1}100%{translate:40px 35px;opacity:0;rotate:150deg}}
 .garden-world-celebration{background:#fff5c6;color:#8c7843;box-shadow:0 2px 0 #c4b27b44}
 .garden-home .garden-home-section-title{color:#6b7c4f}
 .garden-home .garden-home-section-help,.garden-home .garden-home-journal-empty,.garden-home .garden-home-footnote{color:#96a07e}
@@ -98,4 +90,4 @@
 .garden-home .garden-home-error{color:#a17a42;background:#fff1d8;border-color:#e4cc94}
 @container garden-home (max-width:780px){.garden-world-portrait{width:80px;height:96px}.garden-world-copy{flex-basis:180px}.garden-world-detail{gap:10px}.garden-home .garden-world-portrait .garden-pixel-plant{width:100%;height:100%}}
 @container garden-home (max-width:540px){.garden-world-surface{aspect-ratio:900/520;margin:12px auto 0}.garden-world-portrait{width:65px;height:88px}.garden-world-detail{display:flex;gap:10px;padding:12px}.garden-world-copy{flex-basis:150px}.garden-home .garden-world-focus{margin-left:75px}.garden-world-care{padding:5px 12px 12px;gap:7px}.garden-world-care-title{width:100%;text-align:center}.garden-world-care-button{font-size:10px;padding:6px 10px}.garden-world-harvest-help{font-size:9px;padding:0 15px}.garden-world-plot-label{font-size:7px;padding:1px 3px}.garden-home .garden-world-surface .garden-home-companion{left:70%;top:38%;width:14%}.garden-world-name{font-size:13px}}
-@media(prefers-reduced-motion:reduce){.garden-world-pollen,.garden-world-particle{animation:none!important}.garden-world-weather,.garden-world-effects{display:none}.garden-world-care-button{translate:none!important}}
+@media(prefers-reduced-motion:reduce){.garden-world-pollen{animation:none!important}.garden-world-weather{display:none}.garden-world-care-button{translate:none!important}}

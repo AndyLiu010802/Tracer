@@ -4,6 +4,7 @@
   var KEY = 'tracer.focus.v1', APPEARANCE = 'tracer.ambient.v1';
   var state = load(), appearance = loadAppearance(), box = null, busy = false, audio = null, alertBusy = false;
   var baseTitle = document.title, lastDay = '', lastQuoteLanguage = '';
+  var dailySignature = '', drawSignature = '', drawnBox = null;
   var pendingActivity = { keys: {}, clicks: 0, unknown: 0 };
   function flushActivity(s) {
     Object.keys(pendingActivity.keys).forEach(function (k) { s.activity.keys[k] = (s.activity.keys[k] || 0) + pendingActivity.keys[k]; });
@@ -11,7 +12,9 @@
     pendingActivity = { keys: {}, clicks: 0, unknown: 0 };
   }
   function recordActivity(k) {
-    var current = load();
+    // Storage events keep this snapshot in sync across windows. Parsing the
+    // entire focus history on every keystroke blocks note/task typing.
+    var current = state;
     if (!current.running || current.mode !== 'focus' || Date.now() >= current.endAt) return;
     if (k === 'unknown') pendingActivity.unknown++;
     else { pendingActivity.keys[k] = (pendingActivity.keys[k] || 0) + 1; if (k === 'LMB') pendingActivity.clicks++; }
@@ -39,7 +42,7 @@
     if (box && box.isConnected) { var el = box.querySelector('#focus-error'); el.textContent = message; el.hidden = false; }
     else T.ui.notice(message);
   }
-  function locked(callback) { return navigator.locks ? navigator.locks.request('tracer-focus-state', callback) : Promise.resolve().then(callback); }
+  function locked(callback) { return navigator.locks ? navigator.locks.request(window.TracerAccount ? TracerAccount.storageName('tracer-focus-state') : 'tracer-focus-state', callback) : Promise.resolve().then(callback); }
   function change(callback) {
     return locked(function () {
       state = load(); pruneDeletedTasks(state); flushActivity(state); F.settle(state, Date.now()); callback(state); pruneDeletedTasks(state);
@@ -146,10 +149,16 @@
     draw();
     box.querySelector('#focus-start').focus({ preventScroll: true }); box.scrollTop = 0;
   }
-  function draw() {
+  function draw(force) {
+    if (document.hidden || document.tracerHidden) return;
+    var now = Date.now(), ms = F.remaining(state, now), text = F.format(ms);
+    var next = JSON.stringify([text, F.dayKey(now), window.TracerLocale.language(), state.mode, state.running, state.completed, state.remaining, state.alarm, state.task, state.settings, state.history.length, state.totalMinutes]);
+    var currentBox = box && box.isConnected ? box : null;
+    if (!force && next === drawSignature && currentBox === drawnBox) return;
+    drawSignature = next; drawnBox = currentBox;
     if (T.garden) T.garden.refresh();
     if (T.refreshInsightsFocus) T.refreshInsightsFocus(state);
-    var ms = F.remaining(state, Date.now()), text = F.format(ms), stats = F.today(state, Date.now());
+    var stats = F.today(state, now);
     var pill = document.getElementById('focus-open');
     pill.dataset.running = String(state.running); pill.dataset.complete = String(state.completed);
     pill.setAttribute('aria-label', L('pomodoro') + ' · ' + L(state.mode) + ' · ' + text);
@@ -186,8 +195,12 @@
   }
   function saveAppearance() { try { localStorage.setItem(APPEARANCE, JSON.stringify(appearance)); } catch (e) {} }
   function drawDaily() {
+    if (document.hidden || document.tracerHidden) return;
     var now = new Date(), key = F.dayKey(now.getTime()), lang = window.TracerLocale.language();
     if (appearance.day !== key) { appearance.scene = D.nextScene(appearance.scene, Math.random()); appearance.day = key; saveAppearance(); }
+    var next = JSON.stringify([key, lang, appearance.scene, appearance.enabled, appearance.collapsed]);
+    if (next === dailySignature) return;
+    dailySignature = next;
     if (lastDay !== key || lastQuoteLanguage !== lang) {
       var quote = D.quote(now); lastDay = key; lastQuoteLanguage = lang;
       document.getElementById('daily-label').textContent = L('dailyQuote');
@@ -222,7 +235,7 @@
     ((T.store.data || {}).projectDeletions || []).forEach(function (row) { row.taskIds.forEach(function (id) { ids.add(id); }); });
     F.removeTasks(value, ids);
   }
-  T.refreshWellness = function () { pruneDeletedTasks(state); change(function () {}); drawDaily(); draw(); if (T.music) T.music.refreshLabels(); };
+  T.refreshWellness = function () { pruneDeletedTasks(state); change(function () {}); drawDaily(); draw(true); if (T.music) T.music.refreshLabels(); };
   T.ready.then(function () { T.refreshWellness(); });
   async function openForTask(id) {
     var task=M.findTask(T.store.data,id);if(!task||task.status==='done')return false;
@@ -237,12 +250,13 @@
     return !kept;
   }
   T.focus = { open: openTimer, openForTask: openForTask, toggle: startPause, read: function () { return F.read(state); } };
-  window.addEventListener('storage', function (event) { if (event.key === KEY || !event.key) { state = load(); draw(); } if (event.key === APPEARANCE || !event.key) { appearance = loadAppearance(); drawDaily(); } });
+  window.addEventListener('storage', function (event) { if (event.key === KEY || !event.key) { state = load(); draw(true); } if (event.key === APPEARANCE || !event.key) { appearance = loadAppearance(); drawDaily(); } });
   function tick() {
     drawDaily();
     if (!busy && ((state.running && Date.now() >= state.endAt) || Object.keys(pendingActivity.keys).length || pendingActivity.unknown)) { busy = true; change(function () {}).finally(function () { busy = false; }); }
     else { draw(); maybeAlert(); }
   }
   document.addEventListener('visibilitychange', tick); window.addEventListener('focus', tick);
+  document.addEventListener('tracer-visibilitychange', function () { drawSignature = dailySignature = ''; tick(); });
   setInterval(tick, 500); tick();
 })();

@@ -166,7 +166,8 @@
     var r = el.frame.parentElement.getBoundingClientRect();
     var modal = document.querySelector('[aria-modal="true"]');
     var visible = !state.hidden && r.width > 4 && r.height > 4 && !document.hidden
-      && !(modal && modal.getClientRects().length) && !document.body.classList.contains('is-resizing');
+      && !(modal && modal.getClientRects().length) && !document.body.classList.contains('is-resizing')
+      && !document.body.classList.contains('sticker-bag-open') && !document.body.classList.contains('sticker-decorating');
     var data = { action: 'layout', visible: visible, bounds: { x: r.x, y: r.y, width: r.width, height: r.height } };
     var key = JSON.stringify(data);
     if (key !== layoutKey) { layoutKey = key; nativeBrowser.send(data); }

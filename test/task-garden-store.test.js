@@ -72,3 +72,37 @@ test('HTTP rejects malformed flower data and changes to completed projects witho
   assert.equal(fs.readFileSync(file, 'utf8'), bytes); assert.equal(fs.readFileSync(file + '.bak', 'utf8'), backup);
   assert.deepEqual((await request('GET')).body, saved);
 });
+
+test('HTTP cleanup preserves mature flowers across disk reloads and stale writes until manual harvest', async () => {
+  let ws = (await request('GET')).body;
+  const project = M.addProject(ws, { name: 'Keep mature flowers' });
+  const task = M.addTask(ws, { title: 'A flower to keep', projectId: project.id, status: 'doing' });
+  ws = (await request('PUT', ws)).body.workspace;
+  M.moveTask(ws, task.id, 'done'); ws = (await request('PUT', ws)).body.workspace;
+  const stale = clone(ws), seedBefore = G.active(ws).find(seed => seed.taskId === task.id);
+  const harvestCount = G.collection(ws).reduce((sum, row) => sum + row.total, 0);
+  assert.equal(M.clearCompletedTasks(ws, project.id).count, 1);
+  const cleared = await request('PUT', ws); assert.equal(cleared.status, 200);
+  function assertKept(current) {
+    assert.equal(M.findTask(current, task.id), null);
+    const seed = G.active(current).find(row => row.taskId === task.id);
+    assert.ok(seed); assert.equal(seed.state, 'mature'); assert.ok(seed.clearedAt);
+    assert.equal(seed.harvestedAt, null); assert.equal(seed.retiredAt, null);
+    assert.deepEqual([seed.title, seed.plantKind, seed.ticket, seed.completedAt], [seedBefore.title, seedBefore.plantKind, seedBefore.ticket, seedBefore.completedAt]);
+    assert.equal(G.collection(current).reduce((sum, row) => sum + row.total, 0), harvestCount);
+  }
+  assertKept(cleared.body.workspace); assertKept((await request('GET')).body);
+  assertKept(JSON.parse(fs.readFileSync(path.join(TMP, 'workspace.json'), 'utf8')));
+  M.updateTask(stale, task.id, { title: 'Old window edit', status: 'doing' });
+  for (const method of ['PUT', 'POST']) {
+    const replay = await request(method, stale); assert.equal(replay.status, 200); assertKept(replay.body.workspace);
+  }
+  ws = (await request('GET')).body; G.harvest(ws, task.id);
+  const harvested = await request('PUT', ws); assert.equal(harvested.status, 200);
+  const receipt = harvested.body.workspace.taskGarden.seeds.find(seed => seed.taskId === task.id);
+  const replay = await request('PUT', cleared.body.workspace); assert.equal(replay.status, 200);
+  const reloaded = (await request('GET')).body;
+  assert.equal(G.active(reloaded).some(seed => seed.taskId === task.id), false);
+  assert.equal(reloaded.taskGarden.seeds.find(seed => seed.taskId === task.id).harvestedAt, receipt.harvestedAt);
+  assert.equal(G.collection(reloaded).reduce((sum, row) => sum + row.total, 0), harvestCount + 1);
+});

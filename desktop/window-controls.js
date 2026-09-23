@@ -11,7 +11,7 @@ function attachWindowControls(win, appOrigin, extraContents = []) {
   }
   function report() {
     if (win.isDestroyed() || win.webContents.isDestroyed() || win.webContents.mainFrame.isDestroyed()) return;
-    win.webContents.send('tracer-window-state', { fullscreen: win.isFullScreen(), maximized: win.isMaximized() });
+    win.webContents.send('tracer-window-state', { fullscreen: win.isFullScreen(), maximized: win.isMaximized(), visible: win.isVisible() && !win.isMinimized() });
   }
   function toggle() { if (!win.isDestroyed()) { win.setFullScreen(!win.isFullScreen()); setImmediate(report); } }
   function input(event, key) {
@@ -28,7 +28,7 @@ function attachWindowControls(win, appOrigin, extraContents = []) {
   }
   const contents = [win.webContents, ...extraContents];
   contents.forEach(wc => wc.on('before-input-event', input));
-  const events = ['enter-full-screen', 'leave-full-screen', 'maximize', 'unmaximize', 'restore', 'show'];
+  const events = ['enter-full-screen', 'leave-full-screen', 'maximize', 'unmaximize', 'restore', 'show', 'hide', 'minimize'];
   // On Windows the event may fire before isFullScreen() reflects the transition.
   events.forEach(name => win.on(name, () => setImmediate(report)));
   win.webContents.on('did-finish-load', report);

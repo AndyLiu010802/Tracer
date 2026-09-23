@@ -16,10 +16,9 @@
     action=actions.includes(action)?action:'idle';const total=duration(action);
     if(still)return{clip:action==='rest'?'rest':'idle',frame:action==='rest'?12:0};
     let at=Number.isFinite(elapsed)?Math.max(0,elapsed):0;
-    // Enter sleep once, then breathe in the sleeping drawings. Replaying the
-    // standing/sitting introduction would make a resting companion keep waking.
-    if(loop&&action==='rest'&&at>=total){const asleepAt=timings.rest.slice(0,8).reduce((sum,ms)=>sum+ms,0);at=asleepAt+(at-total)%(total-asleepAt);}
-    else at=loop?at%total:Math.min(at,total-Number.EPSILON);
+    // A sustained rest holds its settled pose; explicit previews retain every drawing.
+    if(loop&&action==='rest')return{clip:'rest',frame:12};
+    at=loop?at%total:Math.min(at,total-Number.EPSILON);
     let frame=0,passed=0;while(frame<15&&at>=passed+timings[action][frame])passed+=timings[action][frame++];
     return{clip:action,frame};
   }

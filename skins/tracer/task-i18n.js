@@ -6,6 +6,7 @@
   'use strict';
   // Each pair is [Simplified Chinese, English]. Task content is never translated.
   var pairs = {
+    shop: ['心愿商店', 'Wish shop'],
     deleteProject: ['删除项目', 'Delete project'], deleteProjectNamed: ['删除项目「{name}」', 'Delete project “{name}”'],
     deleteProjectContents: ['将一并删除 {tasks} 项任务、{notes} 篇笔记和 {history} 条完成记录。', 'This also deletes {tasks} tasks, {notes} notes and {history} completion records.'],
     deleteProjectWarning: ['相关排期、任务附件链接和本机专注记录也会清除，无法撤销。', 'Related schedules, task attachment links and local focus records will also be removed. This cannot be undone.'],

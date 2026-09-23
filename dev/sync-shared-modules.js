@@ -7,4 +7,7 @@ const root = path.join(__dirname, '..');
 for (const name of ['project-deletion.js', 'task-history.js', 'task-i18n.js', 'task-garden.js']) {
   fs.copyFileSync(path.join(root, 'public', name), path.join(root, 'skins', 'tracer', name));
 }
+fs.copyFileSync(path.join(root, 'public', 'wallpaper-catalog.json'), path.join(root, 'skins', 'tracer', 'wallpaper-catalog.json'));
 console.log('Desktop shared modules updated.');
+
+fs.copyFileSync(path.join(root, 'public', 'frame-catalog.json'), path.join(root, 'skins', 'tracer', 'frame-catalog.json'));

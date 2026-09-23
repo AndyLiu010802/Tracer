@@ -1,0 +1,492 @@
+[
+  {
+    "id": "s01",
+    "type": "static",
+    "name": "月泊深蓝",
+    "en": "Midnight Lake",
+    "price": 80,
+    "colors": [
+      "#101d34",
+      "#426086",
+      "#c4d9eb"
+    ],
+    "description": "一轮细月，停在深蓝的湖面。为夜间写作和长时间专注留出安静的远景。",
+    "style": "月光 · 低饱和蓝 · 湖面倒影",
+    "asset": "assets/static-01.png"
+  },
+  {
+    "id": "s02",
+    "type": "static",
+    "name": "翡翠雾林",
+    "en": "Emerald Hush",
+    "price": 80,
+    "colors": [
+      "#173b30",
+      "#739183",
+      "#d7ddbd"
+    ],
+    "description": "薄雾从树间缓缓散开，苔藓与晨光把工作空间变成一间森林书房。",
+    "style": "森林层次 · 苔绿 · 柔雾",
+    "asset": "assets/static-02.png"
+  },
+  {
+    "id": "s03",
+    "type": "static",
+    "name": "玫瑰盐湖",
+    "en": "Rosewater",
+    "price": 80,
+    "colors": [
+      "#6b476f",
+      "#c98da3",
+      "#f5c7b0"
+    ],
+    "description": "盐湖收住最后一抹晚霞。柔粉、藕紫与暖桃色，让创作多一点温柔。",
+    "style": "镜面盐湖 · 玫瑰粉 · 暮色",
+    "asset": "assets/static-03.png"
+  },
+  {
+    "id": "s04",
+    "type": "static",
+    "name": "琥珀沙丘",
+    "en": "Amber Dunes",
+    "price": 80,
+    "colors": [
+      "#572717",
+      "#ad5627",
+      "#efb359"
+    ],
+    "description": "风把沙丘雕成柔和的曲线。琥珀与焦糖的暖色，适合整理计划和慢慢思考。",
+    "style": "沙丘曲线 · 金色时刻 · 砂粒",
+    "asset": "assets/static-04.png"
+  },
+  {
+    "id": "s05",
+    "type": "static",
+    "name": "紫藤月庭",
+    "en": "Wisteria Afterglow",
+    "price": 100,
+    "colors": [
+      "#30294f",
+      "#8175af",
+      "#c7b4d4"
+    ],
+    "description": "紫藤垂落在月下庭院，水边留着一盏暖灯。为灵感准备一处安静的角落。",
+    "style": "东方庭院 · 紫藤 · 蓝调时刻",
+    "asset": "assets/static-05.png"
+  },
+  {
+    "id": "s06",
+    "type": "static",
+    "name": "冰川来信",
+    "en": "Glacial Letter",
+    "price": 80,
+    "colors": [
+      "#38677e",
+      "#9bcfde",
+      "#e9f1f0"
+    ],
+    "description": "冰蓝与银白之间，是很远的雪山和很近的清澈。让繁忙的界面轻盈起来。",
+    "style": "冰川 · 浅青蓝 · 清透光线",
+    "asset": "assets/static-06.png"
+  },
+  {
+    "id": "s07",
+    "type": "static",
+    "name": "赤陶远山",
+    "en": "Terracotta Distance",
+    "price": 60,
+    "colors": [
+      "#77392f",
+      "#b76d50",
+      "#e6b096"
+    ],
+    "description": "层层赤陶山谷像一幅缓慢展开的画。朴素的泥土色，带来稳定、温暖的底色。",
+    "style": "峡谷层叠 · 赤陶 · 哑光画感",
+    "asset": "assets/static-07.png"
+  },
+  {
+    "id": "s08",
+    "type": "static",
+    "name": "奶油花野",
+    "en": "Buttercup Morning",
+    "price": 60,
+    "colors": [
+      "#777e54",
+      "#dac581",
+      "#f4eed8"
+    ],
+    "description": "小雏菊和奶油色晨光长满画面边缘。把花园里收获的轻快心情，带回工作空间。",
+    "style": "奶油黄 · 野花 · 清晨胶片感",
+    "asset": "assets/static-08.png"
+  },
+  {
+    "id": "s09",
+    "type": "static",
+    "name": "青黛山水",
+    "en": "Ink & Stillness",
+    "price": 100,
+    "colors": [
+      "#264b53",
+      "#849f9e",
+      "#eeebe0"
+    ],
+    "description": "远山入墨，湖水留白。青黛、宣纸和一棵孤松，给思绪留下足够的呼吸。",
+    "style": "水墨留白 · 青黛 · 宣纸",
+    "asset": "assets/static-09.png"
+  },
+  {
+    "id": "s10",
+    "type": "static",
+    "name": "银灰月面",
+    "en": "Lunar Silence",
+    "price": 80,
+    "colors": [
+      "#181a1d",
+      "#797d82",
+      "#dce0e1"
+    ],
+    "description": "在银灰色的月面上，世界安静下来。克制的黑白层次，适合喜欢极简的人。",
+    "style": "月面地形 · 石墨灰 · 银白",
+    "asset": "assets/static-10.png"
+  },
+  {
+    "id": "d01",
+    "type": "dynamic",
+    "effect": "aurora",
+    "name": "流光丝幕",
+    "en": "Silken Aurora",
+    "price": 180,
+    "colors": [
+      "#08182b",
+      "#53d2b5",
+      "#9472dc"
+    ],
+    "description": "翡翠与紫罗兰光幕缓缓舒展，明暗褶皱叠出丝绸厚度，细碎星点沿着光流前行。",
+    "style": "层叠光幕 · 翡翠紫罗兰 · 舒展",
+    "motionVersion": 6,
+    "descriptionEn": "Layered jade and violet curtains unfold with satin folds and drifting starlight.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d02",
+    "type": "dynamic",
+    "effect": "rain",
+    "name": "蓝调光雨",
+    "en": "Blue Cadence",
+    "price": 160,
+    "colors": [
+      "#0c192b",
+      "#75aacf",
+      "#e2ba8e"
+    ],
+    "description": "远近不同的蓝色光雨垂落，暖金光点落入椭圆涟漪。长短光迹在深蓝空间中错落呼应。",
+    "style": "光雨涟漪 · 冷蓝暖金 · 错落",
+    "motionVersion": 6,
+    "descriptionEn": "Blue light falls through three depths; amber accents meet expanding elliptical ripples.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d03",
+    "type": "dynamic",
+    "effect": "fireflies",
+    "name": "翠影微尘",
+    "en": "Jade Drift",
+    "price": 160,
+    "colors": [
+      "#071d18",
+      "#4e9675",
+      "#e4edaa"
+    ],
+    "description": "明暗呼吸的萤光围绕翡翠气流缓缓回旋，远处细尘与近处柔焦光点交织，轻盈而通透。",
+    "style": "萤光气流 · 深翠嫩金 · 呼吸",
+    "motionVersion": 6,
+    "descriptionEn": "Breathing firefly lights circle jade currents, layered with distant dust and soft foreground bokeh.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d04",
+    "type": "dynamic",
+    "effect": "petals",
+    "name": "玫瑰绡光",
+    "en": "Rose Veil",
+    "price": 160,
+    "colors": [
+      "#49374e",
+      "#ad718b",
+      "#f3c6d4"
+    ],
+    "description": "五层玫瑰色薄绸斜向舒展，透光褶边随气流起伏，细小光瓣轻轻翻转。",
+    "style": "透光薄绸 · 玫瑰香槟 · 柔软",
+    "motionVersion": 6,
+    "descriptionEn": "Five rose silk folds drift diagonally; translucent edges catch the light as tiny petals turn.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d05",
+    "type": "dynamic",
+    "effect": "tide",
+    "name": "深海等高线",
+    "en": "Tidal Contours",
+    "price": 180,
+    "colors": [
+      "#062438",
+      "#368b99",
+      "#b4e2dc"
+    ],
+    "description": "疏密交替的海蓝等高线层叠起伏，亮点贴着水纹前行，浅色潮带在深处缓缓交汇。",
+    "style": "潮汐纹理 · 深海青银 · 有序",
+    "motionVersion": 6,
+    "descriptionEn": "Layered ocean contours gather and loosen, carrying glints along pale tidal bands.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d06",
+    "type": "dynamic",
+    "effect": "nebula",
+    "name": "紫雾星尘",
+    "en": "Violet Dust",
+    "price": 220,
+    "colors": [
+      "#100e2e",
+      "#7053a5",
+      "#ba729d"
+    ],
+    "description": "两道紫雾旋臂围绕柔亮核心展开，烟粉细尘与清冷星点分层旋转，留下深邃的留白。",
+    "style": "双旋星尘 · 烟紫珠光 · 深邃",
+    "motionVersion": 6,
+    "descriptionEn": "Twin violet arms spiral around a pearlescent core, carrying rose dust through a distant star field.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d07",
+    "type": "dynamic",
+    "effect": "snow",
+    "name": "银白浮光",
+    "en": "Silver Air",
+    "price": 160,
+    "colors": [
+      "#243447",
+      "#7b96aa",
+      "#e2edf0"
+    ],
+    "description": "银白微粒穿过半透明晶面，近处失焦光斑缓缓飘落，偶有纤小星芒在冷光中闪现。",
+    "style": "磨砂晶面 · 银白冰蓝 · 轻盈",
+    "motionVersion": 6,
+    "descriptionEn": "Silver particles pass through frosted crystal planes, soft bokeh and occasional fine star glints.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d08",
+    "type": "dynamic",
+    "effect": "embers",
+    "name": "琥珀余辉",
+    "en": "Amber Afterglow",
+    "price": 140,
+    "colors": [
+      "#241311",
+      "#9f4f2e",
+      "#f3bb66"
+    ],
+    "description": "铜金光流从温暖暗处升起，细小余烬随涡流弯转，亮点带着短短的光尾渐渐隐去。",
+    "style": "浮升余烬 · 铜金琥珀 · 温暖",
+    "motionVersion": 6,
+    "descriptionEn": "Copper-gold currents lift amber embers from warm shadow, leaving fine fading trails.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d09",
+    "type": "dynamic",
+    "effect": "clouds",
+    "name": "雾粉漫游",
+    "en": "Pastel Reverie",
+    "price": 180,
+    "colors": [
+      "#6d6596",
+      "#d997a1",
+      "#efd0ad"
+    ],
+    "description": "薰衣草与杏粉色域缓慢相融，珍珠光泽沿柔软曲面移动，通透小光珠轻浮其间。",
+    "style": "珍珠流体 · 杏粉淡紫 · 松弛",
+    "motionVersion": 6,
+    "descriptionEn": "Lavender and apricot fields blend around pearlescent folds and gently floating glass beads.",
+    "renderer": "particles"
+  },
+  {
+    "id": "d10",
+    "type": "dynamic",
+    "effect": "orbits",
+    "name": "香槟轨迹",
+    "en": "Champagne Orbits",
+    "price": 200,
+    "colors": [
+      "#111922",
+      "#a18450",
+      "#ebd8a4"
+    ],
+    "description": "七层倾角不同的香槟金轨道缓缓交错，彗星般的亮点拖着渐隐光尾，环绕温润核心。",
+    "style": "交叠星轨 · 香槟金墨蓝 · 从容",
+    "motionVersion": 6,
+    "descriptionEn": "Seven champagne orbits cross at different inclinations, with comet lights tracing a warm centre.",
+    "renderer": "particles"
+  },
+  {
+    "id": "m01",
+    "type": "material",
+    "material": "obsidian",
+    "name": "曜石鎏金",
+    "en": "Obsidian Atelier",
+    "price": 320,
+    "colors": [
+      "#16171a",
+      "#8b7956",
+      "#d8c08e"
+    ],
+    "description": "黑曜石面板搭配细金属镶边，角落保留装饰线。让整套界面像一件安静的精密器物。",
+    "style": "黑曜石 · 香槟金镶边 · 切角装饰",
+    "materialVersion": 2
+  },
+  {
+    "id": "m02",
+    "type": "material",
+    "material": "porcelain",
+    "name": "白瓷青釉",
+    "en": "Porcelain Studio",
+    "price": 280,
+    "colors": [
+      "#e8eee9",
+      "#96b5aa",
+      "#386257"
+    ],
+    "description": "温润白瓷与青绿色釉边，卡片带轻微凸起和细腻高光。干净，也有触感。",
+    "style": "白瓷釉面 · 青绿线条 · 柔和凸起",
+    "materialVersion": 2
+  },
+  {
+    "id": "m03",
+    "type": "material",
+    "material": "linen",
+    "name": "燕麦织物",
+    "en": "Oat Linen",
+    "price": 240,
+    "colors": [
+      "#e6ddcb",
+      "#b8a687",
+      "#6b624e"
+    ],
+    "description": "细密经纬纹理覆盖暖米色底面，卡片用布面与缝线收边。像翻开一本喜欢的手账。",
+    "style": "亚麻经纬 · 燕麦米 · 缝线边框",
+    "materialVersion": 2
+  },
+  {
+    "id": "m04",
+    "type": "material",
+    "material": "walnut",
+    "name": "胡桃书房",
+    "en": "Walnut Library",
+    "price": 300,
+    "colors": [
+      "#352820",
+      "#75523a",
+      "#d3b17b"
+    ],
+    "description": "起伏木纹与细小木孔沿框边延伸，拼角与凹槽形成真实的深浅层次。移动鼠标，观察胡桃木漆面的暖色反光。",
+    "style": "木纹凹凸 · 拼角凹槽 · 漆面反光",
+    "materialVersion": 2
+  },
+  {
+    "id": "m05",
+    "type": "material",
+    "material": "glass",
+    "name": "冰晶切面",
+    "en": "Glacier Glass",
+    "price": 320,
+    "colors": [
+      "#244858",
+      "#79b2c4",
+      "#d8f3f5"
+    ],
+    "description": "多层晶体切面折射当前壁纸，棱边带细微色散与环境反光。光线跟随鼠标移动，透明边框显出厚度。",
+    "style": "壁纸折射 · 棱边色散 · 晶体切面",
+    "materialVersion": 2
+  },
+  {
+    "id": "m06",
+    "type": "material",
+    "material": "titanium",
+    "name": "钛银工坊",
+    "en": "Titanium Works",
+    "price": 300,
+    "colors": [
+      "#252a32",
+      "#727d89",
+      "#d5dce1"
+    ],
+    "description": "细密钛金属拉丝与机械倒角接住环境光，明暗沿表面方向展开。移动鼠标，感受冷银边框的金属反射。",
+    "style": "方向性反光 · 金属拉丝 · 机械倒角",
+    "materialVersion": 2
+  },
+  {
+    "id": "m07",
+    "type": "material",
+    "material": "velvet",
+    "name": "莓红丝绒",
+    "en": "Mulberry Velvet",
+    "price": 300,
+    "colors": [
+      "#34212c",
+      "#773f59",
+      "#d8a7b6"
+    ],
+    "description": "莓红丝绒与玫瑰金饰边，深色卡片带柔和内凹感。浓郁的色彩包住安静的文字。",
+    "style": "丝绒光泽 · 玫瑰金 · 软垫内凹",
+    "materialVersion": 2
+  },
+  {
+    "id": "m08",
+    "type": "material",
+    "material": "paper",
+    "name": "宣纸墨边",
+    "en": "Paper & Ink",
+    "price": 260,
+    "colors": [
+      "#eeeadb",
+      "#a8a18c",
+      "#354e4a"
+    ],
+    "description": "米白纸张承接青墨线条，双线边框像装订的书页。让任务与笔记成为一页页清晰的记录。",
+    "style": "宣纸细点 · 青墨双线 · 书页层叠",
+    "materialVersion": 2
+  },
+  {
+    "id": "m09",
+    "type": "material",
+    "material": "cyber",
+    "name": "霓虹电路",
+    "en": "Neon Circuit",
+    "price": 360,
+    "colors": [
+      "#12152b",
+      "#7b66ca",
+      "#70d8dc"
+    ],
+    "description": "深蓝紫面板以青色电路线收边，局部荧光停留在角落。未来感来自结构与细节。",
+    "style": "电路网格 · 青紫霓虹 · 切角面板",
+    "materialVersion": 2
+  },
+  {
+    "id": "m10",
+    "type": "material",
+    "material": "celadon",
+    "name": "青竹茶席",
+    "en": "Celadon Retreat",
+    "price": 280,
+    "colors": [
+      "#dde3cb",
+      "#96a67b",
+      "#46583e"
+    ],
+    "description": "竹纹底面搭配鼠尾草绿卡片，浅浮雕边缘带一点青瓷光泽。自然、舒展而克制。",
+    "style": "细竹纹 · 鼠尾草绿 · 青瓷浮雕",
+    "materialVersion": 2
+  }
+]

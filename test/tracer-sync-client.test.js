@@ -9,7 +9,7 @@ const G = require('../public/task-garden');
 function client(initial, put, options = {}) {
   const elements = new Map(), storage = options.storage || new Map(), timers = new Map(), listeners = {}, requests = [], beacons = [], intervals = []; let seq = 0;
   const node = () => {
-    const out = { hidden: true, children: [], classList: { toggle() {} }, addEventListener() {}, setAttribute() {}, querySelector() { return null; }, appendChild(child) { this.children.push(child); return child; } };
+    const out = { hidden: true, children: [], classList: { toggle() {}, contains() { return false; } }, addEventListener() {}, setAttribute() {}, querySelector() { return null; }, appendChild(child) { this.children.push(child); return child; } };
     let html = ''; Object.defineProperty(out, 'innerHTML', { get() { return html; }, set(value) { html = value; this.children = []; } });
     return out;
   };

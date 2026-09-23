@@ -16,7 +16,7 @@ function setup(complete=true,id='sprout'){
 test('only a complete inspected library replaces the original built-in character',()=>{assert.equal(setup(false).player,null);});
 test('actions advance in source order and repeated snapshots do not restart them',()=>{
   const b=setup(),p=b.player;
-  for(const action of actions){p.setAction(action);for(let cycle=0;cycle<3;cycle++)for(let frame=0;frame<(action==='fishing'?12:16);frame++){assert.equal(p.element.dataset.frame,String(frame));p.setAction(action);b.tick();}assert.equal(p.element.dataset.frame,'0');}
+  for(const action of actions){p.setAction(action);if(action==='sleep'){assert.equal(p.element.dataset.frame,'12');assert.equal(b.timers.size,0);continue;}for(let cycle=0;cycle<3;cycle++)for(let frame=0;frame<(action==='fishing'?12:16);frame++){assert.equal(p.element.dataset.frame,String(frame));p.setAction(action);b.tick();}assert.equal(p.element.dataset.frame,'0');}
   p.destroy();assert.equal(b.timers.size,0);assert.equal(b.events.size,0);assert.ok(b.released());
 });
 test('every built-in catch stops before releasing the fish and previews finish exactly once',()=>{
@@ -41,6 +41,10 @@ test('slow loads preserve first frames, previews finish once, and focus interrup
 });
 test('hidden and reduced-motion views stop timers and cancel previews without late completion',()=>{
   const b=setup(),p=b.player;let done=0;p.preview('mining',()=>done++);b.tick();b.hidden(true);assert.equal(b.timers.size,0);assert.equal(p.element.dataset.action,'idle');
-  b.hidden(false);assert.equal(b.timers.size,1);b.reduced(true);assert.equal(b.timers.size,0);p.setAction('sleep');assert.equal(p.element.dataset.frame,'0');assert.equal(p.element.dataset.action,'sleep');
-  b.reduced(false);b.tick();assert.equal(p.element.dataset.frame,'1');assert.equal(done,0);p.destroy();
+  b.hidden(false);assert.equal(b.timers.size,1);b.reduced(true);assert.equal(b.timers.size,0);p.setAction('sleep');assert.equal(p.element.dataset.frame,'12');assert.equal(p.element.dataset.action,'sleep');
+  b.reduced(false);assert.equal(b.timers.size,0);assert.equal(p.element.dataset.frame,'12');assert.equal(done,0);p.destroy();
+});
+
+test('all six companions stay asleep across snapshots, loading and visibility changes',()=>{
+ for(const id of ['sprout','miso','brook','ember','luna','nova']){const b=setup(true,id),p=b.player;p.setAction('sleep');for(let i=0;i<20;i++){p.setAction('sleep');b.waiting(false);assert.equal(p.element.dataset.frame,'12');assert.equal(b.timers.size,0);}b.hidden(true);b.hidden(false);assert.equal(p.element.dataset.frame,'12');assert.equal(b.timers.size,0);p.setAction('wake');assert.equal(p.element.dataset.frame,'0');assert.equal(b.timers.size,1);p.destroy();}
 });

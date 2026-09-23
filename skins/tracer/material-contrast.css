@@ -1,0 +1,47 @@
+/* Text and its surface travel together when a frame changes the workspace palette. */
+html[data-wallpaper-material]{--muted:color-mix(in srgb,var(--ui-fg) 28%,var(--ui-muted));--on-accent:#101819;--danger:#ee9aab;--warning:#e6bd82}
+html:is([data-wallpaper-material=porcelain],[data-wallpaper-material=linen],[data-wallpaper-material=paper],[data-wallpaper-material=celadon]){--muted:color-mix(in srgb,var(--ui-fg) 75%,var(--ui-muted));--accent:color-mix(in srgb,var(--ui-fg) 60%,var(--ui-accent));--accent2:var(--accent);--on-accent:#fff;--danger:#a52d49;--warning:#845117}
+html[data-wallpaper-material] .main{background:var(--ui-panel)}
+html[data-account-wallpaper] .main{background:color-mix(in srgb,var(--bg) 28%,transparent)}
+html[data-account-wallpaper]:is([data-wallpaper-material=porcelain],[data-wallpaper-material=linen],[data-wallpaper-material=paper],[data-wallpaper-material=celadon]) .main{background:color-mix(in srgb,var(--ui-panel) 58%,transparent)}
+/* Reading surfaces belong to complete sections; headings retain their normal flow. */
+html[data-account-wallpaper]:not([data-wallpaper-material]) .main{--muted:#b6bfcb}
+html[data-account-wallpaper]:not([data-wallpaper-material]) :is(.card,.pl-card){background-color:#171c22ed}
+html[data-wallpaper-material] :is(.sec-head h1,.pl-card-title,.col-head,.card-title){color:var(--fg)}
+html[data-wallpaper-material] :is(.pl-card,.ins-tile,.ins-panel){color:var(--fg);background:var(--texture),var(--ui-card);border-color:var(--ui-line);box-shadow:var(--ui-shadow)}
+html[data-wallpaper-material] :is(.card-owner,.card-kind,.card-preview,.card-label,.card-progress-caption,.card .drag-handle,.pl-card .drag-handle){color:var(--muted)}
+html[data-wallpaper-material] .btn-primary{color:var(--on-accent)}
+html[data-wallpaper-material] :is(.btn-danger,.card-pri,.priority-urgent,.card-due.overdue,#task-error,.tl-date-dialog #d-error){color:var(--danger)}
+html[data-wallpaper-material] .card-blocked{color:var(--warning)}
+html[data-wallpaper-material] :is(.ins-num,.ins-panel h2,.ins-status-row strong,.ins-history-task,.ins-empty strong){color:var(--fg)}
+html[data-wallpaper-material] :is(.ins-header p,.ins-panel-head p,.ins-filters label,.ins-date-sep,.ins-local-note,.ins-tile-top,.ins-sub,.ins-chart-guide,.ins-column,.ins-donut span,.ins-status-row,.ins-heat-labels,.ins-legend,.ins-table th,.ins-table td,.ins-task-seq,.ins-history-footer,.ins-empty p,.ins-footnote,.ins-snapshot dt,.ins-periods button){color:var(--muted)}
+html[data-wallpaper-material] :is(.ins-eyebrow,.ins-badge,.ins-column-value,.ins-state,.ins-empty>span){color:var(--accent)}
+html[data-wallpaper-material] :is(.ins-periods,.ins-filters input,.ins-filters select,#ins-search){background:var(--surface);border-color:var(--border)}
+html[data-wallpaper-material] .ins-periods button[aria-pressed=true]{color:var(--fg);background:var(--accent-soft)}
+html[data-wallpaper-material] .ins-state.insReopened,html[data-wallpaper-material] .ins-warning{color:var(--warning)}
+html[data-wallpaper-material] .ins-state.insDeleted{color:var(--muted)}
+/* These illustrated rooms and dialogs deliberately keep their own dark palette. */
+html[data-wallpaper-material] :is(.garden-home,.garden-planets,.daily-bar,.pet-dialog,.ai-dialog,.account-dialog){color-scheme:dark;--fg:#e6ebdf;--muted:#b3c0a7;--surface:#253025;--panel:#1b241e;--bg:#17211b;--border:#657457;--accent:#d2dbb0;--accent-soft:#d2dbb01c;--on-accent:#17211b;--danger:#ee9aab;--warning:#e6bd82}
+html[data-wallpaper-material] :is(.garden-home,.garden-planets){background:#17211b;border-radius:16px;color:var(--fg)}
+html[data-wallpaper-material] .modal.pet-dialog{background:#161d23;color:#e6ebdf}
+html[data-wallpaper-material] .modal.ai-dialog{background:#182027;color:#edf0f3}
+html[data-wallpaper-material] .daily-bar{background:#1b242c;color:#edf0f3}
+html[data-wallpaper-material] .garden-store{color-scheme:light;--fg:#3d4931;--muted:#626b51;--surface:#faf5e6;--panel:#f2ead6;--bg:#f2ead6;--border:#c5b995;--accent:#496444;--on-accent:#fff;--danger:#a52d49;--warning:#845117}
+html[data-wallpaper-material] :is(.clock,.pl-dom){color:var(--fg)}
+html[data-wallpaper-material] .pl-card .card-seq{color:var(--muted)}
+html[data-wallpaper-material] :is(.new-btn,.card-due.today){color:var(--accent)}
+html[data-wallpaper-material] .garden-home :is(.garden-collection-number,.garden-collection-count){color:#b3c0a7}
+html[data-wallpaper-material] .garden-store :is(.store-eyebrow,.store-benefits,.garden-collect-eyebrow,.garden-collect-help,.garden-collect-count,.garden-collect-set-info,.garden-collect-tier,.garden-collect-requirement,.garden-collect-goal-hint,.store-closing p){color:#626b51}
+html[data-wallpaper-material] .garden-store .garden-collect-actions [data-collect-action=wish]{color:#626b51}
+html[data-wallpaper-material] .store-window-label{color:#faf0d0;background:#314b36e8}
+html[data-wallpaper-material] .clock{opacity:1;background:var(--surface)}
+html[data-wallpaper-material] .task-eyebrow{color:var(--muted)}
+html[data-wallpaper-material] .garden-store .garden-collect-goal :is(p,.garden-collect-goal-hint){color:#4f5a42}
+/* The particle collection is presented as a light study, with a quiet slim edge. */
+.store-wall-card[data-wallpaper-id^="d"] .store-wall-card-image{border:1px solid #626c70;border-radius:5px;box-shadow:0 3px 10px #24313918;background:#101a22}
+html[data-wallpaper-material] .store-wallet{background-color:#344a39}
+html[data-wallpaper-material] .store-department-copy>span{color:#4f5a42}
+.store-wall-detail>[data-store-action=close]{color:#f4e8c8}
+.garden-store .store-department-heading p{color:#626b51}
+.garden-store .store-wall-price{color:#705b28}
+html .garden-store[data-department] .store-wall-card .store-eyebrow{color:#626b51}

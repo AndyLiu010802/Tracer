@@ -45,7 +45,7 @@ if (process.isMainFrame && location.protocol === 'http:'
       if (typeof callback !== 'function') return () => {};
       const listener = (_event, state) => {
         if (!state || typeof state.fullscreen !== 'boolean' || typeof state.maximized !== 'boolean') return;
-        callback({ fullscreen: state.fullscreen, maximized: state.maximized });
+        callback({ fullscreen: state.fullscreen, maximized: state.maximized, visible: state.visible });
       };
       ipcRenderer.on('tracer-window-state', listener);
       return () => ipcRenderer.removeListener('tracer-window-state', listener);

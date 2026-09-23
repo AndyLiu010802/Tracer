@@ -106,7 +106,7 @@
   ['playing', 'waiting', 'pause'].forEach(function (event) { element.addEventListener(event, draw); });
   element.addEventListener('error', function () { if (!active) return; wanted = false; generation++; error = L('musicPlayError'); draw(); });
   // Another tab only stops this player when it actually begins playback.
-  var channel = typeof BroadcastChannel === 'function' ? new BroadcastChannel('tracer-ambient-audio') : null;
+  var channel = typeof BroadcastChannel === 'function' ? new BroadcastChannel(window.TracerAccount ? TracerAccount.storageName('tracer-ambient-audio') : 'tracer-ambient-audio') : null;
   if (channel) { channel.onmessage = function () { if (wanted) pause(); }; element.addEventListener('playing', function () { channel.postMessage('playing'); }); }
   T.music = { mount: function (host) { panel = host; render(); refresh(); }, pause: pause, refreshLabels: function () { render(); draw(); } };
   document.getElementById('music-quick-pause').onclick = pause;

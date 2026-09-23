@@ -161,7 +161,7 @@
     let yaw=initialYaw,pitch=.90,selected=-1,dead=false,inView=!win.IntersectionObserver,raf=0,wake=0,last=0,drag=null,moved=false,width=0,height=0,radius=0,hitAreas=[],surface=null,rays=null,buffer=null;
     let spinning=!!options.interactive,gestureUntil=0,dirty=true;
     const reduced=win.matchMedia?.('(prefers-reduced-motion: reduce)');
-    const request=()=>{if(dead)return;dirty=true;if(!raf&&inView&&!doc.hidden)raf=win.requestAnimationFrame(frame);};
+    const request=()=>{if(dead)return;dirty=true;if(!raf&&inView&&!(doc.hidden || doc.tracerHidden))raf=win.requestAnimationFrame(frame);};
     const loaded=()=>{if(dead)return;const ground=meadow(doc);if(ground.ready&&!groundReady){tex=null;groundReady=true;}if(layout.cyber){const neon=meadow(doc,null,'cyber');if(neon.ready&&!cyberReady){tex=null;cyberReady=true;}}request();};
     meadow(doc,loaded);
     if(layout.cyber)meadow(doc,loaded,'cyber');
@@ -259,7 +259,7 @@
       // Quiet firefly points sit around the keepsake, not over its flowers.
       for(let i=0;i<5;i++){const a=seed+i*1.24,x=cx+Math.sin(a)*radius*1.24,y=cy+Math.cos(a)*radius*.89;ctx.fillStyle=i%2?'#d6d6a570':'#acc7a760';ctx.beginPath();ctx.arc(x,y,i%2?1.2:.85,0,TAU);ctx.fill();}
     }
-    function frame(at){raf=0;if(dead||!inView||doc.hidden)return;const animate=spinning&&!reduced?.matches&&!drag&&at>gestureUntil;
+    function frame(at){raf=0;if(dead||!inView||(doc.hidden || doc.tracerHidden))return;const animate=spinning&&!reduced?.matches&&!drag&&at>gestureUntil;
       if(animate){yaw+=Math.min(40,Math.max(0,at-(last||at)))*.000028;dirty=true;}last=at;
       if(dirty){paint();dirty=false;}if(animate)raf=win.requestAnimationFrame(frame);else if(spinning&&!reduced?.matches&&!drag){win.clearTimeout(wake);wake=win.setTimeout(request,Math.max(20,gestureUntil-at+5));}
     }
@@ -267,17 +267,17 @@
     function move(e){if(!drag||drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;moved=moved||Math.hypot(dx,dy)>5;yaw=drag.yaw+dx*.008;pitch=Math.max(.42,Math.min(1.24,drag.pitch+dy*.006));gestureUntil=win.performance.now()+6000;request();}
     function up(e){if(!drag||drag.id!==e.pointerId)return;const wasMoved=moved;drag=null;canvas.classList.remove('is-dragging');if(canvas.hasPointerCapture?.(e.pointerId))canvas.releasePointerCapture(e.pointerId);if(!wasMoved&&e.type!=='pointercancel'){const rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top,hit=[...hitAreas].reverse().find(h=>Math.hypot(x-h.x,y-h.y)<h.r);if(hit)options.onSelect?.(hit.index);}request();}
     function key(e){const directions={ArrowLeft:[-.17,0],ArrowRight:[.17,0],ArrowUp:[0,-.12],ArrowDown:[0,.12]};if(!directions[e.key])return;e.preventDefault();yaw+=directions[e.key][0];pitch=Math.max(.42,Math.min(1.24,pitch+directions[e.key][1]));gestureUntil=win.performance.now()+6000;request();}
-    function visibility(){if(doc.hidden||!inView){if(raf)win.cancelAnimationFrame(raf);win.clearTimeout(wake);raf=0;last=0;}else request();}
+    function visibility(){if((doc.hidden || doc.tracerHidden)||!inView){if(raf)win.cancelAnimationFrame(raf);win.clearTimeout(wake);raf=0;last=0;}else request();}
     const observer=win.IntersectionObserver?new win.IntersectionObserver(entries=>{inView=entries.some(e=>e.isIntersecting);visibility();},{rootMargin:'80px'}):null;observer?.observe(canvas);
     const resizeObserver=win.ResizeObserver?new win.ResizeObserver(resize):null;resizeObserver?.observe(canvas);if(!resizeObserver)win.addEventListener('resize',resize);
-    doc.addEventListener('visibilitychange',visibility);reduced?.addEventListener?.('change',request);
+    ['visibilitychange','tracer-visibilitychange'].forEach(event=>doc.addEventListener(event,visibility));reduced?.addEventListener?.('change',request);
     if(options.interactive){canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);canvas.addEventListener('keydown',key);}
     resize();
     return{
       pause(value){spinning=!value;if(value)win.clearTimeout(wake);request();},
       reset(){yaw=initialYaw;pitch=.90;selected=-1;gestureUntil=win.performance.now()+2000;request();},
       select(index,orient=true){const item=all[index];if(!item)return;selected=index;if(orient){const view=flowerView(item.point);yaw=view.yaw;pitch=view.pitch;}gestureUntil=win.performance.now()+8000;request();},
-      destroy(){dead=true;if(raf)win.cancelAnimationFrame(raf);win.clearTimeout(wake);observer?.disconnect();resizeObserver?.disconnect();win.removeEventListener('resize',resize);doc.removeEventListener('visibilitychange',visibility);reduced?.removeEventListener?.('change',request);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('pointercancel',up);canvas.removeEventListener('keydown',key);removeImageWaiter(doc,loaded);surface=null;buffer=null;rays=null;hitAreas=[];}
+      destroy(){dead=true;if(raf)win.cancelAnimationFrame(raf);win.clearTimeout(wake);observer?.disconnect();resizeObserver?.disconnect();win.removeEventListener('resize',resize);['visibilitychange','tracer-visibilitychange'].forEach(event=>doc.removeEventListener(event,visibility));reduced?.removeEventListener?.('change',request);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('pointercancel',up);canvas.removeEventListener('keydown',key);removeImageWaiter(doc,loaded);surface=null;buffer=null;rays=null;hitAreas=[];}
     };
   }
 

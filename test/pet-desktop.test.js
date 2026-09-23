@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),vm=require('node:vm');
 const {EventEmitter}=require('node:events');
 const source=fs.readFileSync(path.join(__dirname,'../desktop/pet.js'),'utf8');
-function fixture(t,area={x:0,y:0,width:1200,height:900},saved){
+function fixture(t,area={x:0,y:0,width:1200,height:900},saved,initialSnapshot=true){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'tracer-pet-desktop-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  if(saved!==undefined)fs.writeFileSync(path.join(dir,'pet-window.json'),JSON.stringify(saved));
  const ipcMain=new EventEmitter(),windows=[],origin='http://127.0.0.1:18000';let cursor={x:100,y:100},shown=0;
@@ -19,11 +19,27 @@ function fixture(t,area={x:0,y:0,width:1200,height:900},saved){
  const mod={exports:{}};vm.runInNewContext(source,{module:mod,URL,setTimeout,clearTimeout,__dirname:path.join(__dirname,'../desktop'),require:name=>name==='electron'?electron:name==='./garden-trail'?{attachGardenTrail:main=>require('../desktop/garden-trail').attachGardenTrail(main,electron)}:require(name)});
  const main=new Window({x:0,y:0,width:1000,height:800}),controller=mod.exports.attachPet(main,origin,dir,()=>shown++);controller.show();const pet=windows[1];pet.emit('ready-to-show');
  function event(win=pet){return{sender:win.webContents,senderFrame:win.webContents.mainFrame};}
- function send(type,value,from=event()){ipcMain.emit('tracer-pet-command',from,{type,value});}
+ function send(type,value,from=event(),accountScope='guest'){ipcMain.emit('tracer-pet-command',from,{type,value,accountScope});}
+ pet.webContents.reload=()=>{pet.webContents.emit('did-finish-load');};
+ if(initialSnapshot)send('snapshot',{accountScope:'guest',pet:{id:'sprout'}},event(main));
  return{dir,main,pet,send,event,controller,screen,ipcMain,handlers,setCursor:value=>{cursor=value;},shown:()=>shown};
 }
 
 const workRequest={requestId:'f623b4d1-79de-4cad-ae76-d5523a54dacf',proposal:{type:'tasks',project:null,tasks:[{title:'Write report',notes:'',due:null,scheduled:null,priority:'medium',estimate:null,checklist:[]}]}};
+test('fast sign-in reloads a companion opened before the first main-window snapshot',t=>{
+ const f=fixture(t,undefined,undefined,false);let reloads=0;f.pet.webContents.reload=()=>{reloads++;f.pet.webContents.emit('did-finish-load');};
+ f.send('snapshot',{accountScope:'account-first',pet:{id:'sprout'}},f.event(f.main));assert.equal(reloads,1);assert.equal(f.pet.sent.at(-1)[1].accountScope,'account-first');
+ f.send('snapshot',{accountScope:'account-first',pet:{id:'sprout'}},f.event(f.main));assert.equal(reloads,1);const before=f.main.sent.length;f.send('pet');assert.equal(f.main.sent.length,before);f.main.destroy();
+});
+test('account switches invalidate pending native work and reject the old account scope',async t=>{
+ const f=fixture(t),invoke=f.handlers.get('tracer-pet-create-work'),pending=invoke(f.event(),workRequest);
+ f.send('account-lock',undefined,f.event(f.main));assert.equal((await pending).ok,false);assert.equal(f.pet.isVisible(),false);
+ assert.equal((await invoke(f.event(),workRequest)).ok,false);
+ f.send('account-unlock',undefined,f.event(f.main));f.send('snapshot',{accountScope:'account-b',pet:{id:'sprout'}},f.event(f.main));
+ assert.equal((await invoke(f.event(),workRequest)).ok,false);
+ const before=f.main.sent.length;f.send('pet');assert.equal(f.main.sent.length,before);f.send('pet',undefined,f.event(),'account-b');assert.equal(f.main.sent.length,before+1);
+ f.main.destroy();
+});
 test('native task creation validates the sender and proposal before forwarding to the main workspace',async t=>{
  const f=fixture(t),invoke=f.handlers.get('tracer-pet-create-work');
  for(const event of [f.event(f.main),{sender:f.pet.webContents,senderFrame:{url:'http://127.0.0.1:18000/pet.html'}}]) assert.equal((await invoke(event,workRequest)).ok,false);
