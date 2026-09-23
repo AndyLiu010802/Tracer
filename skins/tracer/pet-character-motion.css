@@ -1,6 +1,6 @@
 /* The six native characters are articulated SVG rigs. Custom art keeps its own renderer. */
 .pet-home.has-builtin-animation .pet-character>.pet-builtin-sprite{animation:none!important;transform:none!important;overflow:hidden;filter:none}
-.pet-home.has-builtin-animation .pet-effects,.pet-home.has-builtin-animation .pet-idle-scene{display:none!important}
+.pet-home.has-builtin-animation .pet-effects,.pet-home.has-builtin-animation:not(.has-garden-animation) .pet-idle-scene{display:none!important}
 .pet-home[data-pet] .pet-character>.pet-rig{animation:none!important;transform:none!important;overflow:visible;--rig-head:none;--rig-body:none;--rig-posture:none;--rig-left-arm:none;--rig-right-arm:none;--rig-left-leg:none;--rig-right-leg:none;--rig-tail:none;--rig-left-ear:none;--rig-right-ear:none;--rig-leaf:none;--rig-left-wing:none;--rig-right-wing:none;--rig-mouth:none;--rig-sneeze:none;--rig-keepsake:none;--rig-dust:none;--rig-curl-show:none;--rig-curl-hide:none}
 .pet-rig .rig-part{transform-box:view-box;animation-timing-function:steps(4,end)}
 .pet-rig .rig-posture{animation:var(--rig-posture,none);transform:var(--rig-posture-pose,none)}

@@ -10,11 +10,18 @@
 
   function esc(s) { return M.esc(s); }
 
+  function labelSvg(label, x, width) {
+    return '<foreignObject x="' + x + '" y="0" width="' + width + '" height="' + NH + '">'
+      + '<div xmlns="http://www.w3.org/1999/xhtml" class="mn-label" title="' + esc(label) + '">'
+      + esc(label) + '</div></foreignObject>';
+  }
+
   function nodeSvg(n) {
     if (n.kind === 'root') {
       return '<g class="mn mn-root" transform="translate(' + n.x + ',' + (n.y - NH / 2) + ')">'
         + '<rect width="120" height="' + NH + '" rx="7"/>'
-        + '<text x="12" y="' + (NH / 2 + 4) + '">◆ ' + esc(n.label) + '</text></g>';
+        + '<text x="12" y="' + (NH / 2 + 4) + '">◆</text>'
+        + labelSvg(n.label, 24, 84) + '</g>';
     }
     if (n.kind === 'project') {
       // 月相完成度图标
@@ -27,7 +34,7 @@
       return '<g class="mn mn-proj" transform="translate(' + n.x + ',' + (n.y - NH / 2) + ')">'
         + '<rect width="' + NW + '" height="' + NH + '" rx="6" style="stroke:' + n.color + '"/>'
         + caret
-        + '<text x="' + (n.count ? 24 : 12) + '" y="' + (NH / 2 + 4) + '">' + esc(n.label) + '</text>'
+        + labelSvg(n.label, n.count ? 24 : 12, NW - (n.count ? 24 : 12) - 34)
         + moon + '</g>';
     }
     // task
@@ -35,7 +42,7 @@
     return '<g class="mn mn-task" data-open="' + n.id + '" transform="translate(' + n.x + ',' + (n.y - NH / 2) + ')">'
       + '<rect width="' + NW + '" height="' + NH + '" rx="6"/>'
       + '<circle cx="12" cy="' + (NH / 2) + '" r="3.5" fill="' + dotColor + '"/>'
-      + '<text x="24" y="' + (NH / 2 + 4) + '">' + esc(n.label) + '</text></g>';
+      + labelSvg(n.label, 24, NW - 36) + '</g>';
   }
 
   function edgeSvg(g, e) {
@@ -49,7 +56,8 @@
   }
 
   function render() {
-    var ws = T.store.data;
+    var source = T.store.data, archived = new Set(source.projects.filter(function (p) { return p.status === 'completed'; }).map(function (p) { return p.id; }));
+    var ws = Object.assign({}, source, { projects: source.projects.filter(function (p) { return !archived.has(p.id); }), tasks: source.tasks.filter(function (t) { return !archived.has(t.projectId); }) });
     if (!ws.projects.length && !ws.tasks.length) {
       sec.innerHTML = '<header class="sec-head"><h1>Project Map</h1><span class="sec-sub">Workspace at a glance</span></header>'
         + '<div class="empty"><svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>'

@@ -124,12 +124,18 @@
     return svg.replace('</svg>',props(id,action,at,p)+'</svg>');
   }
   function duration(action,frame) {
-    if(frame===0)return action==='sleep'?800:action==='idle'?1000:action==='focus'?900:360;
-    if(frame===8)return action==='sleep'?360:action==='idle'||action==='focus'?420:220;
-    return action==='sleep'?140:action==='idle'||action==='focus'?130:100;
+    if(action==='sleep')return 380;
+    if(frame===0)return action==='idle'?6000:action==='focus'?5000:2200;
+    if(frame===15)return 1800;
+    return action==='idle'||action==='focus'?200:180;
   }
   function create(options={}) {
+    const gardenId=typeof options.pet==='string'?options.pet:options.pet?.id;
+    const match=/^garden_(wildflower|sunflower|lavender|apple|peach|cherry|neon_orchid|volt_berry|crystal_tree)(_shiny)?$/.exec(gardenId||'');
+    if(match&&typeof TracerGardenPlantAnimation!=='undefined')return TracerGardenPlantAnimation.create({kind:match[1],stage:4,rare:true,shiny:!!match[2],label:options.label,animated:options.animated,pet:true});
     const id=typeof options.pet==='string'?options.pet:options.pet?.id;
+    const illustrated=typeof TracerPetIllustratedAnimation!=='undefined'?TracerPetIllustratedAnimation.create({...options,actions,duration,fallback:snapshot(id)}):null;
+    if(illustrated)return illustrated;
     const wrapper=document.createElement('span');wrapper.innerHTML=snapshot(id);
     const element=wrapper.firstElementChild, media=typeof matchMedia==='function'?matchMedia('(prefers-reduced-motion: reduce)'):null;
     const cache=new Map();let action='idle',frame=0,timer=null,destroyed=false;

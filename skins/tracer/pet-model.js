@@ -6,13 +6,20 @@
   'use strict';
   const pets = [
     { id: 'sprout', en: 'Sprout', zh: '芽芽', species: ['小绵羊', 'Cloud sheep'], metric: 'welcome', target: 1, color: '#b7dac1' },
-    { id: 'miso', en: 'Miso', zh: '米酥', species: ['橘猫', 'Ginger cat'], metric: 'harvested', target: 50, color: '#e5b575' },
-    { id: 'brook', en: 'Brook', zh: '溪溪', species: ['小企鹅', 'River penguin'], metric: 'fish', target: 10, color: '#8bc6de' },
+    { id: 'miso', en: 'Miso', zh: '米酥', species: ['橘猫', 'Ginger cat'], metric: 'gardenHarvests', target: 1, color: '#e5b575' },
+    { id: 'brook', en: 'Brook', zh: '溪溪', species: ['小企鹅', 'River penguin'], metric: 'focus', target: 25, color: '#8bc6de' },
     { id: 'ember', en: 'Ember', zh: '小焰', species: ['赤狐', 'Ember fox'], metric: 'tasks', target: 10, color: '#eb9478' },
     { id: 'luna', en: 'Luna', zh: '月芽', species: ['月光兔', 'Moon rabbit'], metric: 'streak', target: 3, color: '#baa8eb' },
     { id: 'nova', en: 'Nova', zh: '星芽', species: ['星星幼龙', 'Starlight dragon'], metric: 'focus', target: 120, color: '#89d9c5' }
   ].map(pet => ({ ...pet, kind: 'creature' }));
   const customLimit = 12;
+  const gardenPets = ['wildflower','sunflower','lavender','apple','peach','cherry','neon_orchid','volt_berry','crystal_tree'].flatMap((plantKind,index)=>[false,true].map(shiny=>({
+    id:'garden_'+plantKind+(shiny?'_shiny':''),plantKind,garden:true,shiny,kind:'creature',
+    zh:(shiny?'闪光 · ':'')+['花团','小葵','绒绒','苹宝','桃桃','樱丸','霓霓','莓光','晶芽'][index],
+    en:(shiny?'Shiny ':'')+['Petal','Sunny','Violet','Pippin','Peaches','Cherry','Lumi','Berryglow','Prism'][index],
+    species:shiny?['闪光植物伙伴','Shiny garden companion']:['奇幻植物伙伴','Garden companion'],
+    color:shiny?'#c9b2f3':['#e9a1b2','#ebc359','#b49bcf','#cd7769','#efb59b','#d67e9d','#bd8be8','#79d7e1','#92d9b7'][index]
+  })));
   function customProfile(raw) {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw) ||
       typeof raw.id !== 'string' || !/^custom_[a-f0-9]{32}$/.test(raw.id) ||
@@ -36,7 +43,7 @@
     return result;
   }
   function catalog(s) {
-    return pets.concat(customProfiles(s && s.customs).map(profile => ({
+    return pets.concat(gardenPets.filter(pet=>s?.unlocked?.includes(pet.id)),customProfiles(s && s.customs).map(profile => ({
       ...profile, en: profile.name, zh: profile.name, custom: true,
       species: profile.kind === 'humanoid' ? ['人型伙伴', 'Humanoid companion'] : ['生物伙伴', 'Creature companion'],
       color: profile.kind === 'humanoid' ? '#baa8eb' : '#b7dac1'
@@ -51,7 +58,7 @@
     const s = fresh(now);
     if (!raw || raw.v !== 1) return s;
     s.customs = customProfiles(raw.customs);
-    const available = catalog(s);
+    const available = catalog({...s,unlocked:Array.isArray(raw.unlocked)?raw.unlocked:[]});
     s.unlocked = Array.from(new Set(['sprout', ...s.customs.map(p => p.id), ...(Array.isArray(raw.unlocked) ? raw.unlocked : [])])).filter(id => available.some(p => p.id === id));
     s.selected = s.unlocked.includes(raw.selected) ? raw.selected : 'sprout';
     for (const pet of available) {
@@ -98,19 +105,34 @@
     }
     s.updatedAt = Math.max(s.updatedAt, now); current(s); return s;
   }
-  function metrics(farm = {}, completed = [], focus = {}, now = Date.now()) {
+  function metrics(harvestRecords = [], completed = [], focus = {}, now = Date.now()) {
     const unique = new Set(completed.map(h => h.taskId));
     const days = new Set(completed.filter(h => Number.isFinite(h.completedAt)).map(h => day(h.completedAt)));
     const cursor = new Date(now); cursor.setHours(12,0,0,0);
     if (!days.has(day(cursor))) cursor.setDate(cursor.getDate()-1);
     let streak = 0;
     while (days.has(day(cursor))) { streak++; cursor.setDate(cursor.getDate()-1); }
-    return { welcome: 1, harvested: Math.max(0, farm.harvested || 0), fish: Math.max(0, farm.fish || 0), tasks: unique.size, streak, focus: Math.max(0,focus.totalMinutes || 0) };
+    // Only durable project-garden harvest receipts count. Retired leisure-game
+    // counters cannot grant new unlocks; read() keeps companions already earned.
+    const harvested = new Set((Array.isArray(harvestRecords) ? harvestRecords : []).filter(row => row &&
+      typeof row.projectId === 'string' && row.projectId.length > 0 &&
+      Number.isSafeInteger(row.maturedAt) && row.maturedAt >= 0 &&
+      Number.isSafeInteger(row.harvestedAt) && row.harvestedAt >= row.maturedAt && row.harvestedAt <= now
+    ).map(row => row.projectId));
+    return { welcome: 1, gardenHarvests: harvested.size, tasks: unique.size, streak, focus: Number.isFinite(focus.totalMinutes) ? Math.max(0,focus.totalMinutes) : 0 };
   }
   function unlock(s, values) {
     const added = [];
     for (const pet of pets) if (!s.unlocked.includes(pet.id) && values[pet.metric] >= pet.target) { s.unlocked.push(pet.id); added.push(pet.id); }
     return added;
+  }
+  function unlockGarden(s,records){
+    const added=[];
+    for(const row of Array.isArray(records)?records:[]){
+      if(!row||row.harvestedAt===null||!Number.isSafeInteger(row.harvestedAt)||!Number.isInteger(row.ticket)||row.ticket<0||row.ticket>=100)continue;
+      const value='garden_'+row.plantKind+(row.ticket===0?'_shiny':'');
+      if(gardenPets.some(pet=>pet.id===value)&&!s.unlocked.includes(value)){s.unlocked.push(value);added.push(value);}
+    }return added;
   }
   function act(s, action, value, now = Date.now()) {
     advance(s, now);
@@ -153,5 +175,5 @@
     if (task) { s.lastReminder = now; return { id: task.id, title: task.title, due: task.due || task.scheduled }; }
     return null;
   }
-  return { pets, customLimit, customProfile, catalog, addCustom, removeCustom, fresh, read, current, advance, metrics, unlock, act, mood, nextTask, reminder, day };
+  return { pets, gardenPets, customLimit, customProfile, catalog, addCustom, removeCustom, fresh, read, current, advance, metrics, unlock, unlockGarden, act, mood, nextTask, reminder, day };
 });

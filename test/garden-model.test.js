@@ -235,3 +235,50 @@ test('browser UMD and Node share the same pure garden state and snapshot contrac
   assert.deepEqual(clone(result.state), G.reconcile(G.plant(G.fresh(), 'p1', 'lavender', now), ws, {}, now).state);
   assert.deepEqual(clone(browser.snapshot(result.state, ws, {}, now)), G.snapshot(clone(result.state), ws, {}, now));
 });
+
+test('garden levels and collection use earned receipts, survive reload and do not credit unsaved work', () => {
+  const ws = workspace(); let state = start(ws);
+  let visible = G.snapshot(state, ws, {}, now);
+  assert.equal(visible.journey.level, 1); assert.equal(visible.journey.xp, 0);
+  assert.equal(visible.journey.milestones.find(item => item.id === 'first-seed').earned, true);
+  assert.deepEqual(visible.plots[0].growth, { effort: 0, next: 1, remaining: 1, progress: 0, bond: 0 });
+  complete(ws, 't1');
+  assert.equal(G.snapshot(state, ws, {}, now).journey.xp, 0, 'snapshot cannot award a pending completion');
+  state = G.reconcile(state, ws, { history: [session('quiet', 't1', 'p1', 125)] }, now).state;
+  visible = G.snapshot(state, ws, {}, now);
+  assert.equal(visible.journey.xp, 35); assert.equal(visible.journey.level, 2);
+  assert.equal(visible.journey.next, 100); assert.equal(visible.journey.progress, 5 / 70);
+  assert.equal(visible.plots[0].growth.effort, 6); assert.equal(visible.plots[0].growth.bond, 1);
+  assert.equal(visible.journey.milestones.find(item => item.id === 'quiet-hours').earned, true);
+  ws.tasks[0].status = 'todo'; ws.tasks[0].doneAt = null; ws.completionHistory = [];
+  const restored = G.reconcile(G.read(clone(state)), ws, {}, now + 86400000 * 30).state;
+  assert.deepEqual(G.snapshot(restored, ws, {}, now + 86400000 * 30).journey, visible.journey, 'time away and truncated history do not decay rewards');
+});
+
+test('growth targets follow stage boundaries and bloom bonuses apply exactly once', () => {
+  const ws = workspace(); let state = start(ws);
+  for (let count = 1; count <= 6; count++) {
+    state = G.reconcile(state, ws, { history: [session('f-' + count)] }, now).state;
+    const growth = G.snapshot(state, ws, {}, now).plots[0].growth;
+    assert.equal(growth.next, count < 3 ? 3 : count < 6 ? 6 : null);
+    assert.equal(growth.remaining, count < 3 ? 3 - count : count < 6 ? 6 - count : 0);
+  }
+  for (const task of ws.tasks) complete(ws, task.id);
+  state = G.reconcile(state, ws, {}, now).state;
+  const first = G.snapshot(state, ws, {}, now);
+  assert.equal(first.journey.xp, 30 + 30 + 30);
+  assert.equal(first.journey.blooms, 1);
+  assert.equal(first.journey.milestones.find(item => item.id === 'first-bloom').earned, true);
+  assert.deepEqual(G.snapshot(G.reconcile(state, ws, {}, now + 1).state, ws, {}, now + 1).journey, first.journey);
+  const removed = G.snapshot(G.remove(state, 'p1'), ws, {}, now);
+  assert.equal(removed.journey.xp, 0, 'collection represents the current plots, consistent with deliberate removal');
+});
+
+test('maximum garden level has a full finite progress bar and no impossible next target', () => {
+  const ws = workspace(); let state = start(ws);
+  state.plots[0].taskIds = Array.from({ length: 100 }, (_, i) => 'earned-' + i);
+  state.plots[0].stage = 3;
+  const visible = G.snapshot(G.read(state), ws, {}, now);
+  assert.equal(visible.journey.level, 6); assert.equal(visible.journey.next, null);
+  assert.equal(visible.journey.progress, 1); assert.equal(visible.plots[0].growth.bond, 3);
+});

@@ -4,7 +4,7 @@ const path = require('node:path');
 const root = path.join(__dirname, '..');
 
 // public/ is the source of truth for modules also served by the Tracer skin.
-for (const name of ['project-deletion.js', 'task-history.js', 'task-i18n.js']) {
+for (const name of ['project-deletion.js', 'task-history.js', 'task-i18n.js', 'task-garden.js']) {
   fs.copyFileSync(path.join(root, 'public', name), path.join(root, 'skins', 'tracer', name));
 }
 console.log('Desktop shared modules updated.');

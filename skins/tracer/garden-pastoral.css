@@ -1,0 +1,101 @@
+/* The garden has its own warm, daylight palette inside the desktop shell. */
+.garden-home{--home-fg:#42583b;--home-muted:#718060;--home-green:#628347;--home-line:#8c9a6238;background:#f4f3e3;border-radius:18px;color:var(--home-fg);padding-top:20px}
+.garden-home .garden-home-eyebrow{color:#76815b;letter-spacing:1.4px}
+.garden-home button:focus-visible{outline-color:#668953}
+.garden-home .garden-home-button{color:#53643d;border-color:#a8b78988;background:#ffffff55}
+.garden-home .garden-home-button:hover:not(:disabled){background:#faffef;border-color:#829d62}
+.garden-home .garden-home-secondary{color:#73805e;border-color:#a8b78966;background:#fffaf0}
+.garden-home .garden-home-hero{background:#f9f7e9;border:1px solid #cbd4ae;border-radius:14px;box-shadow:0 3px 0 #ced6b044}
+.garden-home .garden-home-hero:before{display:none}
+.garden-home .garden-home-title{color:#4b6443;letter-spacing:1px;font-weight:650}
+.garden-home .garden-home-description{color:#82906a}
+.garden-home .garden-home-stat-value{color:#597445}
+.garden-home .garden-home-stat-label,.garden-home .garden-home-stat>.garden-home-icon{color:#91a275}
+.garden-world-heading{border-top-color:#cfd8b7}
+.garden-world-level{color:#f5f6df;border-color:#8da572;background:#879f67;box-shadow:0 2px 0 #678451}
+.garden-world-level-text{color:#6b8150}
+.garden-world-xp{color:#86956d}
+.garden-world-level-progress{background:#dfe7c7}
+.garden-world-level-progress::-webkit-progress-bar,.garden-world-growth::-webkit-progress-bar{background:#e1e7cf}
+.garden-world-level-progress::-webkit-progress-value,.garden-world-growth::-webkit-progress-value{background:#a4bc79}
+.garden-world-surface{max-width:none;aspect-ratio:900/520;margin:18px auto 0;background:#d1edce;border-top:1px solid #d7e2b9;border-bottom:1px solid #d7e2b9;overflow:hidden}
+.garden-world-backdrop{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:fill;image-rendering:pixelated;pointer-events:none;z-index:0}
+.garden-world-land{z-index:1;shape-rendering:crispEdges}
+.garden-world[data-art=ready] .garden-world-land>:not(defs):not(.garden-world-bench):not(.garden-world-lanterns):not(.garden-world-flowers):not(.garden-world-fireflies){display:none}
+.garden-world[data-art=ready] .garden-world-land{filter:none}
+.garden-world-weather{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.garden-world-pollen{position:absolute;left:calc(10% + var(--i)*12%);top:20%;width:3px;height:3px;background:#fff9d5;opacity:0;box-shadow:2px 1px 0 #e9df9388;animation:garden-pollen 9s linear infinite;animation-delay:calc(var(--i)*-1.7s)}
+@keyframes garden-pollen{20%{opacity:.75}80%{opacity:.6}100%{translate:40px 160px;opacity:0}}
+.garden-world-plot:before{border:2px solid #d5b772;background:radial-gradient(#d5b47b 1px,transparent 1px) 0 0/11px 9px,radial-gradient(#8c683e 1px,transparent 1px) 5px 4px/13px 11px,#b08a57;box-shadow:-3px 5px 0 #917046,0 9px 6px #547d4333;border-radius:3px;height:31%}
+.garden-world-plot[data-empty=true]:before{background:#acd27635;border:1px dashed #f4f3c99c;box-shadow:none}
+.garden-world-plot:hover:before,.garden-world-plot[aria-pressed=true]:before{border-color:#fff5b5;box-shadow:-3px 5px 0 #a78952,0 0 0 3px #fff5b522}
+.garden-world-plot[data-rarity=rare]:before{border-color:#d7b2f1}
+.garden-world-plot[data-rarity=shiny]:before{border-color:#fff0a0;box-shadow:0 0 18px #fff1b799}
+.garden-home .garden-world-plant{inset:-17% -7% 0;animation:none!important}
+.garden-home .garden-world-plant .garden-pixel-plant{height:100%;width:100%;filter:drop-shadow(2px 3px 1px #55734422)}
+.garden-world-plot-label{background:#faf6dfef;border:1px solid #b7bd8c;color:#667246;border-radius:3px;backdrop-filter:none;font-size:9px;padding:2px 6px;box-shadow:0 2px 0 #91a27744;max-width:105%}
+.garden-world-plot[aria-pressed=true] .garden-world-plot-label{color:#6b7444;background:#fff1b5;border-color:#c3b66a}
+.garden-world-seed-plus{color:#f7f8d9;font-size:23px}
+.garden-home .garden-world-surface .garden-home-companion{left:70%;top:38%;width:13%;filter:drop-shadow(3px 5px 1px #425a4433)}
+.garden-home .garden-world-surface .garden-home-companion-caption{left:71%;right:3%;bottom:31%;text-shadow:none}
+.garden-home .garden-world-surface .garden-home-companion-name{color:#536740;background:#f8f3d6dd;padding:2px 5px;border-radius:4px}
+.garden-home .garden-world-surface .garden-home-companion-state{color:#657d4d;text-shadow:none;background:#f8f3d6cc;border-radius:3px;padding:1px 3px}
+.garden-world-hint{color:#8a946f;margin:12px 16px}
+.garden-world-detail{background:#fffdf1;border:1px solid #d7ddbd;box-shadow:0 3px 0 #dce1c744;padding:17px;flex-wrap:wrap;gap:14px;margin-bottom:10px}
+.garden-world-portrait{width:100px;height:112px;background:radial-gradient(ellipse at 50% 65%,#deebc788,transparent 70%);align-self:center}
+.garden-home .garden-world-portrait .garden-pixel-plant{width:100%;height:100%}
+.garden-world-copy{flex-basis:240px}
+.garden-world-project{color:#87966d}
+.garden-world-name{font-size:15px;color:#576a40}
+.garden-world-bond{color:#82925f;border-color:#cfd7af;background:#f0f4df}
+.garden-world-detail[data-rarity=rare] .garden-world-bond{background:#ede5f4;border-color:#d6c0e5;color:#9672aa}
+.garden-world-detail[data-rarity=shiny]{border-color:#d4b983;background:linear-gradient(120deg,#fff9de,#f7f0ff)}
+.garden-world-speech{color:#73835c;font-size:12px}
+.garden-world-next{color:#9a9f7b;font-size:10px}
+.garden-home .garden-world-focus{border-color:#a5bd85;background:#e9efdb;color:#5a7542}
+.garden-home .garden-world-harvest{background:#f3d98c;border-color:#d2b668;color:#856c36;min-height:36px;font-size:11px}
+.garden-world-care{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:7px 20px 12px}
+.garden-world-care-title{font-size:10px;color:#8f9a70;margin-right:6px}
+.garden-world-care-button{display:flex;align-items:center;gap:7px;padding:7px 13px;min-height:36px;background:#fff9e9;border:1px solid #d3d9b7;box-shadow:0 2px 0 #d7debd;border-radius:6px;color:#768957;font-size:11px}
+.garden-world-care-button:hover{background:#f1f6da;translate:0 -1px}
+.garden-world-care-button>span:first-child{font-size:17px;color:#879f63}
+.garden-world-harvest-help,.garden-world-harvest-stats{font-size:10px;line-height:1.8;text-align:center;color:#909774;padding:0 24px;margin:2px 0 10px}
+.garden-world-harvest-stats{color:#879666;margin-bottom:20px}
+.garden-world-collection .garden-home-section-title{color:#6d7e51}
+.garden-world-badge{background:#f1f4e1;border-color:#d6dfb9}
+.garden-world-badge-mark{color:#a6b287}
+.garden-world-badge-title{color:#89986a}.garden-world-badge-count{color:#a2ac87}
+.garden-world-badge[data-earned=true]{background:#f7edc8;border-color:#dfcea0}
+.garden-world-badge[data-earned=true] .garden-world-badge-mark{color:#c3a252;text-shadow:none}
+.garden-world-badge[data-earned=true] .garden-world-badge-title{color:#8a7c46}
+.garden-world-rules,.garden-world-rules-text{color:#8b9871}
+.garden-world-toast{background:#fff1ba;color:#817044;border:1px solid #d8be76;box-shadow:0 3px 0 #c7b78366}
+.garden-world-effects{position:absolute;inset:-25% -15% -5%;pointer-events:none}
+.garden-world-particle{display:none;position:absolute;left:calc(16% + var(--n)*10%);top:14%;width:3px;height:7px;border-radius:1px;background:#a3d8ee;box-shadow:1px 1px 0 #609bbc}
+.garden-world-plot[data-interaction=water] .garden-world-particle{display:block;animation:garden-water 800ms linear 3;animation-delay:calc(var(--n)*70ms)}
+.garden-world-plot[data-interaction=music] .garden-world-particle{display:block;width:4px;height:4px;background:#e2b968;box-shadow:3px -5px 0 #e2b968;animation:garden-notes 1700ms ease-out 2;animation-delay:calc(var(--n)*90ms)}
+.garden-world-plot[data-interaction=pet] .garden-world-particle{display:block;background:#e7a5b5;width:5px;height:5px;box-shadow:3px -2px 0 #e7a5b5;animation:garden-notes 1400ms ease-out 2;animation-delay:calc(var(--n)*90ms)}
+.garden-world-plot[data-interaction=breeze] .garden-world-particle{display:block;background:#c6dc8b;width:5px;height:3px;box-shadow:none;animation:garden-leaves 1300ms ease-in-out 2;animation-delay:calc(var(--n)*90ms)}
+@keyframes garden-water{0%{translate:0 -10px;opacity:0}20%{opacity:1}100%{translate:-5px 55px;opacity:0}}
+@keyframes garden-notes{0%{translate:0 45px;opacity:0}20%{opacity:1}100%{translate:12px -20px;opacity:0}}
+@keyframes garden-leaves{0%{translate:-25px 15px;opacity:0;rotate:0deg}30%{opacity:1}100%{translate:40px 35px;opacity:0;rotate:150deg}}
+.garden-world-celebration{background:#fff5c6;color:#8c7843;box-shadow:0 2px 0 #c4b27b44}
+.garden-home .garden-home-section-title{color:#6b7c4f}
+.garden-home .garden-home-section-help,.garden-home .garden-home-journal-empty,.garden-home .garden-home-footnote{color:#96a07e}
+.garden-home .garden-home-plot{background:#fffdf0;border-color:#d6debb;box-shadow:0 2px 0 #dce3c333}
+.garden-home .garden-home-plot:hover{background:#fffff4;border-color:#b5c698}
+.garden-home .garden-home-project-link{color:#697c4a}
+.garden-home .garden-home-project-link:hover{color:#3f653c}
+.garden-home .garden-home-plant-name,.garden-home .garden-home-focus-total,.garden-home .garden-home-counts{color:#98a67d}
+.garden-home .garden-home-task-count{color:#829563}
+.garden-home .garden-home-stage-name{color:#87995f;border-color:#ccd7aa;background:#f0f4df}
+.garden-home .garden-home-plot[data-stage="4"] .garden-home-stage-name{color:#ad9446;border-color:#e6d49c;background:#faf0ce}
+.garden-home .garden-home-focus{color:#718852;background:#edf2dd;border-color:#c7d5ab}
+.garden-home .garden-home-bloom{color:#b3a05f}
+.garden-home .garden-home-empty{border-color:#c7d4ac;background:#ecf2d950}
+.garden-home .garden-home-empty-title{color:#7c9060}.garden-home .garden-home-empty-text{color:#9aa983}
+.garden-home .garden-home-event-title{color:#7c9163}.garden-home .garden-home-event-details{color:#a2ad8c}
+.garden-home .garden-home-error{color:#a17a42;background:#fff1d8;border-color:#e4cc94}
+@container garden-home (max-width:780px){.garden-world-portrait{width:80px;height:96px}.garden-world-copy{flex-basis:180px}.garden-world-detail{gap:10px}.garden-home .garden-world-portrait .garden-pixel-plant{width:100%;height:100%}}
+@container garden-home (max-width:540px){.garden-world-surface{aspect-ratio:900/520;margin:12px auto 0}.garden-world-portrait{width:65px;height:88px}.garden-world-detail{display:flex;gap:10px;padding:12px}.garden-world-copy{flex-basis:150px}.garden-home .garden-world-focus{margin-left:75px}.garden-world-care{padding:5px 12px 12px;gap:7px}.garden-world-care-title{width:100%;text-align:center}.garden-world-care-button{font-size:10px;padding:6px 10px}.garden-world-harvest-help{font-size:9px;padding:0 15px}.garden-world-plot-label{font-size:7px;padding:1px 3px}.garden-home .garden-world-surface .garden-home-companion{left:70%;top:38%;width:14%}.garden-world-name{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.garden-world-pollen,.garden-world-particle{animation:none!important}.garden-world-weather,.garden-world-effects{display:none}.garden-world-care-button{translate:none!important}}

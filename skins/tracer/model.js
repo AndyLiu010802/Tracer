@@ -1,10 +1,11 @@
 (function (root, factory) {
   'use strict';
   var api = factory(typeof module === 'object' && module.exports ? require('./task-history') : root.TaskHistory,
-    typeof module === 'object' && module.exports ? require('./project-deletion') : root.ProjectDeletion);
+    typeof module === 'object' && module.exports ? require('./project-deletion') : root.ProjectDeletion,
+    typeof module === 'object' && module.exports ? require('./task-garden') : root.TaskGarden);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.TracerModel = api;
-})(typeof self !== 'undefined' ? self : this, function (History, Deletion) {
+})(typeof self !== 'undefined' ? self : this, function (History, Deletion, Garden) {
   'use strict';
 
   // ---------- 日月轮回 ----------
@@ -133,10 +134,15 @@
     return out;
   }
   function blockers(ws, task) { return (task.dependsOn || []).map(function (id) { return findTask(ws, id); }).filter(function (t) { return t && t.status !== 'done'; }); }
+  function assertProjectEditable(ws, projectId) {
+    var project = projectId && findProject(ws, projectId);
+    if (project && project.status === 'completed') throw Object.assign(new Error('project-archived'), { code: 'project-archived' });
+  }
 
   function addTask(ws, fields) {
     var title = (fields && fields.title || '').trim();
     if (!title) return null;
+    assertProjectEditable(ws, fields.projectId);
     var extras = taskFields(ws, null, fields);
     var maxOrder = 0;
     ws.tasks.forEach(function (t) { if (t.order > maxOrder) maxOrder = t.order; });
@@ -157,6 +163,7 @@
     };
     Object.assign(task, extras);
     ws.tasks.push(task);
+    Garden.taskChanged(ws, task);
     if (task.status === 'done') History.record(ws, task);
     return task;
   }
@@ -176,6 +183,7 @@
   function moveTask(ws, id, status, beforeId) {
     var task = findTask(ws, id);
     if (!task || STATUSES.indexOf(status) < 0) return;
+    assertProjectEditable(ws, task.projectId);
     var wasDone = task.status === 'done';
     if (wasDone) History.record(ws, task);
     task.status = status;
@@ -193,12 +201,16 @@
     var prev = idx > 0 ? col[idx - 1].order : (col.length ? col[0].order - 2 * ORDER_STEP : 0);
     var next = idx < col.length ? col[idx].order : prev + 2 * ORDER_STEP;
     task.order = (prev + next) / 2;
-    task.updatedAt = Date.now();
+    var seed = ws.taskGarden && ws.taskGarden.seeds.find(function (s) { return s.taskId === id; });
+    task.updatedAt = Math.max(Date.now(), task.updatedAt + 1 || 0, seed ? seed.updatedAt + 1 : 0);
+    Garden.taskChanged(ws, task);
   }
 
   function updateTask(ws, id, fields) {
     var task = findTask(ws, id);
     if (!task) return null;
+    assertProjectEditable(ws, task.projectId);
+    if (fields.projectId !== undefined) assertProjectEditable(ws, fields.projectId);
     var extras = taskFields(ws, id, fields);
     if (task.status === 'done') History.record(ws, task);
     ['title', 'notes', 'projectId', 'priority', 'scheduled', 'due'].forEach(function (k) {
@@ -208,7 +220,9 @@
     });
     Object.assign(task, extras);
     if (fields.status !== undefined && fields.status !== task.status) moveTask(ws, id, fields.status, null);
-    task.updatedAt = Date.now();
+    var seed = ws.taskGarden && ws.taskGarden.seeds.find(function (s) { return s.taskId === id; });
+    task.updatedAt = Math.max(Date.now(), task.updatedAt + 1 || 0, seed ? seed.updatedAt + 1 : 0);
+    Garden.taskChanged(ws, task);
     return task;
   }
 
@@ -232,8 +246,26 @@
 
   function deleteTask(ws, id) {
     var task = findTask(ws, id); if (task && task.status === 'done') History.record(ws, task);
+    Garden.retireTask(ws, id);
     ws.tasks = ws.tasks.filter(function (t) { return t.id !== id; });
     ws.tasks.forEach(function (t) { if ((t.dependsOn || []).indexOf(id) >= 0) { t.dependsOn = t.dependsOn.filter(function (v) { return v !== id; }); t.updatedAt = Date.now(); } });
+  }
+
+  function clearCompletedTasks(ws, projectId) {
+    var archived = new Set(ws.projects.filter(function (p) { return p.status === 'completed'; }).map(function (p) { return p.id; }));
+    var ids = ws.tasks.filter(function (t) { return t.status === 'done' && !archived.has(t.projectId) && (!projectId || t.projectId === projectId); }).map(function (t) { return t.id; });
+    ids.forEach(function (id) { Garden.harvest(ws, id); deleteTask(ws, id); });
+    return { ok: true, count: ids.length };
+  }
+
+  function deleteProject(ws, id) {
+    var ids = ws.tasks.filter(function (t) { return t.projectId === id; }).map(function (t) { return t.id; });
+    if (ws.taskGarden) ws.taskGarden.seeds.forEach(function (seed) { if (seed.projectId === id && !findTask(ws, seed.taskId) && ids.indexOf(seed.taskId) < 0) ids.push(seed.taskId); });
+    ids.forEach(function (taskId) { Garden.retireTask(ws, taskId); });
+    Garden.removePlanet(ws, id);
+    var removed = Deletion.remove(ws, id);
+    if (removed) Garden.applyDeletions(ws);
+    return removed;
   }
 
   // ---------- 项目 ----------
@@ -501,7 +533,9 @@
     }
     if (fields.start !== undefined) p.start = fields.start;
     if (fields.end !== undefined) p.end = fields.end;
-    if (fields.status !== undefined) p.status = fields.status;
+    if (fields.timelineMode === 'auto' || fields.timelineMode === 'manual') p.timelineMode = fields.timelineMode;
+    if (fields.status === 'completed' && p.status !== 'completed') Garden.archiveProject(ws, id);
+    else if (fields.status !== undefined && p.status !== 'completed') p.status = fields.status;
     return p;
   }
   function projectProgress(ws, projectId) {
@@ -510,6 +544,37 @@
     var done = 0;
     ts.forEach(function (t) { if (t.status === 'done') done++; });
     return done / ts.length;
+  }
+
+  function timelineDate(value) {
+    return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && toISO(fromISO(value)) === value ? value : null;
+  }
+  function timelineSpan(start, end) {
+    start = timelineDate(start); end = timelineDate(end);
+    if (!start && !end) return null;
+    start = start || end; end = end || start;
+    return { start: start < end ? start : end, end: start < end ? end : start };
+  }
+  function taskTimelineRange(task) {
+    var end = timelineDate(task.due);
+    if (!end && task.status === 'done' && Number.isFinite(task.doneAt) && task.doneAt > 0) end = toISO(new Date(task.doneAt));
+    return timelineSpan(task.scheduled, end);
+  }
+  function projectTimelineRange(ws, projectId) {
+    var project = findProject(ws, projectId);
+    if (!project) return null;
+    var manual = timelineSpan(project.start, project.end);
+    if (project.timelineMode === 'manual') return manual && Object.assign({ mode: 'manual' }, manual);
+    var span = null;
+    ws.tasks.forEach(function (task) {
+      if (task.projectId !== projectId) return;
+      var dates = taskTimelineRange(task);
+      if (!dates) return;
+      if (!span) span = { start: dates.start, end: dates.end, mode: 'auto' };
+      else { if (dates.start < span.start) span.start = dates.start; if (dates.end > span.end) span.end = dates.end; }
+    });
+    // Keep older project dates usable until tasks have dates or automatic mode is explicitly selected.
+    return span || (project.timelineMode !== 'auto' && manual ? Object.assign({ mode: 'manual' }, manual) : null);
   }
 
   // ---------- 排期查询 ----------
@@ -612,9 +677,9 @@
     uid: uid, emptyWorkspace: emptyWorkspace,
     esc: esc, nextSeq: nextSeq, projectColor: projectColor, STATUSES: STATUSES,
     addTask: addTask, findTask: findTask, tasksByStatus: tasksByStatus,
-    moveTask: moveTask, updateTask: updateTask, deleteTask: deleteTask,
+    moveTask: moveTask, updateTask: updateTask, deleteTask: deleteTask, clearCompletedTasks: clearCompletedTasks,
     taskDueState: taskDueState, filterTasks: filterTasks, blockers: blockers, PRIORITIES: PRIORITIES, TASK_TYPES: TASK_TYPES,
-    addProject: addProject, deleteProject: Deletion.remove,
+    addProject: addProject, deleteProject: deleteProject, completeProject: Garden.archiveProject, deletePlanet: Garden.removePlanet,
     addInbox: addInbox, deleteInbox: deleteInbox,
     inboxToTask: inboxToTask, inboxToNote: inboxToNote,
     renderMarkdown: renderMarkdown, safeUrl: safeUrl,
@@ -624,6 +689,7 @@
     weekStart: weekStart, weekDays: weekDays, dayParts: dayParts, daysBetween: daysBetween,
     monthList: monthList, datePos: datePos,
     findProject: findProject, updateProject: updateProject, projectProgress: projectProgress,
+    taskTimelineRange: taskTimelineRange, projectTimelineRange: projectTimelineRange,
     tasksOnDay: tasksOnDay, unscheduledTasks: unscheduledTasks,
     mapLayout: mapLayout, statusCounts: statusCounts, weeklyCompletions: weeklyCompletions,
   };

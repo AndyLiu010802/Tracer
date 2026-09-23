@@ -1,0 +1,99 @@
+/* Keep the farming illustration cheerful, with the surrounding UI matching
+   Tracer's charcoal theme. Ground anchors are shared by every screen size. */
+.garden-home{--home-fg:#dce2ce;--home-muted:#93a087;--home-green:#b0bf8d;--home-line:#a1b68026;background:transparent;color:var(--home-fg);border-radius:0}
+.garden-home .garden-home-eyebrow{color:#a8b092}
+.garden-home .garden-home-top{flex-wrap:wrap;justify-content:flex-end;gap:10px}
+.garden-home .garden-home-top .garden-home-eyebrow{margin-right:auto}
+@container garden-home (max-width:540px){.garden-home .garden-home-top .garden-home-eyebrow{flex-basis:100%}.garden-home .garden-home-top{justify-content:flex-start}}
+.garden-home button:focus-visible{outline-color:#d8deb0}
+.garden-home .garden-home-button{color:#c4cda9;border-color:#a5b28643;background:#a3b4810c}
+.garden-home .garden-home-button:hover:not(:disabled){background:#a3b48120;border-color:#b4c18e88}
+.garden-home .garden-home-secondary{color:#a8b096;border-color:#a4ad8130;background:#171c17}
+.garden-home .garden-home-hero{background:#1c241f;border-color:#a3b78930;box-shadow:0 3px 20px #00000012}
+.garden-home .garden-home-title{color:#e6e9d9}.garden-home .garden-home-description{color:#a1af95}
+.garden-home .garden-home-stat-value{color:#d3ddbd}.garden-home .garden-home-stat-label,.garden-home .garden-home-stat>.garden-home-icon{color:#97aa80}
+.garden-world-heading{border-top-color:#a9ba8726}
+.garden-world-level{background:#7e936424;color:#c6d6a3;border-color:#a4bd7659;box-shadow:none}
+.garden-world-level-text{color:#c1cfa7}.garden-world-xp{color:#a4b08f}
+.garden-world-level-progress{background:#a1b2831c}
+.garden-world-level-progress::-webkit-progress-bar,.garden-world-growth::-webkit-progress-bar{background:#a1b2831c}
+.garden-world-level-progress::-webkit-progress-value,.garden-world-growth::-webkit-progress-value{background:#a4b881}
+.garden-world-surface{aspect-ratio:900/520;margin:16px auto 0;border-color:#c3d09321;background:#22372b;max-width:none}
+.garden-world-backdrop{filter:saturate(.87) brightness(.94)}
+.garden-world[data-farm=cyber] .garden-world-surface{background:#101e2a;border-color:#8ccbe332;aspect-ratio:3/2}
+.garden-world[data-farm=cyber] .garden-world-backdrop{filter:saturate(.9) brightness(.97)}
+.garden-world[data-farm=cyber] .garden-ground-edge{fill:#274350}
+.garden-world[data-farm=cyber] .garden-ground-top{fill:#234a5266;stroke:#83e0e3;stroke-width:1}
+.garden-world[data-farm=cyber] .garden-ground-grain{stroke:#87bfba}
+.garden-world[data-farm=cyber] .garden-world-plot[data-empty=true] .garden-ground-top{fill:#45b9d008;stroke:#98ebee7a;stroke-dasharray:4 3}
+.garden-world[data-farm=cyber] .garden-world-plot:hover .garden-ground-top,.garden-world[data-farm=cyber] .garden-world-plot[aria-pressed=true] .garden-ground-top{stroke:#d5adf6;stroke-width:2}
+.garden-world[data-farm=cyber] .garden-world-companion-perch{left:65.89%;top:40.82%}
+.garden-home .garden-world[data-farm=cyber] .garden-world-surface .garden-home-companion{left:65.89%;top:40.82%}
+.garden-home .garden-world[data-farm=cyber] .garden-world-surface .garden-home-companion-caption{left:69.8%;top:34.7%}
+.garden-home .garden-world[data-farm=cyber] .garden-world-plot{height:8.8%;width:13.2%}
+.garden-world[data-farm=cyber] .garden-world-plot-label,.garden-world[data-farm=cyber] .garden-home-companion-name,.garden-world[data-farm=cyber] .garden-home-companion-state{background:#172b40eb;color:#d4dff4;border-color:#95bada50}
+.garden-world[data-farm=cyber] .garden-world-pollen{background:#95cdef;box-shadow:0 0 6px #83bceb}
+.garden-world-hint{color:#9da88a}
+.garden-world-detail{background:#171e19;border-color:#a2b48626;box-shadow:none}
+.garden-world-portrait{background:radial-gradient(ellipse at 50% 65%,#9fb27b18,transparent 70%)}
+.garden-world-project{color:#95a47e}.garden-world-name{color:#d2ddba}
+.garden-world-bond{color:#aab992;border-color:#a1b88030;background:#a1b8800b}
+.garden-world-detail[data-rarity=rare] .garden-world-bond{background:#b290df12;border-color:#bfa0da4d;color:#c4addd}
+.garden-world-detail[data-rarity=shiny]{border-color:#c1ac6357;background:linear-gradient(120deg,#272a20,#24212b)}
+.garden-world-speech{color:#b1bfa0}.garden-world-next{color:#94a180}
+.garden-home .garden-world-focus{color:#bfcea2;border-color:#a4ba754d;background:#96ab7110}
+.garden-home .garden-world-harvest{background:#c1a35620;border-color:#d0b4655e;color:#d9c487}
+.garden-world-care-title{color:#9ca88b}
+.garden-world-care-button{background:#21291f;border-color:#a4b57e35;box-shadow:0 2px 0 #11180f;color:#b2c095}
+.garden-world-care-button:hover{background:#303b28}.garden-world-care-button>span:first-child{color:#bac994}
+.garden-world-harvest-help,.garden-world-harvest-stats{color:#9ca989}
+.garden-world-collection .garden-home-section-title{color:#bccaa3}
+.garden-world-badge{background:#a0b27908;border-color:#a3b78322}
+.garden-world-badge-mark{color:#7e906b}.garden-world-badge-title{color:#a0af8e}.garden-world-badge-count{color:#829170}
+.garden-world-badge[data-earned=true]{background:#baa2600c;border-color:#c9b06936}
+.garden-world-badge[data-earned=true] .garden-world-badge-mark{color:#d0bd80}
+.garden-world-badge[data-earned=true] .garden-world-badge-title{color:#cfceaa}
+.garden-world-rules,.garden-world-rules-text{color:#a0ae8d}
+.garden-home .garden-home-section-title{color:#c4d0b0}.garden-home .garden-home-section-help,.garden-home .garden-home-journal-empty,.garden-home .garden-home-footnote{color:#91a17f}
+.garden-home .garden-home-plot{background:#1b211b;border-color:#a2b68a26;box-shadow:none}
+.garden-home .garden-home-plot:hover{background:#20271e;border-color:#a8bb7e50}
+.garden-home .garden-home-project-link{color:#c8d5b4}.garden-home .garden-home-project-link:hover{color:#ecf1d5}
+.garden-home .garden-home-plant-name,.garden-home .garden-home-focus-total,.garden-home .garden-home-counts{color:#8fa379}
+.garden-home .garden-home-task-count{color:#b4c49e}
+.garden-home .garden-home-stage-name{color:#adbf92;border-color:#a0b58030;background:#a0b5800b}
+.garden-home .garden-home-plot[data-stage="4"] .garden-home-stage-name{color:#d4c68c;border-color:#c5b77144;background:#c5b7710b}
+.garden-home .garden-home-focus{color:#acbf92;background:#a2b67d0c;border-color:#a5b97630}
+.garden-home .garden-home-bloom{color:#c6b776}
+.garden-home .garden-home-empty{border-color:#a7bb8239;background:#8da16d08}
+.garden-home .garden-home-empty-title{color:#c0cead}.garden-home .garden-home-empty-text{color:#95a880}
+.garden-home .garden-home-event-title{color:#b2c49c}.garden-home .garden-home-event-details{color:#80946c}
+.garden-home .garden-home-error{color:#d4bd8c;background:#b68d390f;border-color:#ccab6340}
+/* The image's patches are approximately 2:1 diamonds. No rotate/skew is applied
+   to the hit target; root y=151 in the 160x176 rig sits on the patch center. */
+.garden-home .garden-world-plot{width:11.7%;height:9.6%;aspect-ratio:auto;min-width:44px;min-height:44px;transform:translate(-50%,-50%);border-radius:0;overflow:visible}
+.garden-world-plot:before,.garden-world-plot:after{display:none!important}
+.garden-world-ground{position:absolute;inset:auto 0;top:50%;width:100%;aspect-ratio:2/1;transform:translateY(-50%);pointer-events:none;filter:drop-shadow(0 2px 0 #6c794733)}
+.garden-world-ground svg{width:100%;height:100%;display:block;overflow:visible}
+.garden-ground-edge{fill:#8f7248}.garden-ground-top{fill:#b28c56;stroke:#dec089;stroke-width:1.3}.garden-ground-grain{stroke:#8b673c}
+.garden-world-plot[data-empty=true] .garden-ground-edge{fill:transparent}
+.garden-world-plot[data-empty=true] .garden-ground-top{fill:#fff2ba08;stroke:#fff6c966;stroke-width:1;stroke-dasharray:4 3}
+.garden-world-plot[data-empty=true] .garden-ground-grain{display:none}
+.garden-world-plot:hover .garden-ground-top,.garden-world-plot[aria-pressed=true] .garden-ground-top{stroke:#fff2b7;stroke-width:2}
+.garden-world-plot[data-rarity=rare] .garden-ground-top{stroke:#d1a4e8}.garden-world-plot[data-rarity=shiny] .garden-ground-top{stroke:#ffed93}
+.garden-home .garden-world-plant{left:50%;right:auto;top:50%;bottom:auto;width:115%;height:auto;aspect-ratio:160/176;transform:translate(-50%,-85.795%);display:block}
+.garden-world-seed-plus{left:50%;top:85.795%;bottom:auto;transform:translate(-50%,-50%);font-size:20px;line-height:1;color:#fff8cf}
+.garden-world-plot-label{bottom:-23%;max-width:128%;color:#e4e4c8;background:#344b30ed;border-color:#889f6f66;box-shadow:0 2px 0 #223e2233;font-size:9px}
+.garden-world-plot[aria-pressed=true] .garden-world-plot-label{background:#e3dfa6;color:#536338;border-color:#f0e7b4}
+.garden-world-companion-perch{position:absolute;left:66.5%;top:43.5%;width:10%;aspect-ratio:120/56;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
+.garden-world-companion-perch img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.garden-home .garden-world-surface .garden-home-companion{left:66.5%;top:43.5%;width:11%;height:auto;aspect-ratio:1;max-width:none;bottom:auto;transform:translate(-50%,-87%);z-index:10}
+.garden-home .garden-world-surface .garden-home-companion-caption{left:73%;right:auto;width:19%;top:42%;bottom:auto;gap:2px;display:flex;flex-direction:column;align-items:center}
+.garden-home .garden-world-surface .garden-home-companion-name{background:#344b30ed;color:#e8e5c5;padding:2px 6px;border:1px solid #9fae7933;font-size:10px}
+.garden-home .garden-world-surface .garden-home-companion-state{background:#344b30dd;color:#cad4b8;padding:1px 5px;font-size:8px}
+.garden-world-effects{inset:-170% -20% 0}
+@container garden-home (max-width:540px){
+  .garden-world-surface{aspect-ratio:900/520;margin-top:12px}.garden-world-plot-label{font-size:7px;padding:1px 3px;bottom:-26%}
+  .garden-world-seed-plus{font-size:15px}.garden-home .garden-world-surface .garden-home-companion-name{font-size:7px;padding:1px 3px}
+  .garden-home .garden-world-surface .garden-home-companion-state{display:none}
+  .garden-home .garden-world-plot{min-height:44px;min-width:44px}
+}

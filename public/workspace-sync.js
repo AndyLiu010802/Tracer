@@ -1,10 +1,11 @@
 (function (root, factory) {
   var api = factory(typeof module === 'object' && module.exports ? require('./task-history') : root.TaskHistory,
     typeof module === 'object' && module.exports ? require('./project-deletion') : root.ProjectDeletion,
-    typeof module === 'object' && module.exports ? require('./companion-work') : root.TracerCompanionWork);
+    typeof module === 'object' && module.exports ? require('./companion-work') : root.TracerCompanionWork,
+    typeof module === 'object' && module.exports ? require('./task-garden') : root.TaskGarden);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.WorkspaceSync = api;
-})(typeof self !== 'undefined' ? self : this, function (History, Deletion, CompanionWork) {
+})(typeof self !== 'undefined' ? self : this, function (History, Deletion, CompanionWork, Garden) {
   'use strict';
   var collections = ['tasks', 'projects', 'notes', 'inbox'];
   function clone(value) { return value === undefined ? undefined : JSON.parse(JSON.stringify(value)); }
@@ -16,6 +17,37 @@
     return ka.length === kb.length && ka.every(function (k, i) { return k === kb[i] && equal(a[k], b[k]); });
   }
   function safeKey(k) { return k !== '__proto__' && k !== 'prototype' && k !== 'constructor'; }
+  function recoverArchived(remote, out) {
+    var archived = new Set((remote.projects || []).filter(function (p) { return p.status === 'completed'; }).map(function (p) { return p.id; }));
+    var removed = new Set((out.projectDeletions || []).map(function (p) { return p.id; }));
+    removed.forEach(function (id) { archived.delete(id); });
+    var known = new Map((remote.tasks || []).map(function (t) { return [t.id, t]; }));
+    var relocated = [], recovered = [], extras = [], seen = new Set();
+    var fields = ['title', 'notes', 'projectId', 'priority', 'scheduled', 'due', 'assignee', 'acceptance', 'type', 'estimate', 'spent', 'labels', 'links', 'dependsOn', 'checklist'];
+    function draftId(task) { var str = JSON.stringify(task), hash = 2166136261; for (var i = 0; i < str.length; i++) hash = Math.imul(hash ^ str.charCodeAt(i), 16777619); return 'recovered_' + task.id.slice(0, 60) + '_' + (hash >>> 0).toString(36); }
+    out.tasks = out.tasks.map(function (task) {
+      var accepted = known.get(task.id); seen.add(task.id);
+      if (accepted && archived.has(accepted.projectId)) {
+        if (fields.some(function (key) { return !equal(task[key], accepted[key]); })) {
+          var copy = clone(task); copy.id = draftId(task); copy.projectId = null; copy.status = 'todo'; copy.doneAt = null;
+          copy.createdAt = copy.updatedAt = Math.max(Date.now(), task.updatedAt || 0);
+          if (!out.tasks.some(function (row) { return row.id === copy.id; })) {
+            do { copy.seq = 'TRC-' + (++out.meta.seqCounter); } while (out.tasks.some(function (row) { return row.seq === copy.seq; }));
+            extras.push(copy); recovered.push({ taskId: copy.id, title: copy.title, projectId: accepted.projectId });
+          }
+        }
+        return clone(accepted);
+      }
+      if (archived.has(task.projectId)) {
+        relocated.push({ taskId: task.id, title: task.title, projectId: task.projectId });
+        task = clone(task); task.projectId = null; task.updatedAt = Math.max(Date.now(), task.updatedAt || 0);
+      }
+      return task;
+    });
+    known.forEach(function (task) { if (archived.has(task.projectId) && !seen.has(task.id)) out.tasks.push(clone(task)); });
+    out.tasks = out.tasks.concat(extras);
+    return { relocated: relocated, recovered: recovered, archivedTasks: new Set(Array.from(known.values()).filter(function (task) { return archived.has(task.projectId); }).map(function (task) { return task.id; })) };
+  }
   function merge(base, local, remote, choices) {
     base = base || empty(); local = local || empty(); remote = remote || empty();
     var deletions = Deletion.merge(base, local, remote);
@@ -71,8 +103,15 @@
     var history = History.union(History.all(base), History.all(remote), History.all(local));
     if (history.length) out.completionHistory = history;
     if (deletions.length) out.projectDeletions = Deletion.merge(base, local, remote);
+    var recovery = recoverArchived(remote, out);
+    conflicts = conflicts.filter(function (c) { return !(c.collection === 'tasks' && recovery.archivedTasks.has(c.id)); });
+    if (base.taskGarden || local.taskGarden || remote.taskGarden) {
+      out.taskGarden = Garden.merge(base.taskGarden, local.taskGarden, remote.taskGarden);
+      Garden.preserve(remote, out, { merge: true });
+      Garden.reconcile(out);
+    }
     Deletion.apply(out);
-    return { workspace: out, conflicts: conflicts };
+    return { workspace: out, conflicts: conflicts, relocatedArchivedTasks: recovery.relocated, recoveredArchivedTasks: recovery.recovered };
   }
   // Normalize only known fields before workspace persistence; never accept arbitrary object keys.
   function validate(input) {
@@ -80,8 +119,9 @@
     var output = empty();
     if (input.projectDeletions !== undefined) output.projectDeletions = Deletion.validate(input.projectDeletions);
     if (input.completionHistory !== undefined) output.completionHistory = History.validate(input.completionHistory);
+    if (input.taskGarden !== undefined) output.taskGarden = Garden.validate(input.taskGarden);
     var textFields = { tasks: ['seq', 'title', 'notes', 'projectId', 'priority', 'scheduled', 'due', 'status', 'assignee', 'acceptance', 'type'],
-      projects: ['name', 'color', 'status', 'start', 'end'], notes: ['title', 'body', 'projectId'], inbox: ['text'] };
+      projects: ['name', 'color', 'status', 'start', 'end', 'timelineMode'], notes: ['title', 'body', 'projectId'], inbox: ['text'] };
     collections.forEach(function (name) {
       if (!Array.isArray(input[name]) || input[name].length > 2000) throw new Error('Invalid ' + name);
       var seen = Object.create(null);
@@ -94,7 +134,7 @@
           if (item[key] !== null && (typeof item[key] !== 'string' || item[key].length > 100000)) throw new Error('Invalid ' + key);
           record[key] = item[key];
         });
-        ['createdAt', 'updatedAt', 'doneAt', 'order'].forEach(function (key) {
+        ['createdAt', 'updatedAt', 'doneAt', 'completedAt', 'order'].forEach(function (key) {
           if (item[key] === undefined) return;
           if (item[key] !== null && (typeof item[key] !== 'number' || !Number.isFinite(item[key]))) throw new Error('Invalid ' + key);
           record[key] = item[key];
@@ -125,7 +165,10 @@
             });
           }
         }
-        if (name === 'projects' && !/^#[0-9a-fA-F]{6}$/.test(record.color || '')) record.color = '#7c8fe8';
+        if (name === 'projects') {
+          if (!/^#[0-9a-fA-F]{6}$/.test(record.color || '')) record.color = '#7c8fe8';
+          if (record.timelineMode != null && record.timelineMode !== 'auto' && record.timelineMode !== 'manual') throw new Error('Invalid timeline mode');
+        }
         if (name === 'notes') record.pinned = !!item.pinned;
         return record;
       });
@@ -146,7 +189,7 @@
     });
     var receipts = CompanionWork.validateReceipts(input.meta && input.meta.companionReceipts);
     if (receipts.length) output.meta.companionReceipts = receipts;
-    return Deletion.apply(output);
+    return Garden.applyDeletions(Deletion.apply(output));
   }
   function validDate(s) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;

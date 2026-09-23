@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "mode": "built-in image_gen",
+  "created": "2026-09-23",
+  "motionBase": "Use case: identity-preserve. Production animation sheet EXACTLY sixteen SMALL COMPLETE figures in 4 columns and 4 rows, chronological reading order. TRUE TRANSPARENT RGBA background. Square 2048x2048. Each full figure INCLUDING all petals, feet and props occupies only CENTRAL 60% HEIGHT and 60% WIDTH of its cell; enormous empty transparent gutters and outer margins. Baseline 80% cell height. Constant scale and camera. Exquisite painterly botanical detail, petal veins, tactile cream fuzz. 16 distinct continuous drawings, no repeated poses. Exactly two hands and two root feet. No text, labels, grid, scenery, ground, shadows, glow haze or detached sparkles. Reference is identity only, use specified bottom-row creature, never plants. ",
+  "motionActs": {
+    "idle": "Gentle breathing with planted feet, eyelids close at frames 7-8 then reopen, leaves settle.",
+    "greet": "Raise right hand during frames 1-4, wave twice in 5-12, lower and settle in 13-16.",
+    "walk": "Complete smooth in-place walking cycle with alternating root feet and counter-swinging arms, planted contact feet, stable scale.",
+    "hop": "Prepare crouch 1-4, push off 5-6, small airborne hop 7-10, land 11-13, recover 14-16. Draw height change, do not recenter.",
+    "water": "Lift tiny watering can 1-4, tilt to water one tiny seedling 5-11, upright 12-14, lower 15-16. All props fully inside each cell.",
+    "pet": "Nuzzle into an invisible gentle pat, tilt head left 1-5 and right 6-11, happy closed eyes at middle, relax 12-16. No human hands.",
+    "music": "Dance gently left and right with leaf hands swinging rhythmically and small alternating steps, constant body proportions.",
+    "celebrate": "Raise hands in delight 1-5, happy small hop 6-10, land 11-13, hands lower 14-16.",
+    "rest": "Lower into seated pose 1-4, close eyelids and settle hands in lap 5-8, remain seated ASLEEP for ALL frames 9-16 with subtle distinct breathing chest/petal/leaf poses. Never stand in last 8 frames.",
+    "focus": "Sit attentively with small open book, scan left-right with eyes, slowly turn a page 7-12, settle book 13-16.",
+    "breeze": "Feet planted while a soft breeze flexes petals and leaf cape gradually left then right then settles. No detached objects.",
+    "stretch": "Lift hands overhead 1-5, stretch with closed smiling eyes 6-10, lower arms 11-14, relax 15-16.",
+    "look": "Look curiously left 1-5, return through center 6-8, look right 9-13, return 14-16; eyes lead head, petals follow.",
+    "shy": "Blush and draw hands near cheeks 1-5, peek downward bashfully 6-10, glance back up and lower hands 11-16.",
+    "eat": "Lift tiny berry biscuit to mouth 1-5, small nibble and chew 6-11, lower snack and contented smile 12-16. Consistent tiny snack.",
+    "thanks": "Bring hands together 1-4, gentle grateful bow 5-10, rise 11-14, hands lower 15-16."
+  },
+  "builtinActs": {
+    "idle": "Gentle breathing, tiny gaze shift, eyelids slowly close in 7-8 then reopen, settle into original pose.",
+    "pet": "Enjoy a gentle invisible pat, nuzzle head from left to right, soft pleased closed eyes in middle then smile; no human hand.",
+    "feed": "Bring a small species-appropriate snack to mouth, nibble, chew and lower it. Sheep leafy biscuit, cat/penguin tiny fish snack, fox berry, rabbit carrot, dragon star biscuit.",
+    "play": "Play with one small ball or yarn toy: anticipation, reach with forepaw, tap toy, follow with head and recover.",
+    "sleep": "Stay comfortably asleep for ALL sixteen frames, eyes closed throughout, species-specific curled or tucked resting silhouette, gentle distinct breathing, no standing up.",
+    "wake": "Sleepy eyes open, raise forelimbs and stretch spine and ears/wings, yawn, then settle awake.",
+    "focus": "Attentive quiet sitting alongside a small open notebook, mild breathing and thoughtful gaze, no writing.",
+    "drag": "Gently suspended above ground, surprised but comfortable expression, small alternating dangling paws/feet and moving ears/tail/wings, consistent centered body.",
+    "fishing": "One forward-only catch: hold a small fishing rod with forepaws/flippers, dip bobber, wait, notice tug, lift the fish clear of the water, then hold and admire the catch through the final frame. Never lower or release the fish back into the water, reverse the action, or start a second attempt within the sheet. All props fit inside cell.",
+    "exercise": "A gentle full-body exercise routine, bend knees, raise forelimbs, stretch, small step and recover; no human limbs.",
+    "farming": "Hold a tiny watering can, lean and water one small seedling with visible fine droplets, lift can upright and settle.",
+    "mining": "Grip a tiny pickaxe with forelimbs, raise, gently tap a small blue crystal rock, tiny impact chips then recover. Complete tool and rock inside cell.",
+    "reading": "Hold small open book in forelimbs/flippers, eyes scan lines then turn one page, return gaze to book.",
+    "writing": "Hold short pencil with forepaw/flipper and write a few strokes on small notebook, pause to think, lower pencil to page again.",
+    "crafting": "Carefully arrange small wooden pieces on low workboard, tap one joint with tiny mallet, inspect and recover.",
+    "tea": "Lift small ceramic cup with forepaws/flippers to mouth, gentle sip, lower and contented exhale. Cup remains visible and consistent."
+  },
+  "builtinIdentities": {
+    "sprout": "Sprout: cream wool cloud sheep, pale sage face and round ears, tiny green two-leaf sprout growing on head, soft pink blush, dark tiny hooves, chubby upright body.",
+    "miso": "Miso: chubby orange ginger tabby cat, dark cinnamon stripes on forehead and limbs, cream muzzle and belly, triangular pink-inner ears, long curved striped tail, no clothes.",
+    "brook": "Brook: round small blue penguin, dusty sky blue head and flippers, ivory face patches and belly, tiny orange beak and orange webbed feet, no clothes.",
+    "ember": "Ember: small quadrupedal orange red fox facing right in three-quarter view, cream muzzle/chest and fluffy tail tip, dark brown paws, tall triangular ears, very fluffy sweeping tail. Remain a fox on four legs, forepaws can manipulate props while seated.",
+    "luna": "Luna: lavender moon rabbit, long tall ears with rose inner ears, light ivory lavender muzzle and belly, fluffy small tail, round pink blush, long rabbit hind feet.",
+    "nova": "Nova: cute small mint teal dragon, cream pale lime segmented belly, two short golden horns, small teal batlike wings, curved tail ending in golden star, small golden claws, no flames."
+  },
+  "builtinBase": "Use case: identity-preserve. Production polished detailed COZY PIXEL ART animation sheet. Preserve reference character species, silhouette, distinctive features and palette; enrich pixel clusters, wool/fur/scales, eyes and lighting, no flat block placeholder. EXACTLY 16 SMALL complete figures in 4 columns x4 rows chronological continuous animation. Square 2048x2048 TRUE TRANSPARENT RGBA, huge transparent gutters; each entire character AND PROPS only central 60% width/height of cell, ground at 80% local cell height. Constant scale, camera and anatomy; no extra limbs, no text/grid/borders/ground shadow/background or detached decorative objects. Sixteen distinct drawn poses including articulated intermediate poses, not repetitions or whole-image translations. Warm top-left light, readable at small desktop size. ",
+  "voltIdentityPrompt": "Use case: stylized-concept. Create a production TRUE TRANSPARENT RGBA botanical character identity atlas, 3 columns x 2 rows, 1536x1024, six COMPLETE isolated drawings with generous empty transparent margins and no text/grid/shadows/glow/background. Exquisite hand-painted cozy botanical illustration matching cute cream-fuzzy woodland sprites, polished leaf veins, warm highlights, expressive adorable faces only in last two cells. Species VOLT BERRY: rounded clusters of translucent turquoise-blue berries with tiny golden lightning-shaped inner veins, emerald leaves with electric cyan veins, brown roots. Top row left seedling with two leaves and roots; top middle leafy young berry bush with tiny cream buds; top right flowering bush with first cyan berries. Bottom left mature natural berry bush with many luminous cyan berry clusters (NO face). Bottom middle NORMAL companion: round ivory face, big deep turquoise eyes, tiny smile and peach blush, cream fuzzy pear-shaped body, hood of small clustered electric cyan-blue berries and emerald leaves, two little ivory hands and two brown three-toed root feet, leaves form a short cape; keep plant form cute and recognizable. Bottom right SHINY companion: exactly same anatomy and silhouette, pale lavender/ivory berries with golden-pink inner veins, lilac eyes, silvery mint leaves, same cream body and roots. Each drawing within central 75% of its cell. No external aura, no detached sparkles, no pots, no additional characters.",
+  "builtinActionBase": "Use case: identity-preserve. Production polished detailed COZY PIXEL ART animation sheet. Preserve reference character species, silhouette, distinctive features and palette; enrich pixel clusters, wool/fur/scales, eyes and lighting, no flat block placeholder. EXACTLY 16 SMALL complete figures in 4 columns x4 rows chronological continuous animation. Square 2048x2048 TRUE TRANSPARENT RGBA, huge transparent gutters; each entire character AND PROPS only central 60% width/height of cell, ground at 80% local cell height. Constant scale, camera and anatomy; no extra limbs, no text/grid/borders/ground shadow/background or detached decorative objects. Sixteen distinct drawn poses including articulated intermediate poses, not repetitions or whole-image translations. Warm top-left light, readable at small desktop size. CLEAN ALPHA: everything outside character and explicitly required props must have alpha exactly zero; absolutely no colored haze, loose pixels, dithering, grain, sparkles, motion trails or outline halo. "
+}

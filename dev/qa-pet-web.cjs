@@ -12,6 +12,23 @@ async function seedNeeds(page,needs){
 }
 async function reaction(page,action,prop){
  await page.waitForFunction(action=>document.querySelector('.pet-home').dataset.action===action,action);
+ const builtin=page.locator('.pet-character .pet-builtin-sprite');
+ if(await builtin.count()){
+  assert.equal(await builtin.getAttribute('data-action'),action,action+' selects its authored action');
+  assert.equal(await builtin.getAttribute('data-frames'),'16',action+' uses all sixteen authored frames');
+  assert.equal(await builtin.getAttribute('data-playback'),'playing');
+  const before=await builtin.evaluate(el=>({frame:el.dataset.frame,markup:el.innerHTML,head:el.querySelector('.rig-head').style.transform}));
+  await page.waitForFunction(({action,frame})=>{const el=document.querySelector('.pet-character .pet-builtin-sprite');return el?.dataset.action===action&&el.dataset.frame!==frame;},{action,frame:before.frame},{timeout:2000});
+  const after=await builtin.evaluate(el=>{
+   const prop=el.lastElementChild,box=prop.getBoundingClientRect();
+   return {markup:el.innerHTML,head:el.querySelector('.rig-head').style.transform,propVisible:prop.checkVisibility()&&box.width>0&&box.height>0};
+  });
+  assert.notEqual(after.markup,before.markup,action+' renders a different articulated pose');
+  assert.notEqual(after.head,before.head,action+' changes the head pose between frames');
+  assert.ok(after.propVisible,action+' includes its visible authored prop');
+  assert.equal(await page.locator(prop).isVisible(),false,'authored action props do not duplicate the old overlay');
+  return;
+ }
  assert.ok(await page.locator(prop).isVisible(),action+' displays its reaction prop');
  const moving=await page.locator('.pet-character').evaluate(el=>el.getAnimations({subtree:true}).some(animation=>{
   const target=animation.effect?.target;if(!target?.checkVisibility()||animation.playState!=='running'||(!target.classList.contains('pet-sprite')&&!target.closest('.pet-rig')))return false;
@@ -50,7 +67,11 @@ async function reaction(page,action,prop){
   await page.click('[data-act=focus-toggle]');await page.waitForFunction(()=>!Tracer.focus.read().running);
   await page.click('[data-tab=collection]');assert.equal(await page.locator('.pet-unlock:disabled').count(),5);
   await page.evaluate(()=>{
-   DBFarm.progress=()=>({harvested:50,fish:10});
+   // An ordinary project-garden receipt unlocks Miso without granting a rare
+   // plant companion; the existing focus fixture also earns Brook and Nova.
+   const harvestedAt=Date.now(),projectId='qa-companion-garden';
+   const mature=TracerGardenHarvest.mature(TracerGardenHarvest.fresh(),[{projectId,plantKind:'wildflower',stage:4,commemoratedAt:harvestedAt}],()=>100);
+   localStorage.setItem(TracerGardenHarvest.key,JSON.stringify(TracerGardenHarvest.harvest(mature,projectId,harvestedAt)));
    for(let i=0;i<10;i++){const t=TracerModel.addTask(Tracer.store.data,{title:'Finished '+i,status:'done'});t.doneAt=Date.now()-(i%3)*86400000;TaskHistory.record(Tracer.store.data,t);}
    const f=TracerFocus.fresh();f.totalMinutes=120;localStorage.setItem('tracer.focus.v1',JSON.stringify(f));Tracer.refreshWellness();Tracer.touch();
   });

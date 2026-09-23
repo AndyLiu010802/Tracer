@@ -56,24 +56,6 @@ const PUBLIC_DIR = path.join(ROOT, 'public');
 // 它会相互干扰；现在测试可以各自把它指到独立的临时文件，互不影响。
 const STATE_FILE = process.env.DOCS_PORTAL_STATE_FILE || path.join(ROOT, 'bookmarks.json');
 
-// 游戏引擎（键盘农场+钓鱼+战斗+装备）物理住在 db-console 皮肤目录，
-// 但作为「共享一份源」同时供 tracer 的 Garden 分区加载——当前皮肤目录里
-// 没有的游戏文件，从这里兜底服务。这样两个皮肤跑的是同一份 farm.js，
-// 农场那边的迭代 tracer 自动拿到，无需复制。GAME_DIR 可用环境变量覆盖，
-// 将来把游戏搬到中立目录时只改这一行。
-const GAME_DIR = process.env.DOCS_PORTAL_GAME_DIR || path.join(ROOT, 'skins', 'db-console');
-// 白名单必须跟着农场的美术走：farm.js 新加一个美术目录（如 mobs/、mats/、equip/）
-// 或一张顶层立绘（hero/arena），就得同步加进下面两处，否则该资源在 tracer 的 Garden
-// 里一律 404——而 farm.js 的 onerror 把破图静默换成 emoji，界面上看不出是服务端没给。
-const GAME_FILES = new Set([
-  '/farm.js', '/fishing.js', '/combat.js', '/equip.js', '/mining.js', '/magic.js', '/farm-data.js', '/farm.css',
-  '/hero.webp', '/arena.webp',
-]);
-const GAME_DIRS = ['/fish/', '/scenes/', '/mobs/', '/mats/', '/equip/'];
-function isGameAsset(pathname) {
-  return GAME_FILES.has(pathname) || GAME_DIRS.some((d) => pathname.indexOf(d) === 0);
-}
-
 // 皮肤无关的通用 JSON 存储。皮肤用它放自己的持久数据（如 tracer 的 workspace），
 // 引擎不关心内容结构。名字白名单挡住路径注入；测试用 DATA_DIR 环境变量改落点。
 // 实际的读写（写队列、原子替换、.bak 回退）在 lib/store.js 里，方便脱离 HTTP 单测。
@@ -109,7 +91,7 @@ function safeJoin(dir, rel) {
   return target;
 }
 
-// 图片/字体等二进制资源可缓存，否则农场每秒重绘会把整屏鱼类立绘反复重拉。
+// 图片/字体等二进制资源可缓存，避免界面重绘时重复下载。
 // HTML/CSS/JS 仍走 no-store，保证改动即时可见。
 const CACHEABLE_EXT = new Set(['.webp', '.png', '.jpg', '.svg', '.woff2']);
 
@@ -193,9 +175,7 @@ async function handleRequest(req, res) {
     return;
   }
   let pathname = decodeURIComponent(url.pathname);
-  // decode 之后可能重新冒出 ../ 或 Windows 反斜杠——前缀白名单/路由必须看规范化后的
-  // 形态，否则 /fish/..%2fcontent.js、/fish/..%5ccontent.js 会绕过游戏白名单从 GAME_DIR
-  // 掏 db-console 的伪装文件（content.js 含真实项目名）。先把 \ 归一成 /，再 posix 规范化。
+  // 解码后可能出现 ../ 或 Windows 反斜杠；统一分隔符并规范化后再匹配路由。
   pathname = path.posix.normalize(pathname.replace(/\\/g, '/'));
   if (pathname[0] !== '/') pathname = '/' + pathname;
   const loopbackHost = /^(127\.0\.0\.1|localhost|\[::1\])(?::\d+)?$/i.test(req.headers.host || '');
@@ -335,6 +315,7 @@ async function handleRequest(req, res) {
         res.writeHead(400, { 'content-type': 'application/json' }).end('{"ok":false}');
         return;
       }
+      let acceptedWorkspace;
       try {
         await store.writeStore(DATA_DIR, name, body, name === 'workspace' ? (previous, next) => {
           const history = require('./public/task-history');
@@ -361,6 +342,8 @@ async function handleRequest(req, res) {
             }
           }
           if (receipts.length) { result.meta = result.meta || {}; result.meta.companionReceipts = receipts; }
+          require('./public/task-garden').preserve(previous, result);
+          acceptedWorkspace = result;
           return result;
         } : undefined);
       } catch (err) {
@@ -373,7 +356,7 @@ async function handleRequest(req, res) {
         res.writeHead(500, { 'content-type': 'application/json' }).end('{"ok":false}');
         return;
       }
-      res.writeHead(200, { 'content-type': 'application/json' }).end('{"ok":true}');
+      res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify(acceptedWorkspace ? { ok: true, workspace: acceptedWorkspace } : { ok: true }));
       return;
     }
     if (req.method === 'GET' || req.method === 'HEAD') {
@@ -424,14 +407,6 @@ async function handleRequest(req, res) {
   // 皮肤静态资源
   const skinFile = safeJoin(SKIN_DIR, pathname);
   if (skinFile && await serveFile(res, skinFile)) return;
-
-  // 游戏资源兜底：当前皮肤没有、但属于游戏白名单的文件，从 GAME_DIR 服务。
-  // 白名单挡住「tracer 意外拿到 db-console 伪装内容」；编码穿越（..%2f/..%5c）由
-  // 入口处的 pathname 规范化挡住（见上），safeJoin 再把结果夹在 GAME_DIR 内。
-  if (isGameAsset(pathname)) {
-    const gameFile = safeJoin(GAME_DIR, pathname);
-    if (gameFile && await serveFile(res, gameFile)) return;
-  }
 
   // 404 也要保持文档站的样子，不能露出 Node 默认响应。
   res.writeHead(404, { 'content-type': 'text/html; charset=utf-8' });

@@ -22,8 +22,10 @@
     if (k) recordActivity(k);
   }, true);
   document.addEventListener('click', function () { recordActivity('LMB'); }, true);
+  // The desktop input bridge and reference reader share this historical
+  // message name. It records anonymous focus activity, not game rewards.
   window.addEventListener('message', function (e) {
-    if (e.origin !== location.origin || !e.data || e.data.__aside !== 1 || e.data.type !== 'farm') return;
+    if (e.origin !== location.origin || !e.data || e.data.__aside !== 1 || e.data.type !== 'farm' || (e.data.kind !== 'key' && e.data.kind !== 'click')) return;
     var frame = Array.prototype.some.call(document.querySelectorAll('iframe'), function (f) { return f.contentWindow === e.source; });
     if (!frame && e.source !== window) return;
     recordActivity(e.data.kind === 'click' ? 'LMB' : 'unknown');
@@ -147,7 +149,6 @@
   function draw() {
     if (T.garden) T.garden.refresh();
     if (T.refreshInsightsFocus) T.refreshInsightsFocus(state);
-    if (window.DBFarm && window.DBFarm.syncFocus) window.DBFarm.syncFocus(state);
     var ms = F.remaining(state, Date.now()), text = F.format(ms), stats = F.today(state, Date.now());
     var pill = document.getElementById('focus-open');
     pill.dataset.running = String(state.running); pill.dataset.complete = String(state.completed);

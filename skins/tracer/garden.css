@@ -1,9 +1,4 @@
-/* Tracer Garden：作物商店侧 + 游戏主区两栏。农场自身样式来自共享的 farm.css。 */
-/* 高度不用 calc(100vh - 魔法数)：.sec-head 变高（改字号/换行）就会静默溢出
-   （实测过：h1 改 32px 就溢出 15px，窄视口标题换行溢出 48px）。改用 flex 撑满：
-   #sec-garden 本身在 .active 时变成纵向 flex 容器，.garden-wrap 占掉标题之外
-   的剩余高度。.main 有 overflow-y:auto 且自身高度由 .shell 的网格撑满视口，
-   height:100% 能正确解析到这条链路上。 */
+/* Companion home layout and project planting controls. */
 #sec-garden.active { display: flex; flex-direction: column; height: 100%; }
 #garden-home-root { min-width: 0; flex: 1; }
 /* Home owns its spacing. Respond to the actual center pane rather than adding
@@ -32,117 +27,11 @@
   body:has(#sec-garden.active) > .top .top-right > * { flex-shrink: 0; }
   .main:has(> #sec-garden.active > #garden-home-root:not([hidden])) > .daily-bar { margin: 12px 12px 0; }
 }
-#garden-home-root[hidden], #garden-leisure-wrapper[hidden] { display: none; }
-#garden-leisure-wrapper { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-.garden-leisure-heading { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
-.garden-leisure-heading p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .garden-plot-dialog p { color: var(--muted); font-size: 12px; line-height: 1.7; }
 .garden-plot-dialog .garden-dialog-error { color: #e4b68b; }
 .proj-garden { flex: none; align-self: center; width: 29px; height: 30px; padding: 3px; border: 0; border-radius: 7px; background: transparent; color: var(--accent); cursor: pointer; }
 .proj-garden:hover { background: var(--surface); }
 .proj-garden:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .proj-garden svg { width: 100%; height: 100%; display: block; }
-.garden-wrap { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 12px; height: auto; flex: 1; min-height: 0; }
-.garden-side { display: flex; flex-direction: column; min-height: 0; }
-.garden-shop { flex: 1; min-height: 0; overflow-y: auto; }
-.garden-main { overflow-y: auto; min-width: 0; }
-/* boss-key 隐藏导航项：.nav-item 有 display:flex，会盖过 UA 的 [hidden]{display:none}，
-   必须用更高特异性的属性选择器把它压回去，否则 nav.hidden=true 不生效。 */
+/* Keep the garden visibility shortcut effective over .nav-item display. */
 .nav-item[hidden] { display: none; }
-
-/* Keep the appearance switch visible; the existing farm handler remembers the preference. */
-#sec-garden .btn[data-act="skin"] { display: inline-flex; align-items: center; white-space: nowrap; }
-
-/* ---------- 作物详情面板（商店列表下方） ----------
-   db-console 里这是 .rail 的 Definition 卡片；Tracer 没有把 .rail 让给
-   farm.js，改放进商店侧栏底部。farm.js 只认 #rail-label/#definition 这两个
-   id（renderRail()），样式是 Tracer 自己配的，不是从 skin.css 移植——
-   db-console 那边它们活在常驻的 .rail 里，规则语境对不上。
-   必须是 .garden-shop 的兄弟节点而不是子节点：见 index.html 里的注释，
-   放子节点会被 renderShop() 的整体重写冲掉。 */
-#sec-garden .garden-rail { flex: none; max-height: 44%; overflow-y: auto; }
-/* 数据加载失败/farm 还没挂载时 #definition 是真空标签（renderRail() 从没跑过），
-   这时不画分隔线——否则商店和详情都是空的，只剩一条无所依附的孤儿横线。
-   :has() 比用 JS 在挂载/卸载时切 class 更可靠：挂载过一次之后 #definition
-   会一直有内容（unmount 不清空 DOM，只停定时器），:has() 能跟着真实内容状态走，
-   不用担心「切走再切回」之类的时序和 JS 状态是否同步。 */
-#sec-garden .garden-rail:has(#definition:not(:empty)) { border-top: 1px solid var(--border); padding: 10px 14px 12px; }
-#sec-garden .definition { font: 11px/1.7 var(--font-mono); color: var(--fg); }
-#sec-garden .definition .col { display: flex; justify-content: space-between; gap: 12px; padding: 1.5px 0; border-bottom: 1px solid var(--border); }
-#sec-garden .definition .col:last-child { border-bottom: none; }
-#sec-garden .definition .typ { color: var(--muted); }
-
-/* Playwright 实测揪出来的撞车：board.css 的 .col 是看板列
-   （display:flex; flex-direction:column; min-height:120px），全局未加限定，
-   任何带 class="col" 的元素都会中招——包括 farm.js 到处用来排「标签 + 数值」
-   的横向行（.statgrid .col、装备面板的属性行等，都在 #sec-garden
-   .definition .col 之外）。这些行自己只声明了 display:flex+justify-content，
-   没声明 flex-direction/min-height，于是这两条属性单独被 board.css 的 .col
-   捡走：先是标签和数值被叠成上下两行（flex-direction），修完那个又发现每行
-   还被撑出 120px 高的空白（min-height）——stats 页的 counters 列表两次实测
-   都复现过。用 #sec-garden 限定、只纠正这两个属性压回来，不动 display。 */
-#sec-garden .col { flex-direction: row; min-height: 0; }
-
-/* ---------- 农场 UI 通用原语（从 skins/db-console/skin.css 只读移植） ----------
-   共享的 fishing.js/combat.js/equip.js/farm.js 生成的 HTML 里用了一批通用
-   class（toolbar/side-head/grid/statusline 等）。这些原语属于 db-console 的
-   skin.css，不在共享的 farm.css 里——farm.css 只装农场玩法自己独有的样式
-   （地块/作物/商店卡片等），因为「两个皮肤共用一份 farm.js」这条契约
-   从没打算连 skin.css 也共用。照搬会把 Supabase 绿和 db-console 私有变量
-   （--side-bg/--grid-head/--row-hover）一起带进来，所以颜色改用 Tracer 的
-   引擎变量重新上色；选择器全部加 #sec-garden 前缀限定作用域，避免 .grid/
-   .num/.role 这类通用名和 Tracer 其它分区（比如 board.css 的看板列）撞车。
-   改完请确认其余七个分区外观未受影响。 */
-#sec-garden .toolbar {
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-  flex: none;
-}
-#sec-garden .tname { font: 600 12.5px/1 var(--font-mono); color: var(--fg); padding-right: 6px; }
-#sec-garden .toolbar-gap { flex: 1; }
-
-#sec-garden .side-head { padding: 14px 14px 10px; font-size: 13px; font-weight: 600; color: var(--fg); }
-#sec-garden .side-schema { padding: 4px 14px 8px; font: 10.5px/1.5 var(--font-mono); color: var(--muted); }
-#sec-garden .side-schema span { color: var(--fg); }
-#sec-garden .side-list { padding: 0 8px 12px; }
-
-#sec-garden .grid { border-collapse: separate; border-spacing: 0; font: 11.5px/1.45 var(--font-mono); min-width: 100%; }
-#sec-garden .grid th {
-  position: sticky; top: 0; z-index: 2;
-  text-align: left; font-weight: 500;
-  color: var(--fg); background: var(--surface);
-  border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
-  padding: 6px 10px; white-space: nowrap;
-}
-#sec-garden .grid th .typ { color: var(--muted); font-size: 9.5px; margin-left: 6px; text-transform: uppercase; letter-spacing: .03em; }
-#sec-garden .grid td {
-  padding: 5px 10px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
-  color: var(--fg); white-space: nowrap; max-width: 340px; overflow: hidden; text-overflow: ellipsis;
-}
-#sec-garden .grid tr:hover td { background: var(--surface); }
-#sec-garden .grid td.num { text-align: right; }
-/* td.null/bool-t/bool-f/jsonb 特意没搬过来：这四个类只在 db-console 的
-   content.js（伪 Supabase 表格）里出现，farm/fishing/combat/equip 从不产出
-   （grep 零命中）；content.js 不在游戏白名单里，Tracer 拿不到，留着是死代码，
-   还顺带带进两个绕过引擎变量的硬编码色（#d09a5b/#9aa7d0），一并不要。 */
-
-#sec-garden .statusline {
-  flex: none; display: flex; gap: 16px; align-items: center;
-  padding: 6px 12px; border-top: 1px solid var(--border); background: var(--surface);
-  font: 10.5px/1.6 var(--font-mono); color: var(--muted);
-}
-/* farm.js 硬编码往状态栏塞了一句 "role: postgres"——db-console 那边它是可信的
-   数据库连接装饰，但 Tracer 是个不含任何数据库语境的工程工作台，原样露出去
-   就是一处对不上人设的残留。跟上面 .btn[data-act="skin"] 是同一类问题（引擎产出
-   了皮肤不该有的 db-console 装饰），同一种解法：只在 Tracer 侧藏掉，不碰共享
-   的 farm.js/db-console。*/
-#sec-garden .statusline .role { display: none; }
-
-/* .rail-label 不止用在商店侧栏（见上面 .garden-rail 那块），farm 内部各
-   标签页（钓鱼、战斗、装备…）的小节标题也复用同一个类名，这条规则两边都吃。 */
-#sec-garden .rail-label {
-  margin-bottom: 7px; font: 600 10px/1.6 var(--font-body);
-  letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
-}

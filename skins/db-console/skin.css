@@ -519,9 +519,6 @@ a { color: var(--accent); text-decoration: none; }
 .sm-item:hover { background: #262626; }
 .sm-item.is-active { background: #234436; color: var(--accent); }
 
-/* Queues 分区（键盘农场）的样式在 skins/db-console/farm.css，
-   皮肤骨架和玩法内容分开放，各改各的。 */
-
 @media (max-width: 1240px) {
   .shell { grid-template-columns: 48px 200px minmax(0, 1fr); }
   .rail { display: none; }

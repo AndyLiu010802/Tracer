@@ -1,0 +1,96 @@
+.garden-planets{--planet-fg:#e5e5d6;--planet-muted:#a3a792;--planet-line:#c7c7a51e;--planet-canvas-height:480px;color:var(--planet-fg);max-width:1280px;margin:0 auto;padding:26px 30px 48px;font-family:var(--font-body,system-ui,sans-serif);font-size:13px;line-height:1.65;container:garden-planets / inline-size}
+.garden-planets,.garden-planets *{box-sizing:border-box}
+.garden-planets button{font:inherit;cursor:pointer;-webkit-app-region:no-drag}
+.garden-planets button:focus-visible,.garden-planets canvas:focus-visible{outline:2px solid #dfd1a1;outline-offset:4px}
+.garden-planets [hidden]{display:none!important}
+.garden-planets-heading{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-bottom:28px}
+.garden-planets-kicker{display:block;color:#c0bd99;font-size:10px;font-weight:500;letter-spacing:1.8px}
+.garden-planets-heading h2{font-size:29px;letter-spacing:1px;line-height:1.3;margin:8px 0 9px;font-weight:550;color:#edf0e4}
+.garden-planets-heading p{margin:0;color:var(--planet-muted);font-size:12px;line-height:1.85}
+.garden-planets-totals{display:grid;grid-template-columns:auto auto;gap:4px 13px;align-items:baseline;flex:none}
+.garden-planets-totals strong{font:500 24px/1.4 var(--font-body,system-ui,sans-serif);color:#d9d0ad;text-align:right;font-variant-numeric:tabular-nums}
+.garden-planets-totals span{font-size:10px;color:#919d8d}
+.garden-planets-detail{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(250px,.78fr);border:1px solid #c8c5a62d;background:linear-gradient(120deg,#252b20,#1b221c 58%,#20251d);border-radius:24px;overflow:hidden;box-shadow:0 22px 65px #00000020,inset 0 1px #e7dba908}
+.garden-planets-stage{position:relative;min-height:652px;padding:0 0 27px;background:radial-gradient(ellipse at 44% 27%,#cfd59a0d,transparent 56%),radial-gradient(ellipse at 50% 69%,#8b956b0b,transparent 58%);isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+.garden-planets-stage:before{content:'';position:absolute;left:15%;right:15%;top:calc(var(--planet-canvas-height) - 83px);height:84px;border-radius:50%;background:radial-gradient(ellipse,#b9bf8310,transparent 68%);pointer-events:none;z-index:-1}
+.garden-planets-stage:after{content:'';position:absolute;inset:15px;border:1px solid #dbd6af0a;border-radius:17px;mask-image:linear-gradient(#000,transparent 30%,transparent 72%,#000);pointer-events:none;z-index:-1}
+.garden-planets-canvas{display:block;flex:none;width:100%;height:var(--planet-canvas-height);touch-action:none;cursor:grab;-webkit-app-region:no-drag;position:relative;z-index:1}
+.garden-planets-canvas.is-dragging{cursor:grabbing}
+.garden-planets-serial{position:absolute;left:28px;top:25px;font:9px/1.4 ui-monospace,monospace;letter-spacing:2px;color:#a8aa87;z-index:2;pointer-events:none}
+.garden-planets-star{position:absolute;width:2px;height:2px;border-radius:50%;background:#e8e0b9;pointer-events:none;box-shadow:0 0 5px #e8e0b931}
+.garden-planets-star:nth-of-type(4n){width:3px;height:3px;background:#b4cfbf}
+.garden-planets-touch-hint{position:relative;flex:none;font-size:9px;line-height:1.6;letter-spacing:.4px;color:#8e9a80;pointer-events:none;text-align:center;padding:0 16px;margin:-18px 0 0}
+.garden-planets-tools{position:relative;flex:none;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:0 14px;margin:12px 0 0;z-index:2}
+.garden-planets-button{border:1px solid #b5c19f2e;background:#b0c29309;color:#c9d3bb;border-radius:8px;padding:7px 12px;min-height:35px;transition:background .15s,border-color .15s}
+.garden-planets-button:hover:not(:disabled){border-color:#c6d3af55;background:#b0c29312}
+.garden-planets-button:disabled{opacity:.4;cursor:default}
+.garden-planets-tools .garden-planets-button{font-size:10px;min-height:29px;padding:4px 11px;border-color:#bfc29e26;background:#171e1538;border-radius:16px;color:#b4bea0}
+.garden-planets-plaque{position:relative;z-index:2;flex:none;max-width:85%;min-width:min(240px,80%);margin:20px 0 0;text-align:center;padding:15px 32px 16px;border:1px solid #cbbc7952;border-radius:10px;background:linear-gradient(150deg,#373629,#2a2e23 72%);box-shadow:0 7px 18px #00000026,inset 0 1px #ead8a516,inset 0 0 0 4px #d4c78c06}
+.garden-planets-plaque:before,.garden-planets-plaque:after{content:'·';position:absolute;top:40%;color:#bfb079;font-size:18px;line-height:1}
+.garden-planets-plaque:before{left:11px}.garden-planets-plaque:after{right:11px}
+.garden-planets-plaque>span:first-child{font-size:8px;letter-spacing:1.8px;color:#b1a683}
+.garden-planets-plaque h3{font-weight:550;font-size:17px;line-height:1.45;color:#e8dec2;margin:4px 0;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.garden-planets-plaque>span:last-child{font-size:9px;color:#999981}
+.garden-planets-story{padding:42px 36px 40px 21px;min-width:0;display:flex;flex-direction:column;justify-content:center;min-height:652px}
+.garden-planets-badge{align-self:flex-start;font-size:9px;letter-spacing:1.1px;border:1px solid #c9c18e36;border-radius:20px;padding:4px 10px;color:#c6bd91;background:#bdb16b08}
+.garden-planets-story h3{font-size:23px;line-height:1.55;font-weight:500;letter-spacing:.3px;margin:20px 0 12px;max-width:350px;text-wrap:balance}
+.garden-planets-story-text{color:#a4af9c;line-height:1.95;font-size:12px;margin:0;max-width:370px;text-wrap:pretty}
+.garden-planets-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;border-block:1px solid var(--planet-line);padding:21px 0;margin:27px 0 21px}
+.garden-planets-facts>div{display:flex;flex-direction:column;gap:3px}
+.garden-planets-facts strong{font-size:23px;font-weight:500;color:#dee4cf;font-variant-numeric:tabular-nums}
+.garden-planets-facts span{font-size:10px;color:#8e9e84}
+.garden-planets-memory{display:flex;align-items:center;gap:11px;min-height:94px;margin-bottom:14px;border:1px solid #c2c6a223;border-radius:12px;padding:13px;background:linear-gradient(120deg,#c3c79907,#c3c79902);box-shadow:inset 0 1px #e6dfb703}
+.garden-planets-memory-icon{color:#bcb287;font-size:30px;line-height:1;padding:0 8px}
+.garden-planets-memory p{font-size:11px;color:#96a18e;line-height:1.8;margin:0}
+.garden-planets-memory-art{display:block;width:50px;height:62px;flex:none}
+.garden-planets-memory-art svg{display:block;width:100%;height:100%;overflow:hidden}
+.garden-planets-memory-copy{display:flex;flex-direction:column;min-width:0;gap:3px}
+.garden-planets-memory-copy .garden-planets-kicker{font-size:9px;letter-spacing:.6px}
+.garden-planets-memory-copy strong{font-size:13px;line-height:1.5;font-weight:500;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.garden-planets-muted{color:#8f9d88;font-size:10px}
+.garden-planets-shiny-note{color:#dbc89c;font-size:11px;margin:-7px 0 15px}
+.garden-planets-density-note{font-size:10px;color:#87967e;line-height:1.8;margin:0 0 16px}
+.garden-planets-project-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px}
+.garden-planets-project-actions .garden-planets-button{font-size:11px}
+.garden-planets-delete{color:#a89588;border-color:transparent;background:transparent}
+.garden-planets-delete:hover:not(:disabled){color:#dbc0ae;border-color:#c7997830;background:#c7997808}
+.garden-planets-records{margin-top:32px;padding-bottom:28px;border-bottom:1px solid var(--planet-line)}
+.garden-planets-subhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:17px}
+.garden-planets-subhead h3{font-size:15px;line-height:1.5;font-weight:550;margin:0;color:#d9e0cd}
+.garden-planets-flower-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.garden-planets-flower{display:flex;align-items:center;gap:10px;min-width:0;text-align:left;padding:8px 11px;background:#9db88104;border-color:#a5bb9320;border-radius:10px}
+.garden-planets-flower[aria-pressed=true]{background:#b7c99710;border-color:#d2ce9966;box-shadow:inset 0 0 0 1px #d2ce9908}
+.garden-planets-flower-art{display:block;width:35px;height:45px;flex:none}
+.garden-planets-flower-art svg{display:block;width:100%;height:100%;overflow:hidden}
+.garden-planets-flower-copy{display:flex;flex-direction:column;min-width:0;gap:4px}
+.garden-planets-flower-copy>span{font-size:11px;color:#c2cdb4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
+.garden-planets-flower-copy small{font-size:9px;color:#839679;line-height:1.5}
+.garden-planets-flower[data-rarity=shiny] .garden-planets-flower-copy small{color:#cbbb86}
+.garden-planets-records-empty{font-size:12px;color:#8f9d88;margin:0;line-height:1.9;padding:14px 0}
+.garden-planets-gallery{margin-top:30px}
+.garden-planets-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.garden-planets-card{display:flex;flex-direction:column;min-width:0;padding:0 0 19px;overflow:hidden;background:radial-gradient(ellipse at 50% 43%,#a8b88a0b,transparent 70%),linear-gradient(155deg,#242a2033,#171e1933);border-color:#c2c6a128;border-radius:17px;text-align:center;box-shadow:inset 0 1px #ded6b005}
+.garden-planets-card[aria-pressed=true]{border-color:#d4c68b7c;background-color:#c0c1880b;box-shadow:inset 0 0 0 3px #d1cb9107,0 7px 22px #0000000c}
+.garden-planets-preview{display:block;width:100%;height:212px;pointer-events:none}
+.garden-planets-card-copy{display:flex;flex-direction:column;gap:5px;max-width:100%;padding:0 16px}
+.garden-planets-card-copy strong{font-size:12px;font-weight:500;line-height:1.5;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#d9deca}
+.garden-planets-card-copy>span{font-size:9px;color:#87987e;line-height:1.5}
+.garden-planets-pager{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:19px}
+.garden-planets-pager .garden-planets-button{font-size:10px;min-height:30px;padding:4px 10px}
+.garden-planets-empty{min-height:490px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;border:1px solid #b9c99e24;border-radius:22px;padding:30px;background:radial-gradient(ellipse at 50% 35%,#8ba8790b,transparent 70%),#19211b28}
+.garden-planets-empty-orb{width:116px;height:116px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#c0d6a6 0%,#8eaf78 23%,#678664 48%,#31463b 83%);box-shadow:inset -10px -10px 22px #111d2590,0 0 55px #92b76d15;position:relative;margin-bottom:35px}
+.garden-planets-empty-orb:before{content:'';position:absolute;inset:37px -23px;border:1px solid #d7cca94a;border-radius:50%;transform:rotate(-23deg)}
+.garden-planets-empty-orb:after{content:'✧';position:absolute;right:0;top:-16px;color:#dbd2a4;font-size:24px}
+.garden-planets-empty h3{font-size:19px;font-weight:500;color:#d3ddc2;margin:0 0 10px}
+.garden-planets-empty p{font-size:12px;line-height:1.95;color:#96a58b;max-width:450px;margin:0 0 23px;text-wrap:pretty}
+.garden-planets-error{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px solid #c7a67550;border-radius:8px;padding:10px 14px;background:#c7a67509;color:#d8c396;margin:0 0 18px;font-size:12px;overflow-wrap:anywhere}
+.garden-planets-error-text{flex:1;min-width:180px}.garden-planets-retry{font-size:11px;min-height:30px;color:#dfcaa2;border-color:#cfad7136;padding:5px 10px}
+@container garden-planets (max-width:950px){.garden-planets-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.garden-planets-story{padding:30px 24px 30px 9px}.garden-planets-story h3{font-size:21px}.garden-planets-flower-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@container garden-planets (max-width:720px){.garden-planets-detail{grid-template-columns:minmax(0,1fr)}.garden-planets-stage{--planet-canvas-height:460px;min-height:632px}.garden-planets-story{padding:28px 29px 30px;min-height:0;border-top:1px solid #c7c6a51c}.garden-planets-story h3{max-width:none}.garden-planets-story-text{max-width:none}.garden-planets-facts{margin:20px 0}.garden-planets-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.garden-planets-flower-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container garden-planets (max-width:420px){.garden-planets-heading{align-items:flex-start;gap:12px}.garden-planets-heading h2{font-size:24px}.garden-planets-heading p{font-size:11px}.garden-planets-totals{gap:4px 7px}.garden-planets-totals strong{font-size:18px}.garden-planets-totals span{font-size:8px}.garden-planets-kicker{font-size:9px;letter-spacing:1px}.garden-planets-stage{--planet-canvas-height:410px;min-height:574px;padding-bottom:24px}.garden-planets-touch-hint{font-size:8px;margin-top:-14px}.garden-planets-plaque{max-width:90%;padding:12px 25px;margin-top:19px}.garden-planets-preview{height:168px}.garden-planets-card-copy{padding:0 9px}.garden-planets-card-copy>span{font-size:8px}.garden-planets-subhead{align-items:flex-start;gap:9px}.garden-planets-subhead .garden-planets-muted{max-width:45%;text-align:right}.garden-planets-flower{padding:7px;gap:7px}.garden-planets-flower-art{width:28px;height:39px}.garden-planets-story{padding:25px 20px}.garden-planets-memory-copy strong{font-size:12px}}
+@media(max-width:600px){.garden-planets{padding:19px 15px 35px}.garden-planets-heading{margin-bottom:21px}}
+@media(prefers-reduced-motion:reduce){.garden-planets *{transition:none!important}}
+.garden-planets-biomes{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 8px;font-size:12px;color:#b5c6a2}
+.garden-planets-biomes>span{border:1px solid #a6bc7a32;border-radius:20px;padding:5px 10px;background:#8fa16d0b}
+.garden-planets-biomes .garden-planets-biome-neon{color:#a8d7dc;border-color:#81c5da36;background:#56bddc0b}
+.garden-planets-biome-help{color:#8e9b9c;font-size:12px;line-height:1.7;margin:0 0 14px}

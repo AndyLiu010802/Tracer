@@ -1,0 +1,297 @@
+{
+  "mode": "built-in image_gen",
+  "generated": [
+    {
+      "name": "volt_berry-normal-idle-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-3085c9c8-b86d-4fb1-90fd-9f7838b9e681.png"
+    },
+    {
+      "name": "volt_berry-normal-greet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-7c27d6cd-72b7-436e-b682-bfbb277e3374.png"
+    },
+    {
+      "name": "volt_berry-normal-walk-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-43ca2a21-4d36-49f0-ae96-4f584183082b.png"
+    },
+    {
+      "name": "volt_berry-normal-water-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-4c39be5b-7139-4894-baba-e9e1d4614019.png"
+    },
+    {
+      "name": "volt_berry-normal-pet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-6440ef71-7247-4f73-9579-428c9cb1ce14.png"
+    },
+    {
+      "name": "volt_berry-normal-celebrate-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-f337a767-c973-4acd-a13f-1c52fe9b214a.png"
+    },
+    {
+      "name": "volt_berry-normal-hop-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-7ca1772b-c73f-4a2c-b2b8-4478b4afae5f.png"
+    },
+    {
+      "name": "volt_berry-normal-music-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-2196b053-f541-41b1-ac12-6da9bc2250b2.png"
+    },
+    {
+      "name": "volt_berry-normal-breeze-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-6463fa66-a3a1-496a-b27c-44c4c2660328.png"
+    },
+    {
+      "name": "volt_berry-normal-look-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-0faca804-82a6-4284-9857-39429872d933.png"
+    },
+    {
+      "name": "volt_berry-normal-stretch-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-1cf47531-6bdf-4ada-b3fc-907e680486be.png"
+    },
+    {
+      "name": "volt_berry-normal-focus-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-04c0b40e-64b4-4075-a24e-5a6a621705eb.png"
+    },
+    {
+      "name": "volt_berry-normal-rest-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-c372fbc9-b631-4cdc-8d26-5e4d85f73e79.png"
+    },
+    {
+      "name": "volt_berry-normal-eat-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-0a26950c-9227-42ea-be29-9cf917d22968.png"
+    },
+    {
+      "name": "volt_berry-normal-shy-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-7bdb67dc-4e54-49c8-be0a-a63d68c0002f.png"
+    },
+    {
+      "name": "volt_berry-normal-thanks-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-339f19dd-3f74-431c-a11d-492f9de47380.png"
+    },
+    {
+      "name": "volt_berry-shiny-greet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-160955fe-54fa-4d89-b437-aa783dc1c167.png"
+    },
+    {
+      "name": "volt_berry-shiny-idle-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-f53d4033-0b3f-445c-80ec-fd79c4f9de4c.png"
+    },
+    {
+      "name": "volt_berry-shiny-hop-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-2e5b4b8d-da39-45a5-b3d5-99ef581b01d2.png"
+    },
+    {
+      "name": "volt_berry-shiny-walk-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-601380ec-3486-468c-aace-6669746cfaf5.png"
+    },
+    {
+      "name": "volt_berry-shiny-music-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-e51309fb-2a96-4db1-9033-40c99683a05e.png"
+    },
+    {
+      "name": "volt_berry-shiny-water-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-506fc607-6ba8-4510-b3f2-77ed85552199.png"
+    },
+    {
+      "name": "volt_berry-shiny-celebrate-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-9ac2c5f4-3505-42b4-90ce-95a0be6665cf.png"
+    },
+    {
+      "name": "volt_berry-shiny-pet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-ee05a737-c85e-438c-9a5c-faf8cc72b40b.png"
+    },
+    {
+      "name": "volt_berry-shiny-breeze-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-16d5611c-410c-4aae-b13a-a1618350328f.png"
+    },
+    {
+      "name": "volt_berry-shiny-rest-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-fd5300d4-ee05-4eaf-8824-471638fc3a01.png"
+    },
+    {
+      "name": "volt_berry-shiny-look-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-6e57a601-cac5-4ff0-9e14-60fcbd71e2a0.png"
+    },
+    {
+      "name": "volt_berry-shiny-shy-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-ac0fccb3-6f98-4da8-8133-a193c9b84508.png"
+    },
+    {
+      "name": "volt_berry-shiny-eat-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-f9ae02a3-cd85-4d02-a3d5-5369dbbcf1b0.png"
+    },
+    {
+      "name": "volt_berry-shiny-stretch-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-7f82f0d8-37a6-42a7-afd5-0ba854db988a.png"
+    },
+    {
+      "name": "volt_berry-shiny-focus-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-b978df5b-bd82-4b18-9151-7ad8f819af87.png"
+    },
+    {
+      "name": "volt_berry-shiny-thanks-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-da1db83c-9856-46e5-a7c6-f5462994ea6a.png"
+    },
+    {
+      "name": "crystal_tree-normal-walk-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-a5104743-af44-4e10-8816-df2025cbc1f0.png"
+    },
+    {
+      "name": "crystal_tree-normal-idle-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-5e487dce-f10e-48b7-b4aa-82be00224e79.png"
+    },
+    {
+      "name": "crystal_tree-normal-greet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-b5482240-1faa-43b2-8b33-3167d87f5604.png"
+    },
+    {
+      "name": "crystal_tree-normal-water-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-18bb8d46-d17e-4814-87a8-f358ae222d91.png"
+    },
+    {
+      "name": "crystal_tree-normal-hop-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-f589cfcf-55c2-4a46-8ece-2b544e35ccd4.png"
+    },
+    {
+      "name": "crystal_tree-normal-pet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-b71a723a-181a-49cf-a203-43d4831c5a18.png"
+    },
+    {
+      "name": "crystal_tree-normal-celebrate-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-7726fd17-bdec-4e6a-b55d-d5339e9f3f3d.png"
+    },
+    {
+      "name": "crystal_tree-normal-rest-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-5caec671-7477-4c60-8bec-93ec97ac5038.png"
+    },
+    {
+      "name": "crystal_tree-normal-music-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-217d0d03-258b-4d1b-961f-f29f82e1e474.png"
+    },
+    {
+      "name": "crystal_tree-normal-stretch-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-7fe8f836-52e6-4f34-96f4-f70d558527f2.png"
+    },
+    {
+      "name": "crystal_tree-normal-shy-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-68921737-f6d7-42c0-94c7-fafb7ad24b5b.png"
+    },
+    {
+      "name": "crystal_tree-normal-focus-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-9c75e71e-ff70-4fd1-9761-05d6f28e9589.png"
+    },
+    {
+      "name": "crystal_tree-normal-eat-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-42a12a83-dd08-41f0-8d0c-55b010857f1c.png"
+    },
+    {
+      "name": "crystal_tree-normal-breeze-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-ce328605-2448-4916-b77a-d0729512f1e0.png"
+    },
+    {
+      "name": "crystal_tree-normal-look-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-940e6653-110f-456d-abd4-5bf2e3dcc49f.png"
+    },
+    {
+      "name": "crystal_tree-shiny-idle-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-8f196d60-bd78-4707-91bb-7d4dc9007586.png"
+    },
+    {
+      "name": "crystal_tree-shiny-walk-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-cac2a470-a596-4689-80f4-4169fe85ea68.png"
+    },
+    {
+      "name": "crystal_tree-shiny-greet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-796725f1-27eb-4503-acd8-8e3dd05e2f55.png"
+    },
+    {
+      "name": "crystal_tree-normal-thanks-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-faee39ee-442d-46bb-8c0b-0953422d1624.png"
+    },
+    {
+      "name": "crystal_tree-shiny-hop-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-b053bcfc-9361-4ce1-a03f-27a128dd8c83.png"
+    },
+    {
+      "name": "crystal_tree-shiny-pet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-999caef6-61e9-42d7-aba7-8261424a4aaf.png"
+    },
+    {
+      "name": "crystal_tree-shiny-celebrate-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-9b964131-c997-4444-a3a4-ce6b8dd3184c.png"
+    },
+    {
+      "name": "crystal_tree-shiny-music-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-d8532205-2378-41fb-865e-db760a486f95.png"
+    },
+    {
+      "name": "crystal_tree-shiny-rest-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-dd938b72-abac-4f29-a77e-e0a1c78c2011.png"
+    },
+    {
+      "name": "crystal_tree-shiny-water-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-661d040a-8f20-492d-8acf-2bab3804126e.png"
+    },
+    {
+      "name": "crystal_tree-shiny-breeze-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-82ab7554-9077-413d-a082-d650b01f82e8.png"
+    },
+    {
+      "name": "crystal_tree-shiny-focus-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-d6360f0e-d3dc-4699-be82-6d8aa70c4fc6.png"
+    },
+    {
+      "name": "crystal_tree-shiny-shy-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-3db4c824-f560-4923-b19d-aeb28b1948b2.png"
+    },
+    {
+      "name": "crystal_tree-shiny-stretch-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-e4bf7de1-c595-4ec5-807a-205f0ad3ac28.png"
+    },
+    {
+      "name": "crystal_tree-shiny-thanks-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-0c8bea80-7466-4b57-a358-295f4c085ccd.png"
+    },
+    {
+      "name": "crystal_tree-shiny-eat-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-60dcf00c-ffbe-450e-acfe-cb8861354c87.png"
+    },
+    {
+      "name": "crystal_tree-shiny-look-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-a776dfca-5dc8-448f-bf88-b5af61197744.png"
+    }
+  ],
+  "repairs": [
+    {
+      "file": "garden-art/neon_orchid-normal-stretch-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-f6d95bac-ce32-47ce-8e5e-4079e05442cf.png",
+      "prompt": "Edit the attached animation sprite sheet. Preserve character identity, colors, fine detail and chronological action. Correct layout to EXACTLY FOUR ROWS with FOUR FIGURES ON EACH ROW (16 total), equally spaced square cells. Every figure must be significantly SMALLER: shrink each character uniformly to only 55% of its cell height, centered horizontally with root feet at 78% cell height. Leave huge transparent margins in EVERY cell, including top and bottom; all leaves, petals, tail, hands and props entirely inside central area. Redraw needed in-betweens to keep 16 distinct consecutive poses. Keep sleep eyes closed for frames 9-16 if sleeping. REMOVE all detached colored speckles, haze, glow, outlines and stray pixels in gutters; clean genuinely TRANSPARENT RGBA everywhere outside character. No backdrop, shadow, grid, labels or text. Square canvas. CRITICAL: first row four figures, second row four, third row four, fourth row four; never five across. Preserve species and existing action.",
+      "inspection": "{\"warnings\":[]}\n"
+    },
+    {
+      "file": "garden-art/volt_berry-normal-pet-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-a9046e64-d6ea-4ff3-af41-13f701113d1c.png",
+      "prompt": "Edit the attached animation sprite sheet. Preserve character identity, colors, fine detail and chronological action. Correct layout to EXACTLY FOUR ROWS with FOUR FIGURES ON EACH ROW (16 total), equally spaced square cells. Every figure must be significantly SMALLER: shrink each character uniformly to only 55% of its cell height, centered horizontally with root feet at 78% cell height. Leave huge transparent margins in EVERY cell, including top and bottom; all leaves, petals, tail, hands and props entirely inside central area. Redraw needed in-betweens to keep 16 distinct consecutive poses. Keep sleep eyes closed for frames 9-16 if sleeping. REMOVE all detached colored speckles, haze, glow, outlines and stray pixels in gutters; clean genuinely TRANSPARENT RGBA everywhere outside character. No backdrop, shadow, grid, labels or text. Square canvas. CRITICAL: first row four figures, second row four, third row four, fourth row four; never five across. Preserve species and existing action.",
+      "inspection": "{\"warnings\":[]}\n"
+    },
+    {
+      "file": "garden-art/volt_berry-normal-rest-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-bdab180c-667f-4bf3-9b3e-a7926f496f39.png",
+      "prompt": "Edit the attached animation sprite sheet. Preserve character identity, colors, fine detail and chronological action. Correct layout to EXACTLY FOUR ROWS with FOUR FIGURES ON EACH ROW (16 total), equally spaced square cells. Every figure must be significantly SMALLER: shrink each character uniformly to only 55% of its cell height, centered horizontally with root feet at 78% cell height. Leave huge transparent margins in EVERY cell, including top and bottom; all leaves, petals, tail, hands and props entirely inside central area. Redraw needed in-betweens to keep 16 distinct consecutive poses. Keep sleep eyes closed for frames 9-16 if sleeping. REMOVE all detached colored speckles, haze, glow, outlines and stray pixels in gutters; clean genuinely TRANSPARENT RGBA everywhere outside character. No backdrop, shadow, grid, labels or text. Square canvas. CRITICAL: first row four figures, second row four, third row four, fourth row four; never five across. Preserve species and existing action.",
+      "inspection": "{\"warnings\":[\"missing-frame-gutter-1\",\"frame 1: 144 opaque pixels touch its cell boundary\",\"frame 2: 153 opaque pixels touch its cell boundary\",\"frame 3: 155 opaque pixels touch its cell boundary\",\"frame 4: 150 opaque pixels touch its cell boundary\",\"frame 5: 313 opaque pixels touch its cell boundary\",\"frame 6: 324 opaque pixels touch its cell boundary\",\"frame 7: 329 opaque pixels touch its cell boundary\",\"frame 8: 326 opaque pixels touch its cell boundary\",\"frame 9: 171 opaque pixels touch its cell boundary\",\"frame 10: 176 opaque pixels touch its cell boundary\",\"frame 11: 174 opaque pixels touch its cell boundary\",\"frame 12: 175 opaque pixels touch its cell boundary\"]}\n"
+    },
+    {
+      "file": "garden-art/volt_berry-normal-eat-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-d3d42f82-108f-43da-9964-6a22c9d36825.png",
+      "prompt": "Edit the attached animation sprite sheet. Preserve character identity, colors, fine detail and chronological action. Correct layout to EXACTLY FOUR ROWS with FOUR FIGURES ON EACH ROW (16 total), equally spaced square cells. Every figure must be significantly SMALLER: shrink each character uniformly to only 55% of its cell height, centered horizontally with root feet at 78% cell height. Leave huge transparent margins in EVERY cell, including top and bottom; all leaves, petals, tail, hands and props entirely inside central area. Redraw needed in-betweens to keep 16 distinct consecutive poses. Keep sleep eyes closed for frames 9-16 if sleeping. REMOVE all detached colored speckles, haze, glow, outlines and stray pixels in gutters; clean genuinely TRANSPARENT RGBA everywhere outside character. No backdrop, shadow, grid, labels or text. Square canvas. CRITICAL: first row four figures, second row four, third row four, fourth row four; never five across. Preserve species and existing action.",
+      "inspection": "{\"warnings\":[]}\n"
+    },
+    {
+      "file": "pet-art/sprout-idle-v1",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-a257b16a-c0c3-41a9-8feb-9e7508e8fcd6.png",
+      "prompt": "Edit the attached animation sprite sheet. Preserve character identity, colors, fine detail and chronological action. Correct layout to EXACTLY FOUR ROWS with FOUR FIGURES ON EACH ROW (16 total), equally spaced square cells. Every figure must be significantly SMALLER: shrink each character uniformly to only 55% of its cell height, centered horizontally with root feet at 78% cell height. Leave huge transparent margins in EVERY cell, including top and bottom; all leaves, petals, tail, hands and props entirely inside central area. Redraw needed in-betweens to keep 16 distinct consecutive poses. Keep sleep eyes closed for frames 9-16 if sleeping. REMOVE all detached colored speckles, haze, glow, outlines and stray pixels in gutters; clean genuinely TRANSPARENT RGBA everywhere outside character. No backdrop, shadow, grid, labels or text. Square canvas. CRITICAL: first row four figures, second row four, third row four, fourth row four; never five across. Preserve species and existing action.",
+      "inspection": "{\"warnings\":[]}\n"
+    }
+  ],
+  "shinyPetRepair": {
+    "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-a1b04f8f-b4d9-414f-aa5b-bdf03a89c59e.png",
+    "prompt": "Correct this sprite sheet for game playback. Keep these exact 16 continuous petting/nuzzling drawings, same shiny berry character colors and anatomy. Put them in FOUR equal rows of FOUR figures. Make EVERY figure only HALF as tall as its cell, with very large EMPTY margins on ALL four sides of each figure. Keep the entire character centered inside each cell. The empty background and gutters must be truly transparent, no scattered pixels or colored shadows/halos. Root feet, berry hood and leaves must not approach any neighboring cell. Preserve distinct poses, do not add or remove frames. Square canvas. No text, visible grid, ground or scenery."
+  }
+}

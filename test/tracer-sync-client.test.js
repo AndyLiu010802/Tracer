@@ -5,12 +5,18 @@ const vm = require('node:vm');
 const fs = require('node:fs');
 const S = require('../public/workspace-sync');
 const M = require('../skins/tracer/model');
+const G = require('../public/task-garden');
 function client(initial, put, options = {}) {
   const elements = new Map(), storage = options.storage || new Map(), timers = new Map(), listeners = {}, requests = [], beacons = [], intervals = []; let seq = 0;
-  const el = id => { if (!elements.has(id)) elements.set(id, { hidden: true, classList: { toggle() {} }, addEventListener() {}, setAttribute() {}, innerHTML: '', querySelector() { return null; } }); return elements.get(id); };
+  const node = () => {
+    const out = { hidden: true, children: [], classList: { toggle() {} }, addEventListener() {}, setAttribute() {}, querySelector() { return null; }, appendChild(child) { this.children.push(child); return child; } };
+    let html = ''; Object.defineProperty(out, 'innerHTML', { get() { return html; }, set(value) { html = value; this.children = []; } });
+    return out;
+  };
+  const el = id => { if (!elements.has(id)) elements.set(id, node()); return elements.get(id); };
   const translations = require('../public/task-i18n');
-  const window = { WorkspaceSync: S, TracerModel: M, TracerCompanionWork: require('../public/companion-work'), TaskHistory: require('../public/task-history'), TracerLocale: { t: key => translations.t('en', key), message: text => translations.message('en', text) }, addEventListener(name, fn) { listeners[name] = fn; } };
-  const context = { window, console, document: { hidden: false, activeElement: {}, documentElement: el('html'), getElementById: el, querySelectorAll: () => [], addEventListener() {}, removeEventListener() {} },
+  const window = { WorkspaceSync: S, TracerModel: M, TracerCompanionWork: require('../public/companion-work'), TaskHistory: require('../public/task-history'), TracerLocale: { t: key => translations.t('en', key), message: text => translations.message('en', text), language: () => 'en' }, addEventListener(name, fn) { listeners[name] = fn; } };
+  const context = { window, console, TracerLocale: window.TracerLocale, document: { hidden: false, activeElement: {}, documentElement: el('html'), body: el('body'), createElement: node, getElementById: el, querySelectorAll: () => [], addEventListener() {}, removeEventListener() {} },
     localStorage: { getItem: k => storage.get(k) || null, setItem: (k, v) => storage.set(k, v), removeItem: k => storage.delete(k) },
     location: { search: '?sec=board' }, navigator: { sendBeacon(url, body) { beacons.push({ url, data: JSON.parse(body) }); return true; } },
     setInterval(fn, delay) { intervals.push(delay); }, setTimeout(fn, delay) { if(options.creationWaits && delay===50) return setTimeout(fn,0); timers.set(++seq, fn); return seq; }, clearTimeout(id) { timers.delete(id); },
@@ -61,6 +67,61 @@ test('a stale save with same-field edits enters local conflict recovery without 
   assert.equal(written.tasks.find(task=>task.id===localTask.id).seq,'TRC-3');
   assert.equal(new Set(written.tasks.map(task=>task.seq)).size,3);
   assert.equal(written.meta.companionReceipts.length,1);assert.equal(c.T.store.conflict,null);
+});
+
+test('archive 409 recovery announces and retains unsaved tasks and edits until one accepted retry saves them', async () => {
+  const initial = S.empty(), project = M.addProject(initial, { name: 'A finished project' });
+  const task = M.addTask(initial, { title: 'Preserve my work', status: 'doing', projectId: project.id });
+  const remote = S.clone(initial); M.moveTask(remote, task.id, 'done'); M.completeProject(remote, project.id);
+  let calls = 0, written;
+  const c = client(initial, async sent => {
+    if (++calls === 1) { Object.assign(initial, S.clone(remote)); return { ok: false, status: 409, json: async () => ({ error: 'workspace-stale' }) }; }
+    written = G.preserve(remote, S.clone(sent)); return { ok: true, json: async () => ({ ok: true, workspace: S.clone(written) }) };
+  });
+  await c.T.ready;
+  M.updateTask(c.T.store.data, task.id, { notes: 'Unsaved detailed notes' });
+  const added = M.addTask(c.T.store.data, { title: 'Created before hearing about archive', projectId: project.id, status: 'doing' });
+  c.T.touch(); c.T.saveNow(); await settle();
+  assert.equal(calls, 1, 'a rejected save waits for retry instead of looping'); assert.equal(c.T.store.dirty, true); assert.equal(c.T.store.conflict, null);
+  const notice = c.elements.get('task-notice'); assert.equal(notice.hidden, false); assert.match(notice.children[0].textContent, /archived.*unassigned.*unchanged/i);
+  const pending = JSON.parse(c.storage.get('tracer.workspaceDraft')).data;
+  assert.equal(pending.tasks.find(row => row.id === added.id).projectId, null);
+  const copy = pending.tasks.find(row => row.id.startsWith('recovered_')); assert.equal(copy.notes, 'Unsaved detailed notes'); assert.equal(copy.projectId, null); assert.equal(copy.status, 'todo');
+  assert.deepEqual(pending.tasks.find(row => row.id === task.id), remote.tasks[0]);
+  assert.equal(pending.taskGarden.planets.length, 1); assert.equal(G.collection(pending).reduce((sum, row) => sum + row.total, 0), 1);
+  c.T.saveNow(); await settle();
+  assert.equal(calls, 2); assert.equal(c.T.store.dirty, false); assert.equal(c.T.store.inflight, false); assert.equal(c.storage.has('tracer.workspaceDraft'), false);
+  assert.equal(written.tasks.length, 3); assert.equal(written.tasks.find(row => row.id === copy.id).notes, copy.notes); assert.equal(written.tasks.find(row => row.id === added.id).projectId, null);
+  assert.equal(new Set(written.tasks.map(row => row.seq)).size, 3);
+  assert.equal(written.recoveredArchivedTasks, undefined); assert.equal(written.relocatedArchivedTasks, undefined);
+  assert.deepEqual(c.T.store.data.taskGarden.planets, remote.taskGarden.planets);
+});
+
+test('successful-save archive recovery stays dirty and preserves recovered drafts before adopting the acknowledgement', async () => {
+  const initial = S.empty(), project = M.addProject(initial, { name: 'Completing elsewhere' });
+  const task = M.addTask(initial, { title: 'Existing complete task', status: 'doing', projectId: project.id }); M.moveTask(initial, task.id, 'done');
+  const accepted = S.clone(initial); M.completeProject(accepted, project.id);
+  let finish, calls = 0, written;
+  const c = client(initial, sent => {
+    if (++calls === 1) return new Promise(resolve => { finish = () => resolve({ ok: true, json: async () => ({ ok: true, workspace: S.clone(accepted) }) }); });
+    written = G.preserve(accepted, S.clone(sent)); return Promise.resolve({ ok: true, json: async () => ({ ok: true, workspace: S.clone(written) }) });
+  });
+  await c.T.ready; c.T.touch(); c.T.saveNow();
+  assert.equal(c.T.store.dirty, false); assert.equal(c.T.store.inflight, true);
+  // A record editor can change its retained model reference before its delayed touch callback.
+  M.updateTask(c.T.store.data, task.id, { notes: 'Typed while acknowledgement was travelling' });
+  const added = M.addTask(c.T.store.data, { title: 'New while saving', projectId: project.id });
+  finish(); await settle();
+  assert.equal(calls, 1); assert.equal(c.T.store.dirty, true, 'recovery itself marks the new unassigned draft dirty'); assert.equal(c.T.store.inflight, false);
+  assert.equal(c.T.store.data.tasks.length, 3, 'adopt(accepted) must not replace the recovered workspace');
+  const copy = c.T.store.data.tasks.find(row => row.id.startsWith('recovered_')); assert.ok(copy); assert.match(copy.notes, /acknowledgement/);
+  assert.equal(c.T.store.data.tasks.find(row => row.id === added.id).projectId, null);
+  assert.match(c.elements.get('task-notice').children[0].textContent, /kept as unassigned tasks/);
+  const draft = JSON.parse(c.storage.get('tracer.workspaceDraft')); assert.equal(draft.data.tasks.length, 3); assert.equal(draft.base.tasks.length, 1);
+  c.T.saveNow(); await settle();
+  assert.equal(calls, 2); assert.equal(c.T.store.dirty, false); assert.equal(c.storage.has('tracer.workspaceDraft'), false);
+  assert.equal(written.tasks.length, 3); assert.equal(written.tasks.find(row => row.id === copy.id).notes, copy.notes);
+  assert.deepEqual(written.taskGarden.planets, accepted.taskGarden.planets);
 });
 
 test('restored concurrent creation drafts preserve saved sequence numbers through automatic merge and explicit conflict resolution',async()=>{

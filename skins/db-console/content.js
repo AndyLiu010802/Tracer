@@ -5,7 +5,6 @@
   //
   // 图标竖栏的每个入口切换一个分区：Table Editor 是主视图（表结构照搬
   // 用户真实项目 podmatrix 的 schema），其余分区是可信的静态假界面，
-  // Queues 分区挂的是 farm.js 里的挂机小游戏。
   // 行数据由固定种子生成——固定种子保证每次打开数据一致，
   // 反复被瞥见时不会露出「每次都在变」的破绽。
 
@@ -485,12 +484,6 @@
           '<span>1,204 objects</span><span>1.9 GB</span>');
       },
     },
-    queues: {
-      // 农场。side/main 都交给 farm.js 填充与接管。
-      side: function () { return ''; },
-      main: function () { return ''; },
-      after: function () { if (window.DBFarm) window.DBFarm.mount($('main'), $('side')); },
-    },
     settings: {
       side: function () {
         return menuHtml('Project Settings', ['General', 'API', 'Database', 'Auth', 'Billing'], 'General');
@@ -531,7 +524,6 @@
   function activate(sec) {
     var s = SECTIONS[sec];
     if (!s) return;
-    if (currentSection === 'queues' && sec !== 'queues' && window.DBFarm) window.DBFarm.unmount();
     currentSection = sec;
 
     var icons = document.querySelectorAll('.ic');

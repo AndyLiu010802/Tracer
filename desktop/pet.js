@@ -6,6 +6,7 @@ const Work = require('../public/companion-work');
 const { randomUUID } = require('node:crypto');
 
 function attachPet(main, origin, userData, showMain) {
+  const trail=require('./garden-trail').attachGardenTrail(main);
   const file = path.join(userData, 'pet-window.json');
   let saved = {}, pet = null, snapshot = null, drag = null, expanded = false;
   const pendingWork = new Map();
@@ -114,6 +115,7 @@ function attachPet(main, origin, userData, showMain) {
       if (message.type === 'hide') hide();
       if (message.type === 'snapshot' && message.value && JSON.stringify(message.value).length < 50000) {
         snapshot = message.value;
+        trail.update(snapshot);
         sendSnapshot();
       }
       return;
@@ -135,7 +137,7 @@ function attachPet(main, origin, userData, showMain) {
       size(); sendSnapshot(); return;
     }
     if (message.type === 'ready') { sendSnapshot(); return; }
-    const allowed = ['feed','play','sleep','pet','select','reminders','snooze','focus-toggle','open-task','open-ai','open-home','open-create','open-remove','open-import','open-export'];
+    const allowed = ['feed','play','sleep','pet','toggle-trail','select','reminders','snooze','focus-toggle','open-task','open-ai','open-home','open-create','open-remove','open-import','open-export'];
     if (!allowed.includes(message.type)) return;
     if (message.type.startsWith('open-')) showMain();
     const value = typeof message.value === 'boolean' ? message.value : typeof message.value === 'string' ? message.value.slice(0,100) : undefined;

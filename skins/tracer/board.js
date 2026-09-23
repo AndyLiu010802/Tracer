@@ -10,6 +10,11 @@
     { key: 'done', label: 'Done' },
   ];
   var filters = { query: '', priority: '', due: '' };
+  function text(zh, en) { return window.TracerLocale.language() === 'zh' ? zh : en; }
+  function activeWorkspace(ws) {
+    var archived = new Set(ws.projects.filter(function (p) { return p.status === 'completed'; }).map(function (p) { return p.id; }));
+    return Object.assign({}, ws, { tasks: ws.tasks.filter(function (t) { return !archived.has(t.projectId); }) });
+  }
 
   function projById(ws, id) {
     var p = null; ws.projects.forEach(function (x) { if (x.id === id) p = x; }); return p;
@@ -47,11 +52,15 @@
   function render() {
     var ws = T.store.data;
     var filter = T.projectFilter ? T.projectFilter() : null;
-    var visible = M.filterTasks(ws, { query: filters.query, priority: filters.priority, due: filters.due, projectId: filter });
-    var scope = M.filterTasks(ws, { projectId: filter });
+    var active = activeWorkspace(ws);
+    var visible = M.filterTasks(active, { query: filters.query, priority: filters.priority, due: filters.due, projectId: filter });
+    var scope = M.filterTasks(active, { projectId: filter });
     var open = scope.filter(function (t) { return t.status !== 'done'; });
-    var html = '<header class="sec-head"><h1>' + L('board') + '</h1>'
-      + '<span class="sec-sub">' + L('boardSummary', { open: open.length, overdue: open.filter(function (t) { return M.taskDueState(t) === 'overdue'; }).length, done: scope.length - open.length }) + '</span></header>'
+    var project = filter && M.findProject(ws, filter), completed = scope.length - open.length;
+    var html = '<header class="sec-head board-heading"><div><h1>' + M.esc(project ? project.name : L('board')) + '</h1>'
+      + '<span class="sec-sub">' + L('boardSummary', { open: open.length, overdue: open.filter(function (t) { return M.taskDueState(t) === 'overdue'; }).length, done: completed }) + '</span></div>'
+      + '<div class="board-heading-actions">' + (project ? '<button type="button" class="btn btn-primary" id="board-complete-project">' + text('完成并归档项目', 'Complete and archive') + '</button>' : '')
+      + '<button type="button" class="btn" id="board-clear-completed"' + (completed ? '' : ' disabled') + '>' + text('清除已完成', 'Clear completed') + (completed ? ' · ' + completed : '') + '</button></div></header>'
       + '<div class="board-tools"><input type="search" id="board-search" aria-label="' + L('search') + '" placeholder="' + L('search') + '" value="' + M.esc(filters.query) + '">'
       + '<select id="board-priority" aria-label="' + L('priority') + '"><option value="">' + L('allPriorities') + '</option>' + ['urgent', 'high', 'medium', 'low'].map(function (k) { return '<option value="' + k + '">' + L(k) + '</option>'; }).join('') + '</select>'
       + '<select id="board-due" aria-label="' + L('dueDate') + '"><option value="">' + L('anyDue') + '</option><option value="overdue">' + L('overdue') + '</option><option value="today">' + L('today') + '</option><option value="upcoming">' + L('upcoming') + '</option></select>'
@@ -80,18 +89,35 @@
 
   function wire(ws) {
     function focusCard(id) { var c = sec.querySelector('.card[data-id="' + id + '"]'); if (c) c.focus(); }
+    function editable(task) { var project = task && task.projectId && M.findProject(T.store.data, task.projectId); return task && (!project || project.status !== 'completed'); }
     function move(id, status, beforeId) {
       var task = M.findTask(ws, id); if (!task) return;
       var old = { status: task.status, order: task.order, doneAt: task.doneAt };
-      M.moveTask(ws, id, status, beforeId); var expected = { status: task.status, order: task.order, doneAt: task.doneAt };
-      T.touch(); render(); focusCard(id);
-      T.ui.notice(old.status === status ? L('reordered') : L('moved', { target: L(status) }), function () {
-        var current = M.findTask(T.store.data, id);
-        if (!current || current.status !== expected.status || current.order !== expected.order || current.doneAt !== expected.doneAt) { T.ui.notice(L('undoChanged')); return; }
-        if (old.status !== 'done' && expected.status === 'done') window.TaskHistory.undo(T.store.data, id, expected.doneAt);
-        Object.assign(current, old); current.updatedAt = Date.now(); T.touch(); render(); focusCard(id); T.ui.notice(L('undone'));
+      T.confirmTaskGardenChange(ws, id, { status: status }, function () {
+        var latest = M.findTask(T.store.data, id);
+        if (!editable(latest) || latest.status !== old.status || latest.order !== old.order || latest.doneAt !== old.doneAt) { render(); T.ui.notice(L('undoChanged')); return; }
+        M.moveTask(T.store.data, id, status, beforeId); var expected = { status: latest.status, order: latest.order, doneAt: latest.doneAt };
+        T.touch(); render(); focusCard(id);
+        T.ui.notice(old.status === status ? L('reordered') : L('moved', { target: L(status) }), function () {
+          function unchanged() { var value = M.findTask(T.store.data, id); return editable(value) && value.status === expected.status && value.order === expected.order && value.doneAt === expected.doneAt; }
+          if (!unchanged()) { T.ui.notice(L('undoChanged')); return; }
+          T.confirmTaskGardenChange(T.store.data, id, { status: old.status }, function () {
+            if (!unchanged()) { T.ui.notice(L('undoChanged')); return; }
+            M.updateTask(T.store.data, id, { status: old.status });
+            if (old.status !== 'done' && expected.status === 'done') window.TaskHistory.undo(T.store.data, id, expected.doneAt);
+            var current = M.findTask(T.store.data, id);
+            if (old.status === 'done' && expected.status !== 'done') window.TaskHistory.undo(T.store.data, id, current.doneAt);
+            current.order = old.order; current.doneAt = old.doneAt; current.updatedAt = Date.now();
+            T.touch(); render(); focusCard(id); T.ui.notice(L('undone'));
+          });
+        });
+      }, function () {
+        render(); focusCard(id);
       });
     }
+    sec.querySelector('#board-clear-completed').onclick = function () { T.clearCompletedTasksDialog(T.projectFilter ? T.projectFilter() : null); };
+    var archiveButton = sec.querySelector('#board-complete-project');
+    if (archiveButton) archiveButton.onclick = function () { T.completeProjectDialog(T.projectFilter()); };
     sec.querySelector('#board-search').oninput = function (e) {
       if (e.isComposing) return;
       var pos = e.target.selectionStart;

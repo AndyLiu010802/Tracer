@@ -82,14 +82,26 @@
     if(!T.store.data || !T.focus) return;
     const now=Date.now(), focus=T.focus.read(), ws=T.store.data;
     P.advance(state,now);
-    const metrics=P.metrics(window.DBFarm?.progress()||{},TaskHistory.completed(ws),focus,now);
-    const unlocked=P.unlock(state,metrics);
+    let harvestRecords=[];
+    try{const raw=localStorage.getItem(TracerGardenHarvest.key);if(raw)harvestRecords=TracerGardenHarvest.read(JSON.parse(raw)).records;}catch{/* Keep previously earned companions if a receipt cannot be read. */}
+    // Unlock only from the accepted workspace, never from an unsaved task edit.
+    try{
+      const records=new Map(harvestRecords.map(row=>['legacy:'+row.projectId,{...row,projectId:'legacy:'+row.projectId}]));
+      for(const seed of TaskGarden.read(T.store.base||ws).seeds){
+        if(!seed.harvestedAt)continue;
+        const id=seed.taskId.startsWith('legacy-plot-')?'legacy:'+seed.taskId.slice('legacy-plot-'.length):'task:'+seed.taskId;
+        records.set(id,{projectId:id,plantKind:seed.plantKind,maturedAt:seed.completedAt,ticket:seed.ticket,harvestedAt:seed.harvestedAt});
+      }
+      harvestRecords=Array.from(records.values());
+    }catch{/* Existing companions remain available during recovery. */}
+    const metrics=P.metrics(harvestRecords,TaskHistory.completed(ws),focus,now);
+    const unlocked=P.unlock(state,metrics).concat(P.unlockGarden(state,harvestRecords));
     if(reminder && (!ws.tasks.some(t=>t.id===reminder.id&&t.status!=='done') || now-reminder.at>60000 || focus.running || state.snoozedUntil>now || !state.reminders)) reminder=null;
     const next=P.reminder(state,ws.tasks,focus,now);
     if(next) { reminder={...next,title:next.title.slice(0,200),at:now}; force=true; }
     if(unlocked.length) force=true;
     const catalog=P.catalog(state);
-    lastSnapshot={language:TracerLocale.language(),native:!!window.TracerPet,pet:catalog.find(p=>p.id===state.selected),catalog,needs:{...P.current(state)},unlocked:state.unlocked.slice(),metrics,
+    lastSnapshot={language:TracerLocale.language(),native:!!window.TracerPet,pet:catalog.find(p=>p.id===state.selected),catalog,needs:{...P.current(state)},unlocked:state.unlocked.slice(),metrics,trailEnabled:localStorage.getItem('tracer.garden.trail.v1')==='true',
       mood:P.mood(state,focus.running),focus:{running:focus.running,completed:focus.completed,clock:TracerFocus.format(TracerFocus.remaining(focus,now))},
       task:P.nextTask(ws.tasks),reminder,reminders:state.reminders,snoozedUntil:state.snoozedUntil,lastAction:state.lastAction,lastActionAt:state.lastActionAt,
       feedback:feedback&&now-feedback.at<6500?feedback:null};
@@ -255,6 +267,11 @@
     });
   }
   async function action(type,value) {
+    if(type==='toggle-trail'){
+      const pet=P.catalog(state).find(pet=>pet.id===state.selected);if(!pet?.shiny)return;
+      try{localStorage.setItem('tracer.garden.trail.v1',String(localStorage.getItem('tracer.garden.trail.v1')!=='true'));refresh(true);}
+      catch{T.ui.notice(tr('拖尾设置未保存，请重试。','Trail preference was not saved. Please retry.'));}return;
+    }
     if(type==='create-work') { const result=await T.applyCompanionWork(value); refresh(true); return result; }
     if(type==='close') { if(closeHome) closeHome(); return; }
     if(type==='desktop') { if(window.TracerPet) window.TracerPet.send({type:'show'}); return; }
@@ -285,7 +302,7 @@
     if(type==='focus-toggle') { await T.focus.toggle(); refresh(); return; }
     const result=P.act(state,type,value);
     if(['pet','feed','play','sleep'].includes(type)) feedback={...result,action:result?.action||type,at:Date.now(),id:++feedbackSequence};
-    if(type==='select') feedback=null;
+    if(type==='select') {feedback=null;T.garden?.refresh();}
     refresh(true);
   }
   T.pet={open,refresh,read:()=>P.read(state),action};

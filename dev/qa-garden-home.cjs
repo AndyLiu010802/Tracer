@@ -31,12 +31,14 @@ function legacyFarm(now, historyId) {
     pomo: { mode: 'idle', until: 0, done: 5 }, focusLink: { legacyDone: 4, credited: [historyId], allKeys: false }
   };
 }
-function assertFarmKept(actual, original) {
-  assert.equal(actual.v, 3); assert.ok(actual.coins >= original.coins, 'legacy coins are retained (normal focus rewards may add coins)');
-  assert.ok(actual.xp >= original.xp); assert.deepEqual(actual.bag, original.bag); assert.deepEqual(actual.lock, original.lock);
-  assert.deepEqual(actual.animals, original.animals); assert.deepEqual(actual.owned, original.owned);
-  for (const field of ['harvested', 'orders', 'fish', 'mined', 'casts']) assert.equal(actual.stats[field], original.stats[field], 'legacy statistic ' + field);
-  assert.ok(actual.pomo.done >= original.pomo.done); assert.ok(actual.focusLink.credited.includes(original.focusLink.credited[0]));
+async function assertLegacyRemoved(page, originalBytes) {
+  const state = await page.evaluate(() => ({
+    farmBytes: localStorage.getItem('dbconsole.farm.v3'),
+    engines: ['DBFarm', 'Fishing', 'Combat', 'Equip', 'Mining', 'Magic'].filter(name => typeof window[name] !== 'undefined')
+  }));
+  assert.equal(state.farmBytes, originalBytes, 'new tasks, focus and garden actions must leave legacy save bytes exactly unchanged');
+  assert.deepEqual(state.engines, [], 'legacy game engines must not initialize');
+  assert.equal(await page.locator('#garden-leisure-wrapper, #garden-back-home, #garden-main, #garden-shop, [data-home-action="open-leisure"]').count(), 0, 'legacy leisure entry and mount points must not exist');
 }
 async function saved(page) { await page.waitForFunction(() => Tracer.store.data && !Tracer.store.dirty && !Tracer.store.inflight); }
 async function refresh(page) { await page.evaluate(() => Tracer.garden.refresh(true)); }
@@ -63,19 +65,22 @@ async function main() {
   const now = Date.now(), focus = F.fresh(); focus.settings.sound = false;
   focus.history = [{ id: 'qa-historical-focus', endedAt: now - 60000, minutes: 25, task: { id: historical.id, title: historical.title, projectId: projects[0].id } }];
   focus.roundsDone = 1; focus.totalMinutes = 25;
-  const farm = legacyFarm(now, focus.history[0].id);
+  // Preserve deliberate whitespace as well as values: reparsing and rewriting
+  // an unused old save is still an unwanted mutation.
+  const farmBytes = JSON.stringify(legacyFarm(now, focus.history[0].id), null, 2) + '\n';
   fs.writeFileSync(path.join(data, 'workspace.json'), JSON.stringify(initial));
   Object.assign(process.env, { DOCS_PORTAL_HOST: '127.0.0.1', DOCS_PORTAL_SKIN: 'tracer', DOCS_PORTAL_DATA_DIR: data, DOCS_PORTAL_STATE_FILE: path.join(artifacts, 'state.json') });
   const { server } = require('../server'); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const origin = 'http://127.0.0.1:' + server.address().port;
   let browser;
-  const audit = { external: [], ai: [], errors: [], failPut: false, failGet: false, images: new Map() };
+  const audit = { external: [], ai: [], errors: [], legacyRequests: [], failPut: false, failGet: false, images: new Map() };
   try {
     browser = await chromium.launch({ channel: process.env.TRACER_QA_BROWSER || 'msedge', headless: true });
     const context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, serviceWorkers: 'block' });
     await context.route('**/*', route => {
       const request = route.request(), url = new URL(request.url());
       if (url.origin !== origin) { audit.external.push(url.origin + url.pathname); return route.abort(); }
+      if (/^\/(?:farm(?:-data)?\.(?:js|css)$|(?:fishing|combat|equip|mining|magic)\.js$|(?:fish|scenes|mobs|mats|equip)\/|(?:hero|arena)\.webp$)/.test(url.pathname)) audit.legacyRequests.push(url.pathname);
       if (url.pathname.startsWith('/api/ai/')) {
         if (request.method() !== 'GET') audit.ai.push(url.pathname);
         return route.fulfill({ json: { configured: false, imageGeneration: false } });
@@ -85,15 +90,15 @@ async function main() {
       if (url.pathname === '/api/store/workspace' && request.method() === 'PUT' && audit.failPut) { audit.failPut = false; return route.fulfill({ status: 503, json: { error: 'synthetic-save-failure' } }); }
       return route.continue();
     });
-    await context.addInitScript(({ farm, focus }) => {
+    await context.addInitScript(({ farmBytes, focus }) => {
       if (localStorage.getItem('qa-garden-seeded')) return;
-      localStorage.setItem('dbconsole.farm.v3', JSON.stringify(farm)); localStorage.setItem('tracer.focus.v1', JSON.stringify(focus));
+      localStorage.setItem('dbconsole.farm.v3', farmBytes); localStorage.setItem('tracer.focus.v1', JSON.stringify(focus));
       localStorage.setItem('tracer.language', 'en'); localStorage.setItem('qa-garden-seeded', '1');
-    }, { farm, focus });
+    }, { farmBytes, focus });
     const page = await context.newPage(); page.on('pageerror', error => audit.errors.push(error.message));
     await page.goto(origin); await page.waitForFunction(() => window.Tracer?.garden && Tracer.store.data);
     await page.locator('#nav-garden').focus(); await page.keyboard.press('Enter'); await page.locator('.garden-home').waitFor();
-    assert.equal(await page.locator('#garden-leisure-wrapper').isVisible(), false);
+    await assertLegacyRemoved(page, farmBytes);
     const builtin = page.locator('.garden-home-companion-art .pet-builtin-sprite'); await builtin.waitFor();
     assert.equal(await builtin.getAttribute('data-frames'), '16'); const originalFrame = await builtin.getAttribute('data-frame');
     await until(async () => await builtin.getAttribute('data-frame') !== originalFrame, 'builtin companion animation advances');
@@ -102,9 +107,22 @@ async function main() {
     const first = await plot(page, projects[0].id); assert.equal(first.stage, 1); assert.deepEqual(first.taskIds, [historical.id]); assert.equal(first.focusMinutes, 25);
     assert.equal(await page.locator('.garden-home-event').count(), 0, 'planting absorbs earlier history without new activity notifications');
     await addPlot(page, projects[1].id, 'sunflower'); await addPlot(page, projects[2].id, 'lavender');
+    assert.equal(await page.locator('.garden-world-plot').count(), 6);
+    assert.equal(await page.locator('.garden-world-plot[data-empty="true"]').count(), 3);
+    assert.equal(await page.locator('.garden-world').getAttribute('data-level'), '1');
+    await page.locator('.garden-world-plot[data-project-id="' + projects[1].id + '"]').focus(); await page.keyboard.press('Enter');
+    assert.equal(await page.locator('.garden-world-detail').getAttribute('data-project-id'), projects[1].id);
+    assert.match(await page.locator('.garden-world-name').textContent(), /Sunflower/);
+    assert.match(await page.locator('.garden-world-next').textContent(), /1 growth point/);
+    const selectedSlot = page.locator('.garden-world-plot[data-project-id="' + projects[1].id + '"]');
+    await refresh(page); assert.equal(await selectedSlot.evaluate(el => el === document.activeElement), true, 'refresh preserves keyboard focus');
+    assert.equal(await page.locator('.garden-world-badge[data-earned="true"]').count(), 2);
+    await page.locator('.garden-world-rules-title').click(); assert.match(await page.locator('.garden-world-rules-text').textContent(), /1000 XP/);
+    await page.locator('.garden-world-rules-title').click();
+    await page.locator('.garden-home-title').scrollIntoViewIfNeeded();
     await page.screenshot({ path: path.join(artifacts, 'home-initial-en.png'), animations: 'disabled' });
-    assertFarmKept(await page.evaluate(() => JSON.parse(localStorage.getItem('dbconsole.farm.v3'))), farm);
-    console.log('PASS keyboard entry, three seed types, initial history absorption and legacy farm preservation');
+    await assertLegacyRemoved(page, farmBytes);
+    console.log('PASS keyboard entry, three seed types, initial history absorption, absent legacy engines and unchanged legacy save bytes');
 
     // The editor updates live task counters, but failed disk writes must not earn growth.
     audit.failPut = true; await editStatus(page, projects[0].id, tasks[0].id, 'done');
@@ -116,7 +134,8 @@ async function main() {
     assert.equal(await page.evaluate(() => Tracer.projectFilter()), projects[0].id);
     assert.equal(await page.locator('.card').count(), 3); await page.click('#nav-garden');
 
-    await card(page, projects[0].id).locator('[data-home-action="focus-project"]').click(); await page.locator('#focus-task').waitFor();
+    await page.locator('.garden-world-plot[data-project-id="' + projects[0].id + '"]').click();
+    await page.locator('.garden-world-focus').click(); await page.locator('#focus-task').waitFor();
     assert.equal(await page.inputValue('#focus-task'), finalTask.id); await page.click('#focus-start');
     await page.waitForFunction(() => Tracer.focus.read().running); const running = await page.evaluate(() => Tracer.focus.read());
     assert.equal(running.task.projectId, projects[0].id); await page.click('#focus-close');
@@ -137,12 +156,21 @@ async function main() {
     await page.evaluate(() => { const s = Tracer.focus.read(); s.endAt = Date.now() - 1; const value = JSON.stringify(s); localStorage.setItem('tracer.focus.v1', value); window.dispatchEvent(new StorageEvent('storage', { key: 'tracer.focus.v1', newValue: value })); Tracer.refreshWellness(); });
     await page.waitForFunction(id => Tracer.focus.read().history.some(row => row.id === id), running.runId); await refresh(page);
     assert.equal((await plot(page, projects[0].id)).focusMinutes, 50); assert.equal((await plot(page, projects[1].id)).focusMinutes, 0);
+    await assertLegacyRemoved(page, farmBytes);
     const accrued = await plot(page, projects[0].id); await refresh(page); await refresh(page); assert.deepEqual(await plot(page, projects[0].id), accrued);
     await editStatus(page, projects[0].id, finalTask.id, 'done'); await saved(page); await page.click('#nav-garden'); await refresh(page);
     let bloom = await plot(page, projects[0].id); assert.equal(bloom.stage, 4); assert.ok(bloom.commemoratedAt); await card(page, projects[0].id).locator('.garden-home-bloom').waitFor();
+    assert.equal(await page.locator('.garden-world').getAttribute('data-level'), '2');
+    assert.equal(await page.locator('.garden-world-bench').evaluate(el => getComputedStyle(el).visibility), 'visible');
+    assert.equal(await page.locator('.garden-world-lanterns').evaluate(el => getComputedStyle(el).visibility), 'hidden');
+    await page.locator('.garden-world-plot[data-project-id="' + projects[0].id + '"]').click();
+    assert.match(await page.locator('.garden-world-next').textContent(), /First bloom remembered/);
+    assert.equal(await page.locator('.garden-world-focus').textContent(), 'View project');
+    await page.locator('.garden-home-title').scrollIntoViewIfNeeded();
     await page.screenshot({ path: path.join(artifacts, 'home-bloom-en.png'), animations: 'disabled' });
     await page.reload(); await page.waitForFunction(() => window.Tracer?.garden && Tracer.store.data); await page.locator('.garden-home').waitFor(); await refresh(page);
     assert.deepEqual(await plot(page, projects[0].id), bloom); assert.equal(await page.locator('.garden-home-event').count(), 0, 'reload never replays earned events');
+    assert.equal(await page.locator('.garden-world-toast').textContent(), '', 'reload never replays a level-up');
     await editStatus(page, projects[0].id, finalTask.id, 'todo'); await saved(page); await page.click('#nav-garden'); await refresh(page);
     assert.equal((await plot(page, projects[0].id)).stage, 4, 'the earned bloom remains after reopening work');
     await editStatus(page, projects[0].id, finalTask.id, 'done'); await saved(page); await page.click('#nav-garden'); await refresh(page);
@@ -195,10 +223,7 @@ async function main() {
     for (let i = 3; i < 6; i++) await addPlot(page, projects[i].id, ['wildflower', 'sunflower', 'lavender'][i % 3]);
     assert.equal(await page.locator('.garden-home-plot').count(), 6); assert.equal(await page.locator('.garden-home-add').isDisabled(), true);
     assert.equal((await page.evaluate(() => Tracer.garden.read())).plots.length, 6);
-    await page.locator('[data-home-action="open-leisure"]').click(); await page.locator('#garden-leisure-wrapper').waitFor();
-    await page.screenshot({ path: path.join(artifacts, 'legacy-leisure-preserved.png'), animations: 'disabled' });
-    await page.click('#garden-back-home'); await page.locator('.garden-home').waitFor();
-    assertFarmKept(await page.evaluate(() => JSON.parse(localStorage.getItem('dbconsole.farm.v3'))), farm);
+    await assertLegacyRemoved(page, farmBytes);
     await card(page, projects[2].id).locator('[data-home-action="open-project"]').click(); await page.click('[data-delete-project="' + projects[2].id + '"]');
     await page.click('#project-delete-confirm'); await saved(page); await page.click('#nav-garden'); await refresh(page);
     assert.equal(await card(page, projects[2].id).count(), 0); assert.equal((await page.evaluate(() => Tracer.garden.read())).plots.length, 5);
@@ -212,8 +237,38 @@ async function main() {
     const widths = await page.locator('.garden-home').evaluate(el => ({ client: el.clientWidth, scroll: el.scrollWidth })); assert.ok(widths.scroll <= widths.client + 1, JSON.stringify(widths));
     const pageWidths = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth })); assert.ok(pageWidths.scroll <= pageWidths.width + 1, JSON.stringify(pageWidths));
     await page.screenshot({ path: path.join(artifacts, 'home-zh-380.png'), animations: 'disabled' });
-    assert.deepEqual(audit.external, []); assert.deepEqual(audit.ai, []); assert.deepEqual(audit.errors, []);
-    console.log('PASS selected custom companion, bilingual narrow layout, six-plot limit, legacy leisure round-trip and deleted-project removal without resurrection');
+    await page.locator('.garden-world-plot[data-project-id="' + projects[1].id + '"]').click();
+    assert.match(await page.locator('.garden-world-name').textContent(), /向日葵/);
+    const target = await page.locator('.garden-world-plot').first().boundingBox(); assert.ok(target.width >= 44 && target.height >= 44);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    assert.equal(await page.locator('.garden-world-fireflies').evaluate(el => getComputedStyle(el).animationName), 'none');
+    // A separate isolated rendering fixture verifies the mature scene and all
+    // decoration tiers without changing the integration workspace or receipts.
+    await page.setViewportSize({ width: 1440, height: 1080 });
+    await page.evaluate(() => {
+      const host = document.createElement('div'); host.id = 'qa-garden-world'; host.style.cssText = 'position:fixed;inset:0;background:#101b17;overflow:auto;z-index:99999'; document.body.appendChild(host);
+      const view = TracerGardenHomeView(host, () => {}); window.__qaWorld = { host, view };
+      const raw = { v:1,plots:Array.from({length:6},(_,i)=>({projectId:'qa-'+i,plantKind:['wildflower','sunflower','lavender'][i%3],plantedAt:1,initialized:true,stage:4,commemoratedAt:2,taskIds:Array.from({length:20},(_,n)=>'task-'+i+'-'+n),focusIds:[],focusMinutes:0})) };
+      const ws = {projects:raw.plots.map(p=>({id:p.projectId,name:['春日计划','写作与阅读','探索新的灵感','健康生活','每周回顾','下一个梦想'][Number(p.projectId.at(-1))]})),tasks:[]};
+      const data = TracerGardenModel.snapshot(raw,ws,{},Date.now());
+      view.update({language:'zh',pet:TracerPetModel.catalog(Tracer.pet.read()).find(p=>!p.custom),journey:data.journey,plots:data.plots.map(p=>({projectId:p.projectId,name:p.projectName,plant:p.plantKind,stage:p.stage,done:20,total:20,completedCount:p.completedTasks,focusMinutes:0,growth:p.growth,bloomAt:p.commemoratedAt})),today:{tasks:3,minutes:75}});
+    });
+    assert.equal(await page.locator('#qa-garden-world .garden-world').getAttribute('data-level'), '6');
+    assert.equal(await page.locator('#qa-garden-world .garden-world-toast').textContent(), '', 'initial hydration at maximum level stays quiet');
+    for (const selector of ['.garden-world-bench','.garden-world-lanterns','.garden-world-flowers','.garden-world-fireflies']) assert.equal(await page.locator('#qa-garden-world '+selector).evaluate(el => getComputedStyle(el).visibility), 'visible');
+    await page.screenshot({ path: path.join(artifacts, 'world-mature-zh.png'), animations: 'disabled' });
+    await page.setViewportSize({ width: 380, height: 1000 });
+    const worldWidths = await page.locator('#qa-garden-world .garden-home').evaluate(el=>({client:el.clientWidth,scroll:el.scrollWidth}));assert.ok(worldWidths.scroll<=worldWidths.client+1);
+    for(let i=0;i<6;i++){
+      await page.locator('#qa-garden-world .garden-world-plot[data-project-id="qa-'+i+'"]').click();
+      assert.equal(await page.locator('#qa-garden-world .garden-world-detail').getAttribute('data-project-id'),'qa-'+i,'every mature plant remains selectable on a narrow screen');
+    }
+    await page.screenshot({ path: path.join(artifacts, 'world-mature-zh-380.png'), animations: 'disabled' });
+    await page.evaluate(()=>{window.__qaWorld.view.destroy();window.__qaWorld.host.remove();delete window.__qaWorld;});
+    console.log('PASS interactive world, keyboard selection, retained focus, localized plant dialogue, level decorations, collection, mature garden and reduced motion');
+    await assertLegacyRemoved(page, farmBytes);
+    assert.deepEqual(audit.external, []); assert.deepEqual(audit.ai, []); assert.deepEqual(audit.errors, []); assert.deepEqual(audit.legacyRequests, [], 'no old game script, stylesheet or artwork should be requested');
+    console.log('PASS selected custom companion, bilingual narrow layout, six-plot limit, no legacy engine requests, byte-identical legacy save and deleted-project removal without resurrection');
     console.log('Artifacts: ' + artifacts);
   } catch (error) {
     console.error('Artifacts: ' + artifacts); if (browser) { const page = browser.contexts()[0]?.pages()[0]; if (page) await page.screenshot({ path: path.join(artifacts, 'failure.png'), animations: 'disabled' }).catch(() => {}); }

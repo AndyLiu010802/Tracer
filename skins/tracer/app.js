@@ -7,7 +7,7 @@
   var I = window.TracerLocale || { message: function (s) { return s; }, t: function (s) { return s; } };
 
   // ---------- 分区路由 ----------
-  var SECTIONS = ['inbox', 'notes', 'board', 'map', 'planner', 'timeline', 'insights', 'garden'];
+  var SECTIONS = ['inbox', 'notes', 'board', 'map', 'planner', 'timeline', 'insights', 'garden', 'planets'];
   var LS_SEC = 'tracer.sec';
   var current = null;
   var hooks = {};                       // {sec: [fn]}
@@ -56,14 +56,7 @@
   }
 
   // ---------- Garden boss-key ----------
-  // Ctrl+Alt+G 一键隐藏 Garden：导航项消失、正停在游戏则跳回上一分区、持久化。
-  // farm.js 也把 Ctrl+Alt+G 绑成「切换伪装文案」并在 document 捕获阶段监听；
-  // 本处理器在 app.js 加载时注册（早于 farm.js），用 stopImmediatePropagation
-  // 抢先屏蔽 farm 的文案切换，让这个键在 Tracer 里只做隐藏。
-  // 已知代价（记入后续，本轮不处理）：这个 stopImmediatePropagation 是无差别的——
-  // 任何在 app.js 之后才挂上 document keydown 捕获监听、且也在监听 Ctrl+Alt+G 的
-  // 代码都会被一并拦掉、静默收不到这个键，不只是 farm.js。目前已知会中招的是
-  // reader.js 的挂机计时（如果它也监听这个组合键的话）。
+  // Ctrl+Alt+G 一键隐藏家园：隐藏导航项，返回上一分区，并记住偏好。
   var LS_GARDEN = 'tracer.gardenHidden';
   var gardenHidden = false;
   try { gardenHidden = localStorage.getItem(LS_GARDEN) === '1'; } catch (e) {}
@@ -81,11 +74,10 @@
   document.addEventListener('keydown', function (e) {
     if (!(e.ctrlKey && e.altKey && (e.code === 'KeyG' || e.key === 'g' || e.key === 'G'))) return;
     e.preventDefault();
-    e.stopImmediatePropagation();   // 屏蔽 farm.js 的同键文案切换（及任何后注册的同键监听，见上）
     gardenHidden = !gardenHidden;
     try { localStorage.setItem(LS_GARDEN, gardenHidden ? '1' : '0'); } catch (e2) {}
     applyGardenHidden();
-  }, true);   // 捕获阶段，且本处理器先于 farm 注册
+  }, true);
 
   document.getElementById('nav-secs').addEventListener('click', function (e) {
     var a = e.target.closest('.nav-item[data-sec]');
@@ -209,7 +201,9 @@
       if (!r.ok) { var err = new Error(body.error || '保存失败'); err.status = r.status; throw err; }
       var accepted = body.workspace || sent;
       // Edits made during an in-flight save stay on top of the accepted snapshot.
-      adopt(Sync.merge(sent, store.data, accepted).workspace);
+      var savedMerge = Sync.merge(sent, store.data, accepted);
+      adopt(savedMerge.workspace);
+      if (notifyArchivedRecovery(savedMerge)) store.dirty = true;
       store.base = Sync.clone(accepted);
       if (window.Tracer.garden) window.Tracer.garden.refresh();
       if (!store.dirty) adopt(Sync.clone(accepted));
@@ -226,6 +220,7 @@
           if (!latestResponse.ok) throw new Error('workspace-reload-failed');
           var latest = Sync.validate(await latestResponse.json());
           var reconciled = Sync.merge(store.base, store.data, latest);
+          notifyArchivedRecovery(reconciled);
           store.base = reconciled.conflicts.length ? store.base : Sync.clone(latest);
           adopt(Sync.assignSequences(reconciled.workspace, latest));
           store.conflict = reconciled.conflicts.length ? latest : null;
@@ -241,6 +236,9 @@
     }).then(function () {
       store.inflight = false;
       persistDraft();
+      // Keyed garden controls must leave their saving state even when an input
+      // or task dialog is focused and the broader workspace redraw is deferred.
+      if (window.Tracer.garden) window.Tracer.garden.refresh();
       if (!store.dragging && !store.dirty && modalRoot.hidden && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) redraw();
       // 只补发「在途期间新产生的」改动。失败本身不在这里重试——catch 也会把 dirty
       // 置回 true，不加区分就是一个按往返延迟空转的热循环（实测持续 500 时 2 秒 52 个 PUT）。
@@ -292,6 +290,14 @@
     } catch (e) { setDot('err', I.t('localDraftFailed')); }
   }
   // Existing section handlers retain workspace and record references while editing.
+  function notifyArchivedRecovery(result) {
+    var recovered = (result.relocatedArchivedTasks || []).length + (result.recoveredArchivedTasks || []).length;
+    if (!recovered) return false;
+    notice(TracerLocale.language() === 'zh'
+      ? '项目已经归档。未保存的新任务或修改已保留到未分组任务，收藏星球保持原样。'
+      : 'This project was archived. Unsaved tasks and edits were kept as unassigned tasks; its memory planet is unchanged.');
+    return true;
+  }
   function adopt(next) {
     window.TaskHistory.preserve(store.data, next);
     if (!store.data) { store.data = next; return; }
@@ -306,6 +312,7 @@
     });
     store.data.completionHistory = next.completionHistory;
     store.data.projectDeletions = next.projectDeletions;
+    store.data.taskGarden = next.taskGarden;
     store.data.meta = next.meta; store.epoch++;
   }
   function redraw() {
@@ -333,6 +340,7 @@
       } else if (typeof draft.legacySource === 'string' && draft.legacySource === localStorage.getItem(LEGACY_DRAFT_KEY)) legacySource = draft.legacySource;
       var remote = Sync.clone(store.data);
       var merged = Sync.merge(draft.base, draft.data, remote);
+      notifyArchivedRecovery(merged);
       store.base = merged.conflicts.length ? draft.base : remote;
       adopt(Sync.assignSequences(merged.workspace, remote)); store.dirty = true;
       persistDraft();
@@ -347,6 +355,7 @@
     if (!store.conflict) return false;
     var merged = Sync.merge(store.base, store.data, store.conflict, choices);
     if (merged.conflicts.length) return false;
+    notifyArchivedRecovery(merged);
     store.base = Sync.clone(store.conflict); adopt(Sync.assignSequences(merged.workspace, store.conflict)); store.conflict = null;
     store.dirty = true; persistDraft(); redraw(); save(); return true;
   }
@@ -577,8 +586,7 @@
     resolveDraft: resolveDraft,
     // 分区清单的唯一事实来源：garden.js 靠它推导「除 garden 外的所有分区」
     // 来挂卸载钩子，不用另抄一份列表——抄的那份加分区时最容易忘改，忘改的
-    // 后果是新分区切进去时农场卸载钩子不触发，1000ms 定时器和游戏 DOM 就
-    // 一直挂在隐藏的 Garden 分区里空转。导出 .slice() 副本而不是活引用：
+    // 后果是切换分区时遗漏花园视图的卸载。导出 .slice() 副本而不是活引用：
     // SECTIONS 本身还要拿去做 show() 的路由校验（indexOf 判断合法分区名），
     // 导出活引用的话外部一次 push/pop 就能连路由一起弄坏。
     sections: SECTIONS.slice(),

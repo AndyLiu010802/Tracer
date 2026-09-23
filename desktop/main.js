@@ -6,7 +6,7 @@ const { installApplicationMenu, canStartInputHook } = require('./platform-integr
 const { pulseFor } = require('./pulse');
 const { migrateUserData } = require('./migrate');
 
-// 皮肤固定为 tracer（农场现在挂在它的 Garden 分区）。必须在 require server.js 之前设，
+// 默认皮肤为 tracer。必须在 require server.js 之前设，
 // 因为 server.js 在模块加载时就读了一次配置。
 process.env.DOCS_PORTAL_SKIN = process.env.DOCS_PORTAL_SKIN || 'tracer';
 // 桌面版用自己专属的端口，不跟浏览器版（默认 8080）抢——否则你同时开着
@@ -42,7 +42,7 @@ let isQuitting = false;
 
 // 把一个脉冲送进渲染进程。两条闸门：
 //   1. 窗口不存在就不送；
-//   2. 窗口聚焦时不送——此刻页内输入由 farm.js 自己的 DOM 监听在数，
+//   2. 窗口聚焦时不送——此刻页内输入由 wellness.js 的 DOM 监听做专注统计，
 //      全局钩子只负责补「你切去别的程序时」的那部分，否则同一次按键会被数两遍。
 function forward(pulse) {
   if (!pulse || !win || win.isDestroyed()) return;
@@ -103,8 +103,8 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
-      // 缩进托盘后窗口是隐藏的，别让 Electron 把它的定时器降频——农场靠墙钟结算下雨，
-      // 也要保证隐藏时收到的输入脉冲照常记账。
+      // 缩进托盘后窗口是隐藏的，仍需及时结算专注计时，
+      // 并让专注期间收到的匿名输入脉冲照常记账。
       backgroundThrottling: false,
     },
   });
@@ -171,8 +171,8 @@ if (!app.requestSingleInstanceLock()) {
 function bootApp() {
   app.whenReady().then(function () {
   // 改名前（podmatrix-desktop）遗留的旧存档搬到新身份（tracer-desktop）的 userData
-  // 下面。必须赶在 createWindow() 加载页面之前——页面一加载，farm.js 立刻就去读
-  // localStorage 了，到那时候再迁就晚了。纯函数实现见 migrate.js（同 pulse.js 的
+  // 下面。必须赶在 createWindow() 加载页面之前——页面一加载，专注、家园和伙伴便会读
+  // localStorage，到那时候再迁就晚了。纯函数实现见 migrate.js（同 pulse.js 的
   // 理由：脱离 Electron 单测）；这里只负责把 app.getPath 算出的真实路径喂给它。
   // 旧应用名写死是有意的，它对应的是改名前的 package.json name，不会再变。
   var oldUserData = path.join(app.getPath('appData'), 'podmatrix-desktop');

@@ -24,9 +24,12 @@
 <link rel="stylesheet" href="/timeline.css">
 <link rel="stylesheet" href="/map.css">
 <link rel="stylesheet" href="/insights.css">
-<link rel="stylesheet" href="/farm.css">
 <link rel="stylesheet" href="/garden.css">
+<link rel="stylesheet" href="/garden-planets.css">
 <link rel="stylesheet" href="/garden-home.css">
+<link rel="stylesheet" href="/garden-world.css">
+<link rel="stylesheet" href="/garden-pastoral.css">
+<link rel="stylesheet" href="/garden-theme.css">
 <link rel="stylesheet" href="/wellness.css">
 <link rel="stylesheet" href="/crystal.css">
 <link rel="stylesheet" href="/ai-assistant.css">
@@ -38,6 +41,10 @@
 <link rel="stylesheet" href="/pet-character-motion.css">
 <link rel="stylesheet" href="/pet-chat.css">
 <link rel="stylesheet" href="/window-controls.css">
+<link rel="stylesheet" href="/garden-plant.css">
+<link rel="stylesheet" href="/garden-companion-preview.css">
+<link rel="stylesheet" href="/garden-task.css">
+<link rel="stylesheet" href="/garden-market.css">
 </head>
 <body>
 
@@ -61,8 +68,6 @@
       <img src="/tracer-logo.png" width="28" height="28" alt="">
     </span>
     <span class="crumb crumb-strong">Tracer</span>
-    <span class="crumb-sep">/</span>
-    <span class="crumb">Engineering</span>
   </div>
   <div class="top-mid"><button type="button" id="pet-generation-status" hidden aria-label="Companion generation progress"><span class="pet-generation-label"></span><span class="pet-generation-count"></span><progress max="16" value="0" aria-label="Companion action progress"></progress></button></div>
   <div class="top-right">
@@ -100,6 +105,7 @@
       <a class="nav-item" data-sec="timeline" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2 4h7M5 8h8M3 12h6"/><path d="M8 1.5v13" stroke-dasharray="1.5 2"/></svg>Timeline</a>
       <a class="nav-item" data-sec="insights" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2.5 13.5V9M6.2 13.5V5M9.9 13.5V7.5M13.5 13.5V3"/></svg>Insights</a>
       <a class="nav-item" data-sec="garden" role="tab" tabindex="0" id="nav-garden"><svg viewBox="0 0 16 16"><path d="M8 14V7M8 7C8 4 6 2 3 2c0 3 2 5 5 5M8 7c0-2.5 1.7-4.5 4.5-4.5C12.5 5 10.5 7 8 7"/></svg>Garden</a>
+      <a class="nav-item" data-sec="planets" role="tab" tabindex="0" id="nav-planets"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4.5"/><ellipse cx="8" cy="8" rx="7" ry="2.4" transform="rotate(-25 8 8)"/></svg>Memory planets</a>
     </div>
     <div class="nav-label" id="projects-label">Projects</div>
     <!-- 阶段 2 起由 app.js 渲染项目清单 -->
@@ -171,34 +177,8 @@
     <section class="sec" id="sec-garden">
       <header class="sec-head"><h1 id="garden-section-title">Companion home</h1><span class="sec-sub" id="garden-section-subtitle">A little place for the work you care about</span><button class="btn" id="garden-pet-open">✦ Companions</button></header>
       <div id="garden-home-root"></div>
-      <div id="garden-leisure-wrapper" hidden>
-      <div class="garden-leisure-heading"><button type="button" class="btn" id="garden-back-home">← Back home</button><p id="garden-leisure-help">Your farm, collection and progress are kept here.</p></div>
-      <div class="garden-wrap">
-        <aside class="garden-side">
-          <div class="garden-shop" id="garden-shop"></div>
-          <!-- farm.js 借这两个 id 放选中作物的详情（null-safe，没有就跳过）。
-               必须是 garden-shop 的兄弟节点、不能是它的子节点：farm.js 的
-               renderShop() 每次都用 sideEl.innerHTML= 整块重写商店列表，
-               放里面会被这行覆盖冲掉，详情面板等于白做。 -->
-          <div class="garden-rail">
-            <div class="rail-label" id="rail-label"></div>
-            <div class="definition" id="definition"></div>
-          </div>
-        </aside>
-        <div class="garden-main" id="garden-main">
-          <!-- 静态占位：数据加载失败时（workspace 拉取失败）onShow 钩子全体
-               不会触发，Garden 的 DBFarm.mount() 也就永远不会跑，这块占位会
-               一直留着而不是一片空白。加载成功后 farm.js 的 render() 会用
-               mainEl.innerHTML= 整体替换掉它，和其它分区首屏占位的套路一致。 -->
-          <div class="empty">
-            <svg class="empty-art" viewBox="0 0 96 72"><use href="#moon-art"/></svg>
-            <div class="empty-title">The garden is quiet</div>
-            <div class="empty-sub">Give it a season and something will grow.</div>
-          </div>
-        </div>
-      </div>
-      </div>
     </section>
+    <section class="sec" id="sec-planets"><div id="garden-planets-root"></div></section>
   </main>
 
   <aside class="rail">
@@ -218,6 +198,7 @@
 
 <script src="/project-deletion.js"></script>
 <script src="/task-history.js"></script>
+<script src="/task-garden.js"></script>
 <script src="/model.js"></script>
 <script src="/companion-work.js"></script>
 <script src="/workspace-sync.js"></script>
@@ -225,19 +206,11 @@
 <script src="/i18n.js"></script>
 <script src="/window-controls.js"></script>
 <script src="/app.js"></script>
+<script src="/task-garden-actions.js"></script>
 <!-- 右栏拖宽 + 随阅读面板显隐自动收起（ES5，纯前端，无持久化开关——收起态
      由 #aside-slot 里阅读面板的实际状态推导，见 rail.js）。必须在 app.js 之后：
      依赖 .shell/.rail/#aside-slot 已在 DOM 里（这几个都是静态标记，本来就有）。 -->
 <script src="/rail.js"></script>
-<!-- 共享游戏引擎：从 db-console 目录兜底服务（server GAME_DIR 回退）。
-     必须在 app.js 之后（Tracer 的 Ctrl+Alt+G 先注册以屏蔽 farm 自带的文案切换），
-     顺序 fishing→combat→equip→mining→magic→farm 与 db-console 一致。 -->
-<script src="/fishing.js"></script>
-<script src="/combat.js"></script>
-<script src="/equip.js"></script>
-<script src="/mining.js"></script>
-<script src="/magic.js"></script>
-<script src="/farm.js"></script>
 <script src="/inbox.js"></script>
 <script src="/task-editor.js"></script>
 <script src="/board.js"></script>
@@ -257,8 +230,19 @@
 <script src="/ai-assistant.js"></script>
 <script src="/pet-animation.js"></script>
 <script src="/pet-personalities.js"></script>
+<script src="/garden-plant-atlas.js"></script>
+<script src="/garden-plant-art.js"></script>
+<script src="/garden-wildflower-atlas.js"></script>
+<script src="/garden-wildflower-motion.js"></script>
+<script src="/garden-companion-atlas.js"></script>
+<script src="/garden-companion-motion.js"></script>
+<script src="/garden-companion-preview.js"></script>
+<script src="/garden-plant-animation.js"></script>
+<script src="/garden-harvest-model.js"></script>
 <script src="/pet-model.js"></script>
 <script src="/pet-art.js"></script>
+<script src="/pet-illustrated-atlas.js"></script>
+<script src="/pet-illustrated-animation.js"></script>
 <script src="/pet-builtin-animation.js"></script>
 <script src="/pet-idle.js"></script>
 <script src="/pet-idle-art.js"></script>
@@ -269,8 +253,10 @@
 <script src="/pet-transfer.js"></script>
 <script src="/pet-edit-draft.js"></script>
 <script src="/pet.js"></script>
-<script src="/garden-model.js"></script>
+<script src="/garden-world-view.js"></script>
+<script src="/garden-market-view.js"></script>
 <script src="/garden-home-view.js"></script>
+<script src="/garden-planets-view.js"></script>
 <script src="/garden.js"></script>
 </body>
 </html>

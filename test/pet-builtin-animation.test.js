@@ -25,8 +25,13 @@ test('pose loops and bounded action timings preserve rest while adding fluid in-
     assert.equal(Animation.snapshot('miso',action,16),Animation.snapshot('miso',action,0));
     assert.equal(Animation.snapshot('miso',action,-1),Animation.snapshot('miso',action,15));
     const times=Array.from({length:16},(_,frame)=>Animation.duration(action,frame));
-    assert.ok(times.every(time=>time>=80&&time<=1000));
-    assert.ok(times[0]>times[1]);
+    assert.ok(times.every(time=>time>=180&&time<=6000));
+    if(action!=='sleep'){
+      assert.ok(times[0]>=2200,'an action starts with a quiet resting pause');
+      assert.ok(times[15]>=1800,'a completed gesture is not immediately repeated');
+      assert.ok(times.slice(1,15).every(time=>time<=200),'in-between drawings retain a steady cadence');
+    }
+    assert.ok(action==='sleep'||times[0]>times[1]);
     assert.ok(times.reduce((sum,time)=>sum+time,0)>=1800);
   }
   assert.equal(Animation.snapshot('constructor','unknown',NaN),Animation.snapshot('sprout','idle',0));

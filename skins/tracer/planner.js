@@ -18,7 +18,8 @@
   }
 
   function render() {
-    var ws = T.store.data;
+    var source = T.store.data, archived = new Set(source.projects.filter(function (p) { return p.status === 'completed'; }).map(function (p) { return p.id; }));
+    var ws = Object.assign({}, source, { tasks: source.tasks.filter(function (t) { return !archived.has(t.projectId); }) });
     var base = anchor || M.todayISO();
     var days = M.weekDays(base);
     var today = M.todayISO();
@@ -47,7 +48,7 @@
     });
     html += '</div>';
     sec.innerHTML = html;
-    wire(ws, base);
+    wire(source, base);
   }
 
   function wire(ws, base) {
@@ -65,15 +66,17 @@
       targetLabel: function (col) { return col.dataset.day || L('unscheduled'); },
       onDrop: function (el, col) {
         var day = col.dataset.day || null; // 托盘的 data-day="" → null
-        var t = M.findTask(ws, el.dataset.id);
+        var t = M.findTask(T.store.data, el.dataset.id), owner = t && t.projectId && M.findProject(T.store.data, t.projectId);
+        if (!t || owner && owner.status === 'completed') { render(); T.ui.notice(L('undoChanged')); return; }
         // 原位放回（排期没变）就不写库、不发多余 PUT，只重绘复位
         if (t && t.scheduled === day) { render(); return; }
         var old = t && t.scheduled;
-        M.updateTask(ws, el.dataset.id, { scheduled: day });
+        M.updateTask(T.store.data, el.dataset.id, { scheduled: day });
         T.touch(); render();
         T.ui.notice(L('scheduledNotice', { target: day || L('unscheduled') }), function () {
           var current = M.findTask(T.store.data, el.dataset.id);
-          if (!current || current.scheduled !== day) { T.ui.notice(L('undoChanged')); return; }
+          var project = current && current.projectId && M.findProject(T.store.data, current.projectId);
+          if (!current || current.scheduled !== day || project && project.status === 'completed') { T.ui.notice(L('undoChanged')); return; }
           M.updateTask(T.store.data, el.dataset.id, { scheduled: old || null }); T.touch(); render(); T.ui.notice(L('undone'));
         });
       },

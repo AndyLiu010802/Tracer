@@ -53,9 +53,9 @@ if (process.isMainFrame && location.protocol === 'http:'
   });
 }
 
-// 主进程把全局输入压成的脉冲送过来，这里原样转成 farm.js 已经在监听的那条消息，
-// 形状和小说 iframe 里守卫脚本回报的完全一致（{ __aside:1, type:'farm', kind }）。
-// 于是「你在别的程序里打字」和「你在小说面板里打字」走的是同一条汇入路径，farm.js 无需改动。
+// 全局输入和内置阅读浏览器只上报匿名次数，转交 wellness.js 的专注统计。
+// 沿用与阅读 iframe 相同的历史协议（{ __aside:1, type:'farm', kind }），
+// farm-pulse / farm 是兼容消息名，不会加载或推进旧农场。
 ipcRenderer.on('farm-pulse', function (_event, pulse) {
   if (!pulse || (pulse.kind !== 'key' && pulse.kind !== 'click')) return;
   window.postMessage({ __aside: 1, type: 'farm', kind: pulse.kind }, '*');

@@ -183,67 +183,18 @@ test('代理端点接受合法 token', async () => {
   assert.ok(r.body.toString('utf8').includes('Reference unavailable'));
 });
 
-test('游戏文件从 GAME_DIR 兜底服务（非 db-console 皮肤也能拿到）', async () => {
-  // 当前皮肤是 docs-portal，它目录里没有 farm.js，应回退到 skins/db-console
-  for (const p of ['/farm.js', '/fishing.js', '/combat.js', '/equip.js', '/mining.js', '/magic.js', '/farm.css']) {
-    const r = await get(p);
-    assert.strictEqual(r.status, 200, p + ' 应能兜底服务');
-    assert.ok(r.body.length > 100, p + ' 不应为空');
+test('retired game scripts, styles and artwork return 404 for docs-portal', async () => {
+  for (const p of ['/farm.js', '/farm-data.js', '/fishing.js', '/combat.js', '/equip.js', '/mining.js', '/magic.js', '/farm.css', '/fish/carp.webp', '/scenes/temp_lake.webp', '/hero.webp', '/arena.webp', '/mobs/deadlock.webp', '/mats/lock_fang.webp', '/equip/wpn1.webp']) {
+    assert.strictEqual((await get(p)).status, 404, p);
   }
 });
 
-test('游戏资源目录 fish/scenes 兜底服务', async () => {
-  // 取目录里第一个真实文件名来验证（避免硬编码某张图）
-  const fs = require('node:fs');
-  const path = require('node:path');
-  const fishDir = path.join(__dirname, '..', 'skins', 'db-console', 'fish');
-  const first = fs.readdirSync(fishDir).filter((f) => /\.webp$/.test(f))[0];
-  if (first) {
-    const r = await get('/fish/' + first);
-    assert.strictEqual(r.status, 200, '/fish/' + first + ' 应兜底服务');
-  }
-});
-
-test('兜底只服务游戏白名单，不泄漏 db-console 的伪装内容', async () => {
-  // content.js/skin.css 是 db-console 的皮肤内容，不在游戏白名单，
-  // docs-portal 皮肤下请求应拿到 docs-portal 自己的（或 404），绝不回退到 db-console 的。
-  const r = await get('/content.js');
-  const body = r.body.toString('utf8');
-  // db-console 的 content.js 含 Supabase schema 关键词；docs-portal 的不含
-  assert.ok(!/podmatrix|keyspace|supabase/i.test(body), 'content.js 不得回退到 db-console 的内容');
-});
-
-test('编码路径穿越落到 /content.js 时由当前皮肤接走，不回退 db-console', async () => {
-  // 诚实说明这条测试到底证明了什么：只证明「穿越规范化成 /content.js 后，
-  // docs-portal 皮肤自己的 content.js 先接走，绝不回退到 db-console 那份」。
-  // 它不是入口规范化或白名单的守卫——实测把 server.js 的 pathname 规范化那行
-  // 和整个白名单（isGameAsset 恒 true）同时拆掉，这条照样全绿：
-  //   · /fish/..%2f..%2fdb-console%2fcontent.js 归一后落到一个不存在的路径，
-  //     是「文件不存在」才 404，跟白名单没关系；
-  //   · /mobs/..%2fcontent.js 归一成 /content.js，被本皮肤的 content.js 在皮肤
-  //     分支接走，根本进不到兜底分支。
-  // 真守卫在别处：
-  //   · test/game-fallback.test.js（临时 GAME_DIR + 哨兵文件）守入口规范化与白名单本身；
-  //   · test/tracer-skin.test.js 的「编码路径穿越不能从 GAME_DIR 掏出 db-console 的
-  //     伪装文件」——tracer 皮肤没有 content.js，请求会真的落到兜底分支。
-
-  // 规范化成 /db-console/content.js：既不在皮肤目录、也不在游戏白名单 → 必须 404
-  const r404 = await get('/fish/..%2f..%2fdb-console%2fcontent.js');
-  assert.strictEqual(r404.status, 404,
-    '/fish/..%2f..%2fdb-console%2fcontent.js 规范化后不在白名单，必须 404');
-
-  // 规范化成 /content.js：由当前（docs-portal）皮肤自己的 content.js 接走，
-  // 绝不能回退到 db-console 那份含真实项目名的伪装脚本。
+test('encoded paths stay within the current skin', async () => {
+  assert.strictEqual((await get('/fish/..%2f..%2fdb-console%2fcontent.js')).status, 404);
+  const expected = await get('/content.js');
   for (const p of ['/mobs/..%2fcontent.js', '/equip/..%5ccontent.js']) {
     const r = await get(p);
-    assert.strictEqual(r.status, 200, p + ' 规范化成 /content.js，应由本皮肤接走');
-    assert.ok(!/podmatrix|keyspace|supabase/i.test(r.body.toString('utf8')),
-      p + ' 不得回退到 db-console 的 content.js');
+    assert.strictEqual(r.status, 200, p);
+    assert.deepStrictEqual(r.body, expected.body, p);
   }
-});
-
-test('规范化 pathname 后正常游戏资源仍可兜底', async () => {
-  const r = await get('/farm.js');
-  assert.strictEqual(r.status, 200);
-  assert.ok(r.body.length > 100);
 });

@@ -1,16 +1,38 @@
-/* Tracer Timeline：项目横条铺在月刻度上，横条叠完成度进度，点横条改起止。 */
-.tl { position: relative; }
-.tl-axis { position: relative; height: 26px; margin-left: 180px; border-bottom: 1px solid var(--border); }
-.tl-month { position: absolute; top: 0; font-size: 11px; color: var(--muted); padding: 4px 0 0 6px; border-left: 1px solid var(--border); height: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
-.tl-rows { position: relative; padding-top: 8px; }
-.tl-today { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--accent); opacity: .55; z-index: 1; }
-.tl-row { display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: center; height: 40px; }
-.tl-label { display: flex; align-items: center; gap: 8px; font-size: 13px; padding-right: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tl-label i { width: 9px; height: 9px; border-radius: 3px; flex: none; }
-.tl-track { position: relative; height: 100%; }
-.tl-bar { position: absolute; top: 8px; height: 22px; border: 1px solid; border-radius: 5px; cursor: pointer; overflow: hidden; display: flex; align-items: center; }
-.tl-bar:hover { filter: brightness(1.15); }
-.tl-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; opacity: .45; }
-.tl-bar-label { position: relative; font-size: 10.5px; font-weight: 600; color: var(--fg); padding-left: 7px; }
-.tl-set { font: inherit; font-size: 11.5px; color: var(--muted); background: transparent; border: 1px dashed var(--border); border-radius: 5px; padding: 3px 10px; cursor: pointer; }
+/* Shared label width keeps the axis, rows and today marker aligned. */
+.tl-scroll { width: 100%; overflow: auto; padding-bottom: 12px; }
+.tl { --tl-label-width: 240px; position: relative; }
+.tl-head { display: grid; grid-template-columns: var(--tl-label-width) minmax(0, 1fr); }
+.tl-corner { position: sticky; left: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--border); }
+.tl-axis { position: relative; height: 50px; overflow: hidden; border-bottom: 1px solid var(--border); }
+.tl-month { position: absolute; top: 0; height: 24px; font-size: 11px; color: var(--muted); padding: 4px 6px; border-left: 1px solid var(--border); white-space: nowrap; overflow: hidden; }
+.tl-day { position: absolute; top: 28px; padding-left: 6px; font-size: 10px; color: var(--muted); white-space: nowrap; }
+.tl-rows { position: relative; }
+.tl-today { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--accent); opacity: .55; z-index: 1; pointer-events: none; }
+.tl-row { display: grid; grid-template-columns: var(--tl-label-width) minmax(0, 1fr); align-items: center; height: 48px; border-bottom: 1px solid var(--border); }
+.tl-project { height: 56px; }
+.tl-label { position: sticky; left: 0; z-index: 2; height: 100%; display: flex; align-items: center; gap: 8px; padding-right: 14px; background: var(--bg); border-right: 1px solid var(--border); min-width: 0; }
+.tl-label-content { flex: 1; min-width: 0; }
+.tl-dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.tl-task .tl-label { padding-left: 32px; }
+.tl-task .tl-dot { width: 6px; height: 6px; border-radius: 50%; }
+.tl-name { display: block; max-width: 100%; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+button.tl-name { cursor: pointer; }
+button.tl-name:hover { color: var(--accent); }
+.tl-project .tl-name { font-weight: 600; font-size: 13px; }
+.tl-meta { display: block; margin-top: 4px; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tl-toggle { width: 22px; height: 28px; flex: none; padding: 0; border: 0; background: none; color: var(--muted); cursor: pointer; }
+.tl-toggle:hover { color: var(--fg); }
+.tl-toggle:disabled { visibility: hidden; }
+.tl-track { position: relative; height: 100%; min-width: 0; display: flex; align-items: center; }
+.tl-bar { position: absolute; top: 13px; height: 22px; min-width: 6px; padding: 0; border: 1px solid var(--tl-color); border-radius: 4px; cursor: pointer; overflow: hidden; display: flex; align-items: center; text-align: left; font-family: inherit; }
+.tl-project .tl-bar { top: 15px; height: 26px; }
+.tl-bar:hover { filter: brightness(1.2); }
+.tl-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; opacity: .45; background: var(--tl-color); }
+.tl-bar-label { position: relative; font-size: 10.5px; font-weight: 600; color: var(--fg); padding: 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tl-set { margin-left: 12px; font: inherit; font-size: 11px; color: var(--muted); background: transparent; border: 1px dashed var(--border); border-radius: 4px; padding: 3px 10px; cursor: pointer; }
 .tl-set:hover { color: var(--accent); border-color: var(--accent); }
+.tl-date-dialog h2 { overflow-wrap: anywhere; }
+.tl-date-dialog .tl-auto { display: flex; align-items: center; gap: 8px; margin: 18px 0; }
+.tl-date-dialog #d-auto { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); }
+.tl-date-dialog input:disabled { opacity: .55; }
+.tl-date-dialog #d-error { color: #ed8585; font-size: 12px; }

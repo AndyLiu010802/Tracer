@@ -47,6 +47,7 @@
 .btn-primary:hover { filter: brightness(1.08); }
 .btn-danger { color: #e86a8a; }
 .btn-danger:hover { background: rgba(232, 106, 138, .12); }
+.btn:disabled { opacity: .45; cursor: default; }
 
 /* ---------- 收集箱 ---------- */
 .inbox-add { margin-bottom: 16px; }
@@ -112,6 +113,12 @@
 .board-tools input, .board-tools select { background: var(--surface); color: var(--fg); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 10px; font: inherit; font-size: 12px; }
 .board-tools input { flex: 1; min-width: 180px; }
 .board-tools :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.board-heading { flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.board-heading > div:first-child { min-width: 0; }
+.board-heading h1 { overflow-wrap: anywhere; margin-bottom: 5px; }
+.board-heading-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.board-heading-actions .btn { min-height: 36px; }
+.board-heading-actions .btn:disabled { opacity: .45; cursor: default; }
 .board-results, .col-empty { color: var(--muted); font-size: 12px; }
 .col-empty { padding: 12px; text-align: center; pointer-events: none; }
 .card-due, .card-scheduled { font-size: 11px; color: var(--muted); }
@@ -146,6 +153,16 @@ button.proj-item:hover { background: var(--surface); }
 button.proj-item.active { background: var(--accent-soft); }
 .proj-delete { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border: 0; border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; }
 .proj-delete:hover { color: #e86a8a; background: #e86a8a18; }
+.proj-complete { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border: 0; border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; }
+.proj-complete:hover { color: var(--accent); background: var(--accent-soft); }
+.proj-complete:focus-visible, .proj-collection:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.proj-collection { display: block; margin-top: 12px; color: var(--accent); }
+.task-action-underlay { display: none !important; }
+.task-action-confirm, .project-complete-dialog { overflow-wrap: anywhere; }
+.task-action-confirm p, .project-complete-dialog p { line-height: 1.75; }
+.task-action-eyebrow { display: block; color: var(--accent); font-size: 11px; letter-spacing: .08em; margin-bottom: 10px; }
+.task-action-detail { color: var(--muted); font-size: 12px; border: 1px solid var(--border); border-radius: 9px; padding: 12px 14px; background: var(--surface); }
+.task-action-confirm .modal-actions, .project-complete-dialog .modal-actions { flex-wrap: wrap; }
 .proj-delete:focus-visible, .proj-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .project-delete-dialog { overflow-wrap: anywhere; }
 .project-delete-dialog .project-delete-name { color: var(--fg); font-weight: 600; }

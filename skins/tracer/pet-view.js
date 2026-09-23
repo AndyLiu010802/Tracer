@@ -3,7 +3,9 @@
   window.TracerPetView = function (root, dispatch, desktop = false, restoredChat = null) {
     let snapshot, language = '', selected = '', tab = 'care', expanded = !desktop, conversation = [], sending = false, generation = 0, chatController, drag=null, suppressClick=false, feedbackKey='', sizeOpen=false, messageKey='', messageUntil=0;
     const idle = TracerPetIdle.create();
-    let characterAnimation = null;
+    const collectionAnimations=[];
+    function clearCollectionAnimations(){for(const player of collectionAnimations.splice(0))player.destroy();}
+    let characterAnimation = null, companionPreview = null;
     let chatDraft = '', draftRevision = 0, messageSequence = 0, composing = false;
     let work=null, proposalContext=null, creating=false, chatStore=null, storageFailed=false, destroyed=false;
     const tr = (zh,en) => language === 'zh' ? zh : en;
@@ -58,13 +60,13 @@
       if(pet.custom && /^\/api\/pet-art\/[a-f0-9]{32}\.png$/.test(pet.image)) {
         if (TracerPetAnimation.normalize(pet.animation)) {
           const player = TracerPetAnimation.create({ image:pet.image, animation:pet.animation, label:language==='zh'?pet.zh:pet.en, animated });
-          if (animated) characterAnimation = player;
+          if (animated) characterAnimation = player;else collectionAnimations.push(player);
           return player.element;
         }
         const img=document.createElement('img'); img.className='pet-sprite pet-custom-sprite'; img.src=pet.image; img.alt=language==='zh'?pet.zh:pet.en; return img;
       }
       const player=TracerPetBuiltinAnimation.create({pet,label:language==='zh'?pet.zh:pet.en,animated});
-      if(animated)characterAnimation=player;
+      if(animated)characterAnimation=player;else collectionAnimations.push(player);
       return player.element;
     }
     function effectLayer(pet) {
@@ -98,8 +100,10 @@
       if(drag.moved) { suppressClick=true; dispatch('drag-end',pointerPoint(event)); }
       drag=null; root.classList.remove('is-dragging'); pauseIdle();
     }
-    const metrics = { harvested: ['收获作物','Harvest crops'], fish: ['钓到的鱼','Catch fish'], tasks: ['完成任务','Complete tasks'], streak: ['连续完成任务天数','Consecutive task days'], focus: ['专注分钟','Focus minutes'], welcome: ['初次见面','A new beginning'] };
+    const metrics = { gardenHarvests: ['收获项目花园','Harvest a project garden'], tasks: ['完成任务','Complete tasks'], streak: ['连续完成任务天数','Consecutive task days'], focus: ['专注分钟','Focus minutes'], welcome: ['初次见面','A new beginning'] };
     function shell() {
+      clearCollectionAnimations();
+      companionPreview?.destroy(); companionPreview=null;
       characterAnimation?.destroy(); characterAnimation=null;
       pauseIdle();
       sizeOpen=false; messageKey=''; messageUntil=0;
@@ -115,7 +119,12 @@
       find('.pet-custom-count').insertAdjacentHTML('beforebegin','<div class="pet-share-actions"><button type="button" data-act="open-import">↓ '+tr('导入伙伴','Import companion')+'</button><button type="button" data-act="open-export" hidden>↑ '+tr('导出当前伙伴','Export current companion')+'</button></div>');
       find('.pet-share-actions').insertAdjacentHTML('beforeend','<button type="button" data-act="open-edit-actions" hidden>↻ '+tr('调整当前伙伴动作','Refine this companion’s actions')+'</button>');
       find('[data-pane=collection]').insertAdjacentHTML('beforeend','<button class="pet-text-button pet-remove-custom" data-act="open-remove" hidden>'+tr('移除当前自定义伙伴','Remove this custom companion')+'</button>');
+      if(typeof TracerGardenCompanionPreview!=='undefined'){
+        const host=document.createElement('div');find('.pet-bond').after(host);
+        companionPreview=TracerGardenCompanionPreview.create(host,{beforePlay:pauseIdle,isBlocked:()=>!!(drag||snapshot?.needs.sleeping||snapshot?.focus.running)});
+      }
       find('.pet-bond').insertAdjacentHTML('afterend','<details class="pet-traits" hidden><summary>'+tr('伙伴性格','Personality')+'</summary><p></p></details>');
+      find('.pet-bond').insertAdjacentHTML('afterend','<button type="button" class="pet-trail-toggle" data-act="toggle-trail" hidden></button>');
       find('.pet-bond').insertAdjacentHTML('afterend','<details class="pet-personality-card" hidden><summary class="pet-personality-title"></summary><p class="pet-personality-bio"></p><dl><dt>'+tr('喜欢','Loves')+'</dt><dd class="pet-personality-likes"></dd><dt>'+tr('小习惯','Little ritual')+'</dt><dd class="pet-personality-habit"></dd></dl></details>');
       text('.pet-chat-privacy',tr('使用“我的 AI”中的服务。发送当前对话、伙伴名字、类型及可选性格；不会自动发送任务或照片。每次发送可能使用套餐额度或 API 费用。','Uses your My AI connection. Sends this conversation, companion name, type and optional personality. Tasks and photos are never sent automatically. Sending may use plan allowance or incur API charges.'));
       find('.pet-chat-form').insertAdjacentHTML('beforebegin','<section class="pet-work-preview" hidden aria-live="polite"></section>');
@@ -353,6 +362,9 @@
         find('.pet-character').replaceChildren(art(p,true),effectLayer(p),TracerPetIdleArt());
         root.classList.toggle('has-animation-pack',!!p.custom&&!!characterAnimation);
         root.classList.toggle('has-builtin-animation',!p.custom&&!!characterAnimation);
+        // Botanical sheets keep their own sixteen movements. Their ambient
+        // activities still need the local fishing/gardening/mining scene.
+        root.classList.toggle('has-garden-animation',!!p.garden&&!!characterAnimation);
       }
       const humanoid=p.kind==='humanoid'; root.dataset.kind=humanoid?'humanoid':'creature';
       root.dataset.pet=p.id;
@@ -376,9 +388,10 @@
       root.dataset.feedback=feedback?.reason||'';
       if(nextFeedbackKey!==feedbackKey) { feedbackKey=nextFeedbackKey;root.dataset.action='';void root.offsetWidth;root.dataset.action=feedback&&!feedback.accepted?'':action; }
       if(!feedback&&!action) root.dataset.action='';
-      const activity=idle.update({petId:p.id,kind:p.kind,workActivities:!!characterAnimation&&(!p.custom||p.animation?.pages.length>3),blocked:!!(drag||action||feedback||state.sleeping||snapshot.focus.running||snapshot.reminder||state.food<25||state.energy<25||sending||sizeOpen||(tab==='chat'&&(!desktop||expanded)))});
+      const activity=idle.update({petId:p.id,kind:p.kind,workActivities:!!characterAnimation&&!p.garden&&(!p.custom||p.animation?.pages.length>3),blocked:!!(drag||action||feedback||state.sleeping||snapshot.focus.running||snapshot.reminder||state.food<25||state.energy<25||sending||sizeOpen||(tab==='chat'&&(!desktop||expanded)))});
       root.dataset.idle=activity;
       syncAnimation();
+      companionPreview?.update({player:characterAnimation,pet:p,language,blocked:!!(drag||state.sleeping||snapshot.focus.running)});
       if(activity) {
         const labels={fishing:['钓鱼中','Fishing'],exercise:['锻炼中','Exercising'],farming:['种地中','Gardening'],mining:['挖矿中','Mining']};
         const lines=humanoid?{
@@ -439,6 +452,10 @@
       text('.pet-personality-title',personality?TracerPetPersonalities.text(p.id,'tagline',language):'');
       for(const field of ['bio','likes','habit']) text('.pet-personality-'+field,personality?TracerPetPersonalities.text(p.id,field,language):'');
       text('.pet-bond',tr('默契值 ','Bond ')+Math.round(state.bond)+' / 100');
+      find('.pet-trail-toggle').hidden=!p.shiny;
+      find('.pet-trail-toggle').disabled=!desktop&&!snapshot.native;
+      find('.pet-trail-toggle').setAttribute('aria-pressed',String(!!snapshot.trailEnabled));
+      text('.pet-trail-toggle',!desktop&&!snapshot.native?tr('全桌面拖尾需桌面版','Desktop app required for cursor trail'):snapshot.trailEnabled?tr('关闭全桌面星光拖尾','Turn off desktop starlight trail'):tr('开启全桌面星光拖尾','Turn on desktop starlight trail'));
       text('.pet-task',snapshot.task?snapshot.task.title:tr('今天没有待提醒的任务','No tasks need a nudge today'));
       find('.pet-task').disabled=!snapshot.task;
       text('.pet-task-date',snapshot.task?(snapshot.task.due||snapshot.task.scheduled||''):'');
@@ -456,19 +473,19 @@
       find('[data-act=open-edit-actions]').hidden=!p.custom;
       const key=JSON.stringify([snapshot.unlocked,snapshot.metrics,p.id,language,catalog]);
       if(collection.dataset.key!==key) {
-        collection.dataset.key=key; collection.replaceChildren();
+        clearCollectionAnimations();collection.dataset.key=key; collection.replaceChildren();
         for(const pet of catalog) {
           const unlocked=snapshot.unlocked.includes(pet.id), item=document.createElement('button');
           item.className='pet-unlock'+(unlocked?' unlocked':''); item.disabled=!unlocked; item.dataset.act='select'; item.dataset.value=pet.id;
           item.setAttribute('aria-pressed',String(p.id===pet.id));
           item.innerHTML='<span><strong></strong><small></small><em></em></span>'; item.prepend(art(pet));
           item.querySelector('strong').textContent=language==='zh'?pet.zh:pet.en;
-          item.querySelector('small').textContent=pet.custom?tr(...pet.species):TracerPetPersonalities.text(pet.id,'tagline',language);
+          item.querySelector('small').textContent=(pet.custom||pet.garden)?tr(...pet.species):TracerPetPersonalities.text(pet.id,'tagline',language);
           item.querySelector('em').textContent=unlocked?(p.id===pet.id?tr('正在陪伴','With you'):tr('已解锁 · 选择','Unlocked · choose')):tr(...metrics[pet.metric])+' · '+Math.min(pet.target,snapshot.metrics[pet.metric]||0)+' / '+pet.target;
           collection.appendChild(item);
         }
       }
     }
-    return { update, readChat:()=>({petId:selected,...readState()}), destroy:()=>{persistChat();destroyed=true;generation++;chatController?.abort();characterAnimation?.destroy();if(desktop)window.removeEventListener('blur',blurSize);if(drag?.moved)dispatch('drag-end');drag=null;root.replaceChildren();} };
+    return { update, readChat:()=>({petId:selected,...readState()}), destroy:()=>{persistChat();destroyed=true;generation++;chatController?.abort();companionPreview?.destroy();characterAnimation?.destroy();clearCollectionAnimations();if(desktop)window.removeEventListener('blur',blurSize);if(drag?.moved)dispatch('drag-end');drag=null;root.replaceChildren();} };
   };
 })();

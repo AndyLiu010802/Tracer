@@ -61,7 +61,11 @@ async function dragCharacter(app,pet,page){
   check(await page.locator('.pet-name').innerText()==='Sprout','English default and starter companion');
   await page.click('[data-tab=collection]');check(await page.locator('.pet-unlock:disabled').count()===5,'earned companions start locked');
   await page.evaluate(()=>{
-    DBFarm.progress=()=>({harvested:50,fish:10});
+    // Restore one synthetic, ordinary project-garden harvest in this isolated
+    // profile. A normal ticket earns Miso without adding a rare garden pet.
+    const harvestedAt=Date.now(),projectId='qa-companion-garden';
+    const mature=TracerGardenHarvest.mature(TracerGardenHarvest.fresh(),[{projectId,plantKind:'wildflower',stage:4,commemoratedAt:harvestedAt}],()=>100);
+    localStorage.setItem(TracerGardenHarvest.key,JSON.stringify(TracerGardenHarvest.harvest(mature,projectId,harvestedAt)));
     for(let i=0;i<10;i++){const t=TracerModel.addTask(Tracer.store.data,{title:'Finished '+i,status:'done'});t.doneAt=Date.now()-(i%3)*86400000;TaskHistory.record(Tracer.store.data,t);}
     TracerModel.addTask(Tracer.store.data,{title:'Review the next small step',due:TracerModel.todayISO(),notes:'PRIVATE_NOT_FOR_AI'});
     const f=TracerFocus.fresh();f.totalMinutes=120;localStorage.setItem('tracer.focus.v1',JSON.stringify(f));
@@ -69,7 +73,7 @@ async function dragCharacter(app,pet,page){
   });
   await page.waitForFunction(()=>Tracer.pet.read().unlocked.length===6);
   await page.locator('[data-act=select][data-value=nova]').click();
-  check(await page.locator('.pet-name').innerText()==='Nova','farm, focus and task achievements unlock all species');
+  check(await page.locator('.pet-name').innerText()==='Nova','project-garden harvest, focus and task achievements unlock all starter species');
   await page.screenshot({path:path.join(profile,'collection.png')});
   await page.click('[data-tab=care]');await page.click('[data-act=feed]');
   check(await page.evaluate(()=>Tracer.pet.read().pets.nova.food>95),'feeding updates persistent needs');

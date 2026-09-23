@@ -54,13 +54,15 @@ async function inspectActivity(page, kind, activity, desktop = false) {
   assert.equal(await page.locator('.pet-home').getAttribute('data-kind'), kind);
   assert.equal(await page.locator('.pet-home').getAttribute('data-idle'), activity);
   const builtin = await page.locator('.pet-character .pet-builtin-sprite').count() > 0;
-  if(builtin) {
+  const garden = await page.locator('.pet-home').evaluate(el=>el.classList.contains('has-garden-animation'));
+  if(builtin&&!garden) {
     const player=page.locator('.pet-character .pet-builtin-sprite');
     assert.equal(await player.getAttribute('data-action'),activity);
     assert.equal(await player.getAttribute('data-frames'),'16');
     assert.equal(await player.getAttribute('data-playback'),'playing');
     const before=await player.innerHTML();
-    await page.waitForFunction(before=>document.querySelector('.pet-character .pet-builtin-sprite').innerHTML!==before,before,{timeout:2000});
+    // Calm clips deliberately hold their resting pose before the gesture.
+    await page.waitForFunction(before=>document.querySelector('.pet-character .pet-builtin-sprite').innerHTML!==before,before,{timeout:10000});
     assert.equal(await page.locator('.pet-idle-scene').isVisible(),false,'authored snapshots contain their own props without duplicate legacy scenes');
     assert.equal(await player.evaluate(el=>getComputedStyle(el).animationName),'none','no whole-character CSS animation is added to pose playback');
   } else {
@@ -89,7 +91,7 @@ async function inspectActivity(page, kind, activity, desktop = false) {
 
 async function collectCycle(page, kind, desktop = false) {
   const seen = new Map(), timeline = [];
-  const expected=await page.locator('.pet-character .pet-builtin-sprite').count()?completeActivities:activities;
+  const expected=await page.locator('.pet-home').evaluate(el=>el.classList.contains('has-builtin-animation')&&!el.classList.contains('has-garden-animation'))?completeActivities:activities;
   for (let second = 1; second <= 740; second++) {
     const activity = await tick(page, 1, desktop); timeline.push(activity);
     if (activity && !seen.has(activity)) seen.set(activity, await inspectActivity(page, kind, activity, desktop));
@@ -140,18 +142,36 @@ async function collectCycle(page, kind, desktop = false) {
     const markup = {}, snapshots = {};
     for (const [kind,id] of [['creature','sprout'],['humanoid',humanoidId]]) {
       if (kind === 'humanoid') await page.evaluate(id => Tracer.pet.action('select',id), id);
-      const baseline = await page.evaluate(() => ({ state: Tracer.pet.read(), farm: DBFarm.progress() }));
+      const baseline = await page.evaluate(() => ({
+        state: Tracer.pet.read(),
+        garden: TaskGarden.read(Tracer.store.base || Tracer.store.data),
+        harvests: TracerGardenHarvest.read(JSON.parse(localStorage.getItem(TracerGardenHarvest.key)) || TracerGardenHarvest.fresh())
+      }));
       markup[kind] = await collectCycle(page, kind);
       const unchanged = await page.evaluate(baseline => {
         const expected = TracerPetModel.read(baseline.state); TracerPetModel.advance(expected, Date.now());
         const actual = Tracer.pet.read(), keys = ['food','energy','joy','bond'];
+        const garden=TaskGarden.read(Tracer.store.base || Tracer.store.data);
+        const harvests=TracerGardenHarvest.read(JSON.parse(localStorage.getItem(TracerGardenHarvest.key)) || TracerGardenHarvest.fresh());
         return { needs: keys.every(key => Math.abs(actual.pets[actual.selected][key] - expected.pets[actual.selected][key]) < 1e-8),
-          farm: JSON.stringify(DBFarm.progress()) === JSON.stringify(baseline.farm), unlocks: JSON.stringify(actual.unlocked) === JSON.stringify(baseline.state.unlocked) };
+          garden: JSON.stringify(garden) === JSON.stringify(baseline.garden), harvests: JSON.stringify(harvests) === JSON.stringify(baseline.harvests),
+          unlocks: JSON.stringify(actual.unlocked) === JSON.stringify(baseline.state.unlocked) };
       }, baseline);
-      assert.deepEqual(unchanged, { needs: true, farm: true, unlocks: true }, 'idle visuals only apply normal elapsed-time needs; no farming reward or unlock changes');
+      assert.deepEqual(unchanged, { needs: true, garden: true, harvests: true, unlocks: true }, 'idle visuals only apply normal elapsed-time needs; no garden growth, harvest reward or unlock changes');
       snapshots[kind] = await page.evaluate(() => structuredClone(window.__qaSnapshot));
     }
     for (const activity of activities) assert.notEqual(markup.humanoid.get(activity), markup.creature.get(activity), activity + ' has different humanoid and creature artwork');
+    // Botanical sheets keep their sixteen movements and use ambient props.
+    await page.evaluate(()=>{
+      const state=Tracer.pet.read();state.unlocked.push('garden_wildflower');state.selected='garden_wildflower';
+      state.lastAction='';state.lastActionAt=0;TracerPetModel.current(state);
+      const raw=JSON.stringify(state);localStorage.setItem('tracer.pet.v1',raw);
+      dispatchEvent(new StorageEvent('storage',{key:'tracer.pet.v1',newValue:raw}));Tracer.pet.refresh(true);
+    });
+    await collectCycle(page,'creature');
+    snapshots.garden=await page.evaluate(()=>structuredClone(window.__qaSnapshot));
+    await page.screenshot({path:path.join(profile,'garden-ambient.png')});
+    await page.evaluate(id=>Tracer.pet.action('select',id),humanoidId);
     // Actual care buttons interrupt the real scheduler, then it resumes naturally.
     await page.click('[data-act="feed"]');
     assert.equal(await page.locator('.pet-home').getAttribute('data-idle'), '');
@@ -183,9 +203,9 @@ async function collectCycle(page, kind, desktop = false) {
     await compact.route('**' + portraitPath, route => route.fulfill({ contentType: 'image/png', body: portrait }));
     await compact.goto('http://127.0.0.1:' + server.address().port + '/pet.html');
     await compact.waitForFunction(() => typeof window.__nativeState === 'function');
-    for (const kind of ['creature','humanoid']) {
+    for (const kind of ['creature','garden','humanoid']) {
       await compact.evaluate(snapshot => { window.__nativeSnapshot = snapshot; window.__nativeState(snapshot); }, snapshots[kind]);
-      await collectCycle(compact, kind, true);
+      await collectCycle(compact, kind==='garden'?'creature':kind, true);
     }
     await compact.locator('.pet-character').hover(); await compact.click('.pet-panel-toggle'); await compact.setViewportSize({ width: 380, height: 700 });
     assert.ok(await tick(compact, 20, true));

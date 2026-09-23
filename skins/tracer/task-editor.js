@@ -9,10 +9,12 @@
   T.taskEditor = function (ws, id, after, status) {
     var t = id ? M.findTask(ws, id) : { title: '', notes: '', status: status || 'todo', projectId: T.projectFilter ? T.projectFilter() : null };
     if (!t) return;
+    var owningProject = t.projectId && M.findProject(ws, t.projectId);
+    if (owningProject && owningProject.status === 'completed') { T.show('planets'); return; }
     T.ui.modal(function (box, close) {
       box.classList.add('task-editor'); box.setAttribute('aria-labelledby', 'task-editor-heading');
       var checks = JSON.parse(JSON.stringify(t.checklist || [])), dirty = false;
-      var projectOptions = '<option value="">' + L('noProject') + '</option>' + ws.projects.map(function (p) { return '<option value="' + M.esc(p.id) + '"' + (p.id === t.projectId ? ' selected' : '') + '>' + M.esc(p.name) + '</option>'; }).join('');
+      var projectOptions = '<option value="">' + L('noProject') + '</option>' + ws.projects.filter(function (p) { return p.status !== 'completed'; }).map(function (p) { return '<option value="' + M.esc(p.id) + '"' + (p.id === t.projectId ? ' selected' : '') + '>' + M.esc(p.name) + '</option>'; }).join('');
       box.innerHTML = '<header class="task-editor-head"><div><span class="task-eyebrow">' + M.esc(t.seq || 'TRACER') + '</span><h2 id="task-editor-heading">' + L(id ? 'details' : 'newTask') + '</h2></div><button class="btn" id="f-close" aria-label="' + L('cancel') + '">×</button></header>'
         + '<label for="f-title">' + L('title') + '</label><input id="f-title" type="text" required maxlength="200" value="' + M.esc(t.title) + '" placeholder="' + L('titleHint') + '">'
         + '<div class="task-editor-grid"><div class="task-editor-content"><h3>' + L('detailsSection') + '</h3>'
@@ -50,7 +52,11 @@
       box.querySelector('#check-add').onclick = addCheck;
       box.querySelector('#check-new').onkeydown = function (e) { if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); addCheck(); } };
       box.addEventListener('input', function () { dirty = true; }); box.addEventListener('change', function () { dirty = true; });
-      box.beforeClose = function () { return !dirty || window.confirm(L('unsavedConfirm')); };
+      box.beforeClose = function () {
+        if (!dirty) return true;
+        T.confirmTaskAction({ title: L('unsavedConfirm'), body: window.TracerLocale.language() === 'zh' ? '尚未保存的修改将被放弃。' : 'Your unsaved changes will be discarded.', confirmText: window.TracerLocale.language() === 'zh' ? '放弃修改' : 'Discard changes', danger: true }, function () { dirty = false; close(true); });
+        return false;
+      };
       box.querySelector('#f-close').onclick = close; box.querySelector('#f-cancel').onclick = close;
       function value(key) { return box.querySelector('#f-' + key).value; }
       box.querySelector('#f-save').onclick = function () {
@@ -67,19 +73,31 @@
             scheduled: value('scheduled') || null, due: value('due') || null, assignee: value('assignee'), labels: value('labels').split(/[,，]/).filter(function (v) { return v.trim(); }),
             estimate: value('estimate'), spent: value('spent'), acceptance: value('acceptance'), checklist: checks,
             links: value('links').split(/\r?\n/).filter(function (v) { return v.trim(); }), dependsOn: Array.prototype.map.call(box.querySelectorAll('[data-dependency]:checked'), function (el) { return el.dataset.dependency; }) };
-          if (id) M.updateTask(ws, id, fields); else M.addTask(ws, fields);
-          T.touch(); dirty = false; close(true); T.redraw(); if (T.renderBoard) T.renderBoard(); if (after) after();
-          T.ui.notice(L(id ? 'taskSaved' : 'taskCreated'));
+          function commit() {
+            try {
+              if (id && !M.findTask(T.store.data, id)) throw new Error(L('taskDeleted'));
+              var project = fields.projectId && M.findProject(T.store.data, fields.projectId);
+              if (fields.projectId && (!project || project.status === 'completed')) throw new Error(window.TracerLocale.language() === 'zh' ? '这个项目已经归档或删除，请选择进行中的项目。' : 'This project was archived or deleted. Choose an active project.');
+              if (id) M.updateTask(T.store.data, id, fields); else M.addTask(T.store.data, fields);
+              T.touch(); dirty = false; close(true); T.redraw(); if (T.renderBoard) T.renderBoard(); if (after) after();
+              T.ui.notice(L(id ? 'taskSaved' : 'taskCreated'));
+            } catch (e) { showError(e); }
+          }
+          if (id) T.confirmTaskGardenChange(T.store.data, id, fields, commit); else commit();
         } catch (e) {
-          var known = { 'Invalid dependency': 'dependencyError', 'Invalid hours': 'hoursError', 'Invalid resource link': 'linkError' };
-          error.textContent = known[e.message] ? L(known[e.message]) : window.TracerLocale.message(e.message); error.hidden = false; error.scrollIntoView({ block: 'nearest' });
+          showError(e);
         }
       };
+      function showError(e) {
+        var error = box.querySelector('#task-error'), known = { 'Invalid dependency': 'dependencyError', 'Invalid hours': 'hoursError', 'Invalid resource link': 'linkError' };
+        error.textContent = e.message === 'project-archived' ? (window.TracerLocale.language() === 'zh' ? '这个项目已归档，任务不能再修改。请关闭窗口前往星球收藏。' : 'This project was archived. Its tasks are read-only; close this editor to visit the planet collection.') : known[e.message] ? L(known[e.message]) : window.TracerLocale.message(e.message); error.hidden = false; error.scrollIntoView({ block: 'nearest' });
+      }
       box.querySelector('#f-title').oninput = function () { this.setCustomValidity(''); };
-      box.addEventListener('keydown', function (e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); box.querySelector('#f-save').click(); } });
+      box.addEventListener('keydown', function (e) { if (!box.querySelector('.task-action-confirm') && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); box.querySelector('#f-save').click(); } });
       if (id) box.querySelector('#f-del').onclick = function () {
-        if (!window.confirm(L('deleteConfirm'))) return;
-        M.deleteTask(ws, id); T.touch(); dirty = false; close(true); T.redraw(); if (T.renderBoard) T.renderBoard(); if (after) after();
+        T.confirmTaskGardenDelete(T.store.data, id, function () {
+          M.deleteTask(T.store.data, id); T.touch(); dirty = false; close(true); T.redraw(); if (T.renderBoard) T.renderBoard(); if (after) after();
+        });
       };
     });
   };

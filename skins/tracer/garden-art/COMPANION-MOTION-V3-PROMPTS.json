@@ -1,0 +1,93 @@
+{
+  "mode": "built-in image_gen",
+  "base": "Use case: identity-preserve. Production animation sheet EXACTLY sixteen SMALL COMPLETE figures in 4 columns and 4 rows, chronological reading order. TRUE TRANSPARENT RGBA background. Square 2048x2048. Each full figure INCLUDING all petals, feet and props occupies only CENTRAL 60% HEIGHT and 60% WIDTH of its cell; enormous empty transparent gutters and outer margins. Baseline 80% cell height. Constant scale and camera. Exquisite painterly botanical detail, petal veins, tactile cream fuzz. 16 distinct continuous drawings, no repeated poses. Exactly two hands and two root feet. No text, labels, grid, scenery, ground, shadows, glow haze or detached sparkles. Reference is identity only, use specified bottom-row creature, never plants. ",
+  "actions": {
+    "idle": "Gentle breathing with planted feet, eyelids close at frames 7-8 then reopen, leaves settle.",
+    "greet": "Raise right hand during frames 1-4, wave twice in 5-12, lower and settle in 13-16.",
+    "walk": "Complete smooth in-place walking cycle with alternating root feet and counter-swinging arms, planted contact feet, stable scale.",
+    "hop": "Prepare crouch 1-4, push off 5-6, small airborne hop 7-10, land 11-13, recover 14-16. Draw height change, do not recenter.",
+    "water": "Lift tiny watering can 1-4, tilt to water one tiny seedling 5-11, upright 12-14, lower 15-16. All props fully inside each cell.",
+    "pet": "Nuzzle into an invisible gentle pat, tilt head left 1-5 and right 6-11, happy closed eyes at middle, relax 12-16. No human hands.",
+    "music": "Dance gently left and right with leaf hands swinging rhythmically and small alternating steps, constant body proportions.",
+    "celebrate": "Raise hands in delight 1-5, happy small hop 6-10, land 11-13, hands lower 14-16.",
+    "rest": "Lower into seated pose 1-4, close eyelids and settle hands in lap 5-8, remain seated ASLEEP for ALL frames 9-16 with subtle distinct breathing chest/petal/leaf poses. Never stand in last 8 frames.",
+    "focus": "Sit attentively with small open book, scan left-right with eyes, slowly turn a page 7-12, settle book 13-16.",
+    "breeze": "Feet planted while a soft breeze flexes petals and leaf cape gradually left then right then settles. No detached objects.",
+    "stretch": "Lift hands overhead 1-5, stretch with closed smiling eyes 6-10, lower arms 11-14, relax 15-16.",
+    "look": "Look curiously left 1-5, return through center 6-8, look right 9-13, return 14-16; eyes lead head, petals follow.",
+    "shy": "Blush and draw hands near cheeks 1-5, peek downward bashfully 6-10, glance back up and lower hands 11-16.",
+    "eat": "Lift tiny berry biscuit to mouth 1-5, small nibble and chew 6-11, lower snack and contented smile 12-16. Consistent tiny snack.",
+    "thanks": "Bring hands together 1-4, gentle grateful bow 5-10, rise 11-14, hands lower 15-16."
+  },
+  "identities": {
+    "neon_orchid-normal": "BOTTOM MIDDLE NORMAL orchid: cream fuzzy pear body, ivory face, violet eyes, cyan-blue orchid hood with magenta edges and golden speckles, pointed blue-magenta bud, dark emerald leaf collar/cape, cream hands, brown root feet.",
+    "neon_orchid-shiny": "BOTTOM RIGHT SHINY orchid: cream fuzzy pear body, ivory face, amber eyes, pearly blush pink orchid hood with orange-gold edges and golden speckles, pink bud, silvery mint emerald leaf collar/cape, cream hands, brown root feet. Palette intrinsic, no external glow.",
+    "volt_berry-normal": "BOTTOM MIDDLE NORMAL berry creature: big turquoise eyes, ivory fuzzy face and cream pear body, hood of electric cyan blue translucent berries with tiny gold lightning veins, emerald leaves with cyan veins and short cape, ivory hands and brown root toes. Same berry arrangement, leaf brooch and body silhouette.",
+    "volt_berry-shiny": "BOTTOM RIGHT SHINY berry creature: big violet eyes, ivory fuzzy face and cream pear body, hood of translucent pale lavender ivory berries with tiny warm gold-pink lightning veins, silvery mint leaves and short cape, ivory hands and brown root toes. Same berry arrangement, leaf brooch and body silhouette.",
+    "crystal_tree-normal": "BOTTOM MIDDLE NORMAL tree creature: amber eyes, ivory face and cream pear belly, crown and cape of green emerald leaves with pale cyan faceted crystal tips and gold veins, two amber crystal fruits at sides of head, brown wood arms with THREE branching twig fingers and two three-toed root feet. Retain warm bark texture and precise crystal leaf crown silhouette.",
+    "crystal_tree-shiny": "BOTTOM RIGHT SHINY tree creature: violet eyes, ivory face and cream pear belly, crown and cape of translucent pale blue lavender faceted crystal leaves with golden veins, two opalescent ivory crystal fruits beside head, brown wood arms with THREE twig fingers and two three-toed root feet. Same silhouette, intrinsic pearly shiny palette without external glow."
+  },
+  "firstOrchidRest": "C:/Users/andyl/.codex/generated_images/01a0cb5e-355f-73a1-9b07-602b960a696f/exec-e6bfdc8c-c956-4637-a6e0-bff833d692eb.png",
+  "generatedOrchid": [
+    {
+      "name": "neon_orchid-normal-focus-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-20a9f6d9-3065-440c-b90c-5a6a01c8a858.png"
+    },
+    {
+      "name": "neon_orchid-normal-breeze-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-88bf1d48-de29-4e87-876f-73970bb2cafe.png"
+    },
+    {
+      "name": "neon_orchid-normal-look-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-39a4f8c4-14da-48e7-9e08-ab00b783e9a9.png"
+    },
+    {
+      "name": "neon_orchid-normal-stretch-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-4709268a-6327-4711-ac94-d5452537fc05.png"
+    },
+    {
+      "name": "neon_orchid-normal-eat-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-93aee564-f17f-4e7f-bcbe-21ea523f9632.png"
+    },
+    {
+      "name": "neon_orchid-normal-shy-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-b0e72538-a375-419f-8390-83a75d716543.png"
+    },
+    {
+      "name": "neon_orchid-normal-thanks-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-4c00a8d0-8b2a-4a82-80d5-5b0466839b19.png"
+    },
+    {
+      "name": "neon_orchid-shiny-rest-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-52510fdd-297e-4c49-96e7-d929d0117cae.png"
+    },
+    {
+      "name": "neon_orchid-shiny-focus-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-54e71a42-e166-4f94-8910-a14c4c3ad2cc.png"
+    },
+    {
+      "name": "neon_orchid-shiny-stretch-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-913cc26b-0568-41a7-af56-e6422ebacccc.png"
+    },
+    {
+      "name": "neon_orchid-shiny-breeze-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-b643b5f8-dbc3-4eb2-b4ba-3de79ffd8f07.png"
+    },
+    {
+      "name": "neon_orchid-shiny-look-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-5b24a9c9-2980-43d3-9ae0-cba65039c0ba.png"
+    },
+    {
+      "name": "neon_orchid-shiny-shy-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-0c37f0b4-69cf-4744-9d0d-f6caac58fa22.png"
+    },
+    {
+      "name": "neon_orchid-shiny-eat-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-8e3cef82-3473-49b3-b620-53e497960e65.png"
+    },
+    {
+      "name": "neon_orchid-shiny-thanks-v2",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a0cb5e-355f-73a1-9b07-602b960a696f\\exec-8e4871cb-71ef-4b82-9f60-cd4139778343.png"
+    }
+  ]
+}

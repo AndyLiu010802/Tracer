@@ -15,7 +15,8 @@ function fixture(t,area={x:0,y:0,width:1200,height:900},saved){
   destroy(){this.dead=true;this.emit('closed');}
  }
  const screen={getPrimaryDisplay:()=>({workArea:area}),getDisplayMatching:()=>({workArea:area}),getDisplayNearestPoint:()=>({workArea:area}),getCursorScreenPoint:()=>cursor};
- const mod={exports:{}};vm.runInNewContext(source,{module:mod,URL,setTimeout,clearTimeout,__dirname:path.join(__dirname,'../desktop'),require:name=>name==='electron'?{BrowserWindow:Window,ipcMain,screen}:require(name)});
+ const electron={BrowserWindow:Window,ipcMain,screen};
+ const mod={exports:{}};vm.runInNewContext(source,{module:mod,URL,setTimeout,clearTimeout,__dirname:path.join(__dirname,'../desktop'),require:name=>name==='electron'?electron:name==='./garden-trail'?{attachGardenTrail:main=>require('../desktop/garden-trail').attachGardenTrail(main,electron)}:require(name)});
  const main=new Window({x:0,y:0,width:1000,height:800}),controller=mod.exports.attachPet(main,origin,dir,()=>shown++);controller.show();const pet=windows[1];pet.emit('ready-to-show');
  function event(win=pet){return{sender:win.webContents,senderFrame:win.webContents.mainFrame};}
  function send(type,value,from=event()){ipcMain.emit('tracer-pet-command',from,{type,value});}

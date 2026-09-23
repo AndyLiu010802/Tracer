@@ -1,0 +1,86 @@
+/* Task planting and the permanent botanical collection. */
+.garden-home .garden-world-detail.garden-task-plants{display:block;margin:0;padding:24px 28px 28px;min-height:0;border:0;border-radius:0;background:linear-gradient(180deg,#18201b00,#15201b44);box-shadow:none}
+.garden-task-plants [hidden]{display:none!important}
+.garden-task-plants-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:18px}
+.garden-task-plants-title{margin:0 0 7px;color:#d6dec4;font-size:18px;letter-spacing:.5px;font-weight:600}
+.garden-task-plants-help{margin:0;color:#93a189;font-size:12px;line-height:1.8;max-width:65ch}
+.garden-task-plants-count{flex:none;padding:7px 11px;border:1px solid #aabc8740;border-radius:24px;color:#bfcca6;background:#abc48609;font-size:11px;font-variant-numeric:tabular-nums}
+.garden-task-plants .garden-world-care{justify-content:flex-start;padding:12px 14px;margin:0 0 20px;border:1px solid #9fb38a26;border-radius:12px;background:#121b1680;gap:7px}
+.garden-task-plants .garden-world-care-title{flex:1 1 160px;min-width:0;max-width:100%;font-size:11px;line-height:1.6;color:#b3c19f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.garden-task-care-hint{color:#86977a;font-size:10px;line-height:1.6}
+.garden-task-plants .garden-world-care-button{background:#222c21;border-color:#8ea77c35;box-shadow:none;color:#bccba7;padding:7px 11px;min-height:34px}
+.garden-task-plants .garden-world-care-button:hover{background:#2c3728;border-color:#b7c99765}
+.garden-task-plant-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.garden-task-plant-card{position:relative;isolation:isolate;min-width:0;display:flex;flex-direction:column;padding:16px 17px 17px;border:1px solid #9eb28a30;border-radius:16px;background:radial-gradient(ellipse at 50% 30%,#8eb76b14,transparent 62%),linear-gradient(150deg,#232c21,#17211c);box-shadow:0 8px 18px #00000010;transition:border-color .18s,background .18s}
+.garden-task-plant-card::before{content:'';position:absolute;inset:6px;border:1px solid #aabe9710;border-radius:11px;pointer-events:none;z-index:-1}
+.garden-task-plant-card[data-selected=true]{border-color:#c1d6948c;box-shadow:0 0 0 1px #b7ca8d16,0 8px 18px #0002;background:radial-gradient(ellipse at 50% 30%,#a0bf711c,transparent 65%),linear-gradient(150deg,#293321,#1c281f)}
+.garden-task-plant-card[data-rarity=rare]{background:radial-gradient(ellipse at 50% 30%,#b08fd421,transparent 63%),linear-gradient(150deg,#28282b,#19221f)}
+.garden-task-plant-card[data-rarity=shiny]{border-color:#dbc8845c;background:radial-gradient(ellipse at 50% 32%,#ead69d21,transparent 62%),linear-gradient(150deg,#2d3023,#202723)}
+.garden-task-plant-top{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:23px}
+.garden-task-plant-art-wrap{position:relative}
+.garden-task-plant-care{position:absolute;left:50%;bottom:6px;translate:-50% 0;display:flex;align-items:center;gap:4px;padding:3px;border:1px solid #a8bd7e42;border-radius:20px;background:#152018ed;box-shadow:0 3px 10px #0002}
+.garden-task-plant-care-button{display:grid;place-items:center;width:27px;height:27px;border:0;border-radius:50%;background:transparent;color:#c3d6a5;font:16px Georgia,serif;cursor:pointer}
+.garden-task-plant-care-button:hover{background:#a1bf7938;color:#e0e6bd}.garden-task-plant-care-button:focus-visible{outline:2px solid #d3dfa8;outline-offset:0}.garden-task-plant-care-button:disabled{opacity:.45;cursor:default}
+.garden-home .garden-task-plant-card[data-selected=true] .garden-world-portrait{translate:0 -9px}
+.garden-task-plant-card[data-selected=true] .garden-task-plant-chosen{display:none}
+.garden-task-plant-number{color:#92a37c;font:10px var(--font-mono,monospace);letter-spacing:2px;font-variant-numeric:tabular-nums}
+.garden-task-plant-status{color:#a8b695;font-size:10px;line-height:1.5;text-align:right}
+.garden-task-plant-card[data-stage="4"] .garden-task-plant-status{color:#dfce91}.garden-task-plant-card[data-active-focus=true] .garden-task-plant-status{color:#d3dea8}
+.garden-task-plant-select{display:grid;place-items:center;position:relative;width:100%;height:158px;min-height:44px;border:0;background:radial-gradient(ellipse at 50% 82%,#97bb6940,transparent 40%);padding:0;cursor:pointer;border-radius:12px;margin:1px 0 6px;color:#bacb9f}
+.garden-home .garden-task-plant-card .garden-world-portrait{display:block;width:142px;height:155px;max-width:94%;background:none;align-self:center;filter:drop-shadow(0 10px 8px #0003)}
+.garden-task-plant-card[data-stage="0"] .garden-task-plant-select{height:142px;background:radial-gradient(ellipse at 50% 78%,#97bb6930,transparent 43%)}
+.garden-home .garden-task-plant-card[data-stage="0"] .garden-world-portrait{height:142px}
+.garden-home .garden-task-plant-card .garden-world-portrait :is(.garden-home-plant-art,.garden-plant-sprite){display:block;width:100%;height:100%;max-width:none}
+.garden-task-plant-chosen{position:absolute;bottom:0;left:50%;translate:-50% 0;padding:3px 8px;white-space:nowrap;border:1px solid #a9bf8233;border-radius:20px;background:#152018ed;font-size:9px;opacity:0;transition:opacity .16s}
+.garden-task-plant-select:is(:hover,:focus-visible) .garden-task-plant-chosen,.garden-task-plant-card[data-selected=true] .garden-task-plant-chosen{opacity:1}
+.garden-task-plant-select:focus-visible{outline:2px solid #d3dfa8;outline-offset:2px}
+.garden-task-plant-identity{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;margin:1px 0 8px}
+.garden-task-plant-card .garden-world-name{color:#dbe2cb;font-size:16px;font-weight:600;line-height:1.4;margin:0}
+.garden-task-plant-card .garden-world-bond{font-size:9px;padding:3px 6px;border-color:#a9bc7d30;color:#99ae89;background:#9aaa6610}
+.garden-task-plant-card[data-rarity=rare] .garden-world-bond{color:#c0acd2;border-color:#b595d142;background:#a889c312}
+.garden-task-plant-card[data-rarity=shiny] .garden-world-bond{color:#d9c69a;border-color:#d6bd7948;background:#d0bb6910}
+.garden-task-plant-card .garden-world-project{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:20px;color:#acb8a0;font-size:12px;line-height:1.65;margin:0 0 9px;overflow-wrap:anywhere}
+.garden-task-plant-stages{display:flex;gap:5px;margin:0 0 9px}.garden-task-plant-stages i{height:3px;flex:1;border-radius:4px;background:#92a17a24}.garden-task-plant-stages i[data-reached=true]{background:#a8bd85}
+.garden-task-plant-card[data-stage="4"] .garden-task-plant-stages i{background:#c9c18b}
+.garden-task-plant-card .garden-world-next{color:#84977e;font-size:10px;line-height:1.7;margin:0 0 10px;min-height:17px}
+.garden-task-plant-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto}
+.garden-home .garden-task-plant-actions .garden-home-button{flex:1;justify-content:center;min-height:36px;padding:8px 9px;font-size:11px;border-radius:8px;white-space:normal;text-align:center;line-height:1.4}
+.garden-home .garden-task-plant-open{color:#b3c0a3;background:#192219;border-color:#95ab7633}
+.garden-home .garden-task-plant-actions .garden-world-focus{color:#c4d3aa;background:#a8bc7512;border-color:#aac28245}
+.garden-home .garden-task-plant-actions .garden-world-harvest{color:#e0d199;background:#b8a76a1e;border-color:#c9b57859}
+.garden-home .garden-task-plant-actions button:hover{filter:brightness(1.15)}
+.garden-task-plants-empty{margin:14px 0 0;padding:30px 20px;border:1px dashed #a4b88c35;border-radius:14px;text-align:center;color:#93a58b;font-size:13px;line-height:1.9;background:#18221a50}
+.garden-world-surface+.garden-task-pages{border-top:0;border-bottom:1px solid #a1b38c20;margin-top:0}
+@container garden-home (max-width:820px){.garden-task-plant-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.garden-home .garden-world-detail.garden-task-plants{padding:22px 20px}.garden-task-plants-title{font-size:17px}}
+@container garden-home (max-width:480px){.garden-home .garden-world-detail.garden-task-plants{padding:20px 14px}.garden-task-plants-heading{align-items:flex-start;gap:10px}.garden-task-plants-title{font-size:16px}.garden-task-plants-help{font-size:11px}.garden-task-plants-count{font-size:10px;padding:6px 8px}.garden-task-plant-grid{grid-template-columns:minmax(0,1fr);gap:14px}.garden-task-plant-card{padding:16px 20px 18px}.garden-task-plants .garden-world-care-title{flex-basis:100%}.garden-task-plant-card .garden-world-project{min-height:0}.garden-task-plant-card .garden-world-next{min-height:0}.garden-task-plant-actions{flex-wrap:nowrap}}
+.garden-task-pages{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;padding:16px 24px;border-top:1px solid var(--home-line);grid-column:1/-1;position:relative;z-index:1;color:var(--home-muted);font-size:12px}
+.garden-task-page-info{margin-right:auto;line-height:1.8;max-width:75ch}.garden-task-page-count{font-variant-numeric:tabular-nums;min-width:44px;text-align:center}
+.garden-home .garden-collection-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.garden-collection-card{position:relative;min-width:0;overflow:hidden;isolation:isolate;padding:20px 22px 24px;border:1px solid #aabc8730;border-radius:18px;background:radial-gradient(ellipse at 50% 34%,#b7c48e12,transparent 66%),linear-gradient(140deg,#22291f,#191e18);text-align:center;box-shadow:0 5px 22px #00000014}
+.garden-collection-card::after{content:'';position:absolute;inset:8px;border:1px solid #bbcaa511;border-radius:12px;pointer-events:none}
+.garden-collection-number{position:absolute;left:21px;top:18px;color:#a8b88999;font:11px var(--font-mono,monospace);letter-spacing:2px}
+.garden-collection-art{height:clamp(130px,17vw,225px);display:grid;place-items:center;margin:4px auto 14px;max-width:245px;width:100%;filter:drop-shadow(0 9px 12px #0003)}
+.garden-collection-art>svg{display:block;height:100%;width:100%;overflow:visible}
+.garden-collection-name{color:#d4ddbc;font-size:17px;font-weight:550;letter-spacing:1px;margin:0 0 7px}
+.garden-collection-count{color:#b2c196;font-size:12px;margin:0;line-height:1.8;font-variant-numeric:tabular-nums}
+.garden-collection-variants{color:#8d9b7c;font-size:10px;letter-spacing:.5px;margin:12px 0 0;line-height:1.8}
+.garden-collection-card[data-unlocked=false]{background:radial-gradient(ellipse at 50% 44%,#76836112,transparent 60%),#151a16;border-color:#a7b3901a}
+.garden-collection-card[data-unlocked=false] .garden-collection-art{filter:brightness(0) drop-shadow(0 2px 1px #c0cfad17);opacity:.65}
+.garden-collection-card[data-unlocked=false] .garden-collection-name{color:#8c9782}.garden-collection-card[data-unlocked=false] .garden-collection-count{color:#718069}
+.garden-home .garden-world-collection{padding-top:10px;padding-bottom:14px}.garden-world-rules{margin-top:0}
+.garden-home .garden-world-plot[data-empty=true] .garden-world-seed-plus{font-size:22px;opacity:.45}
+.garden-home .garden-world-plot[data-empty=true] .garden-world-plot-label{opacity:0}.garden-home .garden-world-plot[data-empty=true]:is(:hover,:focus-visible) .garden-world-plot-label{opacity:1}
+.garden-home .garden-home-description{max-width:540px}
+#sec-planets{min-width:0}
+.garden-memory-tasks{list-style:none;padding:0;max-height:50vh;overflow:auto}.garden-memory-tasks li{padding:10px 4px;border-bottom:1px solid var(--border);line-height:1.7;overflow-wrap:anywhere;color:var(--fg)}
+@media(min-width:721px) and (max-width:1200px){.shell:has(#sec-planets.active){grid-template-columns:236px minmax(0,1fr)}.shell:has(#sec-planets.active)>.rail{display:none}}
+@media(max-width:720px){
+  body:has(#sec-planets.active)>.top{min-width:0;gap:12px;padding-inline:10px}
+  body:has(#sec-planets.active)>.top .top-mid,body:has(#sec-planets.active)>.top .top-left :is(.crumb-sep,.crumb:not(.crumb-strong)),body:has(#sec-planets.active)>.top .dial{display:none}
+  body:has(#sec-planets.active)>.top .top-right{flex:1;min-width:0;flex-wrap:nowrap;gap:7px;overflow-x:auto;padding-block:2px}
+  body:has(#sec-planets.active)>.top .top-right>*{flex-shrink:0}
+  .shell:has(#sec-planets.active)>.side{min-width:0}.shell:has(#sec-planets.active) #nav-secs{min-width:0;max-width:100%}
+}
+@container garden-home (max-width:650px){.garden-home .garden-collection-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.garden-collection-card{padding:17px 13px 20px}.garden-collection-number{left:15px;top:13px}.garden-collection-art{height:160px}.garden-collection-name{font-size:15px}.garden-task-pages{padding:14px 16px}.garden-task-page-info{flex-basis:100%}}
+@container garden-home (max-width:360px){.garden-collection-art{height:130px}.garden-collection-card{padding-inline:9px}.garden-collection-count{font-size:11px}.garden-collection-variants{font-size:9px}}
+@media(max-width:720px){.shell:has(#sec-planets.active){grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}.shell:has(#sec-planets.active)>.rail{display:none}.shell:has(#sec-planets.active)>.side{padding:6px 10px;overflow:hidden}.shell:has(#sec-planets.active) #nav-secs{flex-direction:row;overflow-x:auto;gap:4px}.shell:has(#sec-planets.active) .nav-item{flex:none;font-size:11px;white-space:nowrap;padding:6px 9px}.shell:has(#sec-planets.active) :is(.nav-label,#proj-list){display:none}.main:has(#sec-planets.active){padding:12px}.shell:has(#sec-planets.active) .main{min-width:0}.garden-home .garden-home-top{gap:8px}.garden-home .garden-home-eyebrow{letter-spacing:1px}}

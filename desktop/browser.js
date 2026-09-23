@@ -101,6 +101,7 @@ function attachBrowser(win, appOrigin) {
     currentURL = url || currentURL; failed = true; lastError = description + ' (' + code + ')'; visibility(); report({ loading: false });
   });
   contents.on('render-process-gone', (_e, details) => { failed = true; lastError = details.reason; visibility(); report({ loading: false }); });
+  // 阅读窗口的匿名输入交给主页面专注统计；farm-pulse 保留为兼容协议名。
   contents.on('before-input-event', (_event, input) => {
     if (input.type === 'keyDown') win.webContents.send('farm-pulse', { kind: 'key' });
     if ((input.control || input.meta) && input.key.toLowerCase() === 'l') {

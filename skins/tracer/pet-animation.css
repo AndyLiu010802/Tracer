@@ -5,6 +5,10 @@
 .pet-home.has-animation-pack .pet-effects,
 .pet-home.has-animation-pack .pet-idle-scene { display:none!important; }
 .pet-home .pet-animated-sprite { flex:none; aspect-ratio:1; image-rendering:pixelated; }
+/* Frame players own the pose. Layered idle/drag CSS must not move the whole pet. */
+.pet-home .pet-character > :is(.pet-builtin-sprite,.garden-plant-sprite) {
+  animation:none!important; transform:none!important; translate:none!important;
+}
 .pet-home .pet-unlock > .pet-animated-sprite { display:block; width:52px; height:52px; }
 .pet-result-frame .pet-animated-sprite { width:min(100%,290px); height:auto; }
 .pet-animation-preview { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }

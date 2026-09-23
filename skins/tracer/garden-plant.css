@@ -1,0 +1,12 @@
+.garden-plant-sprite{display:block;width:100%;height:100%;min-width:0;pointer-events:none;transform-origin:50% 88%;contain:layout style}
+.garden-plant-sprite>.garden-pixel-plant{display:block;width:100%;height:100%;max-width:none;overflow:visible;image-rendering:pixelated}
+.garden-pixel-plant [data-plant-part]{transform-box:view-box}
+.garden-plant-sprite>.garden-illustrated-plant,.garden-home-plant>.garden-illustrated-plant{image-rendering:auto;shape-rendering:auto}
+.garden-plant-sprite[data-shiny=true]>.garden-pixel-plant,.garden-home-plant[data-shiny=true]>.garden-pixel-plant{filter:hue-rotate(85deg) saturate(1.3) drop-shadow(0 0 5px #e6ba6866)}
+.garden-plant-sprite[data-shiny=true]>.garden-illustrated-plant,.garden-home-plant[data-shiny=true]>.garden-illustrated-plant{filter:drop-shadow(0 0 3px #e6ca7755)}
+.garden-rare-sparkles{animation:garden-rare-glimmer 2.5s ease-in-out infinite}
+@keyframes garden-rare-glimmer{50%{opacity:.25}}
+.pet-trail-toggle{display:block;max-width:100%;padding:10px 14px;border:1px solid #d3b47766;border-radius:8px;background:#d3b47715;color:#e7d39a;font:inherit;cursor:pointer}
+.pet-trail-toggle[aria-pressed=true]{background:#b398e626;border-color:#c7b2fa;color:#e9d7ff}
+.pet-trail-toggle:disabled{opacity:.6;cursor:default}
+@media(prefers-reduced-motion:reduce){.garden-rare-sparkles{animation:none}}

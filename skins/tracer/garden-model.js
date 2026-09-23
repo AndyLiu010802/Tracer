@@ -6,7 +6,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (History, Deletion) {
   'use strict';
   const limit = 6, receiptLimit = 10000, maximumTime = 8640000000000000;
-  const plantKinds = ['wildflower', 'sunflower', 'lavender'];
+  const plantKinds = ['wildflower', 'sunflower', 'lavender', 'apple', 'peach', 'cherry'];
   const has = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
   const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
   const id = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value);
@@ -131,15 +131,44 @@
     return { state, changed: JSON.stringify(state) !== JSON.stringify(previous), events };
   }
   function day(value) { const date = new Date(value); return date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate(); }
+  // Derived entirely from durable, deduplicated receipts. Opening the garden,
+  // tapping a friend, and changing the clock never award growth.
+  function journey(plots) {
+    const tasks = plots.reduce((sum, plot) => sum + plot.taskIds.length, 0);
+    const minutes = plots.reduce((sum, plot) => sum + plot.focusMinutes, 0);
+    const blooms = plots.filter(plot => plot.stage === 4).length;
+    const varieties = new Set(plots.map(plot => plot.plantKind)).size;
+    const xp = tasks * 10 + Math.floor(minutes / 5) + blooms * 30;
+    const thresholds = [0, 30, 100, 250, 500, 1000];
+    let level = 1;
+    while (level < thresholds.length && xp >= thresholds[level]) level++;
+    const floor = thresholds[level - 1], next = thresholds[level] ?? null;
+    const milestones = [
+      { id: 'first-seed', current: plots.length, target: 1 },
+      { id: 'first-bloom', current: blooms, target: 1 },
+      { id: 'plant-family', current: varieties, target: 3 },
+      { id: 'quiet-hours', current: minutes, target: 120 },
+      { id: 'small-steps', current: tasks, target: 25 }
+    ].map(item => ({ ...item, earned: item.current >= item.target }));
+    return { xp, level, floor, next, progress: next === null ? 1 : (xp - floor) / (next - floor), tasks, minutes, blooms, varieties, milestones };
+  }
+  function growth(plot) {
+    const effort = plot.taskIds.length + Math.floor(plot.focusMinutes / 25);
+    const next = plot.stage < 3 ? [1, 3, 6][plot.stage] : null;
+    const floor = [0, 1, 3, 6, 6][plot.stage];
+    return { effort, next, remaining: next === null ? 0 : Math.max(0, next - effort),
+      progress: next === null ? 1 : Math.min(1, Math.max(0, (effort - floor) / (next - floor))),
+      bond: effort >= 25 ? 3 : effort >= 10 ? 2 : effort >= 3 ? 1 : 0 };
+  }
   function snapshot(raw, workspace, focus, now = Date.now()) {
     const state = read(raw), source = context(workspace, focus, now), today = day(now);
     const plots = state.plots.filter(plot => source.projects.has(plot.projectId)).map(plot => {
       const tasks = Array.from(source.tasks.values()).filter(task => task.projectId === plot.projectId);
       return { projectId: plot.projectId, projectName: source.projects.get(plot.projectId).name, plantKind: plot.plantKind, stage: plot.stage,
         plantedAt: plot.plantedAt, commemoratedAt: plot.commemoratedAt, done: tasks.filter(task => task.status === 'done').length, total: tasks.length,
-        completedTasks: plot.taskIds.length, focusMinutes: plot.focusMinutes };
+        completedTasks: plot.taskIds.length, focusMinutes: plot.focusMinutes, growth: growth(plot) };
     });
-    return { plots, today: { completedTasks: new Set(source.completed.filter(row => day(row.completedAt) === today).map(row => row.taskId)).size,
+    return { plots, journey: journey(state.plots.filter(plot => source.projects.has(plot.projectId))), today: { completedTasks: new Set(source.completed.filter(row => day(row.completedAt) === today).map(row => row.taskId)).size,
       focusMinutes: source.sessions.filter(row => day(row.endedAt) === today).reduce((sum, row) => sum + row.minutes, 0) } };
   }
   return { limit, plantKinds: plantKinds.slice(), fresh, read, plant, remove, reconcile, snapshot };

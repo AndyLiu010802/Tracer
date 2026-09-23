@@ -42,14 +42,14 @@ async (page) => {
     assert((await state(created.id)).labels.join(',') === 'UI,delivery', 'rich fields survive reload');
     await p.locator('.card[data-id="qa-one"] .card-title').click();
     await p.locator('#f-assignee').fill('Discard candidate');
-    p.once('dialog', d => d.dismiss()); await p.locator('#f-cancel').click();
+    await p.locator('#f-cancel').click(); await p.locator('[data-task-action="cancel"]').click();
     assert(await p.locator('.task-editor').isVisible(), 'cancel protects unsaved fields');
-    p.once('dialog', d => d.accept()); await p.locator('#f-cancel').click();
+    await p.locator('#f-cancel').click(); await p.locator('[data-task-action="confirm"]').click();
     assert(!(await state('qa-one')).assignee, 'discard leaves original task unchanged');
     await p.locator('.card[data-id="qa-one"] .card-title').click();
     await p.locator('[data-dependency="' + created.id + '"]').check(); await p.locator('#f-save').click();
     assert((await p.locator('#task-error').innerText()).includes('cycles'), 'dependency cycle has actionable error');
-    p.once('dialog', d => d.accept()); await p.locator('#f-cancel').click();
+    await p.locator('#f-cancel').click(); await p.locator('[data-task-action="confirm"]').click();
     let grip = await p.locator('.card[data-id="qa-one"] .drag-handle').boundingBox();
     let destination = await p.locator('.col-body[data-col="done"]').boundingBox();
     await p.mouse.move(grip.x + 10, grip.y + 10); await p.mouse.down();
