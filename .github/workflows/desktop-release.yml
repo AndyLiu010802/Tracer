@@ -63,6 +63,7 @@ jobs:
         if: matrix.platform == 'mac'
         run: node dev/verify-macos-release.cjs ${{ matrix.arch }}
       - name: Install isolated UI test driver
+        id: qa_driver
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
         run: npm install --prefix .cache/release-qa --no-save --package-lock=false playwright@1.63.0
@@ -70,29 +71,36 @@ jobs:
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
         run: node dev/qa-pet-dense-release.cjs '${{ matrix.executable }}'
-      - name: Verify packaged lifecycle, local accounts and nine shiny trails
+      - name: Verify packaged lifecycle and background timing
+        if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
-        run: |
-          node dev/qa-desktop-lifecycle.cjs '${{ matrix.executable }}'
-          node dev/qa-account-desktop.cjs '${{ matrix.executable }}'
-          node dev/qa-garden-trail.cjs '${{ matrix.executable }}'
+        run: node dev/qa-desktop-lifecycle.cjs '${{ matrix.executable }}'
+      - name: Verify packaged local account isolation
+        if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
+        env:
+          TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
+        run: node dev/qa-account-desktop.cjs '${{ matrix.executable }}'
+      - name: Verify packaged nine shiny companion trails
+        if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
+        env:
+          TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
+        run: node dev/qa-garden-trail.cjs '${{ matrix.executable }}'
       - name: Install recovery test browser
+        id: qa_browser
+        if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
         run: node .cache/release-qa/node_modules/playwright/cli.js install chromium
       - name: Verify companion draft recovery and background generation
+        if: ${{ !cancelled() && steps.qa_browser.outcome == 'success' }}
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
           TRACER_QA_BROWSER: chromium
         run: |
-          node dev/qa-pet-generation-recovery.cjs
-          node dev/qa-pet-creator-lifecycle.cjs
-          node dev/qa-companion-work.cjs
-          node dev/qa-workspace-recovery.cjs
-          node dev/qa-task-garden-actions.cjs
-          node dev/qa-accounts.cjs
-          node dev/qa-wallpaper-shop.cjs
-          node dev/qa-stickers.cjs
-          node dev/qa-drag-anchor.cjs
+          failures=0
+          for script in qa-pet-generation-recovery qa-pet-creator-lifecycle qa-companion-work qa-workspace-recovery qa-task-garden-actions qa-accounts qa-wallpaper-shop qa-stickers qa-drag-anchor; do
+            node "dev/$script.cjs" || failures=1
+          done
+          exit "$failures"
       - uses: actions/upload-artifact@v4
         with:
           name: Tracer-${{ matrix.platform }}-${{ matrix.arch }}

@@ -34,23 +34,31 @@ async function importPack(page,file) {
 
 async function cycle(page,selector,action,count,label) {
   checkpoint(label);
+  await page.bringToFront();
   await page.waitForFunction(({selector,action})=>{
-    const el=document.querySelector(selector);return el?.dataset.action===action&&el.dataset.playback==='playing';
+    const el=document.querySelector(selector);return el?.dataset.action===action&&el.dataset.playback==='playing'&&/^\d+$/.test(el.dataset.frame||'')&&(!el.dataset.motionClip||el.dataset.motionClip===action);
   },{selector,action}).catch(async error=>{
     console.error('Animation wait state:',await page.evaluate(selector=>({hidden:document.hidden,section:window.Tracer?.currentSec(),matching:[...document.querySelectorAll(selector)].map(el=>({data:{...el.dataset},rect:el.getBoundingClientRect().toJSON()})),home:document.querySelector('.garden-home')?.dataset.petAction}),selector));
     await page.screenshot({path:path.join(profile,'animation-wait-failure.png')});throw error;
   });
   const result=await page.evaluate(({selector,action,count})=>new Promise((resolve,reject)=>{
-    const element=document.querySelector(selector),frames=new Map();
-    const timer=setTimeout(()=>{observer.disconnect();reject(new Error('Timed out waiting for '+count+' '+action+' frames: '+[...frames.keys()].join(',')));},15000);
+    let element=document.querySelector(selector);const frames=new Map();
+    const timer=setTimeout(()=>{observer.disconnect();reject(new Error('Timed out waiting for '+count+' '+action+' frames: '+[...frames.keys()].join(',')+'; state='+JSON.stringify({hidden:document.hidden,nativeHidden:document.tracerHidden,data:element?.dataset,connected:element?.isConnected})));},30000);
     const collect=()=>{
+      const current=document.querySelector(selector);if(current!==element){element=current;frames.clear();}
+      if(!element)return;
       if(element.dataset.action!==action)return;
+      // The illustrated atlas reports playback before its first sheet finishes
+      // decoding. An absent frame is not a rendered pose and must not satisfy
+      // the sixteen-frame count before the last real frame appears.
+      if(!/^\d+$/.test(element.dataset.frame||''))return;
       const frame=Number(element.dataset.frame),sheet=element.querySelector('.pet-animation-sheet');
+      if(!Number.isInteger(frame)||frame<0||frame>=count)return;
       if(sheet&&(!sheet.complete||!sheet.naturalWidth))return;
       frames.set(frame,sheet?sheet.style.transform:element.innerHTML);
       if(frames.size===count){clearTimeout(timer);observer.disconnect();resolve({frames:[...frames.keys()].sort((a,b)=>a-b),poses:new Set(frames.values()).size});}
     };
-    const observer=new MutationObserver(collect);observer.observe(element,{attributes:true,attributeFilter:['data-frame','data-action']});collect();
+    const observer=new MutationObserver(collect);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-frame','data-action']});collect();
   }),{selector,action,count});
   assert.deepEqual(result.frames,Array.from({length:count},(_,i)=>i),label+' visits every frame');
   assert.equal(result.poses,count,label+' supplies a different pose/crop for every frame');
@@ -117,7 +125,10 @@ async function cycle(page,selector,action,count,label) {
     await pet.screenshot({path:path.join(profile,'native-generated.png'),omitBackground:true});
     await pet.locator('.pet-character').hover();await pet.click('[data-quick-act="sleep"]');
     await page.waitForFunction(()=>TracerPetModel.current(Tracer.pet.read()).sleeping);
-    await cycle(pet,'.pet-character .pet-animated-sprite','sleep',16,'native care action changes to sixteen sleeping frames');
+    await pet.waitForFunction(()=>{const el=document.querySelector('.pet-character .pet-animated-sprite');return el?.dataset.action==='sleep'&&el.dataset.playback==='sleeping'&&el.dataset.frame==='12';});
+    const sleepingPose=await pet.locator('.pet-character .pet-animated-sprite').innerHTML();await pet.waitForTimeout(900);
+    assert.equal(await pet.locator('.pet-character .pet-animated-sprite').innerHTML(),sleepingPose,'sleep holds the settled pose without continuously redrawing');
+    console.log('PASS native care action settles into the resting pose and pauses playback');
     checkpoint('wake native companion and configure export download');
     await pet.locator('.pet-character').hover();await pet.click('[data-quick-act="sleep"]');
     await page.waitForFunction(()=>!TracerPetModel.current(Tracer.pet.read()).sleeping);
@@ -139,6 +150,9 @@ async function cycle(page,selector,action,count,label) {
     await page.evaluate(id=>Tracer.pet.action('select',id),adopted.id);await page.reload();await page.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
     assert.equal(await page.evaluate(()=>Tracer.pet.read().selected),adopted.id);
     assert.equal(await page.evaluate(()=>Tracer.pet.read().customs.find(pet=>pet.id===Tracer.pet.read().selected).animation.version),2);
+    // Workspace reload pauses account-bound native windows until the user
+    // explicitly opens the companion again in the restored account context.
+    await page.click('#pet-open');await page.click('[data-act="desktop"]');await page.click('.pet-home [data-act="close"]');
     await pet.waitForFunction(()=>document.querySelector('.pet-name')?.textContent==='Dense Release Fixture');
     checkpoint('native chat proposal and confirmed workspace creation over real IPC');
     allowWorkChat=true;
@@ -157,7 +171,7 @@ async function cycle(page,selector,action,count,label) {
     const persisted=await page.evaluate(async()=>{const response=await fetch('/api/store/workspace');if(!response.ok)throw new Error('workspace-read-failed');return response.json();});
     assert.equal(persisted.tasks.length,1);assert.equal(persisted.tasks[0].id,created[0].id);
     await pet.screenshot({path:path.join(profile,'native-chat-created.png'),omitBackground:true,animations:'disabled'});
-    checkpoint('packaged companion home, saved project plot and task growth');
+    checkpoint('packaged companion home, task planting and mature flower preservation');
     await page.bringToFront();
     const gardenProject=await page.evaluate(()=>{
       const project=TracerModel.addProject(Tracer.store.data,{name:'Packaged home check'});
@@ -166,20 +180,27 @@ async function cycle(page,selector,action,count,label) {
     await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
     await page.click('#nav-garden');await page.locator('.garden-home').waitFor();
     await cycle(page,'.garden-home-companion-art .pet-animated-sprite','focus',16,'packaged home uses the selected generated companion during the active focus session');
-    await page.locator('[data-home-action="add-plot"]:visible').first().click();
-    await page.selectOption('#garden-project-select',gardenProject);await page.selectOption('#garden-plant-select','sunflower');await page.click('#garden-plant-save');
-    const gardenCard=page.locator('.garden-home-plot[data-project-id="'+gardenProject+'"]');await gardenCard.waitFor();
-    assert.equal(await gardenCard.getAttribute('data-stage'),'0');
-    await gardenCard.locator('[data-home-action="open-project"]').click();
-    await page.locator('.card[data-id="'+created[0].id+'"]').click();
-    await page.selectOption('#f-status','done');await page.click('#f-save');
+    await page.evaluate(id=>Tracer.openProject(id),gardenProject);
+    const taskCard=page.locator('.card[data-id="'+created[0].id+'"]');
+    await taskCard.locator('.card-move').selectOption('doing');
+    await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
+    assert.equal(await page.evaluate(id=>TaskGarden.read(Tracer.store.base).seeds.find(seed=>seed.taskId===id)?.state,created[0].id),'growing');
+    await taskCard.locator('.card-move').selectOption('done');
     await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
     await page.click('#nav-garden');await page.evaluate(()=>Tracer.garden.refresh(true));
-    await page.waitForFunction(id=>Tracer.garden.read().plots.find(plot=>plot.projectId===id)?.stage===4,gardenProject);
+    const gardenCard=page.locator('.garden-task-plant-card[data-task-id="'+created[0].id+'"]');await gardenCard.waitFor();
+    assert.equal(await gardenCard.getAttribute('data-stage'),'4');
+    await page.evaluate(id=>Tracer.openProject(id),gardenProject);await page.click('#board-clear-completed');await page.click('[data-task-action="confirm"]');
+    await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
+    assert.equal(await page.evaluate(()=>Tracer.store.base.tasks.length),0,'clearing removes the completed card');
+    await page.click('#nav-garden');await gardenCard.waitFor();assert.equal(await gardenCard.getAttribute('data-stage'),'4','clearing retains the mature flower');
     await page.screenshot({path:path.join(profile,'main-companion-home.png'),animations:'disabled'});
     await page.reload();await page.waitForFunction(()=>window.Tracer?.garden&&Tracer.store.data);await page.evaluate(()=>Tracer.garden.refresh(true));
-    assert.equal(await page.evaluate(id=>Tracer.garden.read().plots.find(plot=>plot.projectId===id)?.taskIds.length,gardenProject),1,'packaged plot persists without duplicate growth');
-    console.log('PASS packaged companion home, selected sixteen-frame companion, project planting, saved task bloom and reload deduplication');
+    const kept=await page.evaluate(id=>TaskGarden.read(Tracer.store.base).seeds.filter(seed=>seed.taskId===id),created[0].id);
+    assert.equal(kept.length,1,'reload retains a single flower');assert.equal(kept[0].state,'mature');assert.equal(kept[0].harvestedAt,null);
+    await gardenCard.waitFor();await gardenCard.locator('[data-plant-action="harvest"]').click();await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
+    assert.equal(await page.evaluate(id=>TaskGarden.read(Tracer.store.base).seeds.find(seed=>seed.taskId===id).state,created[0].id),'harvested');
+    console.log('PASS packaged companion home, selected sixteen-frame companion, task planting, mature flowers survive clearing/reload and remain manually harvestable');
     assert.equal(aiWrites,0,'native release test never reaches a real generation or AI chat endpoint');assert.deepEqual(errors,[],'no packaged renderer errors');
     console.log('PASS packaged native chat preview, explicit confirmation, real IPC, durable main workspace save and idempotent retry');
     console.log('PASS packaged '+version+', isolated clean profile, main/native builtin and generated sixteen-frame playback, live care, real v2 export/import, legacy v1 import and saved selection');
