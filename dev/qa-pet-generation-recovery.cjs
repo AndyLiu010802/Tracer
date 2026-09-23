@@ -624,14 +624,18 @@ async function editSavedActions(page,mock,saved,replacementImage,profile) {
 
   await page.click('#pet-open');await page.click('[data-tab="collection"]');await page.click('[data-act="open-edit-actions"]');
   await page.locator('.pet-create-form').waitFor({state:'visible'});await draftAt(page,16);
-  // Model a second window changing the profile while this editor is open.
-  // Storage events are the application's normal cross-window update channel.
-  await page.evaluate(id=>{
-    const key='tracer.pet.v1',oldValue=localStorage.getItem(key),state=JSON.parse(oldValue);
-    state.customs.find(pet=>pet.id===id).personality='Changed in another isolated window';
-    const newValue=JSON.stringify(state);localStorage.setItem(key,newValue);
-    window.dispatchEvent(new StorageEvent('storage',{key,oldValue,newValue,storageArea:localStorage}));
-  },saved.id);
+  // A real second window exercises native storage events and account-scoped
+  // translation; the scoped facade is intentionally not a native Storage object.
+  const other=await page.context().newPage();
+  try{
+    await other.goto(page.url());await other.waitForFunction(()=>window.Tracer?.pet&&Tracer.store.data);
+    await other.evaluate(id=>{
+      const key='tracer.pet.v1',state=JSON.parse(localStorage.getItem(key));
+      state.customs.find(pet=>pet.id===id).personality='Changed in another isolated window';
+      localStorage.setItem(key,JSON.stringify(state));
+    },saved.id);
+    await page.waitForFunction(id=>Tracer.pet.read().customs.find(pet=>pet.id===id)?.personality==='Changed in another isolated window',saved.id);
+  }finally{await other.close();}
   await page.click('.pet-adopt');
   await page.waitForFunction(()=>!document.querySelector('.pet-adopt').disabled&&/changed|conflict|变化|修改|冲突/i.test(document.querySelector('.pet-create-error').textContent));
   assert.equal(await page.evaluate(id=>Tracer.pet.read().customs.find(pet=>pet.id===id).personality,saved.id),'Changed in another isolated window','a stale editor never overwrites another window’s saved changes');
