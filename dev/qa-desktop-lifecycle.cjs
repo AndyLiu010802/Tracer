@@ -15,8 +15,8 @@ const stage=message=>console.log('[lifecycle QA] '+new Date().toISOString()+' '+
     await app.context().route('**/*',r=>new URL(r.request().url()).origin===origin?r.continue():r.abort());
     let page;for(let i=0;i<120;i++){page=app.context().pages().find(p=>p.url()===origin+'/');if(page)break;await new Promise(r=>setTimeout(r,100));}assert.ok(page,'main page starts');page.on('pageerror',e=>errors.push(e.message));
     stage('wait for main workspace');
-    await page.waitForFunction(()=>Tracer?.store?.base&&Tracer.focus&&Tracer.pet&&window.TracerWallpaperMotion);
-    assert.equal(await page.evaluate(()=>document.tracerHidden),false);
+    await page.waitForFunction(()=>window.Tracer?.store?.base&&Tracer.focus&&Tracer.pet&&window.TracerWallpaperMotion);
+    await page.waitForFunction(()=>document.tracerHidden===false);
     stage('save note and verify native edit shortcut');
     const noteId=await page.evaluate(()=>{const n=TracerModel.addNote(Tracer.store.data,{title:'Lifecycle note',body:'Saved before hiding'});Tracer.touch();Tracer.saveNow();return n.id;});
     await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);await page.evaluate(()=>Tracer.show('notes'));await page.fill('#note-body','Native note remains editable');await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
@@ -41,7 +41,7 @@ const stage=message=>console.log('[lifecycle QA] '+new Date().toISOString()+' '+
     await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/')).close());await page.waitForFunction(()=>document.tracerHidden);assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/')).isDestroyed()),false,'close preserves background window');
     await app.evaluate(({app})=>app.emit(process.platform==='darwin'?'activate':'second-instance'));await page.waitForFunction(()=>!document.tracerHidden);await page.evaluate(()=>{lifecyclePlayer.destroy();lifecycleMaterial.destroy();});
     stage('reload saved note and inspect native menu');
-    await page.reload();await page.waitForFunction(()=>Tracer?.store?.base&&Tracer.focus);assert.equal(await page.evaluate(id=>Tracer.store.base.notes.find(n=>n.id===id).body,noteId),'Native note remains editable','saved note survives reload');
+    await page.reload();await page.waitForFunction(()=>window.Tracer?.store?.base&&Tracer.focus);assert.equal(await page.evaluate(id=>Tracer.store.base.notes.find(n=>n.id===id).body,noteId),'Native note remains editable','saved note survives reload');
     if(process.platform==='darwin')assert.ok(await app.evaluate(({Menu})=>Menu.getApplicationMenu().items.some(i=>String(i.role).toLowerCase()==='editmenu')),'Mac native edit menu');
     assert.deepEqual(errors,[]);console.log('PASS '+process.platform+'/'+process.arch+': startup, note save/shortcut/reload, minimize pauses wallpaper/material, background focus completion, tray/Dock restore. '+profile);
   }catch(error){console.error('Lifecycle assertion failed:',error);throw error;}finally{await require('./close-qa-electron.cjs')(app);}

@@ -63,7 +63,9 @@ async function until(read,check=Boolean){for(let i=0;i<150;i++){const value=awai
     assert.equal(properties.focusable,false);assert.equal(properties.top,true);assert.equal(properties.node,false);assert.equal(properties.sandbox,true);assert.equal(properties.isolated,true);
     if(process.platform==='darwin'){
       assert.deepEqual({...properties.bounds,y:properties.display.y},properties.display);
-      assert.ok(properties.bounds.y>=properties.display.y&&properties.bounds.y<=properties.workArea.y,'only the native menu-bar constraint may move the overlay');
+      // In a fullscreen Space workArea may include the auto-hidden menu bar,
+      // while native window coordinates still retain its documented 20–40px inset.
+      assert.ok(properties.bounds.y>=properties.display.y&&properties.bounds.y<=Math.max(properties.workArea.y,properties.display.y+40),'only the native menu-bar constraint may move the overlay');
     }else assert.deepEqual(properties.bounds,properties.display);
     // Both are already enabled: switch species without creating a second overlay.
     await select('garden_cherry_shiny');await trail.waitForFunction(()=>document.querySelector('canvas').dataset.trailKind==='cherry');

@@ -22,13 +22,19 @@ fs.writeFileSync(path.join(data,'workspace.json'),JSON.stringify(ws));Object.ass
   let sticker=surface.locator('.sticker-instance');await sticker.waitFor();const pos=(await rows())[0];b=await sticker.boundingBox();await page.mouse.move(b.x+b.width*.3,b.y+b.height*.4);await page.mouse.down();await page.mouse.move(b.x+b.width*.3-22,b.y+b.height*.4+10,{steps:5});let moved=await sticker.boundingBox();assert.ok(Math.abs(moved.x-b.x+22)<2,'drag preserves grab offset');await page.mouse.up();await saved();assert.notEqual((await rows())[0].x,pos.x);
   await page.locator('.sticker-transform [data-sticker-control=right]').click();await saved();assert.equal((await rows())[0].rotation,9);await page.locator('.sticker-transform [data-sticker-control=larger]').click();await saved();assert.equal((await rows())[0].size,108);
   const selection=page.locator('.sticker-selection');assert.equal(await selection.locator('[data-sticker-handle]').count(),9);assert.equal(await selection.isVisible(),true);
+  await page.evaluate(()=>{window.qaStickerGesture={};for(const type of ['pointerdown','pointermove'])window.addEventListener(type,e=>{qaStickerGesture[type]={x:e.clientX,y:e.clientY,handle:e.target.closest?.('[data-sticker-handle]')?.dataset.stickerHandle};},true);});
   // All eight handles resize in the sticker's rotated coordinate system, keeping the opposite side fixed.
   for(const [name,hx,hy]of [['nw',-1,-1],['n',0,-1],['ne',1,-1],['e',1,0],['se',1,1],['s',0,1],['sw',-1,1],['w',-1,0]]){
     const original=(await rows())[0],angle=original.rotation*Math.PI/180,ax=hx*Math.cos(angle)-hy*Math.sin(angle),ay=hx*Math.sin(angle)+hy*Math.cos(angle),handle=selection.locator('[data-sticker-handle='+name+']'),h=await handle.boundingBox(),old=await sticker.boundingBox();
     await page.mouse.move(h.x+h.width/2,h.y+h.height/2);await page.mouse.down();await page.mouse.move(h.x+h.width/2+ax*18,h.y+h.height/2+ay*18,{steps:6});
-    assert.equal((await rows())[0].size,original.size,'preview does not write ledger');assert.ok(Math.abs(await sticker.evaluate(n=>parseFloat(n.style.width))-original.size-18)<1,name+' resizes live');
-    const resized=await sticker.boundingBox();assert.ok(Math.abs(resized.x+resized.width/2-old.x-old.width/2-ax*9)<1,name+' preserves opposite x');assert.ok(Math.abs(resized.y+resized.height/2-old.y-old.height/2-ay*9)<1,name+' preserves opposite y');
-    await page.mouse.up();await saved();assert.ok(Math.abs((await rows())[0].size-original.size-18)<1,name+' saves on release');await page.locator('[data-sticker-control=undo]').click();await saved();assert.equal((await rows())[0].size,original.size);
+    const gesture=await page.evaluate(()=>qaStickerGesture),scale=await surface.evaluate(n=>n.getBoundingClientRect().width/n.offsetWidth);
+    assert.equal(gesture.pointerdown.handle,name,'the requested handle receives the press');
+    const delta=((gesture.pointermove.x-gesture.pointerdown.x)*ax+(gesture.pointermove.y-gesture.pointerdown.y)*ay)/((hx*hx+hy*hy)*scale);
+    assert.ok(Math.abs(delta-18)<2,'native pointer rounding stays within two CSS pixels');
+    const actualSize=await sticker.evaluate(n=>parseFloat(n.style.width));
+    assert.equal((await rows())[0].size,original.size,'preview does not write ledger');assert.ok(Math.abs(actualSize-original.size-delta)<1,name+' resizes live: '+JSON.stringify({actualSize,original:original.size,delta,gesture,scale}));
+    const resized=await sticker.boundingBox();assert.ok(Math.abs(resized.x+resized.width/2-old.x-old.width/2-ax*delta*scale/2)<1,name+' preserves opposite x');assert.ok(Math.abs(resized.y+resized.height/2-old.y-old.height/2-ay*delta*scale/2)<1,name+' preserves opposite y');
+    await page.mouse.up();await saved();assert.ok(Math.abs((await rows())[0].size-original.size-delta)<1,name+' saves on release');await page.locator('[data-sticker-control=undo]').click();await saved();assert.equal((await rows())[0].size,original.size);
   }
   const rotate=selection.locator('[data-sticker-handle=rotate]');let handleBox=await rotate.boundingBox(),stickerBox=await sticker.boundingBox(),cx=stickerBox.x+stickerBox.width/2,cy=stickerBox.y+stickerBox.height/2,vx=handleBox.x+handleBox.width/2-cx,vy=handleBox.y+handleBox.height/2-cy,turn=Math.PI/4;
   await page.mouse.move(cx+vx,cy+vy);await page.mouse.down();await page.mouse.move(cx+vx*Math.cos(turn)-vy*Math.sin(turn),cy+vx*Math.sin(turn)+vy*Math.cos(turn),{steps:8});await page.mouse.up();await saved();assert.ok(Math.abs((await rows())[0].rotation-54)<1,'free rotation follows pointer');

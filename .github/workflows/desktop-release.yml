@@ -134,6 +134,7 @@ jobs:
             .cache/garden-trail-*/*.png
             .cache/task-garden-actions-*/*.png
             .cache/drag-anchor-*/*.png
+            .cache/stickers-*/*.png
 
   publish:
     needs: build
