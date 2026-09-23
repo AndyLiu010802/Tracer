@@ -19,7 +19,9 @@ if(mode==='stage'){
   }
   assert.deepEqual([...verified].sort(),binaries.filter(name=>!name.endsWith('.blockmap')).sort(),'All five installers/archives have native verification');
   fs.mkdirSync(output,{recursive:true});assert.deepEqual(fs.readdirSync(output),[],'Do not mix with an earlier release');
-  for(const name of binaries){assert.ok(fs.statSync(path.join(input,name)).size>0);fs.copyFileSync(path.join(input,name),path.join(output,name));}
+  // Both directories are in the CI workspace. Hard links keep the verified
+  // binaries intact without duplicating several gigabytes before upload.
+  for(const name of binaries){assert.ok(fs.statSync(path.join(input,name)).size>0);fs.linkSync(path.join(input,name),path.join(output,name));}
   fs.writeFileSync(path.join(output,sumFile),binaries.map(name=>digest(path.join(output,name))+'  '+name).join('\n')+'\n');
   console.log('PASS complete Windows, Apple Silicon and Intel artifacts; combined SHA-256 checksums');
 }else if(mode==='uploaded'){
