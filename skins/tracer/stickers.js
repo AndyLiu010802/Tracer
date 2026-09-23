@@ -43,7 +43,11 @@
     frame.setAttribute('aria-label',tr('贴纸变换框','Sticker transform frame'));
     const names={nw:['左上','top left'],n:['上方','top'],ne:['右上','top right'],e:['右侧','right'],se:['右下','bottom right'],s:['下方','bottom'],sw:['左下','bottom left'],w:['左侧','left']};
     for(const h of frame.children){const kind=h.dataset.stickerHandle;h.disabled=busy;h.setAttribute('aria-label',kind==='rotate'?tr('拖动旋转贴纸','Drag to rotate sticker'):tr('拖动'+names[kind][0]+'缩放贴纸','Drag '+names[kind][1]+' to resize sticker'));h.title=kind==='rotate'?tr('拖动旋转 · Shift 按 15° 对齐','Drag to rotate · Shift snaps to 15°'):tr('拖动等比缩放','Drag to resize proportionally');}
-    hud.hidden=!!drag;const width=Math.min(300,innerWidth-24);hud.style.width=width+'px';hud.style.left=clamp(b.x+b.width/2-width/2,12,innerWidth-width-12)+'px';hud.style.top=clamp(b.bottom+30,60,innerHeight-hud.offsetHeight-108)+'px';
+    hud.hidden=!!drag;const width=Math.min(300,innerWidth-24);hud.style.width=width+'px';hud.style.left=clamp(b.x+b.width/2-width/2,12,innerWidth-width-12)+'px';
+    // Keep the toolbar away from every resize handle. Clamping the below-sticker
+    // position at the viewport bottom otherwise puts it over the right/bottom handles.
+    const bottomLimit=innerHeight-hud.offsetHeight-108,below=b.bottom+30;
+    hud.style.top=clamp(below<=bottomLimit?below:b.top-hud.offsetHeight-48,60,bottomLimit)+'px';
   }
   function refresh(){
     queued=false;if(!T.store.data)return;

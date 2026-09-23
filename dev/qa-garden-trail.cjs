@@ -46,12 +46,16 @@ async function until(read,check=Boolean){for(let i=0;i<150;i++){const value=awai
       await trail.evaluate(()=>{if(!window.qaPointListener){window.qaPointListener=true;GardenTrail.onFrame(point=>{window.qaNativePoint=point;});}});
       // Observe while points are emitted: trails are intentionally short lived,
       // so an inspector round trip must not make the test miss a rendered frame.
-      const painted=trail.waitForFunction(()=>{const c=document.querySelector('canvas'),a=c.getContext('2d').getImageData(0,0,Math.min(c.width,850),Math.min(c.height,550)).data;for(let i=3;i<a.length;i+=4)if(a[i])return true;return false;});
-      for(const [x,y]of [[120,120],[320,180]]){
+      const painted=trail.waitForFunction(()=>{const c=document.querySelector('canvas'),a=c.getContext('2d').getImageData(0,0,Math.min(c.width,850),Math.min(c.height,550)).data;for(let i=3;i<a.length;i+=4)if(a[i])return true;return false;}).then(()=>null,error=>error);
+      // A continuous gesture survives the native overlay's initial resize;
+      // its resize handler correctly clears particles from the previous size.
+      for(let step=0;step<16;step++){
+        const x=120+step*15,y=120+step*3;
         await app.evaluate(({BrowserWindow},{x,y})=>{const bounds=BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/garden-trail.html')).getBounds();globalThis.qaNativeCursor={x:bounds.x+x,y:bounds.y+y};},{x,y});
         await trail.waitForFunction(({x,y})=>window.qaNativePoint?.x===x&&qaNativePoint.y===y,{x,y});
+        await delay(75);
       }
-      await painted;
+      const paintError=await painted;if(paintError)throw paintError;
       console.log('PASS native '+item.id+' / '+item.name[0]);
     }
     const trail=overlay();

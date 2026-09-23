@@ -22,6 +22,14 @@ fs.writeFileSync(path.join(data,'workspace.json'),JSON.stringify(ws));Object.ass
   let sticker=surface.locator('.sticker-instance');await sticker.waitFor();const pos=(await rows())[0];b=await sticker.boundingBox();await page.mouse.move(b.x+b.width*.3,b.y+b.height*.4);await page.mouse.down();await page.mouse.move(b.x+b.width*.3-22,b.y+b.height*.4+10,{steps:5});let moved=await sticker.boundingBox();assert.ok(Math.abs(moved.x-b.x+22)<2,'drag preserves grab offset');await page.mouse.up();await saved();assert.notEqual((await rows())[0].x,pos.x);
   await page.locator('.sticker-transform [data-sticker-control=right]').click();await saved();assert.equal((await rows())[0].rotation,9);await page.locator('.sticker-transform [data-sticker-control=larger]').click();await saved();assert.equal((await rows())[0].size,108);
   const selection=page.locator('.sticker-selection');assert.equal(await selection.locator('[data-sticker-handle]').count(),9);assert.equal(await selection.isVisible(),true);
+  // Near the viewport bottom the toolbar must move above the sticker, leaving
+  // the side/corner handles directly reachable on every operating system.
+  b=await sticker.boundingBox();const noteBounds=await surface.boundingBox(),lowerY=Math.min(850,noteBounds.y+noteBounds.height-85);
+  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,lowerY,{steps:6});await page.mouse.up();await saved();
+  for(const name of ['nw','n','ne','e','se','s','sw','w','rotate']){
+    const handle=selection.locator('[data-sticker-handle='+name+']');
+    assert.equal(await handle.evaluate(n=>{const r=n.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('[data-sticker-handle]')?.dataset.stickerHandle;}),name,'bottom-position toolbar does not cover '+name);
+  }
   await page.evaluate(()=>{window.qaStickerGesture={};for(const type of ['pointerdown','pointermove'])window.addEventListener(type,e=>{qaStickerGesture[type]={x:e.clientX,y:e.clientY,handle:e.target.closest?.('[data-sticker-handle]')?.dataset.stickerHandle};},true);});
   // All eight handles resize in the sticker's rotated coordinate system, keeping the opposite side fixed.
   for(const [name,hx,hy]of [['nw',-1,-1],['n',0,-1],['ne',1,-1],['e',1,0],['se',1,1],['s',0,1],['sw',-1,1],['w',-1,0]]){
