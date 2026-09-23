@@ -72,16 +72,19 @@ jobs:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
         run: node dev/qa-pet-dense-release.cjs '${{ matrix.executable }}'
       - name: Verify packaged lifecycle and background timing
+        timeout-minutes: 5
         if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
         run: node dev/qa-desktop-lifecycle.cjs '${{ matrix.executable }}'
       - name: Verify packaged local account isolation
+        timeout-minutes: 5
         if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
         run: node dev/qa-account-desktop.cjs '${{ matrix.executable }}'
       - name: Verify packaged nine shiny companion trails
+        timeout-minutes: 5
         if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright

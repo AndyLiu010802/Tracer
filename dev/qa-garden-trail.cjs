@@ -94,5 +94,5 @@ async function until(read,check=Boolean){for(let i=0;i<150;i++){const value=awai
   }catch(error){
     for(const [i,p]of app.context().pages().entries()){try{await p.screenshot({path:path.join(profile,'failure-'+i+'.png')});}catch{}}
     throw error;
-  }finally{await app.close();}
+  }finally{await require('./close-qa-electron.cjs')(app);}
 })().catch(error=>{console.error(error);process.exitCode=1;});
