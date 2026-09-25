@@ -1,8 +1,7 @@
 'use strict';
 // Smoke the actual packaged app in a fresh profile using local, synthetic artwork.
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),net=require('node:net'),crypto=require('node:crypto');
-const {spawn}=require('node:child_process');
-const {chromium}=require(process.env.TRACER_QA_PLAYWRIGHT||'playwright');
+const {chromium,_electron}=require(process.env.TRACER_QA_PLAYWRIGHT||'playwright');
 const {fixtures:denseFixtures}=require('./qa-pet-dense-animation.cjs');
 const {fixtures:legacyFixtures}=require('./qa-pet-animation.cjs');
 const root=path.resolve(__dirname,'..'),version=require('../package.json').version;
@@ -10,7 +9,7 @@ const executable=path.resolve(process.argv[2]||path.join(root,'dist',version+'-f
 fs.mkdirSync(path.join(root,'.cache'),{recursive:true});
 const profile=fs.mkdtempSync(path.join(root,'.cache/pet-dense-release-')),sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
-let stage='setup',failureLogged=false;
+let stage='setup',failureLogged=false,nativeApplication;
 function checkpoint(label) { stage=label;console.log('[native QA] '+new Date().toISOString()+' '+label); }
 async function deadline(promise,ms,message) {
   let timer;
@@ -27,8 +26,7 @@ async function importPack(page,file) {
   checkpoint('import '+path.basename(file));
   // Native playback checks leave the companion in front. The main window
   // intentionally skips view updates while hidden, so restore it before UI work.
-  await page.bringToFront();
-  await page.waitForFunction(()=>!document.hidden&&!document.tracerHidden);
+  await restoreWindow(page);
   if(!await page.locator('[data-tab="collection"]').count())await page.click('#pet-open');
   await page.click('[data-tab="collection"]');await page.click('[data-act="open-import"]');
   await page.locator('#pet-package-file').setInputFiles(file);await page.locator('.pet-transfer-submit:not([disabled])').waitFor();
@@ -36,9 +34,26 @@ async function importPack(page,file) {
   return page.evaluate(()=>{const state=Tracer.pet.read();return state.customs.find(pet=>pet.id===state.selected);});
 }
 
+async function restoreWindow(page) {
+  // Activating a CDP target alone does not restore a minimized Electron window.
+  // Control only this QA process's matching native window, then wait for its IPC.
+  await nativeApplication.evaluate(({BrowserWindow},url)=>{
+    const win=BrowserWindow.getAllWindows().find(win=>win.webContents.getURL()===url);
+    if(!win)throw new Error('QA native window is unavailable: '+url);
+    // A fullscreen Windows app can minimize again when another native window
+    // takes focus. Keep these playback checks in a real normal desktop window.
+    if(win.isFullScreen())win.setFullScreen(false);
+    if(win.isMinimized())win.restore();
+    win.show();win.focus();
+  },page.url());
+  await page.bringToFront();
+  await page.evaluate(()=>window.TracerWindow?.send('state'));
+  await page.waitForFunction(()=>document.visibilityState==='visible'&&!document.tracerHidden);
+}
+
 async function cycle(page,selector,action,count,label) {
   checkpoint(label);
-  await page.bringToFront();
+  await restoreWindow(page);
   await page.waitForFunction(({selector,action})=>{
     const el=document.querySelector(selector);return el?.dataset.action===action&&el.dataset.playback==='playing'&&/^\d+$/.test(el.dataset.frame||'')&&(!el.dataset.motionClip||el.dataset.motionClip===action);
   },{selector,action}).catch(async error=>{
@@ -77,10 +92,9 @@ async function cycle(page,selector,action,count,label) {
   assert.equal(manifest.version,version,'the launched application package matches the release version');
   const socket=net.createServer();await new Promise(resolve=>socket.listen(0,'127.0.0.1',resolve));const port=socket.address().port;await new Promise(resolve=>socket.close(resolve));
   const env={...process.env,TRACER_USER_DATA_DIR:profile,TRACER_DISABLE_INPUT_HOOK:'1',DOCS_PORTAL_PORT:String(port),DOCS_PORTAL_HOST:'127.0.0.1',DOCS_PORTAL_DATA_DIR:path.join(profile,'data'),DOCS_PORTAL_STATE_FILE:path.join(profile,'bookmarks.json')};delete env.ELECTRON_RUN_AS_NODE;
-  const child=spawn(executable,['--remote-debugging-port=0','--disable-gpu','--in-process-gpu'],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});
+  nativeApplication=await _electron.launch({executablePath:executable,args:['--disable-gpu','--in-process-gpu'],env,timeout:60000});
+  const child=nativeApplication.process();
   let browser,log='',launchError;child.stdout.on('data',bytes=>log+=bytes);child.stderr.on('data',bytes=>log+=bytes);child.on('error',error=>{launchError=error;});
-  const exited=new Promise(resolve=>child.once('exit',resolve));
-  const running=()=>!!child.pid&&child.exitCode===null&&child.signalCode===null;
   const verify=async()=>{
     checkpoint('wait for packaged Electron and DevTools endpoint');
     const active=path.join(profile,'DevToolsActivePort');
@@ -223,47 +237,23 @@ async function cycle(page,selector,action,count,label) {
     throw error;
   } finally {
     let cleanupError;
-    // Never let a CDP socket or inherited pipe retain this QA process forever.
-    // Every signal below targets only the ChildProcess spawned by this script.
-    const lastResort=setTimeout(()=>{
-      console.error('Native QA cleanup exceeded 15s; terminating its spawned process.');
-      process.exitCode=1;
-      if(running()) {try {child.kill('SIGKILL');} catch {}}
-      child.stdout?.destroy();child.stderr?.destroy();
-      try {fs.writeFileSync(path.join(profile,'launch.log'),log);} catch {}
-      process.exit(1);
-    },15000);
-    lastResort.unref();
     try {
       checkpoint('cleanup: disconnect CDP (maximum 5s)');
       if(browser) {
         try {await deadline(browser.close(),5000,'CDP disconnect exceeded 5s');}
         catch(error) {console.error('Native QA disconnect:',error.message);}
       }
-      if(running()) {
-        checkpoint('cleanup: stop spawned Electron (SIGTERM, maximum 5s)');
-        child.kill('SIGTERM');
-        try {await deadline(exited,5000,'Spawned Electron did not exit after SIGTERM');}
-        catch {
-          if(running()) {
-            checkpoint('cleanup: force spawned Electron to exit (SIGKILL, maximum 2s)');
-            child.kill('SIGKILL');
-            await deadline(exited,2000,'Spawned Electron did not exit after SIGKILL');
-          }
-        }
-      }
-      assert.equal(running(),false,'the QA-owned packaged app has stopped');
+      // _electron.launch owns a Windows launcher shell plus Chromium helpers.
+      // The shared scoped cleanup closes that full QA tree, including its IPC.
+      checkpoint('cleanup: close QA-owned Electron and native control transport');
+      await require('./close-qa-electron.cjs')(nativeApplication);
     } catch(error) {
       cleanupError=error;process.exitCode=1;
       console.error('Native QA cleanup:',error.message);
     } finally {
-      child.stdout?.destroy();child.stderr?.destroy();
       try {fs.writeFileSync(path.join(profile,'launch.log'),log);}
       catch(error) {cleanupError=cleanupError||error;process.exitCode=1;console.error('Native QA log:',error.message);}
-      if(running()) child.unref();
       checkpoint('cleanup finished');
-      // Keep the unref'ed guard armed until process exit: a stuck protocol
-      // transport must still fail promptly after the scoped child was stopped.
     }
     if(cleanupError&&!verificationError)throw cleanupError;
   }
