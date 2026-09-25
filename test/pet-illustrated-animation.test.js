@@ -16,18 +16,18 @@ function setup(complete=true,id='sprout'){
 test('only a complete inspected library replaces the original built-in character',()=>{assert.equal(setup(false).player,null);});
 test('actions advance in source order and repeated snapshots do not restart them',()=>{
   const b=setup(),p=b.player;
-  for(const action of actions){p.setAction(action);if(action==='sleep'){assert.equal(p.element.dataset.frame,'12');assert.equal(b.timers.size,0);continue;}for(let cycle=0;cycle<3;cycle++)for(let frame=0;frame<(action==='fishing'?12:16);frame++){assert.equal(p.element.dataset.frame,String(frame));p.setAction(action);b.tick();}assert.equal(p.element.dataset.frame,'0');}
+  for(const action of actions){p.setAction(action);if(action==='sleep'){assert.equal(p.element.dataset.frame,'24');assert.equal(b.timers.size,0);continue;}for(let cycle=0;cycle<3;cycle++)for(let frame=0;frame<32;frame++){assert.equal(p.element.dataset.frame,String(frame));p.setAction(action);b.tick();}assert.equal(p.element.dataset.frame,'0');}
   p.destroy();assert.equal(b.timers.size,0);assert.equal(b.events.size,0);assert.ok(b.released());
 });
 test('every built-in catch stops before releasing the fish and previews finish exactly once',()=>{
   for(const [id,end]of Object.entries({sprout:11,miso:9,brook:10,ember:10,luna:8,nova:10})){
     const b=setup(true,id),p=b.player;p.setAction('fishing');
     for(let cycle=0;cycle<3;cycle++){
-      for(let frame=0;frame<=end;frame++){assert.equal(p.element.dataset.frame,String(frame),id);if(frame===end)assert.ok(b.delays.at(-1)>=1200);b.tick();}
+      for(let frame=0;frame<=31;frame++){assert.equal(p.element.dataset.frame,String(frame),id);if(frame===31)assert.ok(b.delays.at(-1)>=1200);b.tick();}
       assert.equal(p.element.dataset.frame,'0');
     }
     p.setAction('idle');let finished=0;assert.equal(p.preview('fishing',()=>finished++),true);
-    for(let frame=0;frame<=end;frame++){assert.equal(p.element.dataset.frame,String(frame));b.tick();}
+    for(let frame=0;frame<=31;frame++){assert.equal(p.element.dataset.frame,String(frame));b.tick();}
     assert.equal(finished,1);assert.equal(p.element.dataset.action,'idle');b.tick();assert.equal(finished,1);p.destroy();
   }
 });
@@ -35,16 +35,16 @@ test('slow loads preserve first frames, previews finish once, and focus interrup
   const b=setup(),p=b.player;let done=0;
   b.waiting(true);p.setAction('fishing');for(let i=0;i<20;i++)b.tick();assert.equal(p.element.dataset.frame,'0');
   b.waiting(false);assert.equal(p.preview('reading',()=>done++),true);
-  for(let i=0;i<16;i++){p.setAction('fishing');assert.equal(p.element.dataset.action,'reading');b.tick();}
+  for(let i=0;i<32;i++){p.setAction('fishing');assert.equal(p.element.dataset.action,'reading');b.tick();}
   assert.equal(done,1);assert.equal(p.element.dataset.action,'fishing');
   p.preview('tea',()=>done++);p.setAction('focus');assert.equal(p.element.dataset.action,'focus');assert.equal(p.preview('play'),false);assert.equal(done,1);p.destroy();
 });
 test('hidden and reduced-motion views stop timers and cancel previews without late completion',()=>{
   const b=setup(),p=b.player;let done=0;p.preview('mining',()=>done++);b.tick();b.hidden(true);assert.equal(b.timers.size,0);assert.equal(p.element.dataset.action,'idle');
-  b.hidden(false);assert.equal(b.timers.size,1);b.reduced(true);assert.equal(b.timers.size,0);p.setAction('sleep');assert.equal(p.element.dataset.frame,'12');assert.equal(p.element.dataset.action,'sleep');
-  b.reduced(false);assert.equal(b.timers.size,0);assert.equal(p.element.dataset.frame,'12');assert.equal(done,0);p.destroy();
+  b.hidden(false);assert.equal(b.timers.size,1);b.reduced(true);assert.equal(b.timers.size,0);p.setAction('sleep');assert.equal(p.element.dataset.frame,'24');assert.equal(p.element.dataset.action,'sleep');
+  b.reduced(false);assert.equal(b.timers.size,0);assert.equal(p.element.dataset.frame,'24');assert.equal(done,0);p.destroy();
 });
 
 test('all six companions stay asleep across snapshots, loading and visibility changes',()=>{
- for(const id of ['sprout','miso','brook','ember','luna','nova']){const b=setup(true,id),p=b.player;p.setAction('sleep');for(let i=0;i<20;i++){p.setAction('sleep');b.waiting(false);assert.equal(p.element.dataset.frame,'12');assert.equal(b.timers.size,0);}b.hidden(true);b.hidden(false);assert.equal(p.element.dataset.frame,'12');assert.equal(b.timers.size,0);p.setAction('wake');assert.equal(p.element.dataset.frame,'0');assert.equal(b.timers.size,1);p.destroy();}
+ for(const id of ['sprout','miso','brook','ember','luna','nova']){const b=setup(true,id),p=b.player;p.setAction('sleep');for(let i=0;i<20;i++){p.setAction('sleep');b.waiting(false);assert.equal(p.element.dataset.frame,'24');assert.equal(b.timers.size,0);}b.hidden(true);b.hidden(false);assert.equal(p.element.dataset.frame,'24');assert.equal(b.timers.size,0);p.setAction('wake');assert.equal(p.element.dataset.frame,'0');assert.equal(b.timers.size,1);p.destroy();}
 });

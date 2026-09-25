@@ -1,10 +1,10 @@
 'use strict';
 // Incremental, read-only PNG audit. Only the report in .cache is written.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const {decode,frameGrid,KINDS,ACTIONS}=require('./build-garden-companion-atlas.cjs');
+const {decode,frameGrid,inspectPages,KINDS,ACTIONS}=require('./build-garden-companion-atlas.cjs');
 const root=path.resolve(__dirname,'..'),directory=path.join(root,'skins/tracer/garden-art');
 const reportFile=path.join(root,'.cache/companion-motion-assets-audit.json');
-const pattern=new RegExp(`^(${KINDS.join('|')})-(normal|shiny)-(${ACTIONS.join('|')})-v([12])\\.png$`);
+const pattern=new RegExp(`^(${KINDS.join('|')})-(normal|shiny)-(${ACTIONS.join('|')})-v([123])(?:-p([12]))?\\.png$`);
 function inspect(file){
   const bytes=fs.readFileSync(file),decoded=decode(bytes),{width,height,data}=decoded,frames=[],warnings=[];
   let grid;try{grid=frameGrid(decoded);}catch(error){warnings.push(error.message);grid={x:Array.from({length:5},(_,i)=>Math.floor(i*width/4)),y:Array.from({length:5},(_,i)=>Math.floor(i*height/4))};}
@@ -46,8 +46,13 @@ function audit({fresh=false}={}){
   }
   const coverage=new Map(),shaFiles=new Map();
   for(const[name,record]of Object.entries(files)){
-    const[,kind,variant,action,version]=pattern.exec(name),key=[kind,variant,action].join('/');
-    if(!coverage.has(key)||version==='2')coverage.set(key,name);
+    const[,kind,variant,action,version,part]=pattern.exec(name),key=[kind,variant,action].join('/');
+    if(version==='3'){
+      if(part==='1'){
+        const second=name.replace('-p1.png','-p2.png');
+        if(files[second])try{inspectPages([name,second].map(n=>path.join(directory,n)),[name,second]);coverage.set(key,[name,second]);}catch(error){record.warnings.push(error.message);}
+      }
+    }else if(!coverage.has(key)||version==='2')coverage.set(key,name);
     if(record.sha256){const list=shaFiles.get(record.sha256)||[];list.push(name);shaFiles.set(record.sha256,list);}
   }
   const duplicateFiles=[...shaFiles.values()].filter(names=>names.length>1),missing=[];

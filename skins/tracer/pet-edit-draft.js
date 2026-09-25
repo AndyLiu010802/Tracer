@@ -61,11 +61,11 @@
       image.decoding = 'async'; image.src = url;
     });
   }
-  function dimensions(image, animated) {
+  function dimensions(image, animated, version = 1) {
     const width = image?.naturalWidth === undefined ? image?.width : image.naturalWidth;
     const height = image?.naturalHeight === undefined ? image?.height : image.naturalHeight;
     if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1 || width > 8192 || height > 8192 || width * height > 16777216 ||
-        (animated && (Math.min(width, height) < 768 || Math.max(width, height) > 4096 || Math.abs(width - height) / Math.max(width, height) > .01))) throw failure('invalid-animation-image');
+        (animated && (Math.min(width, height) < 768 || Math.max(width, height) > 4096 || Math.abs(width - height*(version===3?2:1)) / width > .01))) throw failure('invalid-animation-image');
     return { width, height };
   }
   function canvas(width, height, options) {
@@ -94,8 +94,8 @@
     context.drawImage(image, source.x + source.width * left, source.y + source.height * top, source.width * width, source.height * height,
       target.x + target.width * left, target.y + target.height * top, target.width * width, target.height * height);
   }
-  function reference(image, size, animated, options, insets) {
-    const width = size.width / (animated ? 4 : 1), height = size.height / (animated ? 4 : 1);
+  function reference(image, size, animated, options, insets, version = 1) {
+    const width = size.width / (animated ? version===3?8:4 : 1), height = size.height / (animated ? 4 : 1);
     // This is a fresh screenshot of the existing first pose, never the user's
     // original upload or metadata embedded in its PNG.
     for (const edge of [1024, 768]) {
@@ -150,9 +150,9 @@
       const image = await abortable(Promise.resolve().then(() => { check(signal); return read(url, { signal }); }), signal, release);
       try {
         check(signal);
-        const size = dimensions(image, animated);
-        const insets = animated ? (options.frameInsetsForImage || Animation.frameInsetsForImage)(image) : undefined;
-        if (insets !== undefined && (!Array.isArray(insets) || insets.length !== 16 || !insets.every(value =>
+        const size = dimensions(image, animated, original.animation?.version);
+        const insets = animated ? (options.frameInsetsForImage || Animation.frameInsetsForImage)(image, original.animation?.version) : undefined;
+        if (insets !== undefined && (!Array.isArray(insets) || insets.length !== (original.animation?.version===3?32:16) || !insets.every(value =>
           Array.isArray(value) && value.length === 4 && value.every(part => Number.isFinite(part) && part >= 0 && part < 1) && value[0] + value[2] < 1 && value[1] + value[3] < 1))) throw failure('invalid-animation-image');
         current = { url, image, size, insets }; return current;
       }
@@ -160,11 +160,11 @@
     }
     try {
       const first = await imageFor(original.image);
-      const photo = reference(first.image, first.size, animated, options, first.insets?.[0]);
+      const photo = reference(first.image, first.size, animated, options, first.insets?.[0], original.animation?.version);
       check(signal);
-      if (original.animation?.version === 2) {
+      if (original.animation?.version >= 2) {
         const pages = original.animation.pages.slice();
-        return { photo, animationVersion: 2, pages, generationIdentity: pages[0], retainedFrames: original.animation.retainedFrames?.slice() || Array(16).fill(16) };
+        return { photo, animationVersion: original.animation.version, pages, generationIdentity: pages[0], retainedFrames: original.animation.retainedFrames?.slice() || Array(16).fill(original.animation.version===3?32:16) };
       }
       const retained = animated ? 4 : 1, retainedFrames = Array(16).fill(retained), images = [];
       let portrait;

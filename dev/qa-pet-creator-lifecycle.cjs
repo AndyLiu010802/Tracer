@@ -102,12 +102,7 @@ async function singleActionCases(page) {
     const before=await snapshot(page);
     await page.selectOption('#pet-preview-action','pet');await page.click('.pet-regenerate-action');await idle(page);
     state=await snapshot(page);
-    assert.deepEqual(state.draft.pages,before.draft.pages,error+' never overwrites old artwork');
-    assert.equal(state.draft.pages.length,3,'an existing action in a partial draft can be replaced independently');
-    assert.deepEqual(state.draft.pendingReplacement,{pageIndex:1,attempt:2,identityImage:identity});
-    assert.deepEqual(state.draft.pageAttempts,Array.from({length:16},(_,index)=>index===1?2:0));
-    await generate(page);state=await snapshot(page);
-    assert.equal(state.calls.length,before.calls.length+2,'invalid-art retry consumes only the selected action');
+    assert.equal(state.calls.length,before.calls.length+2,'invalid-art automatically retries only the selected action');
     assert.deepEqual(state.calls.slice(before.calls.length).map(call=>[call.animationPage,call.generationAttempt]),[[1,1],[1,2]]);
     assert.equal(state.draft.pages.length,3,'resolving a partial replacement does not generate remaining actions');
     const partialPages=before.draft.pages.slice();partialPages[1]=await page.evaluate(()=>sheetURL(65));
@@ -147,7 +142,7 @@ async function singleActionCases(page) {
       window.mock={calls:[],changes:[],completions:[],checkpoints:[],confirmations:[],adoptions:[],accept:false,validationError:'',serviceError:'',badResponse:false,saveError:false,previewError:null,imageOverrides:{},holdNext:false,releaseRequest:null};
       window.sheetURL=sheet;
       window.TracerPetAnimation={actions,
-        async validatePage() { if(mock.validationError){const value=mock.validationError;mock.validationError='';throw new Error(value);} },
+        async validatePage(_image, options) { if(options.generated!==true)throw new Error('missing-generation-boundary-check');if(mock.validationError){const value=mock.validationError;if(!mock.validationFailures||!--mock.validationFailures)mock.validationError='';throw new Error(value);} },
         createPage(_image,_index,options) {
           const element=document.createElement('div');element.textContent='Animation preview';
           mock.previewError=options.onError;
@@ -166,13 +161,13 @@ async function singleActionCases(page) {
         }
         const animationPage=mock.badResponse?request.animationPage+1:request.animationPage;
         mock.badResponse=false;
-        return {ok:true,json:async()=>({image:mock.imageOverrides[request.animationPage]||sheet(request.animationPage),animationVersion:2,animationPage})};
+        return {ok:true,json:async()=>({image:mock.imageOverrides[request.animationPage]||sheet(request.animationPage),animationVersion:request.animationVersion,animationPage})};
       };
-      window.fixtureDraft=(count=3)=>({name:'Recovery companion',kind:'creature',personality:'Curious',distinctiveFeatures:'Glasses',imageSource:'codex',imageModel:'gpt-image-2.5-flare',recordId:'custom_'+'a'.repeat(32),generationId:'b'.repeat(32),generationIdentity:count?sheet(0):'',pendingReplacement:null,pageAttempts:Array(16).fill(0),photo,animationVersion:2,pages:Array.from({length:count},(_,index)=>sheet(index))});
+      window.fixtureDraft=(count=3)=>({actionDescriptions:Array.from({length:16},(_,i)=>i===3?'Red ball':i===14?'Fold a paper boat':''),name:'Recovery companion',kind:'creature',personality:'Curious',distinctiveFeatures:'Glasses',imageSource:'codex',imageModel:'gpt-image-2.5-flare',recordId:'custom_'+'a'.repeat(32),generationId:'b'.repeat(32),generationIdentity:count?sheet(0):'',pendingReplacement:null,pageAttempts:Array(16).fill(0),photo,animationVersion:2,pages:Array.from({length:count},(_,index)=>sheet(index))});
       window.mount=draft=>{
         window.creator?.destroy();
         const root=document.getElementById('fixture');
-        window.creator=TracerPetCreator(root,{language:'en',draft,
+        window.creator=TracerPetCreator(root,{language:mock.language||'en',draft,
           confirmDiscard:async message=>{mock.confirmations.push(message);return mock.accept;},
           onChange:(value,status)=>mock.changes.push({pages:value.pages.length,attempts:value.pageAttempts,busy:status.busy,error:status.error}),
           onCheckpoint:async(value,status)=>mock.checkpoints.push({pages:value.pages.length,attempts:value.pageAttempts,busy:status.busy,pendingReplacement:value.pendingReplacement,calls:mock.calls.length}),
@@ -192,23 +187,23 @@ async function singleActionCases(page) {
 
     // Rejected artwork advances only the affected action attempt. A reload keeps
     // that token; network failures continue using it to recover the same result.
-    await page.evaluate(()=>{mount(fixtureDraft());mock.validationError='invalid-animation-sheet';});
+    await page.evaluate(()=>{mount(fixtureDraft());mock.validationFailures=3;mock.validationError='invalid-animation-sheet';});
     const original=(await snapshot(page)).draft;
     await generate(page);
     let state=await snapshot(page);
     assert.equal(state.draft.pages.length,3);
-    assert.equal(state.draft.pageAttempts[3],1);
-    assert.equal(state.calls.at(-1).generationAttempt,0);
+    assert.equal(state.draft.pageAttempts[3],3);
+    assert.equal(state.calls.at(-1).generationAttempt,2);
     assert.equal(state.draft.generationId,original.generationId);
     assert.equal(state.draft.recordId,original.recordId);
     assert.match(state.status.error,/frame boundaries/);
-    assert.ok(await page.evaluate(()=>mock.checkpoints.some(value=>value.pages===3&&value.attempts[3]===1)),'updated retry attempt is checkpointed');
+    assert.ok(await page.evaluate(()=>mock.checkpoints.some(value=>value.pages===3&&value.attempts[3]===3)),'updated retry attempt is checkpointed');
     await page.evaluate(()=>{mount(creator.read());mock.serviceError='network';});
     assert.equal(await page.locator('#pet-photo').evaluate(input=>input.required),false,'restored photo-only drafts do not require another upload');
     await generate(page);
     state=await snapshot(page);
-    assert.equal(state.draft.pageAttempts[3],1,'network failure does not create another billable attempt');
-    assert.equal(state.calls.at(-1).generationAttempt,1);
+    assert.equal(state.draft.pageAttempts[3],3,'network failure does not create another billable attempt');
+    assert.equal(state.calls.at(-1).generationAttempt,3);
     await generate(page);
     state=await snapshot(page);
     assert.equal(state.draft.pages.length,16);
@@ -290,6 +285,41 @@ async function singleActionCases(page) {
     assert.equal(state.draft.recordId,original.recordId);
     assert.equal(state.draft.photo,original.photo);
     await singleActionCases(page);
+    await page.evaluate(()=>mount(fixtureDraft(15)));
+    await page.locator('#pet-action-description').evaluate(el=>el.closest('details').open=true);
+    await page.selectOption('#pet-description-action','tea');
+    await page.fill('#pet-action-description','Lift the cup slowly, sip once and lower it.');
+    const described=(await snapshot(page)).draft;
+    await page.evaluate(()=>mount(creator.read()));
+    assert.equal((await snapshot(page)).draft.actionDescriptions[15],described.actionDescriptions[15]);
+    await generate(page);
+    state=await snapshot(page);
+    assert.equal(state.draft.pages.length,16);
+    assert.equal(state.calls.at(-1).actionDescription,described.actionDescriptions[15]);
+    assert.equal(state.calls.at(-1).animationPage,15);
+    assert.deepEqual(state.draft.pages.slice(0,15),described.pages);
+    await page.evaluate(()=>{const draft=fixtureDraft(0);delete draft.animationVersion;delete draft.actionDescriptions;mount(draft);});
+    const before32=(await snapshot(page)).calls.length;
+    await generate(page);
+    assert.equal((await snapshot(page)).calls.length,before32,'missing play prop must stop before using image allowance');
+    await page.fill('#pet-play-prop','A red spinning top');
+    await generate(page);
+    assert.equal((await snapshot(page)).calls.length,before32,'missing craft information must stop before using image allowance');
+    await page.fill('#pet-craft-details','Fold a colored paper boat');
+    await page.evaluate(()=>mount(creator.read()));
+    await generate(page);
+    state=await snapshot(page);
+    const newCalls=state.calls.slice(before32);
+    assert.equal(newCalls.length,16);
+    assert.ok(newCalls.every(call=>call.animationVersion===3));
+    assert.equal(newCalls[3].actionDescription,'A red spinning top');
+    assert.equal(newCalls[14].actionDescription,'Fold a colored paper boat');
+    assert.deepEqual(state.draft.retainedFrames,Array(16).fill(32));
+    assert.equal(state.status.ready,true);
+    await page.evaluate(()=>{mock.language='zh';mount(creator.read());});
+    assert.match(await page.locator('.pet-required-actions').innerText(),/玩耍道具 · 必填/);
+    assert.match(await page.locator('.pet-required-actions').innerText(),/手作内容与材料 · 必填/);
+    assert.match(await page.locator('.pet-create-intro p').first().innerText(),/每个动作 32 帧，共 512 帧/);
     assert.deepEqual(rendererErrors,[]);
     console.log('PASS creator attempt recovery, rejected-art retries, confirmation cancellation, metadata/photo preservation, preview recovery, completion timing and asynchronous save identity');
   } finally {

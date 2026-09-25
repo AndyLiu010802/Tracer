@@ -159,6 +159,7 @@
     const vines=[];for(let i=0;i<13;i++){const a=i/13*TAU+(random()-.5)*.22+seed*.1,chain=[],length=4+Math.floor(random()*8);for(let j=0;j<length;j++){const y=.38-j*.044,ring=Math.sqrt(1-y*y),turn=a+Math.sin(j*.85+i)*.023;chain.push({x:Math.sin(turn)*ring,y,z:Math.cos(turn)*ring});}vines.push(chain);}
     const initialYaw=((hash(planet.id+'-view')%1000)/1000-.5)*.90;
     let yaw=initialYaw,pitch=.90,selected=-1,dead=false,inView=!win.IntersectionObserver,raf=0,wake=0,last=0,drag=null,moved=false,width=0,height=0,radius=0,hitAreas=[],surface=null,rays=null,buffer=null;
+    if(options.view){yaw=options.view.yaw;pitch=options.view.pitch;}
     let spinning=!!options.interactive,gestureUntil=0,dirty=true;
     const reduced=win.matchMedia?.('(prefers-reduced-motion: reduce)');
     const request=()=>{if(dead)return;dirty=true;if(!raf&&inView&&!(doc.hidden || doc.tracerHidden))raf=win.requestAnimationFrame(frame);};
@@ -177,7 +178,7 @@
       }
     }
     function resize(){
-      if(dead)return;const rect=canvas.getBoundingClientRect();width=Math.max(1,rect.width||360);height=Math.max(1,rect.height||360);const dpr=Math.min(2,win.devicePixelRatio||1);
+      if(dead)return;const rect=canvas.getBoundingClientRect();width=options.size||Math.max(1,rect.width||360);height=options.size||Math.max(1,rect.height||360);const dpr=options.size?1:Math.min(2,win.devicePixelRatio||1);
       canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);radius=Math.min(width*.355,height*.318);
       surface=null;buffer=null;rays=null;request();
     }
@@ -242,7 +243,7 @@
       if(dead||!ctx)return;
       // Offscreen collection cards allocate their ray buffers and material only
       // when revealed. Opening a shelf with twelve worlds stays responsive.
-      if(!surface)makeRays(Math.max(4,Math.round(Math.min(options.interactive?440:220,radius*2*Math.min(2,win.devicePixelRatio||1)))));
+      if(!surface)makeRays(Math.max(4,Math.round(Math.min(options.size?900:options.interactive?440:220,radius*2*Math.min(2,win.devicePixelRatio||1)))));
       if(!tex)tex=cachedTexture(doc,seed,meadow(doc).pixels,layout.cyber?meadow(doc,null,'cyber').pixels:null,layout);
       ctx.clearRect(0,0,width,height);const cx=width/2,cy=height*.57;
       const glow=ctx.createRadialGradient(cx,cy-radius*.3,radius*.2,cx,cy,radius*1.65);glow.addColorStop(0,'#b8c38915');glow.addColorStop(.7,'#a4b48206');glow.addColorStop(1,'#a4b48200');ctx.fillStyle=glow;ctx.fillRect(0,0,width,height);
@@ -274,6 +275,17 @@
     if(options.interactive){canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);canvas.addEventListener('keydown',key);}
     resize();
     return{
+      drawNow(){paint();},
+      async snapshot(size=1300){
+        const view={yaw,pitch};
+        const entries=[meadow(doc),...(layout.cyber?[meadow(doc,null,'cyber')]:[]),...new Set(all.map(p=>kind(p.flower)))].map(e=>typeof e==='string'?sprite(doc,e):e);
+        let timeout;
+        try{await Promise.race([Promise.all(entries.map(e=>e.image.decode())),new Promise((_,reject)=>{timeout=win.setTimeout(()=>reject(new Error('planet-assets-timeout')),15000);})]);}
+        finally{win.clearTimeout(timeout);}
+        if(dead)throw new Error('planet-closed');
+        const output=doc.createElement('canvas'),still=renderer(output,planet,{size,view});
+        try{still.drawNow();return output;}finally{still.destroy();}
+      },
       pause(value){spinning=!value;if(value)win.clearTimeout(wake);request();},
       reset(){yaw=initialYaw;pitch=.90;selected=-1;gestureUntil=win.performance.now()+2000;request();},
       select(index,orient=true){const item=all[index];if(!item)return;selected=index;if(orient){const view=flowerView(item.point);yaw=view.yaw;pitch=view.pitch;}gestureUntil=win.performance.now()+8000;request();},
@@ -321,7 +333,7 @@
       if(shiny)aside.append(el('div','garden-planets-shiny-note',t('✧ 珍藏了 '+shiny+' 位闪光伙伴','✧ Home to '+shiny+' shiny companions')));
       aside.append(el('div','garden-planets-memory'));
       if(p.flowers.length>MAX_SPRITES)aside.append(el('p','garden-planets-density-note',t('星球展示代表性的花丛。下方保留全部 '+p.flowers.length+' 条花朵纪念，点选任意一朵即可定位。','The world shows representative flower beds. All '+p.flowers.length+' keepsakes remain below; select any flower to find it.')));
-      const actions=el('div','garden-planets-project-actions');if(p.projectId)actions.append(button(t('查看归档项目','View archived project'),'open-project',p.projectId));actions.append(button(t('删除这颗星球','Delete this world'),'delete-planet',p.id,'garden-planets-delete'));aside.append(actions);detail.append(stage,aside);root.append(detail,el('section','garden-planets-records'));
+      const actions=el('div','garden-planets-project-actions');if(win.TracerPostcards)actions.append(button(t('制作明信片 ↗','Create a postcard ↗'),'postcard'));if(p.projectId)actions.append(button(t('查看归档项目','View archived project'),'open-project',p.projectId));actions.append(button(t('删除这颗星球','Delete this world'),'delete-planet',p.id,'garden-planets-delete'));aside.append(actions);detail.append(stage,aside);root.append(detail,el('section','garden-planets-records'));
       mainRenderer=renderer(canvas,p,{interactive:true,onSelect:index=>pick(index,false)});mainRenderer.pause(paused);if(selectedFlower>=0&&selectedFlower<p.flowers.length)mainRenderer.select(selectedFlower);renderMemory();renderFlowerList();
       const gallery=el('section','garden-planets-gallery'),heading=el('div','garden-planets-subhead');heading.append(el('h3','',t('收藏陈列室','Your collection')),el('span','garden-planets-muted',t('每一颗，都有自己的故事','Every world has its own story')));gallery.append(heading);const grid=el('div','garden-planets-grid');cardPage=Math.min(cardPage,Math.max(0,Math.ceil(planets.length/CARD_PAGE)-1));
       for(const item of planets.slice(cardPage*CARD_PAGE,(cardPage+1)*CARD_PAGE)){const card=button('','select-planet',item.id,'garden-planets-card');card.setAttribute('aria-pressed',String(item.id===selectedId));card.setAttribute('aria-label',t('浏览星球：','Explore world: ')+item.name);const preview=el('canvas','garden-planets-preview');preview.setAttribute('aria-hidden','true');const copy=el('span','garden-planets-card-copy');copy.append(el('strong','',item.name||t('未命名项目','Untitled project')),el('span','',t(item.flowers.length+' 朵花 · ',item.flowers.length+' flowers · ')+date(item.completedAt)));card.append(preview,copy);grid.append(card);cardRenderers.push({pending:[preview,item],destroy(){}});}gallery.append(grid);
@@ -329,6 +341,7 @@
       cardRenderers=cardRenderers.map(item=>renderer(item.pending[0],item.pending[1]));
     }
     function click(e){const b=e.target.closest('[data-planet-action]');if(!b||!root.contains(b)||b.disabled)return;const action=b.dataset.planetAction,value=b.dataset.value;
+      if(action==='postcard'){onAction?.('create-postcard',{planet:current(),snapshot:()=>mainRenderer.snapshot()});return;}
       if(action==='select-planet'){if(selectedId===value)return;selectedId=value;selectedFlower=-1;flowerPage=0;render();root.querySelector('.garden-planets-canvas')?.focus({preventScroll:true});return;}
       if(action==='select-flower'){pick(Number(value));return;}
       if(action==='pause'){paused=!paused;mainRenderer?.pause(paused);b.textContent=paused?t('继续转动','Resume rotation'):t('暂停转动','Pause rotation');b.setAttribute('aria-pressed',String(paused));return;}
@@ -343,6 +356,7 @@
       destroy(){if(destroyed)return;destroyed=true;dispose();root.removeEventListener('click',click);root.replaceChildren();root.classList.remove('garden-planets');}
     };
   }
+  View.snapshot=async function(doc,planet,size=1300){const still=renderer(doc.createElement('canvas'),planet,{size});try{return await still.snapshot(size);}finally{still.destroy();}};
   View.geometry={rotate,unrotate,project,flowerView,positions,samplePositions,rarity,hash,terrain,biomes,biomeMix,isCyber,MAX_SPRITES};
   return View;
 });

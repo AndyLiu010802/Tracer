@@ -71,7 +71,10 @@ const STORE_NAME_RE = /^[a-z][a-z0-9-]{0,31}$/;
 // DOCS_PORTAL_DATA_DIR 管，这个开关是它唯一的写保护，因此两个端点都要接进来，
 // 兜底的承诺才是真的。
 const READONLY_STORE = process.env.DOCS_PORTAL_READONLY_STORE === '1';
-const accounts = require('./lib/accounts').createLocalAccounts(DATA_DIR);
+const accounts = require('./lib/accounts').createLocalAccounts(DATA_DIR, { beforeClear: async dir => {
+  await accountServices.get(dir)?.aiGateway.close();
+  accountServices.delete(dir);
+} });
 const accountHttp = require('./lib/account-http').createAccountHttp(accounts, { readBody, readonly: READONLY_STORE });
 const accountServices = new Map([[DATA_DIR, { aiGateway, petGenerationJobs }]]);
 function servicesFor(dir) {
@@ -176,6 +179,11 @@ function readBody(req, limit = 256 * 1024) {
 }
 
 async function handleRequest(req, res) {
+  try { return await routeRequest(req, res); }
+  finally { req.releaseAccountData?.(); }
+}
+
+async function routeRequest(req, res) {
   const base = 'http://' + config.host + ':' + config.port;
   let url;
   try {
@@ -196,14 +204,11 @@ async function handleRequest(req, res) {
   if (scopedRequest) {
     const transport = require('./lib/account-http');
     if (!transport.trusted(req)) { req.resume?.(); transport.send(res,403,{ok:false}); return; }
-    let context;
-    try { context = await accounts.context(accounts.tokenFrom(req)); }
-    catch { req.resume?.(); transport.send(res,503,{error:'account-storage-unavailable'}); return; }
-    activeScope = context.scope;
     const expected = req.headers['x-tracer-scope'] || url.searchParams.get('__tracer_account');
-    if (activeScope === 'locked' || (expected && expected !== activeScope) || (!expected && activeScope !== 'guest' && !pathname.startsWith('/api/pet-art/'))) {
-      req.resume?.(); transport.send(res,activeScope === 'locked' ? 401 : 409,{error:'account-changed'}); return;
-    }
+    try {
+      const access = await accounts.beginDataRequest(accounts.tokenFrom(req), expected, req.headers['x-tracer-generation'] || url.searchParams.get('__tracer_generation'), pathname.startsWith('/api/pet-art/') && ['GET','HEAD'].includes(req.method));
+      activeScope = access.scope; req.releaseAccountData = access.release;
+    } catch (error) { req.resume?.(); transport.send(res,error.status || 503,{error:error.code || 'account-storage-unavailable'}); return; }
     if (activeScope !== 'guest') activeDataDir = accounts.directory(activeScope);
   }
 

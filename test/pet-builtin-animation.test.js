@@ -2,11 +2,11 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const Art=require('../skins/tracer/pet-art'),Animation=require('../skins/tracer/pet-builtin-animation'),Idle=require('../skins/tracer/pet-idle'),Personalities=require('../skins/tracer/pet-personalities');
 
-test('all six built-ins have sixteen distinct articulated poses for each of sixteen actions',()=>{
-  assert.equal(Animation.actions.length,16);assert.equal(Animation.frames,16);
+test('all six built-ins have thirty-two distinct articulated poses for each of sixteen actions',()=>{
+  assert.equal(Animation.actions.length,16);assert.equal(Animation.frames,32);
   for(const id of Object.keys(Art.rigs))for(const action of Animation.actions){
-    const frames=Array.from({length:16},(_,frame)=>Animation.snapshot(id,action,frame));
-    assert.equal(new Set(frames).size,16,id+':'+action+' must not pad the sequence with duplicates');
+    const frames=Array.from({length:32},(_,frame)=>Animation.snapshot(id,action,frame));
+    assert.equal(new Set(frames).size,32,id+':'+action+' must not pad the sequence with duplicates');
     for(const svg of frames){
       assert.match(svg,new RegExp('data-species="'+Art.rigs[id].species+'"'));
       assert.match(svg,/animation:none!important;transform:none!important;overflow:hidden/);
@@ -16,20 +16,20 @@ test('all six built-ins have sixteen distinct articulated poses for each of sixt
       assert.match(svg,/class="rig-part rig-posture"[^>]+transform:translate\(0px,0px\) rotate\(0deg\) scale\(1,1\)/,'no whole-character motion');
     }
     const components=frames.map(svg=>[...svg.matchAll(/<g class="[^"]*rig-(head|arm-left|arm-right|tail|ear-left|body)"[^>]*>/g)].map(match=>match[0]).join(''));
-    assert.equal(new Set(components).size,16,id+':'+action+' must change the articulated character, not only a prop');
+    assert.equal(new Set(components).size,32,id+':'+action+' must change the articulated character, not only a prop');
   }
 });
 
 test('pose loops and bounded action timings preserve rest while adding fluid in-betweens',()=>{
   for(const action of Animation.actions){
-    assert.equal(Animation.snapshot('miso',action,16),Animation.snapshot('miso',action,0));
-    assert.equal(Animation.snapshot('miso',action,-1),Animation.snapshot('miso',action,15));
-    const times=Array.from({length:16},(_,frame)=>Animation.duration(action,frame));
-    assert.ok(times.every(time=>time>=180&&time<=6000));
+    assert.equal(Animation.snapshot('miso',action,32),Animation.snapshot('miso',action,0));
+    assert.equal(Animation.snapshot('miso',action,-1),Animation.snapshot('miso',action,31));
+    const times=Array.from({length:32},(_,frame)=>Animation.duration(action,frame));
+    assert.ok(times.every(time=>time>=120&&time<=6000));
     if(action!=='sleep'){
       assert.ok(times[0]>=2200,'an action starts with a quiet resting pause');
-      assert.ok(times[15]>=1800,'a completed gesture is not immediately repeated');
-      assert.ok(times.slice(1,15).every(time=>time<=200),'in-between drawings retain a steady cadence');
+      assert.ok(times[31]>=1800,'a completed gesture is not immediately repeated');
+      assert.ok(times.slice(1,31).every(time=>time<=200),'in-between drawings retain a steady cadence');
     }
     assert.ok(action==='sleep'||times[0]>times[1]);
     assert.ok(times.reduce((sum,time)=>sum+time,0)>=1800);
@@ -48,8 +48,8 @@ function browser(){
 
 test('player progresses through all poses, switches actions once, and releases listeners and cached frames',()=>{
   const b=browser(),p=b.api.create({pet:{id:'luna'},label:'Luna'}),el=p.element;
-  assert.equal(el.attributes['aria-label'],'Luna');assert.equal(el.dataset.frames,'16');
-  for(const action of Animation.actions){p.setAction(action);assert.equal(el.dataset.frame,'0');if(action==='sleep'){assert.equal(b.timers.size,0);assert.equal(el.dataset.playback,'sleeping');continue;}for(let frame=1;frame<16;frame++){b.tick();assert.equal(el.dataset.frame,String(frame));p.setAction(action);assert.equal(el.dataset.frame,String(frame));}b.tick();assert.equal(el.dataset.frame,'0');assert.equal(b.timers.size,1);}
+  assert.equal(el.attributes['aria-label'],'Luna');assert.equal(el.dataset.frames,'32');
+  for(const action of Animation.actions){p.setAction(action);assert.equal(el.dataset.frame,'0');if(action==='sleep'){assert.equal(b.timers.size,0);assert.equal(el.dataset.playback,'sleeping');continue;}for(let frame=1;frame<32;frame++){b.tick();assert.equal(el.dataset.frame,String(frame));p.setAction(action);assert.equal(el.dataset.frame,String(frame));}b.tick();assert.equal(el.dataset.frame,'0');assert.equal(b.timers.size,1);}
   p.setAction('writing');const old=el.innerHTML;p.destroy();p.destroy();p.setAction('tea');
   assert.equal(el.innerHTML,old);assert.equal(el.dataset.playback,'destroyed');assert.equal(b.timers.size,0);assert.equal(b.listeners.size,0);assert.equal(b.motionListeners.size,0);
 });

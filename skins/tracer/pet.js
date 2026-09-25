@@ -102,7 +102,7 @@
     if(next) { reminder={...next,title:next.title.slice(0,200),at:now}; force=true; }
     if(unlocked.length) force=true;
     const catalog=P.catalog(state);
-    lastSnapshot={accountScope:window.TracerAccount?.scope||'guest',language:TracerLocale.language(),native:!!window.TracerPet,pet:catalog.find(p=>p.id===state.selected),catalog,needs:{...P.current(state)},unlocked:state.unlocked.slice(),metrics,
+    lastSnapshot={accountScope:window.TracerAccount?.scope||'guest',accountGeneration:window.TracerAccount?.context.generation||0,language:TracerLocale.language(),native:!!window.TracerPet,pet:catalog.find(p=>p.id===state.selected),catalog,needs:{...P.current(state)},unlocked:state.unlocked.slice(),metrics,
       mood:P.mood(state,focus.running),focus:{running:focus.running,completed:focus.completed,clock:TracerFocus.format(TracerFocus.remaining(focus,now))},
       task:P.nextTask(ws.tasks),reminder,reminders:state.reminders,snoozedUntil:state.snoozedUntil,lastAction:state.lastAction,lastActionAt:state.lastActionAt,
       feedback:feedback&&now-feedback.at<6500?feedback:null};

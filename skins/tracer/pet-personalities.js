@@ -17,7 +17,7 @@
       reactions: {
         pet: L('A soft pat. My wool has room for one more cloud.', '轻轻一下，羊毛里又蓬起一朵小云。'),
         feed: L('Warm food, then a look at the seedlings. Lovely.', '吃得暖暖的，再去看看小苗。真好。'),
-        play: L('Let’s roll the ball gently. The seedlings are watching.', '我们轻轻滚球吧，小苗还在旁边呢。'),
+        play: L('Just a gentle push. My seedling has a little garden cart.', '轻轻推一下，小苗也有自己的园艺小车啦。'),
         sleep: L('Watering can down. Even gardens need a quiet night.', '放下小水壶，花园也需要安静的一晚。'),
         wake: L('One stretch… shall we check for a new leaf?', '伸个懒腰……去看看有没有长新叶子吧。'),
         focus: L('One small patch at a time. I’ll settle beside my seedling.', '一次照顾一小块地。我也在幼苗旁坐好了。'),
@@ -45,7 +45,7 @@
       reactions: {
         pet: L('Acceptable technique. You may continue. Briefly.', '手法尚可，允许继续。就一小会儿。'),
         feed: L('Texture: splendid. Presentation: bowl. A strong review.', '口感优秀，摆盘是碗。可以给好评。'),
-        play: L('I meant to chase that ball. A very dignified decision.', '我本来就打算追这个球。这很有风度。'),
+        play: L('A fish-shaped cushion. I am simply checking its softness.', '小鱼抱枕呀，我只是认真检查一下它软不软。'),
         sleep: L('The critic is off duty. Please keep my sunbeam warm.', '评论家下班了，替我留着这束阳光。'),
         wake: L('I was testing the cushion. Thoroughly.', '刚才是在测试垫子。测试得很认真。'),
         focus: L('I’ll supervise from this cushion. One thing at a time.', '我在垫子上监督。先做好眼前这一件就行。'),
@@ -73,7 +73,7 @@
       reactions: {
         pet: L('That’s going on my map as a very good stop.', '我要把这里标在地图上：特别舒服的一站。'),
         feed: L('One bite, then another. An excellent meal plan.', '先一口，再一口。这个用餐计划很不错。'),
-        play: L('Route planned! Oh. The ball has chosen another route.', '路线规划完成！咦，球选了另一条路线。'),
+        play: L('This smooth pebble fits right on top. Steady now.', '这颗圆石头正好放在最上面，慢慢放稳。'),
         sleep: L('Map folded, pebbles stacked. Ready to tuck in.', '地图折好，石头码齐，可以安心窝起来了。'),
         wake: L('Flippers stretched. Today’s first step may be a waddle.', '鳍伸开啦。今天的第一步，可能还是摇摇摆摆。'),
         focus: L('One landmark at a time. The next small step is enough.', '一次走到一个路标就好，先走眼前这一小步。'),
@@ -101,7 +101,7 @@
       reactions: {
         pet: L('Oh! Tail, behave. Yes, that was nice.', '呀！尾巴，别乱晃。嗯，刚刚挺舒服的。'),
         feed: L('Trail fuel! I’ll save the best bite for a quiet moment.', '探路补给到啦！最好的一口，留着慢慢吃。'),
-        play: L('Watch this turn! Almost caught it. New route!', '看这个转弯！差一点接住。换条路线再来！'),
+        play: L('One little trail tile, and the path connects.', '挪好这一小块，新的小路就连起来啦。'),
         sleep: L('Scouting can wait. Nose tucked, tail wrapped.', '探路可以等一等。鼻尖藏好，尾巴围起来。'),
         wake: L('Ears up. Let’s see what this little corner holds.', '耳朵竖起来啦，看看这个小角落藏着什么。'),
         focus: L('Pick one trail. If it gets rocky, we can find a small detour.', '先选一条小路。遇到石头，我们再找个小绕行。'),
@@ -129,7 +129,7 @@
       reactions: {
         pet: L('One ear leans closer. This is a lovely quiet moment.', '一只耳朵轻轻靠过来。这样安静一会儿，真好。'),
         feed: L('A little herb scent. I’ll take my time with this.', '有一点香草味，我想慢慢吃。'),
-        play: L('A small hop after the ball. It rolls like a little moon.', '轻轻跳着追过去，球滚起来像一颗小月亮。'),
+        play: L('Turn the moonstone slowly. Every side holds a quiet light.', '慢慢转一转月光石，每一面都有安静的光。'),
         sleep: L('Moonstone beside me. The rest of the sky can wait.', '月光石放在身旁，剩下的夜空，醒来再看。'),
         wake: L('Ears unfolding. I can begin softly today.', '耳朵慢慢舒展开，今天也可以轻轻地开始。'),
         focus: L('A quiet space for one thought. We needn’t hold the whole sky.', '给一个念头留点安静，不用一次装下整片天空。'),
@@ -157,7 +157,7 @@
       reactions: {
         pet: L('My wings went all fluttery! That was a good kind of surprise.', '翅膀一下子扑扇起来了！是很开心的那种意外。'),
         feed: L('Fuel for a tiny inventor! No, the crystal isn’t a garnish.', '小发明家的能量到啦！晶石不是配菜，我知道的。'),
-        play: L('Ball experiment, take one! Oops. Useful bounce data.', '小球实验，第一次！哎呀，收集到了弹跳数据。'),
+        play: L('One little gear turns another. A tiny invention at work!', '转动一颗小齿轮，另一颗也跟着动啦！'),
         sleep: L('Prototype parked. Wings folded. Dream lab opening.', '小装置放好，翅膀收好，梦里的实验室开门啦。'),
         wake: L('Wing check! I have one tiny idea to try after breakfast.', '检查翅膀！早饭之后，有个小点子想试试。'),
         focus: L('One small experiment. We can learn without getting it perfect.', '先做一个小实验，不完美也能学到东西。'),

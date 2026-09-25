@@ -11,25 +11,25 @@ const {chromium}=require(process.env.TRACER_QA_PLAYWRIGHT||'playwright');
     await context.route('**/*',route=>{const u=new URL(route.request().url());if(u.origin!==origin)return route.abort();if(u.pathname.startsWith('/api/ai/'))return route.fulfill({json:{configured:false}});return route.continue();});
     const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));await page.goto(origin);await page.waitForFunction(()=>window.TracerGardenCompanionMotion&&window.TracerPetView);
     const report=await page.evaluate(async()=>{
-      const result={sheets:0,frames:0,coverage:{}},host=document.createElement('section');host.id='qa-motion';host.style.cssText='position:fixed;inset:0;z-index:99999;background:#142019;color:#d7e7c5;padding:24px;overflow:auto;font-family:system-ui';document.body.appendChild(host);
+      const result={sheets:0,frames:0,expectedFrames:0,coverage:{}},host=document.createElement('section');host.id='qa-motion';host.style.cssText='position:fixed;inset:0;z-index:99999;background:#142019;color:#d7e7c5;padding:24px;overflow:auto;font-family:system-ui';document.body.appendChild(host);
       for(const[kind,variants]of Object.entries(TracerGardenCompanionAtlas.kinds))for(const[variant,actions]of Object.entries(variants)){
         const entry=kind+'/'+variant;result.coverage[entry]=Object.keys(actions);
         for(const[action,sheet]of Object.entries(actions)){
           const element=document.createElement('span');element.style.cssText='display:block;width:160px;height:176px';host.appendChild(element);
-          const layer=TracerGardenCompanionMotion.create(element,{kind,stage:4,rare:true,shiny:variant==='shiny',onReady:()=>layer.render(action,0)});layer.render(action,0);
+          let frame=0;const layer=TracerGardenCompanionMotion.create(element,{kind,stage:4,rare:true,shiny:variant==='shiny',sample:()=>({clip:action,frame,frames:sheet.frames}),onReady:()=>layer.render(action,0)});layer.render(action,0);
           await new Promise((resolve,reject)=>{const start=performance.now();function check(){if(element.dataset.motion==='ready'&&element.dataset.motionClip===action)return resolve();if(performance.now()-start>15000)return reject(new Error(entry+'/'+action+' did not load'));setTimeout(check,20);}check();});
-          const crops=new Set();let at=0;for(let frame=0;frame<16;frame++){
+          const crops=new Set();let at=0;for(frame=0;frame<sheet.frames;frame++){
             layer.render(action,at+1,false,null,false);const crop=element.querySelector('svg svg'),image=element.querySelector('image');
-            if(element.dataset.frame!==String(frame)||element.dataset.motionClip!==action||image.getAttribute('href')!==sheet.src)throw new Error(entry+'/'+action+'/'+frame+' wrong source frame');
-            crops.add(crop.getAttribute('viewBox'));at+=TracerGardenCompanionMotion.timings[action][frame];result.frames++;
+            if(element.dataset.frame!==String(frame)||element.dataset.motionClip!==action||image.getAttribute('href')!==(sheet.pages?.[sheet.cells[frame].page]?.src||sheet.src))throw new Error(entry+'/'+action+'/'+frame+' wrong source frame');
+            crops.add(image.getAttribute('href')+crop.getAttribute('viewBox'));at+=TracerGardenCompanionMotion.timings[action][frame];result.frames++;
           }
-          if(crops.size!==16)throw new Error(entry+'/'+action+' reused a frame');layer.destroy();element.remove();result.sheets++;
+          if(crops.size!==sheet.frames)throw new Error(entry+'/'+action+' reused a frame');layer.destroy();element.remove();result.sheets++;result.expectedFrames+=sheet.frames;
         }
       }
       host.remove();return result;
     });
-    const expected=require('./build-garden-companion-atlas.cjs').KINDS.length*2*16;
-    assert.equal(report.frames,report.sheets*16);if(process.argv.includes('--complete'))assert.equal(report.sheets,expected,'all '+expected+' inspected sheets are required for completion');
+    const expected=require('./build-garden-companion-atlas.cjs').KINDS.length*2*require('./build-garden-companion-atlas.cjs').ACTIONS.length;
+    assert.equal(report.frames,report.expectedFrames);if(process.argv.includes('--complete'))assert.equal(report.sheets,expected,'all '+expected+' inspected sheets are required for completion');
     console.log(`PASS ${report.sheets} real PNG sheets / ${report.frames} distinct source frame crops`);
     // Static review boards use the actual production cropper, including its
     // common foot anchor. They expose identity, padding and resting poses at
@@ -62,7 +62,7 @@ const {chromium}=require(process.env.TRACER_QA_PLAYWRIGHT||'playwright');
       },desktop);
       if(desktop){await page.locator('#qa-pet-motion .pet-character').hover();await page.locator('#qa-pet-motion [data-quick-act=expand]').click();}
       await page.locator('#qa-pet-motion .garden-companion-preview summary').click();
-      assert.equal(await page.locator('#qa-pet-motion .garden-companion-preview option').count(),16);
+      assert.equal(await page.locator('#qa-pet-motion .garden-companion-preview option').count(),18);
       await page.locator('#qa-pet-motion .garden-companion-preview select').selectOption('greet');await page.locator('#qa-pet-motion .garden-companion-preview button').click();
       await page.waitForFunction(()=>document.querySelector('#qa-pet-motion .pet-character .garden-plant-sprite')?.dataset.motionClip==='greet');
       const before=await page.locator('#qa-pet-motion .pet-character .garden-plant-sprite').getAttribute('data-frame');await page.waitForFunction(before=>document.querySelector('#qa-pet-motion .pet-character .garden-plant-sprite').dataset.frame!==before,before);

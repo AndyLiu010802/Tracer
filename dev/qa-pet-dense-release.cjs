@@ -25,6 +25,10 @@ function packageFile(name,version,sheets) {
 
 async function importPack(page,file) {
   checkpoint('import '+path.basename(file));
+  // Native playback checks leave the companion in front. The main window
+  // intentionally skips view updates while hidden, so restore it before UI work.
+  await page.bringToFront();
+  await page.waitForFunction(()=>!document.hidden&&!document.tracerHidden);
   if(!await page.locator('[data-tab="collection"]').count())await page.click('#pet-open');
   await page.click('[data-tab="collection"]');await page.click('[data-act="open-import"]');
   await page.locator('#pet-package-file').setInputFiles(file);await page.locator('.pet-transfer-submit:not([disabled])').waitFor();
@@ -50,7 +54,7 @@ async function cycle(page,selector,action,count,label) {
       if(element.dataset.action!==action)return;
       // The illustrated atlas reports playback before its first sheet finishes
       // decoding. An absent frame is not a rendered pose and must not satisfy
-      // the sixteen-frame count before the last real frame appears.
+      // the expected frame count before the last real frame appears.
       if(!/^\d+$/.test(element.dataset.frame||''))return;
       const frame=Number(element.dataset.frame),sheet=element.querySelector('.pet-animation-sheet');
       if(!Number.isInteger(frame)||frame<0||frame>=count)return;
@@ -103,15 +107,17 @@ async function cycle(page,selector,action,count,label) {
     assert.equal(await page.evaluate(()=>Tracer.pet.read().customs.length),0,'test profile has no existing user companions');
     const dense=packageFile('Dense Release Fixture',2,(await denseFixtures(page)).sheets),legacy=packageFile('Legacy Release Fixture',1,(await legacyFixtures(page)).sheets);
     await page.click('#pet-open');assert.equal(await page.locator('.pet-name').innerText(),'Sprout');
-    assert.equal(await page.evaluate(()=>TracerPetBuiltinAnimation.frames),16);
+    // Built-in and illustrated companions now play 32 poses. Imported v2
+    // custom packs below still retain their authored 16-frame playback/files.
+    assert.equal(await page.evaluate(()=>TracerPetBuiltinAnimation.frames),32);
     await page.click('[data-act="focus-toggle"]');
-    await cycle(page,'.pet-character .pet-builtin-sprite','focus',16,'packaged main-window built-in sixteen-frame cycle');
+    await cycle(page,'.pet-character .pet-builtin-sprite','focus',32,'packaged main-window built-in thirty-two-frame cycle');
     checkpoint('capture main built-in and open native companion');
     await page.screenshot({path:path.join(profile,'main-builtin.png')});
     await page.click('[data-act="desktop"]');let pet;
     for(let i=0;i<120;i++){pet=context.pages().find(target=>target.url().endsWith('/pet.html'));if(pet)break;await sleep(150);}
     assert.ok(pet,'actual native desktop companion window opens');pet.setDefaultTimeout(20000);
-    await cycle(pet,'.pet-character .pet-builtin-sprite','focus',16,'native desktop built-in sixteen-frame cycle');
+    await cycle(pet,'.pet-character .pet-builtin-sprite','focus',32,'native desktop built-in thirty-two-frame cycle');
     assert.deepEqual(await pet.evaluate(()=>[innerWidth,innerHeight]),[220,284]);
     checkpoint('capture native built-in');
     await pet.screenshot({path:path.join(profile,'native-builtin.png'),omitBackground:true});
@@ -203,7 +209,7 @@ async function cycle(page,selector,action,count,label) {
     console.log('PASS packaged companion home, selected sixteen-frame companion, task planting, mature flowers survive clearing/reload and remain manually harvestable');
     assert.equal(aiWrites,0,'native release test never reaches a real generation or AI chat endpoint');assert.deepEqual(errors,[],'no packaged renderer errors');
     console.log('PASS packaged native chat preview, explicit confirmation, real IPC, durable main workspace save and idempotent retry');
-    console.log('PASS packaged '+version+', isolated clean profile, main/native builtin and generated sixteen-frame playback, live care, real v2 export/import, legacy v1 import and saved selection');
+    console.log('PASS packaged '+version+', isolated clean profile, main/native built-in thirty-two-frame and legacy generated sixteen-frame playback, live care, real v2 export/import, legacy v1 import and saved selection');
     console.log('Artifacts: '+profile);
   };
   let verificationError;

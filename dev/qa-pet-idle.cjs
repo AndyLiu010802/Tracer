@@ -15,10 +15,6 @@ Object.assign(process.env, {
 const { server } = require('../server');
 const activities = ['fishing','exercise','farming','mining'];
 const completeActivities = activities.concat(['reading','writing','crafting','tea']);
-const props = {
-  humanoid: { fishing: '.idle-rod', exercise: '.idle-dumbbell', farming: '.idle-watering-can', mining: '.idle-pickaxe' },
-  creature: { fishing: '.idle-fishing-paw', exercise: '.idle-hurdle', farming: '.idle-digging-paw', mining: '.idle-mining-paw' }
-};
 const humanoidId = 'custom_' + 'a'.repeat(32);
 const portraitPath = '/api/pet-art/' + 'a'.repeat(32) + '.png';
 
@@ -50,7 +46,6 @@ async function layout(page, caption, desktop = false) {
 }
 
 async function inspectActivity(page, kind, activity, desktop = false) {
-  const matching = '.pet-idle-vignette[data-idle-kind="' + kind + '"][data-idle-activity="' + activity + '"]';
   assert.equal(await page.locator('.pet-home').getAttribute('data-kind'), kind);
   assert.equal(await page.locator('.pet-home').getAttribute('data-idle'), activity);
   const builtin = await page.locator('.pet-character .pet-builtin-sprite').count() > 0;
@@ -58,7 +53,7 @@ async function inspectActivity(page, kind, activity, desktop = false) {
   if(builtin&&!garden) {
     const player=page.locator('.pet-character .pet-builtin-sprite');
     assert.equal(await player.getAttribute('data-action'),activity);
-    assert.equal(await player.getAttribute('data-frames'),'16');
+    assert.ok(Number(await player.getAttribute('data-frames'))>=16);
     assert.equal(await player.getAttribute('data-playback'),'playing');
     const before=await player.innerHTML();
     // Calm clips deliberately hold their resting pose before the gesture.
@@ -66,18 +61,9 @@ async function inspectActivity(page, kind, activity, desktop = false) {
     assert.equal(await page.locator('.pet-idle-scene').isVisible(),false,'authored snapshots contain their own props without duplicate legacy scenes');
     assert.equal(await player.evaluate(el=>getComputedStyle(el).animationName),'none','no whole-character CSS animation is added to pose playback');
   } else {
-    assert.ok(await page.locator(matching).isVisible(), kind + '/' + activity + ' scene is visible');
-    assert.ok(await page.locator(matching+' '+props[kind][activity]).evaluateAll(els => els.length > 0 && els.every(el => el.checkVisibility() && el.getBoundingClientRect().width > 0)), kind + '/' + activity + ' uses its distinctive prop');
-    const visible = await page.locator('.pet-idle-vignette').evaluateAll(els => els.filter(el => el.checkVisibility() && el.getBoundingClientRect().width > 0).map(el => el.dataset.idleKind + '/' + el.dataset.idleActivity));
-    assert.deepEqual(visible, [kind + '/' + activity], 'only the selected idle scene is painted');
-    const moving = await page.locator('.pet-character').evaluate(el => el.getAnimations({ subtree: true }).some(animation => {
-      const target = animation.effect?.target;
-      if (!target?.checkVisibility() || animation.playState !== 'running') return false;
-      const frames = animation.effect.getKeyframes();
-      return new Set(frames.map(frame => frame.transform).filter(Boolean)).size > 1;
-    }));
-    assert.ok(moving, kind + '/' + activity + ' includes running movement');
+    assert.ok(await page.locator('.pet-character>.pet-sprite').isVisible(), 'companion stays visible without legacy props');
   }
+  assert.equal(await page.locator('.pet-idle-scene,.pet-food-prop,.pet-ball-prop').count(),0,'legacy pixel overlays are removed');
   if (desktop) await layout(page, 'compact/' + kind + '/' + activity, true);
   else {
     for (const width of [360,1440]) {
@@ -86,7 +72,7 @@ async function inspectActivity(page, kind, activity, desktop = false) {
     }
   }
   await page.locator('.pet-stage').screenshot({ path: path.join(profile, (desktop ? 'compact-' : 'main-') + kind + '-' + activity + '.png'), omitBackground: desktop });
-  return page.locator(builtin?'.pet-character .pet-builtin-sprite':matching).innerHTML();
+  return page.locator('.pet-character>.pet-sprite').innerHTML();
 }
 
 async function collectCycle(page, kind, desktop = false) {
@@ -161,7 +147,7 @@ async function collectCycle(page, kind, desktop = false) {
       snapshots[kind] = await page.evaluate(() => structuredClone(window.__qaSnapshot));
     }
     for (const activity of activities) assert.notEqual(markup.humanoid.get(activity), markup.creature.get(activity), activity + ' has different humanoid and creature artwork');
-    // Botanical sheets keep their sixteen movements and use ambient props.
+    // Botanical sheets render their authored movements without legacy props.
     await page.evaluate(()=>{
       const state=Tracer.pet.read();state.unlocked.push('garden_wildflower');state.selected='garden_wildflower';
       state.lastAction='';state.lastActionAt=0;TracerPetModel.current(state);
@@ -189,9 +175,7 @@ async function collectCycle(page, kind, desktop = false) {
     await page.click('[data-act="sleep"]');
     await tick(page, 28); assert.ok(await page.locator('.pet-home').getAttribute('data-idle'));
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    const reduced = await page.locator('.pet-idle-scene').evaluate(el => el.getAnimations({ subtree: true }).filter(animation => animation.effect?.target?.checkVisibility() && animation.playState === 'running').length);
-    assert.equal(reduced, 0, 'reduced-motion mode keeps idle props without moving them');
-    assert.ok(await page.locator('.pet-idle-vignette').evaluateAll(els => els.some(el => el.checkVisibility() && el.getBoundingClientRect().width > 0)));
+    assert.equal(await page.locator('.pet-idle-scene').count(),0,'reduced motion does not restore removed pixel scenes');
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     // Use the real compact HTML/CSS/view; the transport is mocked, not Electron.
     const compact = await browser.newPage({ viewport: { width: 220, height: 284 } });
@@ -228,7 +212,7 @@ async function collectCycle(page, kind, desktop = false) {
     assert.equal(await tick(compact, 19, true), '');
     assert.ok(await tick(compact, 1, true), 'a completed focus round permits idle to resume after its quiet interval');
     assert.deepEqual(errors, [], 'no renderer errors');
-    console.log('PASS eight built-in work actions and four legacy humanoid activities, timing, distinct pixel poses/props, live motion/reduced motion, care/focus/sleep interruptions, no rewards, responsive main and minimal 220×284 compact layouts');
+    console.log('PASS eight built-in work actions and four legacy humanoid activities, timing, authored poses without pixel overlays, live motion/reduced motion, care/focus/sleep interruptions, no rewards, responsive main and minimal 220×284 compact layouts');
     console.log('Artifacts: ' + profile);
   } finally {
     await browser.close(); await new Promise(resolve => server.close(resolve));

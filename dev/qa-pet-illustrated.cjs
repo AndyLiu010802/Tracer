@@ -12,28 +12,28 @@ async function main(){
     await page.addInitScript(()=>{window.PetDesktop={send(){},onState(){}};});
     await page.goto('http://127.0.0.1:'+server.address().port+'/pet.html');await page.waitForFunction(()=>window.TracerPetIllustratedAnimation&&window.TracerPetIllustratedAtlas);
     const report=await page.evaluate(async selected=>{
-      const actions=TracerPetBuiltinAnimation.actions,atlas=TracerPetIllustratedAtlas,result={sheets:0,frames:0,kinds:[]};
+      const actions=TracerPetBuiltinAnimation.actions,atlas=TracerPetIllustratedAtlas,result={sheets:0,frames:0,expectedFrames:0,kinds:[]};
       const ready=async(el,action)=>{const started=performance.now();while(el.dataset.motionClip!==action){if(performance.now()-started>10000)throw new Error(action+' did not load');await new Promise(r=>setTimeout(r,10));}};
       for(const [id,data]of Object.entries(atlas.kinds)){
         if(selected&&!selected.includes(id))continue;
         const holder=document.createElement('div');document.body.appendChild(holder);let frame=0;
-        const layer=TracerGardenCompanionMotion.create(holder,{kind:id,stage:4,rare:true,atlas,actions,sample:action=>({clip:action,frame}),onReady:()=>layer.render(holder.dataset.motionRequested||'idle')});
+        const layer=TracerGardenCompanionMotion.create(holder,{kind:id,stage:4,rare:true,atlas,actions,sample:action=>({clip:action,frame,frames:data.normal[action].frames}),onReady:()=>layer.render(holder.dataset.motionRequested||'idle')});
         if(!layer){holder.remove();continue;}
         for(const action of actions){const sheet=data.normal[action];if(!sheet)continue;
           frame=0;layer.render(action);await ready(holder,action);const crops=new Set();
-          for(frame=0;frame<16;frame++){
+          for(frame=0;frame<sheet.frames;frame++){
             layer.render(action);const image=holder.querySelector('image'),crop=image.parentElement;
-            if(holder.dataset.frame!==String(frame)||holder.dataset.motionClip!==action||image.getAttribute('href')!==sheet.src)throw new Error(id+'/'+action+'/'+frame+' wrong frame');
+            if(holder.dataset.frame!==String(frame)||holder.dataset.motionClip!==action||image.getAttribute('href')!==(sheet.pages?.[sheet.cells[frame].page]?.src||sheet.src))throw new Error(id+'/'+action+'/'+frame+' wrong frame');
             const cell=sheet.cells[frame];if(crop.getAttribute('viewBox')!==[cell.x,cell.y,cell.w,cell.h].join(' '))throw new Error('Incorrect source rectangle');
-            crops.add(crop.getAttribute('viewBox'));result.frames++;
+            crops.add(image.getAttribute('href')+crop.getAttribute('viewBox'));result.frames++;
           }
-          if(crops.size!==16)throw new Error('Repeated crops');result.sheets++;
+          if(crops.size!==sheet.frames)throw new Error('Repeated crops');result.sheets++;result.expectedFrames+=sheet.frames;
         }
         result.kinds.push(id);layer.destroy();holder.remove();
       }
       return result;
     },selected);
-    assert.equal(report.sheets,expected);assert.equal(report.frames,expected*16);
+    assert.equal(report.sheets,expected);assert.equal(report.frames,report.expectedFrames);
     for(const id of report.kinds){
       await page.evaluate(async id=>{
         document.body.replaceChildren();document.body.style='margin:0;padding:16px;background:#202823;color:#eceddf;font:12px system-ui;display:grid;grid-template-columns:repeat(4,250px);gap:8px';

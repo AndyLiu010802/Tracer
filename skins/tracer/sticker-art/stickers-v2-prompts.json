@@ -1,0 +1,1455 @@
+{
+  "version": 2,
+  "generator": "Built-in image_gen",
+  "requestedCount": 72,
+  "materials": [
+    "paper",
+    "glitter"
+  ],
+  "themes": [
+    "life",
+    "pets",
+    "travel"
+  ],
+  "perGroup": 12,
+  "jobs": [
+    {
+      "id": "st_paper_life_breakfast",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "奶油早餐 · 纸质",
+        "Butter breakfast · Paper"
+      ],
+      "description": [
+        "给清晨加一点甜。",
+        "A little sweetness for the morning."
+      ],
+      "price": 20,
+      "subject": "A golden croissant with a small glass jar of strawberry jam and a curled butter pat on one pale sage oval breakfast plate. One compact connected breakfast arrangement.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A golden croissant with a small glass jar of strawberry jam and a curled butter pat on one pale sage oval breakfast plate. One compact connected breakfast arrangement.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_coffee-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_breakfast",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "奶油早餐 · 亮片",
+        "Butter breakfast · Glitter"
+      ],
+      "description": [
+        "给清晨加一点甜。",
+        "A little sweetness for the morning."
+      ],
+      "price": 32,
+      "subject": "A golden croissant with a small glass jar of strawberry jam and a curled butter pat on one pale sage oval breakfast plate. One compact connected breakfast arrangement.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A golden croissant with a small glass jar of strawberry jam and a curled butter pat on one pale sage oval breakfast plate. One compact connected breakfast arrangement.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+    },
+    {
+      "id": "st_paper_life_journal",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "手账时光 · 纸质",
+        "Journaling hour · Paper"
+      ],
+      "description": [
+        "把日常写成喜欢的模样。",
+        "Keep the little moments on paper."
+      ],
+      "price": 20,
+      "subject": "An open cream journal with blank pages, a sage ribbon bookmark, one apricot fountain pen laid diagonally across it and a tiny daisy pressed into the page. Absolutely no text or symbols on pages.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: An open cream journal with blank pages, a sage ribbon bookmark, one apricot fountain pen laid diagonally across it and a tiny daisy pressed into the page. Absolutely no text or symbols on pages.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_journal-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_journal",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "手账时光 · 亮片",
+        "Journaling hour · Glitter"
+      ],
+      "description": [
+        "把日常写成喜欢的模样。",
+        "Keep the little moments on paper."
+      ],
+      "price": 32,
+      "subject": "An open cream journal with blank pages, a sage ribbon bookmark, one apricot fountain pen laid diagonally across it and a tiny daisy pressed into the page. Absolutely no text or symbols on pages.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: An open cream journal with blank pages, a sage ribbon bookmark, one apricot fountain pen laid diagonally across it and a tiny daisy pressed into the page. Absolutely no text or symbols on pages.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_journal-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_plant",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "窗边绿意 · 纸质",
+        "Windowsill green · Paper"
+      ],
+      "description": [
+        "陪一片新叶慢慢长大。",
+        "A new leaf, one day at a time."
+      ],
+      "price": 20,
+      "subject": "A lush small variegated pothos curling around its terracotta pot with a pale sage ceramic saucer, two tiny new leaves and delicate botanical detail. No window or background scene.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A lush small variegated pothos curling around its terracotta pot with a pale sage ceramic saucer, two tiny new leaves and delicate botanical detail. No window or background scene.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_plant-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_plant",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "窗边绿意 · 亮片",
+        "Windowsill green · Glitter"
+      ],
+      "description": [
+        "陪一片新叶慢慢长大。",
+        "A new leaf, one day at a time."
+      ],
+      "price": 32,
+      "subject": "A lush small variegated pothos curling around its terracotta pot with a pale sage ceramic saucer, two tiny new leaves and delicate botanical detail. No window or background scene.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A lush small variegated pothos curling around its terracotta pot with a pale sage ceramic saucer, two tiny new leaves and delicate botanical detail. No window or background scene.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_plant-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_tea",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "柠檬茶歇 · 纸质",
+        "Lemon tea break · Paper"
+      ],
+      "description": [
+        "这一刻，慢慢喝。",
+        "Take this moment slowly."
+      ],
+      "price": 20,
+      "subject": "A round cream teapot decorated with tiny painted sage leaves, a matching teacup touching the pot, and a lemon slice on the saucer. Compact three-quarter-view still life.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A round cream teapot decorated with tiny painted sage leaves, a matching teacup touching the pot, and a lemon slice on the saucer. Compact three-quarter-view still life.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_tea-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_tea",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "柠檬茶歇 · 亮片",
+        "Lemon tea break · Glitter"
+      ],
+      "description": [
+        "这一刻，慢慢喝。",
+        "Take this moment slowly."
+      ],
+      "price": 32,
+      "subject": "A round cream teapot decorated with tiny painted sage leaves, a matching teacup touching the pot, and a lemon slice on the saucer. Compact three-quarter-view still life.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A round cream teapot decorated with tiny painted sage leaves, a matching teacup touching the pot, and a lemon slice on the saucer. Compact three-quarter-view still life.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_tea-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_sewing",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "针线小篮 · 纸质",
+        "Little sewing basket · Paper"
+      ],
+      "description": [
+        "把小日子一针针缝好。",
+        "Small stitches, happy days."
+      ],
+      "price": 20,
+      "subject": "A honey wicker sewing basket with coral and sage thread spools, a tomato pincushion and small closed brass embroidery scissors nestled safely inside. Connected compact silhouette.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A honey wicker sewing basket with coral and sage thread spools, a tomato pincushion and small closed brass embroidery scissors nestled safely inside. Connected compact silhouette.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_sewing-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_sewing",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "针线小篮 · 亮片",
+        "Little sewing basket · Glitter"
+      ],
+      "description": [
+        "把小日子一针针缝好。",
+        "Small stitches, happy days."
+      ],
+      "price": 32,
+      "subject": "A honey wicker sewing basket with coral and sage thread spools, a tomato pincushion and small closed brass embroidery scissors nestled safely inside. Connected compact silhouette.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A honey wicker sewing basket with coral and sage thread spools, a tomato pincushion and small closed brass embroidery scissors nestled safely inside. Connected compact silhouette.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_sewing-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_rainboots",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "雨后散步 · 纸质",
+        "After the rain · Paper"
+      ],
+      "description": [
+        "雨停了，出去走走。",
+        "A little walk after the rain."
+      ],
+      "price": 20,
+      "subject": "A paired set of buttery yellow ankle rain boots, one slightly in front, with a small folded sage umbrella tucked diagonally behind them. No puddle or floating raindrops.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A paired set of buttery yellow ankle rain boots, one slightly in front, with a small folded sage umbrella tucked diagonally behind them. No puddle or floating raindrops.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_rainboots-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_rainboots",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "雨后散步 · 亮片",
+        "After the rain · Glitter"
+      ],
+      "description": [
+        "雨停了，出去走走。",
+        "A little walk after the rain."
+      ],
+      "price": 32,
+      "subject": "A paired set of buttery yellow ankle rain boots, one slightly in front, with a small folded sage umbrella tucked diagonally behind them. No puddle or floating raindrops.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A paired set of buttery yellow ankle rain boots, one slightly in front, with a small folded sage umbrella tucked diagonally behind them. No puddle or floating raindrops.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_rainboots-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_vinyl",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "唱片午后 · 纸质",
+        "Vinyl afternoon · Paper"
+      ],
+      "description": [
+        "让喜欢的旋律慢慢转。",
+        "Let your favourite record spin."
+      ],
+      "price": 20,
+      "subject": "A miniature sage-green portable record player with its lid open, one dark vinyl record and brass tonearm, coral lining, three-quarter view. No lettering, labels or floating musical notes.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A miniature sage-green portable record player with its lid open, one dark vinyl record and brass tonearm, coral lining, three-quarter view. No lettering, labels or floating musical notes.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_vinyl-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_vinyl",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "唱片午后 · 亮片",
+        "Vinyl afternoon · Glitter"
+      ],
+      "description": [
+        "让喜欢的旋律慢慢转。",
+        "Let your favourite record spin."
+      ],
+      "price": 32,
+      "subject": "A miniature sage-green portable record player with its lid open, one dark vinyl record and brass tonearm, coral lining, three-quarter view. No lettering, labels or floating musical notes.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A miniature sage-green portable record player with its lid open, one dark vinyl record and brass tonearm, coral lining, three-quarter view. No lettering, labels or floating musical notes.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_vinyl-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_bath",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "泡泡浴时刻 · 纸质",
+        "Bubble bath moment · Paper"
+      ],
+      "description": [
+        "洗掉今天的小疲惫。",
+        "A soft landing after a long day."
+      ],
+      "price": 20,
+      "subject": "A compact claw-foot cream bathtub with soft white bubbles contained within the tub, one little yellow rubber duck and an apricot towel draped over the rim. No detached bubbles.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A compact claw-foot cream bathtub with soft white bubbles contained within the tub, one little yellow rubber duck and an apricot towel draped over the rim. No detached bubbles.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_bath-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_bath",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "泡泡浴时刻 · 亮片",
+        "Bubble bath moment · Glitter"
+      ],
+      "description": [
+        "洗掉今天的小疲惫。",
+        "A soft landing after a long day."
+      ],
+      "price": 32,
+      "subject": "A compact claw-foot cream bathtub with soft white bubbles contained within the tub, one little yellow rubber duck and an apricot towel draped over the rim. No detached bubbles.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A compact claw-foot cream bathtub with soft white bubbles contained within the tub, one little yellow rubber duck and an apricot towel draped over the rim. No detached bubbles.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_bath-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_chair",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "软软阅读角 · 纸质",
+        "Cosy reading chair · Paper"
+      ],
+      "description": [
+        "坐下来，好好歇一会儿。",
+        "Sit down and stay a while."
+      ],
+      "price": 20,
+      "subject": "A rounded sage upholstered armchair with a cream knitted throw draped across one arm and a closed apricot book on the seat. One cosy connected chair silhouette.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A rounded sage upholstered armchair with a cream knitted throw draped across one arm and a closed apricot book on the seat. One cosy connected chair silhouette.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_chair-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_chair",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "软软阅读角 · 亮片",
+        "Cosy reading chair · Glitter"
+      ],
+      "description": [
+        "坐下来，好好歇一会儿。",
+        "Sit down and stay a while."
+      ],
+      "price": 32,
+      "subject": "A rounded sage upholstered armchair with a cream knitted throw draped across one arm and a closed apricot book on the seat. One cosy connected chair silhouette.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A rounded sage upholstered armchair with a cream knitted throw draped across one arm and a closed apricot book on the seat. One cosy connected chair silhouette.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_chair-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_market",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "周末菜篮 · 纸质",
+        "Weekend market basket · Paper"
+      ],
+      "description": [
+        "把新鲜和好心情一起带回家。",
+        "Bring home something fresh."
+      ],
+      "price": 20,
+      "subject": "A shallow woven market basket holding a baguette, three red tomatoes and leafy carrots, cream cloth lining, everything tucked in a compact still life. No loose items outside the basket.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A shallow woven market basket holding a baguette, three red tomatoes and leafy carrots, cream cloth lining, everything tucked in a compact still life. No loose items outside the basket.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_market-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_market",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "周末菜篮 · 亮片",
+        "Weekend market basket · Glitter"
+      ],
+      "description": [
+        "把新鲜和好心情一起带回家。",
+        "Bring home something fresh."
+      ],
+      "price": 32,
+      "subject": "A shallow woven market basket holding a baguette, three red tomatoes and leafy carrots, cream cloth lining, everything tucked in a compact still life. No loose items outside the basket.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A shallow woven market basket holding a baguette, three red tomatoes and leafy carrots, cream cloth lining, everything tucked in a compact still life. No loose items outside the basket.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_market-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_laundry",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "晒好的晴天 · 纸质",
+        "Fresh laundry day · Paper"
+      ],
+      "description": [
+        "干净柔软，像一个晴天。",
+        "Fresh, soft and full of sunshine."
+      ],
+      "price": 20,
+      "subject": "A honey wicker laundry basket filled with neatly folded cream and sage linen, one coral sock hanging over the rim and a small wooden peg on the edge. No clothesline scene.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A honey wicker laundry basket filled with neatly folded cream and sage linen, one coral sock hanging over the rim and a small wooden peg on the edge. No clothesline scene.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_laundry-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_laundry",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "晒好的晴天 · 亮片",
+        "Fresh laundry day · Glitter"
+      ],
+      "description": [
+        "干净柔软，像一个晴天。",
+        "Fresh, soft and full of sunshine."
+      ],
+      "price": 32,
+      "subject": "A honey wicker laundry basket filled with neatly folded cream and sage linen, one coral sock hanging over the rim and a small wooden peg on the edge. No clothesline scene.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A honey wicker laundry basket filled with neatly folded cream and sage linen, one coral sock hanging over the rim and a small wooden peg on the edge. No clothesline scene.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_laundry-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_life_lamp",
+      "theme": "life",
+      "material": "paper",
+      "name": [
+        "床头小夜灯 · 纸质",
+        "Bedside glow · Paper"
+      ],
+      "description": [
+        "为晚一点的自己留一盏灯。",
+        "A little light at the end of the day."
+      ],
+      "price": 20,
+      "subject": "A warm brass reading lamp with a pleated cream shade standing on two stacked sage and apricot books, all touching as one small composition. Contained warm highlights, no outer glow or text.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A warm brass reading lamp with a pleated cream shade standing on two stacked sage and apricot books, all touching as one small composition. Contained warm highlights, no outer glow or text.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_lamp-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_life_lamp",
+      "theme": "life",
+      "material": "glitter",
+      "name": [
+        "床头小夜灯 · 亮片",
+        "Bedside glow · Glitter"
+      ],
+      "description": [
+        "为晚一点的自己留一盏灯。",
+        "A little light at the end of the day."
+      ],
+      "price": 32,
+      "subject": "A warm brass reading lamp with a pleated cream shade standing on two stacked sage and apricot books, all touching as one small composition. Contained warm highlights, no outer glow or text.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A warm brass reading lamp with a pleated cream shade standing on two stacked sage and apricot books, all touching as one small composition. Contained warm highlights, no outer glow or text.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_lamp-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_corgi",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "球球小柯基 · 纸质",
+        "Corgi and ball · Paper"
+      ],
+      "description": [
+        "把快乐滚到你身边。",
+        "Rolling a little joy your way."
+      ],
+      "price": 20,
+      "subject": "One adorable golden-and-white corgi seated with four anatomically correct paws, big upright ears and a tiny coral rubber ball touching one front paw; gentle friendly face, no clothes.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One adorable golden-and-white corgi seated with four anatomically correct paws, big upright ears and a tiny coral rubber ball touching one front paw; gentle friendly face, no clothes.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_corgi-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_corgi",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "球球小柯基 · 亮片",
+        "Corgi and ball · Glitter"
+      ],
+      "description": [
+        "把快乐滚到你身边。",
+        "Rolling a little joy your way."
+      ],
+      "price": 32,
+      "subject": "One adorable golden-and-white corgi seated with four anatomically correct paws, big upright ears and a tiny coral rubber ball touching one front paw; gentle friendly face, no clothes.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One adorable golden-and-white corgi seated with four anatomically correct paws, big upright ears and a tiny coral rubber ball touching one front paw; gentle friendly face, no clothes.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_corgi-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_cat",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "毛线奶牛猫 · 纸质",
+        "Tuxedo yarn cat · Paper"
+      ],
+      "description": [
+        "今天也想和你一起玩。",
+        "Always ready for a little play."
+      ],
+      "price": 20,
+      "subject": "One black-and-white tuxedo kitten sitting with a coral yarn ball against its front paws and a short curled strand contained in the connected silhouette. Exactly four natural legs and one tail.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One black-and-white tuxedo kitten sitting with a coral yarn ball against its front paws and a short curled strand contained in the connected silhouette. Exactly four natural legs and one tail.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_cat-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_cat",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "毛线奶牛猫 · 亮片",
+        "Tuxedo yarn cat · Glitter"
+      ],
+      "description": [
+        "今天也想和你一起玩。",
+        "Always ready for a little play."
+      ],
+      "price": 32,
+      "subject": "One black-and-white tuxedo kitten sitting with a coral yarn ball against its front paws and a short curled strand contained in the connected silhouette. Exactly four natural legs and one tail.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One black-and-white tuxedo kitten sitting with a coral yarn ball against its front paws and a short curled strand contained in the connected silhouette. Exactly four natural legs and one tail.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_cat-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_rabbit",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "胡萝卜小兔 · 纸质",
+        "Carrot bunny · Paper"
+      ],
+      "description": [
+        "藏好胡萝卜，也藏好开心。",
+        "A carrot and a little happiness."
+      ],
+      "price": 20,
+      "subject": "One soft cream lop-eared pet rabbit sitting and holding one tiny carrot between its front paws, natural rabbit anatomy and a small round tail, gentle warm expression.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One soft cream lop-eared pet rabbit sitting and holding one tiny carrot between its front paws, natural rabbit anatomy and a small round tail, gentle warm expression.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_rabbit-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_rabbit",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "胡萝卜小兔 · 亮片",
+        "Carrot bunny · Glitter"
+      ],
+      "description": [
+        "藏好胡萝卜，也藏好开心。",
+        "A carrot and a little happiness."
+      ],
+      "price": 32,
+      "subject": "One soft cream lop-eared pet rabbit sitting and holding one tiny carrot between its front paws, natural rabbit anatomy and a small round tail, gentle warm expression.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One soft cream lop-eared pet rabbit sitting and holding one tiny carrot between its front paws, natural rabbit anatomy and a small round tail, gentle warm expression.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_rabbit-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_hamster",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "瓜子小仓鼠 · 纸质",
+        "Sunflower hamster · Paper"
+      ],
+      "description": [
+        "小小一口，大大满足。",
+        "A tiny snack, a happy little moment."
+      ],
+      "price": 20,
+      "subject": "One round golden Syrian hamster with cream cheeks sitting and holding a single sunflower seed between two tiny front paws, little pink hind feet and detailed whiskers. No cage.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One round golden Syrian hamster with cream cheeks sitting and holding a single sunflower seed between two tiny front paws, little pink hind feet and detailed whiskers. No cage.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_hamster-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_hamster",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "瓜子小仓鼠 · 亮片",
+        "Sunflower hamster · Glitter"
+      ],
+      "description": [
+        "小小一口，大大满足。",
+        "A tiny snack, a happy little moment."
+      ],
+      "price": 32,
+      "subject": "One round golden Syrian hamster with cream cheeks sitting and holding a single sunflower seed between two tiny front paws, little pink hind feet and detailed whiskers. No cage.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One round golden Syrian hamster with cream cheeks sitting and holding a single sunflower seed between two tiny front paws, little pink hind feet and detailed whiskers. No cage.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_hamster-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_guinea",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "甜椒豚鼠 · 纸质",
+        "Pepper guinea pig · Paper"
+      ],
+      "description": [
+        "和你分享一口脆甜。",
+        "Sharing a crisp little treat."
+      ],
+      "price": 20,
+      "subject": "One tri-colour pet guinea pig with cream, caramel and dark-brown fur patches, seated beside one small red bell-pepper slice touching its paws. Anatomically correct, no extra limbs.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One tri-colour pet guinea pig with cream, caramel and dark-brown fur patches, seated beside one small red bell-pepper slice touching its paws. Anatomically correct, no extra limbs.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_guinea-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_guinea",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "甜椒豚鼠 · 亮片",
+        "Pepper guinea pig · Glitter"
+      ],
+      "description": [
+        "和你分享一口脆甜。",
+        "Sharing a crisp little treat."
+      ],
+      "price": 32,
+      "subject": "One tri-colour pet guinea pig with cream, caramel and dark-brown fur patches, seated beside one small red bell-pepper slice touching its paws. Anatomically correct, no extra limbs.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One tri-colour pet guinea pig with cream, caramel and dark-brown fur patches, seated beside one small red bell-pepper slice touching its paws. Anatomically correct, no extra limbs.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_guinea-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_tortoise",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "生菜小陆龟 · 纸质",
+        "Lettuce tortoise · Paper"
+      ],
+      "description": [
+        "慢一点，也能到达。",
+        "Slow steps still get you there."
+      ],
+      "price": 20,
+      "subject": "One small friendly pet tortoise with an olive-and-honey patterned shell, four short scaly legs and a lettuce leaf touching its mouth and front foot, low three-quarter view.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One small friendly pet tortoise with an olive-and-honey patterned shell, four short scaly legs and a lettuce leaf touching its mouth and front foot, low three-quarter view.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_tortoise-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_tortoise",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "生菜小陆龟 · 亮片",
+        "Lettuce tortoise · Glitter"
+      ],
+      "description": [
+        "慢一点，也能到达。",
+        "Slow steps still get you there."
+      ],
+      "price": 32,
+      "subject": "One small friendly pet tortoise with an olive-and-honey patterned shell, four short scaly legs and a lettuce leaf touching its mouth and front foot, low three-quarter view.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One small friendly pet tortoise with an olive-and-honey patterned shell, four short scaly legs and a lettuce leaf touching its mouth and front foot, low three-quarter view.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_tortoise-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_budgie",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "铃铛小虎皮 · 纸质",
+        "Budgie and bell · Paper"
+      ],
+      "description": [
+        "听见一点清脆的陪伴。",
+        "A bright little sound of company."
+      ],
+      "price": 20,
+      "subject": "One sky-blue and white pet budgerigar perched on a short natural wooden perch with a tiny brass bell hanging from the same perch. Two feet, folded wings, complete long tail.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One sky-blue and white pet budgerigar perched on a short natural wooden perch with a tiny brass bell hanging from the same perch. Two feet, folded wings, complete long tail.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_budgie-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_budgie",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "铃铛小虎皮 · 亮片",
+        "Budgie and bell · Glitter"
+      ],
+      "description": [
+        "听见一点清脆的陪伴。",
+        "A bright little sound of company."
+      ],
+      "price": 32,
+      "subject": "One sky-blue and white pet budgerigar perched on a short natural wooden perch with a tiny brass bell hanging from the same perch. Two feet, folded wings, complete long tail.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One sky-blue and white pet budgerigar perched on a short natural wooden perch with a tiny brass bell hanging from the same perch. Two feet, folded wings, complete long tail.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_budgie-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_goldfish",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "水中小金鱼 · 纸质",
+        "Little goldfish bowl · Paper"
+      ],
+      "description": [
+        "把安静的水光留在一角。",
+        "A quiet shimmer for your page."
+      ],
+      "price": 20,
+      "subject": "One plump orange fancy goldfish with flowing fins inside a small round glass fishbowl, one green aquatic sprig and a few pale pebbles. Bowl highlights and pale-aqua water contained within the sticker.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One plump orange fancy goldfish with flowing fins inside a small round glass fishbowl, one green aquatic sprig and a few pale pebbles. Bowl highlights and pale-aqua water contained within the sticker.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_goldfish-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_goldfish",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "水中小金鱼 · 亮片",
+        "Little goldfish bowl · Glitter"
+      ],
+      "description": [
+        "把安静的水光留在一角。",
+        "A quiet shimmer for your page."
+      ],
+      "price": 32,
+      "subject": "One plump orange fancy goldfish with flowing fins inside a small round glass fishbowl, one green aquatic sprig and a few pale pebbles. Bowl highlights and pale-aqua water contained within the sticker.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One plump orange fancy goldfish with flowing fins inside a small round glass fishbowl, one green aquatic sprig and a few pale pebbles. Bowl highlights and pale-aqua water contained within the sticker.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_goldfish-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_chinchilla",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "抱抱龙猫 · 纸质",
+        "Chinchilla cuddle · Paper"
+      ],
+      "description": [
+        "软乎乎地陪着你。",
+        "Soft company, close by."
+      ],
+      "price": 20,
+      "subject": "One soft silver-grey pet chinchilla sitting upright with big rounded ears and one thick curled tail, holding a tiny pale wooden chew ring. Exactly two front paws and two hind feet.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One soft silver-grey pet chinchilla sitting upright with big rounded ears and one thick curled tail, holding a tiny pale wooden chew ring. Exactly two front paws and two hind feet.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_chinchilla-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_chinchilla",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "抱抱龙猫 · 亮片",
+        "Chinchilla cuddle · Glitter"
+      ],
+      "description": [
+        "软乎乎地陪着你。",
+        "Soft company, close by."
+      ],
+      "price": 32,
+      "subject": "One soft silver-grey pet chinchilla sitting upright with big rounded ears and one thick curled tail, holding a tiny pale wooden chew ring. Exactly two front paws and two hind feet.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One soft silver-grey pet chinchilla sitting upright with big rounded ears and one thick curled tail, holding a tiny pale wooden chew ring. Exactly two front paws and two hind feet.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_chinchilla-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_ferret",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "毯子小雪貂 · 纸质",
+        "Ferret in a blanket · Paper"
+      ],
+      "description": [
+        "把安心卷进小毯子里。",
+        "A cosy little place to curl up."
+      ],
+      "price": 20,
+      "subject": "One sable-and-cream pet ferret peeking out of a small loosely rolled sage knitted blanket, complete curved body and one tail visible, alert gentle face. No extra animal.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One sable-and-cream pet ferret peeking out of a small loosely rolled sage knitted blanket, complete curved body and one tail visible, alert gentle face. No extra animal.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_ferret-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_ferret",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "毯子小雪貂 · 亮片",
+        "Ferret in a blanket · Glitter"
+      ],
+      "description": [
+        "把安心卷进小毯子里。",
+        "A cosy little place to curl up."
+      ],
+      "price": 32,
+      "subject": "One sable-and-cream pet ferret peeking out of a small loosely rolled sage knitted blanket, complete curved body and one tail visible, alert gentle face. No extra animal.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One sable-and-cream pet ferret peeking out of a small loosely rolled sage knitted blanket, complete curved body and one tail visible, alert gentle face. No extra animal.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_ferret-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_shiba",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "领巾小柴犬 · 纸质",
+        "Bandana shiba · Paper"
+      ],
+      "description": [
+        "出门前，先摇摇尾巴。",
+        "A happy tail before the day begins."
+      ],
+      "price": 20,
+      "subject": "One tan-and-cream shiba inu seated with a curled tail, four natural paws and a small sage bandana tied around the neck, warm bright eyes and friendly expression.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One tan-and-cream shiba inu seated with a curled tail, four natural paws and a small sage bandana tied around the neck, warm bright eyes and friendly expression.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_shiba-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_shiba",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "领巾小柴犬 · 亮片",
+        "Bandana shiba · Glitter"
+      ],
+      "description": [
+        "出门前，先摇摇尾巴。",
+        "A happy tail before the day begins."
+      ],
+      "price": 32,
+      "subject": "One tan-and-cream shiba inu seated with a curled tail, four natural paws and a small sage bandana tied around the neck, warm bright eyes and friendly expression.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One tan-and-cream shiba inu seated with a curled tail, four natural paws and a small sage bandana tied around the neck, warm bright eyes and friendly expression.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_shiba-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_pets_calico",
+      "theme": "pets",
+      "material": "paper",
+      "name": [
+        "纸盒三花猫 · 纸质",
+        "Calico in a box · Paper"
+      ],
+      "description": [
+        "小纸盒也装得下幸福。",
+        "Happiness fits in a little box."
+      ],
+      "price": 20,
+      "subject": "One cream, orange and black calico kitten sitting snugly in a small open kraft-paper box, two front paws resting on the front rim and one tail curling around its side. Box blank, no lettering.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One cream, orange and black calico kitten sitting snugly in a small open kraft-paper box, two front paws resting on the front rim and one tail curling around its side. Box blank, no lettering.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_pets_calico-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_pets_calico",
+      "theme": "pets",
+      "material": "glitter",
+      "name": [
+        "纸盒三花猫 · 亮片",
+        "Calico in a box · Glitter"
+      ],
+      "description": [
+        "小纸盒也装得下幸福。",
+        "Happiness fits in a little box."
+      ],
+      "price": 32,
+      "subject": "One cream, orange and black calico kitten sitting snugly in a small open kraft-paper box, two front paws resting on the front rim and one tail curling around its side. Box blank, no lettering.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One cream, orange and black calico kitten sitting snugly in a small open kraft-paper box, two front paws resting on the front rim and one tail curling around its side. Box blank, no lettering.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_pets_calico-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_camper",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "海风房车 · 纸质",
+        "Seaside camper · Paper"
+      ],
+      "description": [
+        "把下一站交给海风。",
+        "Let the sea breeze choose the next stop."
+      ],
+      "price": 20,
+      "subject": "A charming sage-and-cream vintage camper van in three-quarter view, coral curtains and one rolled surfboard strapped to the roof. Unbranded, blank plate, complete wheels. No scenery.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A charming sage-and-cream vintage camper van in three-quarter view, coral curtains and one rolled surfboard strapped to the roof. Unbranded, blank plate, complete wheels. No scenery.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_camper-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_camper",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "海风房车 · 亮片",
+        "Seaside camper · Glitter"
+      ],
+      "description": [
+        "把下一站交给海风。",
+        "Let the sea breeze choose the next stop."
+      ],
+      "price": 32,
+      "subject": "A charming sage-and-cream vintage camper van in three-quarter view, coral curtains and one rolled surfboard strapped to the roof. Unbranded, blank plate, complete wheels. No scenery.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A charming sage-and-cream vintage camper van in three-quarter view, coral curtains and one rolled surfboard strapped to the roof. Unbranded, blank plate, complete wheels. No scenery.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_camper-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_camping",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "山野帐篷 · 纸质",
+        "Mountain tent · Paper"
+      ],
+      "description": [
+        "把一晚安静留给山野。",
+        "One quiet night outdoors."
+      ],
+      "price": 20,
+      "subject": "A small warm-apricot camping tent with its front flap open, one rolled sage sleeping bag and a tiny brass lantern touching the entrance. No landscape, fire or disconnected stars.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A small warm-apricot camping tent with its front flap open, one rolled sage sleeping bag and a tiny brass lantern touching the entrance. No landscape, fire or disconnected stars.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_camping-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_camping",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "山野帐篷 · 亮片",
+        "Mountain tent · Glitter"
+      ],
+      "description": [
+        "把一晚安静留给山野。",
+        "One quiet night outdoors."
+      ],
+      "price": 32,
+      "subject": "A small warm-apricot camping tent with its front flap open, one rolled sage sleeping bag and a tiny brass lantern touching the entrance. No landscape, fire or disconnected stars.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A small warm-apricot camping tent with its front flap open, one rolled sage sleeping bag and a tiny brass lantern touching the entrance. No landscape, fire or disconnected stars.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_camping-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_beach",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "贝壳海岸 · 纸质",
+        "Shells from the shore · Paper"
+      ],
+      "description": [
+        "捡一枚海边的小记忆。",
+        "A little memory from the shore."
+      ],
+      "price": 20,
+      "subject": "A coral scallop shell leaning against a cream spiral seashell with a tiny turquoise sea-glass pebble nestled between them, one compact beach keepsake arrangement. No sand background.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A coral scallop shell leaning against a cream spiral seashell with a tiny turquoise sea-glass pebble nestled between them, one compact beach keepsake arrangement. No sand background.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_beach-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_beach",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "贝壳海岸 · 亮片",
+        "Shells from the shore · Glitter"
+      ],
+      "description": [
+        "捡一枚海边的小记忆。",
+        "A little memory from the shore."
+      ],
+      "price": 32,
+      "subject": "A coral scallop shell leaning against a cream spiral seashell with a tiny turquoise sea-glass pebble nestled between them, one compact beach keepsake arrangement. No sand background.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A coral scallop shell leaning against a cream spiral seashell with a tiny turquoise sea-glass pebble nestled between them, one compact beach keepsake arrangement. No sand background.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_beach-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_suitcase",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "出发小行李 · 纸质",
+        "Ready-to-go suitcase · Paper"
+      ],
+      "description": [
+        "带上喜欢的东西出发。",
+        "Pack a few favourites and go."
+      ],
+      "price": 20,
+      "subject": "A small rounded vintage apricot suitcase with brass clasps, cream leather corners and a sage luggage tag with no writing, a straw sunhat resting securely on top.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A small rounded vintage apricot suitcase with brass clasps, cream leather corners and a sage luggage tag with no writing, a straw sunhat resting securely on top.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_suitcase-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_suitcase",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "出发小行李 · 亮片",
+        "Ready-to-go suitcase · Glitter"
+      ],
+      "description": [
+        "带上喜欢的东西出发。",
+        "Pack a few favourites and go."
+      ],
+      "price": 32,
+      "subject": "A small rounded vintage apricot suitcase with brass clasps, cream leather corners and a sage luggage tag with no writing, a straw sunhat resting securely on top.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A small rounded vintage apricot suitcase with brass clasps, cream leather corners and a sage luggage tag with no writing, a straw sunhat resting securely on top.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_suitcase-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_camera",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "旅行胶片机 · 纸质",
+        "Travel film camera · Paper"
+      ],
+      "description": [
+        "把路上的光收进来。",
+        "Keep the light you find along the way."
+      ],
+      "price": 20,
+      "subject": "A detailed unbranded vintage cream-and-sage 35mm camera with a warm brass lens ring and a short coral woven wrist strap curled against it, three-quarter view. No text or logo.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A detailed unbranded vintage cream-and-sage 35mm camera with a warm brass lens ring and a short coral woven wrist strap curled against it, three-quarter view. No text or logo.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_camera-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_camera",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "旅行胶片机 · 亮片",
+        "Travel film camera · Glitter"
+      ],
+      "description": [
+        "把路上的光收进来。",
+        "Keep the light you find along the way."
+      ],
+      "price": 32,
+      "subject": "A detailed unbranded vintage cream-and-sage 35mm camera with a warm brass lens ring and a short coral woven wrist strap curled against it, three-quarter view. No text or logo.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A detailed unbranded vintage cream-and-sage 35mm camera with a warm brass lens ring and a short coral woven wrist strap curled against it, three-quarter view. No text or logo.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_camera-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_balloon",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "热气球远行 · 纸质",
+        "Balloon daydream · Paper"
+      ],
+      "description": [
+        "把心情升到云边。",
+        "A little closer to the clouds."
+      ],
+      "price": 20,
+      "subject": "A graceful hot-air balloon with alternating muted coral, butter-yellow and sage fabric panels, fine cream ropes and one small honey wicker basket, complete connected silhouette. No clouds or separate landscape.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A graceful hot-air balloon with alternating muted coral, butter-yellow and sage fabric panels, fine cream ropes and one small honey wicker basket, complete connected silhouette. No clouds or separate landscape.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_balloon-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_balloon",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "热气球远行 · 亮片",
+        "Balloon daydream · Glitter"
+      ],
+      "description": [
+        "把心情升到云边。",
+        "A little closer to the clouds."
+      ],
+      "price": 32,
+      "subject": "A graceful hot-air balloon with alternating muted coral, butter-yellow and sage fabric panels, fine cream ropes and one small honey wicker basket, complete connected silhouette. No clouds or separate landscape.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A graceful hot-air balloon with alternating muted coral, butter-yellow and sage fabric panels, fine cream ropes and one small honey wicker basket, complete connected silhouette. No clouds or separate landscape.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_balloon-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_train",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "慢慢小火车 · 纸质",
+        "Slow little train · Paper"
+      ],
+      "description": [
+        "沿着窗外的风景慢慢走。",
+        "Take the scenic way."
+      ],
+      "price": 20,
+      "subject": "One compact sage vintage passenger train engine in three-quarter view, brass headlamp and cream roof, red wheels, no smoke, text, tracks or scenery.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: One compact sage vintage passenger train engine in three-quarter view, brass headlamp and cream roof, red wheels, no smoke, text, tracks or scenery.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_train-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_train",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "慢慢小火车 · 亮片",
+        "Slow little train · Glitter"
+      ],
+      "description": [
+        "沿着窗外的风景慢慢走。",
+        "Take the scenic way."
+      ],
+      "price": 32,
+      "subject": "One compact sage vintage passenger train engine in three-quarter view, brass headlamp and cream roof, red wheels, no smoke, text, tracks or scenery.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: One compact sage vintage passenger train engine in three-quarter view, brass headlamp and cream roof, red wheels, no smoke, text, tracks or scenery.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_train-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_sailboat",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "帆船晴日 · 纸质",
+        "Sailing day · Paper"
+      ],
+      "description": [
+        "向着晴朗的地方去。",
+        "Set sail for a brighter day."
+      ],
+      "price": 20,
+      "subject": "A small elegant wooden sailboat with one cream triangular mainsail, one smaller sage sail and a coral pennant attached to the mast, warm brass fittings. Complete boat, no sea or horizon.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A small elegant wooden sailboat with one cream triangular mainsail, one smaller sage sail and a coral pennant attached to the mast, warm brass fittings. Complete boat, no sea or horizon.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_sailboat-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_sailboat",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "帆船晴日 · 亮片",
+        "Sailing day · Glitter"
+      ],
+      "description": [
+        "向着晴朗的地方去。",
+        "Set sail for a brighter day."
+      ],
+      "price": 32,
+      "subject": "A small elegant wooden sailboat with one cream triangular mainsail, one smaller sage sail and a coral pennant attached to the mast, warm brass fittings. Complete boat, no sea or horizon.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A small elegant wooden sailboat with one cream triangular mainsail, one smaller sage sail and a coral pennant attached to the mast, warm brass fittings. Complete boat, no sea or horizon.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_sailboat-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_hiking",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "徒步小背包 · 纸质",
+        "Little hiking pack · Paper"
+      ],
+      "description": [
+        "一步一步，走进新风景。",
+        "One step into a new view."
+      ],
+      "price": 20,
+      "subject": "A sturdy sage hiking backpack with a coral rolled sleeping mat strapped on top and one compact brass compass attached to its side, all forming one connected silhouette, no labels.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A sturdy sage hiking backpack with a coral rolled sleeping mat strapped on top and one compact brass compass attached to its side, all forming one connected silhouette, no labels. Critical compass detail: the brass compass face contains ONLY a simple four-point needle and unlabelled tick marks, with absolutely NO N, S, E, W, other letters, numbers or text.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_hiking-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ],
+      "revisionReason": "Initial output included tiny direction letters; approved regeneration removes them."
+    },
+    {
+      "id": "st_glitter_travel_hiking",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "徒步小背包 · 亮片",
+        "Little hiking pack · Glitter"
+      ],
+      "description": [
+        "一步一步，走进新风景。",
+        "One step into a new view."
+      ],
+      "price": 32,
+      "subject": "A sturdy sage hiking backpack with a coral rolled sleeping mat strapped on top and one compact brass compass attached to its side, all forming one connected silhouette, no labels.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A sturdy sage hiking backpack with a coral rolled sleeping mat strapped on top and one compact brass compass attached to its side, all forming one connected silhouette, no labels.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_hiking-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_cabin",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "雪山小木屋 · 纸质",
+        "Snowy mountain cabin · Paper"
+      ],
+      "description": [
+        "在雪山脚下歇歇脚。",
+        "A little rest beneath the snowy peaks."
+      ],
+      "price": 20,
+      "subject": "A tiny honey-wood alpine cabin with cream snow resting on the roof, warm coral window shutters, one short fir sapling attached beside the doorstep. Compact house keepsake, no wide landscape or smoke.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A tiny honey-wood alpine cabin with cream snow resting on the roof, warm coral window shutters, one short fir sapling attached beside the doorstep. Compact house keepsake, no wide landscape or smoke.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_cabin-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_cabin",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "雪山小木屋 · 亮片",
+        "Snowy mountain cabin · Glitter"
+      ],
+      "description": [
+        "在雪山脚下歇歇脚。",
+        "A little rest beneath the snowy peaks."
+      ],
+      "price": 32,
+      "subject": "A tiny honey-wood alpine cabin with cream snow resting on the roof, warm coral window shutters, one short fir sapling attached beside the doorstep. Compact house keepsake, no wide landscape or smoke.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A tiny honey-wood alpine cabin with cream snow resting on the roof, warm coral window shutters, one short fir sapling attached beside the doorstep. Compact house keepsake, no wide landscape or smoke.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_cabin-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_passport",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "登机小心情 · 纸质",
+        "Ready for takeoff · Paper"
+      ],
+      "description": [
+        "下一段故事，准备登机。",
+        "Your next chapter is ready to board."
+      ],
+      "price": 20,
+      "subject": "A closed sage passport-like travel booklet with a simple embossed blank oval, two blank cream boarding-ticket shapes tucked behind it, and a tiny coral airplane charm attached by a short loop. Absolutely no words, numbers, logos or flags.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A closed sage passport-like travel booklet with a simple embossed blank oval, two blank cream boarding-ticket shapes tucked behind it, and a tiny coral airplane charm attached by a short loop. Absolutely no words, numbers, logos or flags.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_passport-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_passport",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "登机小心情 · 亮片",
+        "Ready for takeoff · Glitter"
+      ],
+      "description": [
+        "下一段故事，准备登机。",
+        "Your next chapter is ready to board."
+      ],
+      "price": 32,
+      "subject": "A closed sage passport-like travel booklet with a simple embossed blank oval, two blank cream boarding-ticket shapes tucked behind it, and a tiny coral airplane charm attached by a short loop. Absolutely no words, numbers, logos or flags.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A closed sage passport-like travel booklet with a simple embossed blank oval, two blank cream boarding-ticket shapes tucked behind it, and a tiny coral airplane charm attached by a short loop. Absolutely no words, numbers, logos or flags.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_passport-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_paper_travel_scooter",
+      "theme": "travel",
+      "material": "paper",
+      "name": [
+        "小城轻骑 · 纸质",
+        "Old-town scooter · Paper"
+      ],
+      "description": [
+        "拐个弯，遇见喜欢的小城。",
+        "Turn a corner and find a little wonder."
+      ],
+      "price": 20,
+      "subject": "A charming unbranded cream-and-coral vintage scooter in three-quarter view with a small wicker basket on the front holding a sprig of daisies, complete wheels and mirrors, no street scene.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: matte off-white textured paper sticker. Finely hand-painted gouache and delicate coloured-pencil illustration with subtle paper fibres inside the art, nuanced soft pigment shading. Continuous warm-ivory die-cut paper rim about 3% of subject width, very faint contained under-paper shadow. Physical paper finish: no glossy resin, metallic foil or glitter. Match the existing reference's illustration and stationery finish, while drawing the NEW subject below. SUBJECT: A charming unbranded cream-and-coral vintage scooter in three-quarter view with a small wicker basket on the front holding a sprig of daisies, complete wheels and mirrors, no street scene.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_travel_scooter-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_paper_life_breakfast-v1.png"
+      ]
+    },
+    {
+      "id": "st_glitter_travel_scooter",
+      "theme": "travel",
+      "material": "glitter",
+      "name": [
+        "小城轻骑 · 亮片",
+        "Old-town scooter · Glitter"
+      ],
+      "description": [
+        "拐个弯，遇见喜欢的小城。",
+        "Turn a corner and find a little wonder."
+      ],
+      "price": 32,
+      "subject": "A charming unbranded cream-and-coral vintage scooter in three-quarter view with a small wicker basket on the front holding a sprig of daisies, complete wheels and mirrors, no street scene.",
+      "prompt": "Use case: illustration-story. Asset type: premium digital journal die-cut sticker, ONE cohesive subject on genuinely TRANSPARENT RGBA background, standalone square PNG. Cosy refined stationery-shop design, warm expressive craft detail, elegant clear readable silhouette at 80-180px. CRITICAL FRAMING: keep the ENTIRE sticker including border, ears, tails, handles, straps and all props within the CENTRAL 65 percent of both canvas dimensions. At least 17.5 percent completely transparent margin on EVERY side. Nothing may touch the canvas edge. One continuous connected die-cut silhouette, no other objects or sparkles scattered outside it. No words, lettering, numerals, brands, watermark, checkerboard or background scene. Do not draw a sticker sheet or multiple variants. MATERIAL: visibly GLITTER-SEQUIN premium sticker with a thin clear domed resin coating. Densely packed fine reflective micro-glitter and a scattering of tiny hexagonal metallic sequins embedded INSIDE the coloured subject surfaces, coordinated champagne gold, rose gold, sage and pearly opal flashes. Tangible sparkling granular texture following the subject forms, crisp tiny specular facets and subtle glossy highlight, not merely a few drawn star symbols. Preserve expressive fine illustrated detail, eyes and anatomy; retain calm readable shapes. One narrow pearly holographic die-cut rim and restrained thickness. No loose confetti outside the sticker, no giant gemstones, no glitter cloud or plain paper-only surface. SUBJECT: A charming unbranded cream-and-coral vintage scooter in three-quarter view with a small wicker basket on the front holding a sprig of daisies, complete wheels and mirrors, no street scene.",
+      "output": "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_travel_scooter-v1.png",
+      "refs": [
+        "C:/Users/andyl/Desktop/engineering-docs-portal/skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png"
+      ]
+    }
+  ]
+}

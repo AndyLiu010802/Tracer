@@ -224,6 +224,13 @@ allowance or incur API charges. Replies do not execute commands or change the
 timer; a task or project proposal requires your explicit confirmation before
 it is saved.
 
+Garden companions use the same trusted catalog for their displayed name and
+AI identity, including all nine plant species and their shiny variants. Both
+AI connections receive the selected plant's localized name, species and shiny
+state. They describe a plant spirit rather than inheriting Sprout's sheep
+identity. The current profile takes precedence over mistaken names or species
+in earlier replies; existing conversation and draft records are preserved.
+
 Press **Enter** to send, or **Shift+Enter** for a new line. Confirming text with
 an input method does not send the message. Your sent bubble appears immediately,
 the input clears, and a separate thinking bubble shows that a reply is pending.
@@ -335,6 +342,9 @@ open panel. Keep the application open until recovery storage works again.
   settings recovery and quiet compact views.
 - The QA scripts accept `TRACER_QA_PLAYWRIGHT` for an existing Playwright
   installation and never use the user's profile or real AI credentials.
+- `node dev/qa-pet-garden-chat.cjs` checks all 18 garden identities in both
+  languages and both companion views, provider routing, switching companions,
+  isolated histories and preservation of old replies using mocked AI transport.
 
 ## Replacing an individual action (0.3.8)
 

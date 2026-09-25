@@ -16,19 +16,50 @@
   // Keep expressive motion close together; long pauses belong to the resting pose only.
   const denseClips = Object.freeze(Object.fromEntries(actions.map((action, page) => {
     const quiet = ['idle', 'sleep', 'focus'].includes(action), work = page >= 8;
-    const step = action === 'sleep' ? 160 : quiet ? 120 : work ? 100 : 85;
-    const frameMs = Array.from({ length: 16 }, (_, i) => i === 0 ? (quiet ? 1200 : work ? 550 : 180) : i === 15 ? (quiet ? 500 : work ? 300 : 180) : step);
+    const step = action === 'sleep' ? 240 : quiet ? 200 : work ? 180 : 160;
+    const frameMs = Array.from({ length: 16 }, (_, i) => i === 0 ? (quiet ? 1800 : work ? 800 : 500) : i === 15 ? (quiet ? 1000 : work ? 800 : 600) : step);
     return [action, Object.freeze({ page, row: 0, frames: 16, frameMs: Object.freeze(frameMs) })];
+  })));
+  const smoothClips = Object.freeze(Object.fromEntries(actions.map(action => {
+    const clip = denseClips[action];
+    return [action, Object.freeze({...clip, frames:32, frameMs:Object.freeze(Array.from({length:32},(_,i)=>i===0?clip.frameMs[0]:i===31?clip.frameMs[15]:clip.frameMs[1]/2))})];
   })));
   const invalid = () => new Error('invalid-animation-sheet');
   const loadFailed = () => new Error('animation-load-failed');
   const noCrop = 'inset(0% 0% 0% 0%)';
+  function frameGeometry(data,edge,columns=4) {
+    const size=edge/columns,frames=[];
+    for(let frame=0;frame<columns*4;frame++){
+      const x0=frame%columns*size,y0=Math.floor(frame/columns)*size,seen=new Uint8Array(size*size),queue=new Int32Array(size*size);
+      let body=[];
+      const opaque=at=>data[((y0+Math.floor(at/size))*edge+x0+at%size)*4+3]>=128;
+      for(let start=0;start<seen.length;start++){
+        if(seen[start]||!opaque(start))continue;
+        let head=0,tail=1;queue[0]=start;seen[start]=1;
+        while(head<tail){const at=queue[head++],x=at%size;
+          for(const next of [x?at-1:-1,x<size-1?at+1:-1,at-size,at+size]){
+            if(next<0||next>=seen.length||seen[next])continue;
+            seen[next]=1;if(opaque(next))queue[tail++]=next;
+          }
+        }
+        if(tail>body.length)body=Array.from(queue.subarray(0,tail));
+      }
+      if(!body.length){frames.push({x:.5,y:.875,area:0});continue;}
+      let top=size,bottom=0;for(const at of body){top=Math.min(top,Math.floor(at/size));bottom=Math.max(bottom,Math.floor(at/size));}
+      const massColumns=new Uint32Array(size);let total=0;
+      for(const at of body){const y=Math.floor(at/size);if(y>=top+(bottom-top)*.3&&y<=top+(bottom-top)*.7){massColumns[at%size]++;total++;}}
+      let mass=0,center=size/2;for(let x=0;x<size;x++){mass+=massColumns[x];if(mass>=total/2){center=x;break;}}
+      let foot=top;for(const at of body)if(Math.abs(at%size-center)<size*.16)foot=Math.max(foot,Math.floor(at/size));
+      frames.push({x:(center+.5)/size,y:(foot+1)/size,area:body.length});
+    }
+    return frames;
+  }
   // Older generated sheets can cross a grid line. Hide only a small, disconnected
   // strip that demonstrably continues from the neighboring cell; never resize art.
-  function frameInsets(data, edge, numeric = false) {
-    const size = edge / 4, band = Math.floor(size * .08) - 1, gap = Math.ceil(size * .02), result = [];
+  function frameInsets(data, edge, numeric = false, columns = 4) {
+    const size = edge / columns, band = Math.floor(size * .08) - 1, gap = Math.ceil(size * .02), result = [];
     const alpha = (x, y) => data[(y * edge + x) * 4 + 3];
-    for (let row = 0; row < 4; row++) for (let column = 0; column < 4; column++) {
+    for (let row = 0; row < 4; row++) for (let column = 0; column < columns; column++) {
       const left = column * size, top = row * size, counts = [new Uint32Array(size), new Uint32Array(size)];
       let total = 0;
       for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (alpha(left + x, top + y) >= 16) {
@@ -37,7 +68,7 @@
       const insets = [0, 0, 0, 0];
       let trimmed = 0;
       for (let side = 0; side < 4; side++) {
-        if ((side === 0 && row === 0) || (side === 1 && column === 3) || (side === 2 && row === 3) || (side === 3 && column === 0)) continue;
+        if ((side === 0 && row === 0) || (side === 1 && column === columns-1) || (side === 2 && row === 3) || (side === 3 && column === 0)) continue;
         const horizontal = side % 2 === 0, reverse = side === 1 || side === 2;
         const lines = counts[horizontal ? 0 : 1];
         let continuity = 0;
@@ -61,30 +92,31 @@
     }
     return result;
   }
-  function sheetPixels(image) {
-    const canvas = root.document.createElement('canvas'); canvas.width = canvas.height = 768;
+  function sheetPixels(image, columns = 4) {
+    const canvas = root.document.createElement('canvas'); canvas.width = columns * 192; canvas.height = 768;
     const context = canvas.getContext('2d', { willReadFrequently: true });
     if (!context) throw invalid();
-    context.imageSmoothingEnabled = false; context.drawImage(image, 0, 0, 768, 768);
-    return context.getImageData(0, 0, 768, 768).data;
+    context.imageSmoothingEnabled = false; context.drawImage(image, 0, 0, columns * 192, 768);
+    return context.getImageData(0, 0, columns * 192, 768).data;
   }
   // Conversion reuses the exact display mask before adding padding. Fractions
   // use top/right/bottom/left order and retain the original full-cell coordinates.
-  function frameInsetsForImage(image) {
-    try { return frameInsets(sheetPixels(image), 768, true); }
+  function frameInsetsForImage(image, version = 1) {
+    try { return frameInsets(sheetPixels(image, version===3?8:4), version===3?1536:768, true, version===3?8:4); }
     catch { throw loadFailed(); }
   }
   function normalize(raw) {
-    if (!raw || typeof raw !== 'object' || Array.isArray(raw) || ![1, 2].includes(raw.version) ||
-      Object.keys(raw).some(key => key !== 'version' && key !== 'pages' && key !== 'retainedFrames') || !Array.isArray(raw.pages) || !(raw.version === 2 ? raw.pages.length === actions.length : [3, 4].includes(raw.pages.length)) ||
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw) || ![1, 2, 3].includes(raw.version) ||
+      Object.keys(raw).some(key => key !== 'version' && key !== 'pages' && key !== 'retainedFrames') || !Array.isArray(raw.pages) || !(raw.version >= 2 ? raw.pages.length === actions.length : [3, 4].includes(raw.pages.length)) ||
       !Array.from({ length: raw.pages.length }, (_, i) => i).every(i => typeof raw.pages[i] === 'string' && asset.test(raw.pages[i]))) return null;
-    if (Object.prototype.hasOwnProperty.call(raw, 'retainedFrames') && (raw.version !== 2 || !Array.isArray(raw.retainedFrames) || raw.retainedFrames.length !== actions.length ||
-      !Array.from({ length: actions.length }, (_, i) => i).every(i => [1, 4, 16].includes(raw.retainedFrames[i])))) return null;
-    const retainedFrames = raw.retainedFrames?.some(count => count !== 16) ? raw.retainedFrames.slice() : null;
+    if (Object.prototype.hasOwnProperty.call(raw, 'retainedFrames') && (raw.version < 2 || !Array.isArray(raw.retainedFrames) || raw.retainedFrames.length !== actions.length ||
+      !Array.from({ length: actions.length }, (_, i) => i).every(i => (raw.version === 3 ? [32] : [1, 4, 16]).includes(raw.retainedFrames[i])))) return null;
+    const retainedFrames = raw.retainedFrames?.some(count => count !== (raw.version === 3 ? 32 : 16)) ? raw.retainedFrames.slice() : null;
     return { version: raw.version, pages: raw.pages.slice(), ...(retainedFrames ? { retainedFrames } : {}) };
   }
   function player(pages, options, firstPage, version = 1, retainedFrames = []) {
-    const selectedClips = version === 2 ? denseClips : clips, firstAction = actions[firstPage * (version === 2 ? 1 : 4)];
+    const columns = version === 3 ? 8 : 4, edge = columns * 192;
+    const selectedClips = version === 3 ? smoothClips : version === 2 ? denseClips : clips, firstAction = actions[firstPage * (version >= 2 ? 1 : 4)];
     const doc = root.document;
     if (!doc || typeof doc.createElement !== 'function') throw invalid();
     const element = doc.createElement('span'), image = doc.createElement('img'), placeholder = doc.createElement('span');
@@ -95,7 +127,7 @@
     // These atlases already contain the poses; do not add whole-portrait CSS motion.
     element.style.setProperty('animation', 'none', 'important');
     image.className = 'pet-animation-sheet'; image.alt = ''; image.draggable = false; image.setAttribute('aria-hidden', 'true');
-    Object.assign(image.style, { position: 'absolute', display: 'block', inset: '0 auto auto 0', width: '400%', height: '400%', minWidth: '0', minHeight: '0', maxWidth: 'none', maxHeight: 'none', objectFit: 'fill', margin: '0', padding: '0', border: '0', imageRendering: 'pixelated', transformOrigin: '0 0', pointerEvents: 'none' });
+    Object.assign(image.style, { position: 'absolute', display: 'block', inset: '0 auto auto 0', width: (columns * 100)+'%', height: '400%', minWidth: '0', minHeight: '0', maxWidth: 'none', maxHeight: 'none', objectFit: 'fill', margin: '0', padding: '0', border: '0', imageRendering: 'pixelated', transformOrigin: '0 0', pointerEvents: 'none' });
     image.style.setProperty('animation', 'none', 'important');
     element.appendChild(image);
     placeholder.className = 'pet-animation-placeholder'; placeholder.textContent = '✦'; placeholder.setAttribute('aria-hidden', 'true');
@@ -105,19 +137,19 @@
     const motion = animated && typeof root.matchMedia === 'function' ? root.matchMedia('(prefers-reduced-motion: reduce)') : null;
     const preloads = [];
     // Do not decode all sixteen large sheets just to show the first action.
-    if (animated && typeof root.Image === 'function') for (const url of version === 2 ? pages.slice(firstPage + 1, firstPage + 2) : pages) {
+    if (animated && typeof root.Image === 'function') for (const url of version >= 2 ? pages.slice(firstPage + 1, firstPage + 2) : pages) {
       if (!url || url === pages[firstPage]) continue;
       const preload = new root.Image(); preload.decoding = 'async'; preload.src = url; preloads.push(preload);
     }
-    const crops = new Map();
+    const crops = new Map(),geometry = new Map();
     let action = firstAction, requestedAction = action, frame = 0, timer = null, destroyed = false, unavailable = false, loading = false, loadSequence = 0;
     function crop() {
       const clip = selectedClips[action];
-      element.style.clipPath = loading ? noCrop : crops.get(pages[clip.page])?.[version === 2 ? frame : clip.row * 4 + frame] || noCrop;
+      element.style.clipPath = loading ? noCrop : crops.get(pages[clip.page])?.[version >= 2 ? frame : clip.row * 4 + frame] || noCrop;
     }
     function draw(reload = false) {
-      if(action==='sleep')frame=retainedCount()===1?0:version===2?(retainedCount()===4?8:12):2;
-      const clip = selectedClips[action], row = version === 2 ? Math.floor(frame / 4) : clip.row, column = frame % 4;
+      if(action==='sleep')frame=retainedCount()===1?0:version>=2?(version===3?24:retainedCount()===4?8:12):2;
+      const clip = selectedClips[action], row = version >= 2 ? Math.floor(frame / columns) : clip.row, column = frame % columns;
       element.dataset.action = action; element.dataset.page = String(clip.page); element.dataset.row = String(row); element.dataset.frame = String(frame);
       if (reload || image.getAttribute('src') !== pages[clip.page]) {
         const sequence = ++loadSequence;
@@ -125,9 +157,9 @@
         image.onload = () => {
           if (destroyed || sequence !== loadSequence) return;
           if (!crops.has(pages[clip.page])) {
-            try { crops.set(pages[clip.page], frameInsets(sheetPixels(image), 768)); } catch { /* Keep legacy art visible if pixel inspection is unavailable. */ }
+            try { const pixels=sheetPixels(image,columns);crops.set(pages[clip.page], frameInsets(pixels, edge, false, columns));if(version>=2)geometry.set(pages[clip.page],frameGeometry(pixels,edge,columns)); } catch { /* Keep legacy art visible if pixel inspection is unavailable. */ }
           }
-          loading = false; unavailable = false; delete element.dataset.error; crop();
+          loading = false; unavailable = false; delete element.dataset.error; draw();
           image.style.visibility = 'visible';
           image.style.display = 'block'; placeholder.style.display = 'none'; element.setAttribute('aria-label', label);
           schedule();
@@ -143,11 +175,16 @@
         };
         image.setAttribute('src', pages[clip.page]);
       }
-      image.style.transform = 'translate(' + (-column * 25) + '%, ' + (-row * 25) + '%)';
+      const anchor=geometry.get(pages[clip.page])?.[frame];
+      // Translate inside a clipped source cell, retaining one pixel scale for all
+      // actions. Never fit each pose to its changing silhouette or prop bounds.
+      const dx=(.5-(anchor?.x??.5))*100/columns,dy=(.875-(anchor?.y??.875))*25;
+      image.style.transform = 'translate(' + (-column * 100/columns+dx) + '%, ' + (-row * 25+dy) + '%)';
+      image.style.clipPath='inset('+(row*25)+'% '+((columns-1-column)*100/columns)+'% '+((3-row)*25)+'% '+(column*100/columns)+'%)';
       crop();
     }
     function stop() { if (timer !== null) root.clearTimeout(timer); timer = null; }
-    function retainedCount() { return version === 2 ? retainedFrames[selectedClips[action].page] || 16 : 4; }
+    function retainedCount() { return version >= 2 ? retainedFrames[selectedClips[action].page] || (version===3?32:16) : 4; }
     function staticAction() { return options.animated === false || (version === 2 && retainedCount() === 1); }
     function paused() { return destroyed || unavailable || loading || action === 'sleep' || staticAction() || motion?.matches || (doc.visibilityState === 'hidden' || doc.tracerHidden); }
     function schedule() {
@@ -182,6 +219,7 @@
         for (const preload of preloads) preload.src = '';
         preloads.length = 0;
         crops.clear();
+        geometry.clear();
       }
     };
   }
@@ -192,16 +230,16 @@
   }
   function createPage(image, pageIndex, options = {}) {
     const version = options.version === undefined ? 1 : options.version;
-    if (![1, 2].includes(version) || typeof image !== 'string' || !asset.test(image) || !Number.isInteger(pageIndex) || pageIndex < 0 || pageIndex >= actions.length / (version === 2 ? 1 : 4)) throw invalid();
-    if (options.retainedFrames !== undefined && (version !== 2 || ![1, 4, 16].includes(options.retainedFrames))) throw invalid();
+    if (![1, 2, 3].includes(version) || typeof image !== 'string' || !asset.test(image) || !Number.isInteger(pageIndex) || pageIndex < 0 || pageIndex >= actions.length / (version >= 2 ? 1 : 4)) throw invalid();
+    if (options.retainedFrames !== undefined && (version < 2 || !(version===3?[32]:[1,4,16]).includes(options.retainedFrames))) throw invalid();
     const pages = []; pages[pageIndex] = image;
     const retainedFrames = []; retainedFrames[pageIndex] = options.retainedFrames;
     return player(pages, options, pageIndex, version, retainedFrames);
   }
   // Pixel checks establish a usable transparent atlas, not semantic pose quality or likeness.
-  function inspectPixels(data, edge, version, retainedFrames = 16) {
-    const cells = [], size = edge / 4, count = size * size;
-    for (let row = 0; row < 4; row++) for (let column = 0; column < 4; column++) {
+  function inspectPixels(data, edge, version, retainedFrames = version===3?32:16, generated = false) {
+    const columns = version===3?8:4, cells = [], size = edge / columns, count = size * size;
+    for (let row = 0; row < 4; row++) for (let column = 0; column < columns; column++) {
       const pixels = new Uint8ClampedArray(count * 4);
       let foreground = 0, transparent = 0, boundary = 0, minX = size, minY = size, maxX = -1, maxY = -1;
       for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
@@ -219,6 +257,18 @@
       if (foreground < count * .006 || transparent < count * .03 || boundary > 2) throw invalid();
       cells.push({ pixels, foreground, minX, minY, maxX, maxY });
     }
+    if (generated) {
+      // The prompt reserves 12.5% on every side. Require at least 8% after
+      // rasterization, both in the source cell and after the player's foot anchor.
+      // Include detached props and tail tips, not just the largest body component.
+      const margin = size * .08, anchors = version >= 2 ? frameGeometry(data, edge, columns) : [];
+      for (const [index, cell] of cells.entries()) {
+        const fits = (dx, dy) => cell.minX + dx >= margin && cell.minY + dy >= margin &&
+          cell.maxX + 1 + dx <= size - margin && cell.maxY + 1 + dy <= size - margin;
+        const anchor = anchors[index];
+        if (!fits(0, 0) || (anchor && !fits((.5 - anchor.x) * size, (.875 - anchor.y) * size))) throw invalid();
+      }
+    }
     function differs(a, b, align) {
       const dx = align ? b.minX - a.minX : 0, dy = align ? b.minY - a.minY : 0;
       let changed = 0;
@@ -231,8 +281,8 @@
       }
       return false;
     }
-    if (version === 2) {
-      if (retainedFrames !== 16) {
+    if (version >= 2) {
+      if (version === 2 && retainedFrames !== 16) {
         // Converted artwork declares its original frame count. Every repeated
         // slot must contain the same visible pixels; this never creates new poses.
         const copies = 16 / retainedFrames;
@@ -245,7 +295,14 @@
       const distinct = [];
       for (const cell of cells) if (distinct.every(other => differs(cell, other, false) && differs(cell, other, true))) distinct.push(cell);
       // A few held poses are allowed; repeating four pictures into sixteen slots is not.
-      if (distinct.length < 12) throw invalid();
+      if (distinct.length < (version===3?12:6)) throw invalid();
+      const geometry=frameGeometry(data,edge,columns),areas=geometry.map(frame=>frame.area);
+      // Reject extreme within-action discontinuities; allow normal articulation/contact.
+      if(Math.max(...areas)>Math.min(...areas)*2.5)throw invalid();
+      if(Math.max(...geometry.map(frame=>frame.x))-Math.min(...geometry.map(frame=>frame.x))>.2||Math.max(...geometry.map(frame=>frame.y))-Math.min(...geometry.map(frame=>frame.y))>.25)throw invalid();
+      // Area of the largest connected component changes when hands or props
+      // touch the torso. It is not a reliable proxy for character scale.
+      // Empty cells, opaque backgrounds, cut edges and cloned poses are checked above.
       return;
     }
     for (let row = 0; row < 4; row++) {
@@ -260,15 +317,19 @@
   }
   async function validatePage(imageURL, options = {}) {
     if (typeof imageURL !== 'string' || !asset.test(imageURL) || !root.document || typeof root.Image !== 'function') throw invalid();
-    return validateImage(imageURL, options.version === undefined ? 1 : options.version, options.retainedFrames);
+    // Comparing body area to idle falsely rejects sitting/sleeping and props.
+    // Identity is provided to the generator; pixels cannot measure likeness.
+    if(options.identityImage && !asset.test(options.identityImage))throw invalid();
+    return validateImage(imageURL, options.version === undefined ? 1 : options.version, options.retainedFrames, options.generated === true);
   }
+
   async function validateBlob(blob, options = {}) {
     if (!(blob instanceof root.Blob) || blob.type !== 'image/png' || blob.size > 12 * 1024 * 1024) throw invalid();
     const url = root.URL.createObjectURL(blob);
     try { return await validateImage(url, options.version === undefined ? 1 : options.version, options.retainedFrames); } finally { root.URL.revokeObjectURL(url); }
   }
-  async function validateImage(imageURL, version, retainedFrames) {
-    if (![1, 2].includes(version) || (retainedFrames !== undefined && (version !== 2 || ![1, 4, 16].includes(retainedFrames)))) throw invalid();
+  async function validateImage(imageURL, version, retainedFrames, generated = false) {
+    if (![1, 2, 3].includes(version) || (retainedFrames !== undefined && (version < 2 || !(version===3?[32]:[1,4,16]).includes(retainedFrames)))) throw invalid();
     const image = new root.Image();
     try {
       await new Promise((resolve, reject) => {
@@ -280,12 +341,13 @@
       if (typeof image.decode === 'function') await image.decode();
     } catch { throw loadFailed(); }
     const width = image.naturalWidth, height = image.naturalHeight;
-    if (!Number.isFinite(width) || !Number.isFinite(height) || Math.min(width, height) < 768 || Math.max(width, height) > 4096 || Math.abs(width - height) / Math.max(width, height) > .01) throw invalid();
+    if (!Number.isFinite(width) || !Number.isFinite(height) || Math.min(width, height) < 768 || Math.max(width, height) > 4096 || Math.abs(width - height * (version===3?2:1)) / width > .01) throw invalid();
+    const columns=version===3?8:4, edge=columns*192;
     let pixels;
-    try { pixels = sheetPixels(image); } catch { throw loadFailed(); }
-    try { inspectPixels(pixels, 768, version, retainedFrames); }
+    try { pixels = sheetPixels(image, columns); } catch { throw loadFailed(); }
+    try { inspectPixels(pixels, edge, version, retainedFrames, generated); }
     catch (error) { if (error?.message === 'invalid-animation-sheet') throw error; throw loadFailed(); }
-    return { width, height, columns: 4, rows: 4, frames: 16 };
+    return { width, height, columns, rows: 4, frames: columns*4 };
   }
-  return { normalize, actions, clips, denseClips, create, createPage, validatePage, validateBlob, frameInsetsForImage };
+  return { normalize, actions, clips, denseClips, smoothClips, create, createPage, validatePage, validateBlob, frameInsetsForImage };
 });

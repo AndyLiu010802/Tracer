@@ -15,10 +15,10 @@
     element.innerHTML=options.fallback||'';element.setAttribute('role','img');element.setAttribute('aria-label',options.label||id);
     const media=win.matchMedia('(prefers-reduced-motion: reduce)');
     let action='idle',base='idle',frame=0,timer=null,dead=false,visible=true,finish=null,oneShot=false;
-    const lastFrame=()=>action==='fishing'?(fishingEndFrames[id]??15):15;
+    const lastFrame=()=>31;
     const layer=Motion.create(element,{kind:id,stage:4,rare:true,atlas:Atlas,actions,
-      sample:()=>({clip:action,frame}),onReady:()=>{if(!dead){draw();schedule();}}});
-    function draw(){if(action==='sleep'&&!oneShot)frame=12;layer.render(action);element.dataset.action=action;element.dataset.frames='16';}
+      sample:()=>({clip:action,frame,frames:32,...(action==='fishing'&&sheets[action].frames===16?{sourcePosition:frame*(fishingEndFrames[id]??15)/31}:{})}),onReady:()=>{if(!dead){draw();schedule();}}});
+    function draw(){if(action==='sleep'&&!oneShot)frame=24;layer.render(action);element.dataset.action=action;element.dataset.frames='32';}
     function stop(){if(timer!==null)win.clearTimeout(timer);timer=null;}
     function schedule(){
       stop();const reason=dead?'destroyed':options.animated===false?'static':(doc.hidden || doc.tracerHidden)?'hidden':media.matches?'reduced-motion':!visible?'offscreen':action==='sleep'&&!oneShot?'sleeping':'playing';

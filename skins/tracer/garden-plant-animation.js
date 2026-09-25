@@ -3,8 +3,8 @@
   if(typeof module==='object'&&module.exports)module.exports=api;else root.TracerGardenPlantAnimation=api;
 })(typeof globalThis!=='undefined'?globalThis:this,function(Art,Wildflower,Companion){
   'use strict';
-  const actions=Object.freeze(['idle','greet','walk','hop','water','pet','music','celebrate','rest','focus','breeze','stretch','look','shy','eat','thanks']);
-  const durations={idle:10000,greet:6500,walk:6500,hop:6500,water:6500,pet:6500,music:6500,celebrate:6500,rest:7000,focus:9800,breeze:6500,stretch:6500,look:6500,shy:6500,eat:6500,thanks:6500};
+  const actions=Object.freeze(['idle','greet','walk','hop','water','pet','music','celebrate','rest','focus','breeze','stretch','look','shy','eat','thanks','play','crafting']);
+  const durations={idle:10000,greet:6500,walk:6500,hop:6500,water:6500,pet:6500,music:6500,celebrate:6500,rest:7000,focus:9800,breeze:6500,stretch:6500,look:6500,shy:6500,eat:6500,thanks:6500,play:7900,crafting:7900};
   const frames=32,hubs=new WeakMap(),round=n=>Math.round(n*1000)/1000;
   const turn=(angle,x=0,y=0,sx=1,sy=1)=>`translate(${round(x)}px,${round(y)}px) rotate(${round(angle)}deg) scale(${round(sx)},${round(sy)})`;
   function sample(action,frame=0){
@@ -72,7 +72,10 @@
     }
     function cancelShot(){if(!oneShot)return;finish=null;oneShot=false;action=base;elapsed=0;}
     function settle(){const done=finish;finish=null;oneShot=false;action=base;elapsed=0;render(hub?.media.matches);done?.();}
-    function map(value){return ({feed:'eat',play:'music',sleep:'rest',wake:'stretch',farming:'water',exercise:'hop',drag:'greet',fishing:'look',reading:'focus',writing:'focus',mining:'celebrate',crafting:'focus',tea:'rest'})[value]||value;}
+    function map(value){
+      if((value==='play'||value==='crafting')&&illustrated?.available().includes(value))return value;
+      return ({feed:'eat',play:'music',sleep:'rest',wake:'stretch',farming:'water',exercise:'hop',drag:'greet',fishing:'look',reading:'focus',writing:'focus',mining:'celebrate',crafting:'focus',tea:'rest'})[value]||value;
+    }
     render();if(hub)hub.add(player);else element.dataset.playback='static';
     return {element,
       availableActions(){return illustrated?.available?.()||[];},

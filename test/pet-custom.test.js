@@ -138,7 +138,7 @@ test('malformed supplied animations reject the profile instead of silently becom
     {version:1,pages:Array.from({length:16},(_,index)=>profile(index+1).image)},
     {version:2,pages:Array.from({length:15},(_,index)=>profile(index+1).image)},
     {version:2,pages:Array.from({length:17},(_,index)=>profile(index+1).image)},
-    {version:3,pages:Array.from({length:16},(_,index)=>profile(index+1).image)},
+    {version:4,pages:Array.from({length:16},(_,index)=>profile(index+1).image)},
     { version: 1, pages: [profile(9).image, ...pages.slice(1)] },
     { version: 1, pages: [pages[0], 'https://example.com/photo.png', pages[2]] }]) {
     const raw = profile(1, { animation });

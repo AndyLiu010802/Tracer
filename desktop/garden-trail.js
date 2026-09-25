@@ -6,14 +6,28 @@ function localPoint(point,bounds){return {x:point.x-bounds.x,y:point.y-bounds.y}
 function attachGardenTrail(main,dependencies=require('electron')){
   const {BrowserWindow,screen,ipcMain,powerMonitor}=dependencies;
   const clock=dependencies.clock||{setInterval,clearInterval};
-  let overlay=null,timer=null,enabled=false,suspended=false,motion=true,ready=false,last=null,displayId=null,closed=false,kind=null;
-  function stop(){if(timer!==null)clock.clearInterval(timer);timer=null;last=null;}
+  const now=typeof clock.now==='function'?()=>clock.now():()=>performance.now();
+  const activeInterval=1000/60,idleInterval=50,idleAfter=500;
+  let overlay=null,timer=null,sampleInterval=null,lastMovedAt=0,enabled=false,suspended=false,motion=true,ready=false,last=null,displayId=null,closed=false,kind=null;
+  function stop(){if(timer!==null)clock.clearInterval(timer);timer=null;sampleInterval=null;last=null;lastMovedAt=0;}
+  function setSamplingInterval(interval){
+    if(timer!==null&&sampleInterval===interval)return;
+    if(timer!==null)clock.clearInterval(timer);
+    sampleInterval=interval;timer=clock.setInterval(sample,interval);
+  }
   function sample(){
     if(!overlay||overlay.isDestroyed()||!ready)return;
-    const point=screen.getCursorScreenPoint(),display=screen.getDisplayNearestPoint(point),bounds=display.bounds;
+    const point=screen.getCursorScreenPoint(),at=now();
+    // Idle polling only checks the pointer; avoid display lookup and renderer IPC.
+    if(last?.x===point.x&&last?.y===point.y){
+      if(at-lastMovedAt>=idleAfter)setSamplingInterval(idleInterval);
+      return;
+    }
+    lastMovedAt=at;
+    if(timer!==null)setSamplingInterval(activeInterval);
+    const display=screen.getDisplayNearestPoint(point),bounds=display.bounds;
     const reset=displayId!==display.id;displayId=display.id;
     if(reset)overlay.setBounds(bounds,false);
-    if(!reset&&last?.x===point.x&&last?.y===point.y)return;
     // macOS may constrain the requested origin below its menu bar. Pointer
     // coordinates must use the actual native window, not the requested display.
     last=point;overlay.webContents.send('tracer-garden-trail-frame',{...localPoint(point,overlay.getBounds()),reset,kind});
@@ -36,7 +50,7 @@ function attachGardenTrail(main,dependencies=require('electron')){
     if(!ready)return;
     if(suspended||!motion){stop();overlay.hide();return;}
     overlay.showInactive();
-    if(timer===null){sample();timer=clock.setInterval(sample,1000/30);}
+    if(timer===null){sample();setSamplingInterval(activeInterval);}
   }
   function motionChanged(event,value){
     if(!overlay||overlay.isDestroyed()||event.sender!==overlay.webContents||event.senderFrame!==overlay.webContents.mainFrame||typeof value!=='boolean')return;

@@ -25,9 +25,11 @@
       return value;
     };
     const name = text('name', 40), personality = text('personality', 600, true), distinctiveFeatures = text('distinctiveFeatures', 400, true), imageModel = text('imageModel', 200);
+    const notes = raw.actionDescriptions;
+    if (notes !== undefined && (!Array.isArray(notes) || notes.length !== 16 || !Array.from({length:16},(_,i)=>i).every(i=>typeof notes[i]==='string'&&notes[i].length<=600&&!/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(notes[i])))) throw failure('pet-draft-invalid');
     const kind = raw.kind === undefined ? 'creature' : raw.kind, imageSource = raw.imageSource === undefined ? 'codex' : raw.imageSource;
     const animationVersion = raw.animationVersion === undefined ? 2 : raw.animationVersion, wasBusy = raw.wasBusy === undefined ? false : raw.wasBusy;
-    if (!['creature', 'humanoid'].includes(kind) || !['codex', 'personal'].includes(imageSource) || animationVersion !== 2 || typeof wasBusy !== 'boolean') throw failure('pet-draft-invalid');
+    if (!['creature', 'humanoid'].includes(kind) || !['codex', 'personal'].includes(imageSource) || ![2,3].includes(animationVersion) || typeof wasBusy !== 'boolean') throw failure('pet-draft-invalid');
     const recordId = text('recordId', 39), generationId = text('generationId', 32);
     if ((recordId && !/^custom_[a-f0-9]{32}$/.test(recordId)) || (generationId && !/^[a-f0-9]{32}$/.test(generationId))) throw failure('pet-draft-invalid');
     const editingId = text('editingId', 39), editingSignature = text('editingSignature', 64);
@@ -36,8 +38,8 @@
     if (!Array.isArray(pages) || pages.length > 16 || !Array.from({ length: pages.length }, (_, i) => i).every(i => safeImage(pages[i]))) throw failure('pet-draft-invalid');
     const pageAttempts = raw.pageAttempts === undefined ? Array(16).fill(0) : raw.pageAttempts;
     if (!Array.isArray(pageAttempts) || pageAttempts.length !== 16 || !Array.from({ length: 16 }, (_, i) => i).every(i => Number.isInteger(pageAttempts[i]) && pageAttempts[i] >= 0 && pageAttempts[i] <= 1000)) throw failure('pet-draft-invalid');
-    const retainedFrames = raw.retainedFrames === undefined ? Array(16).fill(16) : raw.retainedFrames;
-    if (!Array.isArray(retainedFrames) || retainedFrames.length !== 16 || !Array.from({ length: 16 }, (_, i) => i).every(i => [1, 4, 16].includes(retainedFrames[i]) && (i < pages.length || retainedFrames[i] === 16))) throw failure('pet-draft-invalid');
+    const retainedFrames = raw.retainedFrames === undefined ? Array(16).fill(animationVersion===3?32:16) : raw.retainedFrames;
+    if (!Array.isArray(retainedFrames) || retainedFrames.length !== 16 || !Array.from({ length: 16 }, (_, i) => i).every(i => (animationVersion===3?[32]:[1,4,16]).includes(retainedFrames[i]) && (i < pages.length || retainedFrames[i] === (animationVersion===3?32:16)))) throw failure('pet-draft-invalid');
     // Keep the first accepted idle sheet as a stable reference even after idle is
     // replaced. Older drafts acquire that reference from their original first page.
     const generationIdentity = raw.generationIdentity === undefined ? pages[0] || '' : raw.generationIdentity;
@@ -61,12 +63,12 @@
       if (match[1] === 'png' ? !header.startsWith('\x89PNG\r\n\x1a\n') : match[1] === 'jpeg' ? !header.startsWith('\xff\xd8\xff') : !(header.startsWith('RIFF') && header.slice(8, 12) === 'WEBP')) throw failure('pet-draft-invalid');
     }
     // Whitelist only recovery data. File objects, account settings and API keys never enter storage.
-    return { name, kind, personality, distinctiveFeatures, imageSource, imageModel, photo, pages: pages.slice(), pageAttempts: pageAttempts.slice(), animationVersion, recordId, generationId, wasBusy, generationIdentity, pendingReplacement, editingId, editingSignature, retainedFrames: retainedFrames.slice() };
+    return { name, kind, personality, distinctiveFeatures, imageSource, imageModel, photo, pages: pages.slice(), pageAttempts: pageAttempts.slice(), animationVersion, recordId, generationId, wasBusy, generationIdentity, pendingReplacement, editingId, editingSignature, retainedFrames: retainedFrames.slice(), ...(notes ? { actionDescriptions: notes.slice() } : {}) };
   }
   function inspect(record) {
     try {
       if (!object(record) || Object.keys(record).length !== 3 || !['version', 'savedAt', 'draft'].every(key => Object.prototype.hasOwnProperty.call(record, key)) || ![1, 2].includes(record.version) || !Number.isSafeInteger(record.savedAt) || record.savedAt < 0 || !object(record.draft)) throw failure('pet-draft-corrupt');
-      const expectedFields = record.version === 1 ? legacyFields : fields;
+      const expectedFields = record.version === 1 ? legacyFields : [...fields, ...(Object.hasOwn(record.draft,'actionDescriptions') ? ['actionDescriptions'] : [])];
       if (Object.keys(record.draft).length !== expectedFields.length || !expectedFields.every(key => Object.prototype.hasOwnProperty.call(record.draft, key)) ||
           (record.version === 2 && (typeof record.draft.generationIdentity !== 'string' || record.draft.pendingReplacement === undefined ||
             typeof record.draft.editingId !== 'string' || typeof record.draft.editingSignature !== 'string' || !Array.isArray(record.draft.retainedFrames)))) throw failure('pet-draft-corrupt');
@@ -102,7 +104,10 @@
       return pendingDatabase;
     }
     async function transact(method, record) {
+      await root.TracerAccount?.ready;
+      if(root.TracerAccount?.locked)throw failure('pet-draft-unavailable');
       const db = await database();
+      if(root.TracerAccount?.locked)throw failure('pet-draft-unavailable');
       return new Promise((resolve, reject) => {
         let transaction, request, result;
         try {

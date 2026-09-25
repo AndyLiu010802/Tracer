@@ -1,0 +1,32 @@
+{
+  "de2673af513e666d5f6e2ff87f2d342a63e15a18f6969bb61163a777c200cba5": {
+    "source": "garden-art/peach-shiny-walk-v3-p2.png",
+    "identitySize": 120.45968534256463,
+    "reason": "Reviewed against p1 (69655fa304f0ef45221b18f5ad655c29a31934ca30f203c7a113734455f14598): the warm-color face mask changes with eyelid shading, despite matching head silhouettes. Preserve p1 calibration (118.5) using the measured solid-body ratio 175.36257934570312 / 172.50971221923828. This is one fixed scale for the entire page."
+  },
+  "edfc2e13598f85f3fafec21d138ec840fde92994e5e4a76d2ed52a243ff3028e": {
+    "source": "garden-art/wildflower-shiny-thanks-v3-p2.png",
+    "identitySize": 85.74308552865405,
+    "reason": "Visually reviewed against p1 (bfcea9072199efcdbfad87963c2aea39a8f0c9324f2816810605f8cf503a0a0a): bowing partly hides the face under petals, reducing the palette mask although the crown/body retain their size. Preserve p1 calibration (83) using the measured solid-body ratio 166.09549713134766 / 160.7817840576172. One fixed scale for this exact page; no frame or pixel changes."
+  },
+  "fd93652a87c18c3424410c1d542981721d3abe19ff8f770be5fc1aa2fc6a4ede": {
+    "source": "garden-art/crystal_tree-normal-rest-v3-p1.png",
+    "identitySize": 86.56961183456288,
+    "reason": "Visually reviewed against normal idle (7a3da911a09ad0fbdf95ece4c907d70ac64dccd5906a5b8530300ab1e872345c): closed eyelids make the palette heuristic select the narrower cream belly instead of the face. Crown and body retain the same proportions. Preserve idle face calibration (87.5) using solid-body ratio 177.88223266601562 / 179.79398345947266. One fixed scale for this exact page; no frame or source-pixel changes."
+  },
+  "1189f831931c1a302654b91dd45428ee95375e3605dab1c0db331f9cf5615ac8": {
+    "source": "garden-art/crystal_tree-normal-rest-v3-p2.png",
+    "identitySize": 89.25345255446236,
+    "reason": "Visually reviewed against normal idle (7a3da911a09ad0fbdf95ece4c907d70ac64dccd5906a5b8530300ab1e872345c): closed eyelids make the palette heuristic select the narrower cream belly instead of the face. Crown and body retain the same proportions. Preserve idle face calibration (87.5) using solid-body ratio 183.39695739746094 / 179.79398345947266. One fixed scale for this exact page; no frame or source-pixel changes."
+  },
+  "e67eeadea6cf99ea0a4c6ae5f30c3799f7058781cfc0d8d7bddcc29bde44b0e8": {
+    "source": "garden-art/crystal_tree-shiny-rest-v3-p1.png",
+    "identitySize": 89.2372555988744,
+    "reason": "Visually reviewed against shiny idle (957020c24364ac3568b6e217af33128e9a236eb62e79ddb8c5d0341dc27b8791): closed eyelids make the palette heuristic select the narrower cream belly instead of the face. Crown and body retain the same proportions. Preserve idle face calibration (77.5) using solid-body ratio 187.05381774902344 / 162.4508819580078. One fixed scale for this exact page; no frame or source-pixel changes."
+  },
+  "90835d679aefb72fadcc297d3ef80f85ad9bd789d02cd775745b7016ac7dc62c": {
+    "source": "garden-art/crystal_tree-shiny-rest-v3-p2.png",
+    "identitySize": 88.63861754994491,
+    "reason": "Visually reviewed against shiny idle (957020c24364ac3568b6e217af33128e9a236eb62e79ddb8c5d0341dc27b8791): closed eyelids make the palette heuristic select the narrower cream belly instead of the face. Crown and body retain the same proportions. Preserve idle face calibration (77.5) using solid-body ratio 185.79898834228516 / 162.4508819580078. One fixed scale for this exact page; no frame or source-pixel changes."
+  }
+}

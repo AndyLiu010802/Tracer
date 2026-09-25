@@ -69,29 +69,9 @@
       if(animated)characterAnimation=player;else collectionAnimations.push(player);
       return player.element;
     }
-    function effectLayer(pet) {
+    function effectLayer() {
       const layer=document.createElement('span'); layer.className='pet-effects'; layer.setAttribute('aria-hidden','true');
-      layer.innerHTML='<svg class="pet-food-prop" viewBox="0 0 32 32" shape-rendering="crispEdges"><path fill="#7fac75" d="M16 3h3v7h-3zM19 3h7v4h-7z"/><path fill="#e6a25d" d="M7 10h19v4h3v11h-4v4H8v-4H4V14h3z"/><path fill="#f8d58b" d="M8 13h5v10H8z"/><path fill="#ac674d" d="M7 25h19v4H9z"/></svg>'
-        +'<svg class="pet-ball-prop" viewBox="0 0 32 32" shape-rendering="crispEdges"><path fill="#85b8d0" d="M9 3h14v4h5v5h3v11h-5v5H9v-4H4V9h5z"/><path fill="#f3d88d" d="M12 3h7v10h12v7H19v8h-7V20H4v-7h8z"/></svg>'
-        +'<span class="pet-heart pet-heart-one">♥</span><span class="pet-heart pet-heart-two">♥</span><span class="pet-play-star">✦</span><span class="pet-rest-cloud">Zzz</span>';
-      const food={
-        sprout:'<path fill="#f0d69e" d="M5 14h22v4H5z"/><path fill="#b4ccb0" d="M3 17h26v6h-4v5H7v-5H3z"/><path fill="#657f62" d="M9 24h14v4H9z"/><path fill="#fff1c7" d="M8 11h4v4H8zM15 12h4v4h-4zM21 10h3v5h-3z"/>',
-        miso:'<path fill="#e5ad78" d="M3 12h6V8h12v4h5l5-5v18l-5-5h-5v4H9v-4H3z"/><path fill="#f5d79e" d="M6 13h16v6H6z"/><path fill="#64554a" d="M7 12h3v3H7zM15 11h2v10h-2z"/>',
-        brook:'<path fill="#79b7c8" d="M3 12h5V8h13v4h4l6-5v18l-6-5h-4v4H8v-4H3z"/><path fill="#d9e7d9" d="M4 16h20v4H8v2H4z"/><path fill="#334f68" d="M7 12h3v3H7z"/>',
-        ember:'<path fill="#7e9d61" d="M15 3h3v10h-3zM8 5h8v4H8zM18 3h7v5h-7z"/><path fill="#ba5965" d="M7 11h8v4h5V9h8v13h-5v7H10v-5H4V15h3z"/><path fill="#ed9b83" d="M8 13h3v4H8zM21 11h3v4h-3zM13 22h3v3h-3z"/>',
-        luna:'<path fill="#91ae70" d="M12 2h4v8h-4zM19 3h5v5h-5zM24 8h6v4h-6z"/><path fill="#e9a56a" d="M11 10h13v6h-3v5h-4v5h-5v4H6V18h5z"/><path fill="#bc7954" d="M11 15h6v3h-6zM8 23h5v3H8z"/>',
-        nova:'<path fill="#efd586" d="M13 2h6v9h10v6h-6v6h-4v7h-6v-7H9v-6H3v-6h10z"/><path fill="#fff0b1" d="M14 7h3v10h-3zM8 13h15v3H8z"/><path fill="#c99d68" d="M13 24h6v5h-6z"/>'
-      };
-      const toys={
-        sprout:'<path fill="#d9c092" d="M8 12h16v4h4v10h-4v4H8v-4H4V16h4z"/><path fill="#89a76b" d="M15 5h3v12h-3zM8 3h8v6H8zM18 1h8v6h-8z"/>',
-        miso:'<path fill="#e4be7e" d="M9 3h14v4h5v16h-5v5H9v-5H4V8h5z"/><path fill="none" stroke="#a3785d" stroke-width="2" d="M9 7l14 17M5 14l11 14M15 4l12 14M10 27l-1 3H2"/>',
-        brook:'<path fill="#657f92" d="M9 7h13v4h5v14H6V13h3z"/><path fill="#b0cfce" d="M9 10h12v4H9zM6 14h3v8H6z"/><path fill="#deead9" d="M12 10h7v3h-7z"/>',
-        ember:'<path fill="#e3b06c" d="M14 2h5v7h8v10h-5v6h-7v5h-4V20H4v-7h8V6h2z"/><path fill="#a57654" d="M14 12h3v16h-3zM17 15h5v3h-5z"/>',
-        luna:'<path fill="#c2b4dc" d="M12 2h10v4h-6v5h-4v10h5v4h7v4H10v-4H5V10h4V5h3z"/><path fill="#f3d999" d="M24 9h3v4h4v3h-4v4h-3v-4h-4v-3h4z"/>',
-        nova:'<path fill="#538d91" d="M11 2h10v5h5v17h-5v6H11v-6H6V7h5z"/><path fill="#91d9c0" d="M12 4h7v23h-7z"/><path fill="#dcf0c4" d="M14 5h3v13h-3z"/>'
-      };
-      if(food[pet.id]) layer.querySelector('.pet-food-prop').innerHTML=food[pet.id];
-      if(toys[pet.id]) layer.querySelector('.pet-ball-prop').innerHTML=toys[pet.id];
+      layer.innerHTML='<span class="pet-heart pet-heart-one">♥</span><span class="pet-heart pet-heart-two">♥</span><span class="pet-play-star">✦</span><span class="pet-rest-cloud">Zzz</span>';
       return layer;
     }
     function pointerPoint(event) { return {screenX:event.screenX,screenY:event.screenY}; }
@@ -360,11 +340,10 @@
       const personality=TracerPetPersonalities.get(p.id);
       if(selected!==p.id || !find('.pet-character .pet-sprite')) {
         characterAnimation?.destroy(); characterAnimation=null; selected=p.id;
-        find('.pet-character').replaceChildren(art(p,true),effectLayer(p),TracerPetIdleArt());
+        find('.pet-character').replaceChildren(art(p,true),effectLayer());
         root.classList.toggle('has-animation-pack',!!p.custom&&!!characterAnimation);
         root.classList.toggle('has-builtin-animation',!p.custom&&!!characterAnimation);
-        // Botanical sheets keep their own sixteen movements. Their ambient
-        // activities still need the local fishing/gardening/mining scene.
+        // Botanical frames include their own action props.
         root.classList.toggle('has-garden-animation',!!p.garden&&!!characterAnimation);
       }
       const humanoid=p.kind==='humanoid'; root.dataset.kind=humanoid?'humanoid':'creature';

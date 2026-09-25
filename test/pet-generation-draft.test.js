@@ -12,6 +12,15 @@ function memory(record = null) {
 }
 function deferred() { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; }
 
+test('32-frame recovery preserves action details, completed sheets and attempt IDs', async () => {
+  const storage=memory(),draft=Draft.create({storage});
+  const raw=profile({animationVersion:3,retainedFrames:Array(16).fill(32),actionDescriptions:Array.from({length:16},(_,i)=>i===3?'Red ball':i===14?'Paper boat':'')});
+  raw.pageAttempts[2]=2;
+  await draft.save(raw);
+  assert.deepEqual(await Draft.create({storage}).load(),raw);
+  await assert.rejects(draft.save({...raw,retainedFrames:Array(16).fill(16)}),/pet-draft-invalid/);
+});
+
 test('generation drafts retain all completed pages and recovery IDs without persisting source files or credentials', async () => {
   const storage = memory(), draft = Draft.create({ storage }), raw = profile({ pages: Array.from({ length: 16 }, (_, i) => asset(i + 1)), source: { name: 'private-photo.png' }, apiKey: 'PRIVATE_KEY', account: 'PRIVATE_ACCOUNT', image: asset(1) });
   const saved = await draft.save(raw);
@@ -26,6 +35,13 @@ test('generation drafts retain all completed pages and recovery IDs without pers
   assert.equal(restored.generationId, 'b'.repeat(32)); assert.equal(restored.wasBusy, true); assert.equal(restored.photo, png);
   assert.deepEqual(restored.pageAttempts, Array(16).fill(0));
   restored.pages.pop(); assert.equal((await draft.load()).pages.length, 16);
+});
+
+test('per-action descriptions round-trip independently and reject oversized or sparse notes', async () => {
+  const storage=memory(),draft=Draft.create({storage}),notes=Array(16).fill('');notes[15]='Slowly lift the cup, sip once and lower it.';
+  await draft.save(profile({actionDescriptions:notes}));notes[15]='Changed';
+  assert.equal((await draft.load()).actionDescriptions[15],'Slowly lift the cup, sip once and lower it.');
+  for(const bad of [Array(16),Array(15).fill(''),Array(16).fill('x'.repeat(601)),Array(16).fill(42)])await assert.rejects(draft.save(profile({actionDescriptions:bad})),/pet-draft-invalid/);
 });
 
 test('queued snapshots cannot overtake each other and clear waits behind every earlier save across instances', async () => {

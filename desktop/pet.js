@@ -9,7 +9,7 @@ function attachPet(main, origin, userData, showMain) {
   const trail=require('./garden-trail').attachGardenTrail(main);
   const file = path.join(userData, 'pet-window.json');
   let saved = {}, pet = null, snapshot = null, drag = null, expanded = false;
-  let accountPaused=false,petScope=null;
+  let accountPaused=false,petScope=null,petGeneration=0;
   const pendingWork = new Map();
   try { saved = JSON.parse(fs.readFileSync(file, 'utf8')); } catch {}
   if (!saved || typeof saved !== 'object' || Array.isArray(saved)) saved = {};
@@ -123,7 +123,9 @@ function attachPet(main, origin, userData, showMain) {
       if (message.type === 'snapshot' && message.value && JSON.stringify(message.value).length < 50000) {
         if(accountPaused)return;
         const nextScope=message.value.accountScope||'guest';
-        const scopeChanged=petScope!==nextScope;
+        const nextGeneration=message.value.accountGeneration||0;
+        const scopeChanged=petScope!==nextScope||petGeneration!==nextGeneration;
+        petGeneration=nextGeneration;
         petScope=nextScope;
         snapshot = message.value;
         // The companion may open before the main page's first snapshot. Treat

@@ -26,6 +26,14 @@ function fixture(t,area={x:0,y:0,width:1200,height:900},saved,initialSnapshot=tr
 }
 
 const workRequest={requestId:'f623b4d1-79de-4cad-ae76-d5523a54dacf',proposal:{type:'tasks',project:null,tasks:[{title:'Write report',notes:'',due:null,scheduled:null,priority:'medium',estimate:null,checklist:[]}]}};
+test('clearing data reloads the desktop companion even when the account ID stays the same',t=>{
+ const f=fixture(t);let reloads=0;f.pet.webContents.reload=()=>{reloads++;f.pet.webContents.emit('did-finish-load');};
+ f.send('snapshot',{accountScope:'account-a',accountGeneration:0,pet:{id:'sprout'}},f.event(f.main));assert.equal(reloads,1);
+ f.send('account-lock',undefined,f.event(f.main));f.send('account-unlock',undefined,f.event(f.main));
+ f.send('snapshot',{accountScope:'account-a',accountGeneration:1,pet:{id:'sprout'}},f.event(f.main));assert.equal(reloads,2);
+ f.send('snapshot',{accountScope:'account-a',accountGeneration:1,pet:{id:'sprout'}},f.event(f.main));assert.equal(reloads,2);
+});
+
 test('fast sign-in reloads a companion opened before the first main-window snapshot',t=>{
  const f=fixture(t,undefined,undefined,false);let reloads=0;f.pet.webContents.reload=()=>{reloads++;f.pet.webContents.emit('did-finish-load');};
  f.send('snapshot',{accountScope:'account-first',pet:{id:'sprout'}},f.event(f.main));assert.equal(reloads,1);assert.equal(f.pet.sent.at(-1)[1].accountScope,'account-first');

@@ -1,0 +1,710 @@
+{
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+  "methodology": "Real browser Canvas 2D, fixed coordinates and 60 fps timestamps; two warm-up rounds and seven interleaved measured rounds. CPU measurements use native contexts without operation instrumentation. A readback outside each measured round flushes pending drawing. Timings include JavaScript and Canvas command submission, not GPU/compositor time or GPU utilization. Deterministic requestAnimationFrame checks scheduling independently of host refresh rate.",
+  "benchmark": [
+    {
+      "version": "before",
+      "dpr": 1,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "pixels": 2073600,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.10000002384185791,
+        "p95Ms": 0.4000000059604645
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.3055555555555556,
+        "p95Ms": 0.3172222221891085
+      }
+    },
+    {
+      "version": "afterDefault",
+      "dpr": 1,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "pixels": 2073600,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.09999999403953552,
+        "p95Ms": 0.30000001192092896
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.23444444437821707,
+        "p95Ms": 0.27777777794334624
+      }
+    },
+    {
+      "version": "afterDesktop",
+      "dpr": 1,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "pixels": 2073600,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.09999999403953552,
+        "p95Ms": 0.30000001192092896
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.2288888888226615,
+        "p95Ms": 0.27666666673289403
+      }
+    },
+    {
+      "version": "before",
+      "dpr": 1.5,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 2880,
+      "pixelHeight": 1620,
+      "pixels": 4665600,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.10000002384185791,
+        "p95Ms": 0.5
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.3350000000662274,
+        "p95Ms": 0.4
+      }
+    },
+    {
+      "version": "afterDefault",
+      "dpr": 1.5,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 2880,
+      "pixelHeight": 1620,
+      "pixels": 4665600,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.09999999403953552,
+        "p95Ms": 0.30000001192092896
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.25722222212288115,
+        "p95Ms": 0.3216666665342119
+      }
+    },
+    {
+      "version": "afterDesktop",
+      "dpr": 1.5,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 2880,
+      "pixelHeight": 1620,
+      "pixels": 4665600,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.09999999403953552,
+        "p95Ms": 0.4000000059604645
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.24888888895511627,
+        "p95Ms": 0.34888888895511627
+      }
+    },
+    {
+      "version": "before",
+      "dpr": 2,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.10000002384185791,
+        "p95Ms": 0.4000000059604645
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.34611111101177006,
+        "p95Ms": 0.3705555556548966
+      }
+    },
+    {
+      "version": "afterDefault",
+      "dpr": 2,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.09999999403953552,
+        "p95Ms": 0.30000001192092896
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.28055555555555556,
+        "p95Ms": 0.3972222222222222
+      }
+    },
+    {
+      "version": "afterDesktop",
+      "dpr": 2,
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "pixelWidth": 2880,
+      "pixelHeight": 1620,
+      "pixels": 4665600,
+      "frames": 1260,
+      "frameSubmission": {
+        "medianMs": 0.09999999403953552,
+        "p95Ms": 0.30000001192092896
+      },
+      "roundMeanSubmission": {
+        "medianMs": 0.2533333334657881,
+        "p95Ms": 0.3550000000331137
+      }
+    }
+  ],
+  "operations": [
+    {
+      "version": "before",
+      "setup": {
+        "main": {
+          "clearRect": 2,
+          "setTransform": 1
+        },
+        "glyph": {
+          "translate": 4,
+          "scale": 4,
+          "createRadialGradient": 4,
+          "fillRect": 4,
+          "save": 5,
+          "rotate": 5,
+          "createLinearGradient": 6,
+          "beginPath": 10,
+          "moveTo": 5,
+          "bezierCurveTo": 15,
+          "closePath": 5,
+          "fill": 10,
+          "stroke": 7,
+          "restore": 5,
+          "ellipse": 2,
+          "arc": 3
+        },
+        "glyphCanvases": 4
+      },
+      "motion": {
+        "clearRect": 179,
+        "setTransform": 0,
+        "beginPath": 358,
+        "moveTo": 358,
+        "quadraticCurveTo": 10168,
+        "createLinearGradient": 358,
+        "stroke": 716,
+        "save": 17162,
+        "translate": 17162,
+        "rotate": 17162,
+        "drawImage": 17162,
+        "restore": 17162
+      },
+      "glyphDuringMotion": {
+        "translate": 0,
+        "scale": 0,
+        "createRadialGradient": 0,
+        "fillRect": 0,
+        "save": 0,
+        "rotate": 0,
+        "createLinearGradient": 0,
+        "beginPath": 0,
+        "moveTo": 0,
+        "bezierCurveTo": 0,
+        "closePath": 0,
+        "fill": 0,
+        "stroke": 0,
+        "restore": 0,
+        "ellipse": 0,
+        "arc": 0
+      },
+      "glyphCanvasesDuringMotion": 0,
+      "fadeWithoutNewSamples": {
+        "clearRect": 20,
+        "setTransform": 0,
+        "beginPath": 40,
+        "moveTo": 40,
+        "quadraticCurveTo": 820,
+        "createLinearGradient": 40,
+        "stroke": 80,
+        "save": 1721,
+        "translate": 1721,
+        "rotate": 1721,
+        "drawImage": 1721,
+        "restore": 1721
+      }
+    },
+    {
+      "version": "after",
+      "setup": {
+        "main": {
+          "clearRect": 2,
+          "setTransform": 1
+        },
+        "glyph": {
+          "translate": 4,
+          "scale": 4,
+          "createRadialGradient": 4,
+          "fillRect": 4,
+          "save": 5,
+          "rotate": 5,
+          "createLinearGradient": 6,
+          "beginPath": 10,
+          "moveTo": 5,
+          "bezierCurveTo": 15,
+          "closePath": 5,
+          "fill": 10,
+          "stroke": 7,
+          "restore": 5,
+          "ellipse": 2,
+          "arc": 3
+        },
+        "glyphCanvases": 4
+      },
+      "motion": {
+        "clearRect": 179,
+        "setTransform": 17342,
+        "createLinearGradient": 358,
+        "stroke": 716,
+        "drawImage": 17162
+      },
+      "glyphDuringMotion": {
+        "translate": 0,
+        "scale": 0,
+        "createRadialGradient": 0,
+        "fillRect": 0,
+        "save": 0,
+        "rotate": 0,
+        "createLinearGradient": 0,
+        "beginPath": 0,
+        "moveTo": 0,
+        "bezierCurveTo": 0,
+        "closePath": 0,
+        "fill": 0,
+        "stroke": 0,
+        "restore": 0,
+        "ellipse": 0,
+        "arc": 0
+      },
+      "glyphCanvasesDuringMotion": 0,
+      "fadeWithoutNewSamples": {
+        "clearRect": 20,
+        "setTransform": 1741,
+        "createLinearGradient": 40,
+        "stroke": 80,
+        "drawImage": 1721
+      }
+    }
+  ],
+  "refresh": [
+    {
+      "version": "before",
+      "hz": 60,
+      "elapsedMs": 2000,
+      "paintFrames": 120,
+      "peakParticles": 39,
+      "peakKnots": 23
+    },
+    {
+      "version": "after",
+      "hz": 60,
+      "elapsedMs": 2000,
+      "paintFrames": 120,
+      "peakParticles": 39,
+      "peakKnots": 23
+    },
+    {
+      "version": "before",
+      "hz": 120,
+      "elapsedMs": 2000,
+      "paintFrames": 120,
+      "peakParticles": 39,
+      "peakKnots": 32
+    },
+    {
+      "version": "after",
+      "hz": 120,
+      "elapsedMs": 2000,
+      "paintFrames": 120,
+      "peakParticles": 39,
+      "peakKnots": 32
+    },
+    {
+      "version": "before",
+      "hz": 144,
+      "elapsedMs": 2000,
+      "paintFrames": 120,
+      "peakParticles": 39,
+      "peakKnots": 32
+    },
+    {
+      "version": "after",
+      "hz": 144,
+      "elapsedMs": 2000,
+      "paintFrames": 120,
+      "peakParticles": 39,
+      "peakKnots": 32
+    }
+  ],
+  "idle": [
+    {
+      "version": "before",
+      "drained": {
+        "kind": "neon_orchid",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      },
+      "stationaryPaintFrames": 32,
+      "stationary": {
+        "kind": "neon_orchid",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0
+      }
+    },
+    {
+      "version": "after",
+      "drained": {
+        "kind": "neon_orchid",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      },
+      "stationaryPaintFrames": 0,
+      "stationary": {
+        "kind": "neon_orchid",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0
+      }
+    }
+  ],
+  "pixels": [
+    {
+      "version": "before",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 1,
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "pixels": 2073600,
+      "rgbaMiB": 7.91015625
+    },
+    {
+      "version": "afterDefault",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 1,
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "pixels": 2073600,
+      "rgbaMiB": 7.91015625
+    },
+    {
+      "version": "afterDesktop",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 1,
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "pixels": 2073600,
+      "rgbaMiB": 7.91015625
+    },
+    {
+      "version": "before",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 1.5,
+      "pixelWidth": 2880,
+      "pixelHeight": 1620,
+      "pixels": 4665600,
+      "rgbaMiB": 17.7978515625
+    },
+    {
+      "version": "afterDefault",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 1.5,
+      "pixelWidth": 2880,
+      "pixelHeight": 1620,
+      "pixels": 4665600,
+      "rgbaMiB": 17.7978515625
+    },
+    {
+      "version": "afterDesktop",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 1.5,
+      "pixelWidth": 2880,
+      "pixelHeight": 1620,
+      "pixels": 4665600,
+      "rgbaMiB": 17.7978515625
+    },
+    {
+      "version": "before",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 2,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "rgbaMiB": 31.640625
+    },
+    {
+      "version": "afterDefault",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 2,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "rgbaMiB": 31.640625
+    },
+    {
+      "version": "afterDesktop",
+      "cssWidth": 1920,
+      "cssHeight": 1080,
+      "dpr": 2,
+      "pixelWidth": 2880,
+      "pixelHeight": 1620,
+      "pixels": 4665600,
+      "rgbaMiB": 17.7978515625
+    },
+    {
+      "version": "before",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 1,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "rgbaMiB": 31.640625
+    },
+    {
+      "version": "afterDefault",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 1,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "rgbaMiB": 31.640625
+    },
+    {
+      "version": "afterDesktop",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 1,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "rgbaMiB": 31.640625
+    },
+    {
+      "version": "before",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 1.5,
+      "pixelWidth": 5760,
+      "pixelHeight": 3240,
+      "pixels": 18662400,
+      "rgbaMiB": 71.19140625
+    },
+    {
+      "version": "afterDefault",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 1.5,
+      "pixelWidth": 5760,
+      "pixelHeight": 3240,
+      "pixels": 18662400,
+      "rgbaMiB": 71.19140625
+    },
+    {
+      "version": "afterDesktop",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 1.5,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "rgbaMiB": 31.640625
+    },
+    {
+      "version": "before",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 2,
+      "pixelWidth": 7680,
+      "pixelHeight": 4320,
+      "pixels": 33177600,
+      "rgbaMiB": 126.5625
+    },
+    {
+      "version": "afterDefault",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 2,
+      "pixelWidth": 7680,
+      "pixelHeight": 4320,
+      "pixels": 33177600,
+      "rgbaMiB": 126.5625
+    },
+    {
+      "version": "afterDesktop",
+      "cssWidth": 3840,
+      "cssHeight": 2160,
+      "dpr": 2,
+      "pixelWidth": 3840,
+      "pixelHeight": 2160,
+      "pixels": 8294400,
+      "rgbaMiB": 31.640625
+    }
+  ],
+  "themes": [
+    {
+      "kind": "wildflower",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 42592,
+      "expired": {
+        "kind": "wildflower",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    },
+    {
+      "kind": "sunflower",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 45725,
+      "expired": {
+        "kind": "sunflower",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    },
+    {
+      "kind": "lavender",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 47870,
+      "expired": {
+        "kind": "lavender",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    },
+    {
+      "kind": "apple",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 46008,
+      "expired": {
+        "kind": "apple",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    },
+    {
+      "kind": "peach",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 46696,
+      "expired": {
+        "kind": "peach",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    },
+    {
+      "kind": "cherry",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 42331,
+      "expired": {
+        "kind": "cherry",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    },
+    {
+      "kind": "neon_orchid",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 45593,
+      "expired": {
+        "kind": "neon_orchid",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    },
+    {
+      "kind": "volt_berry",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 51891,
+      "expired": {
+        "kind": "volt_berry",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    },
+    {
+      "kind": "crystal_tree",
+      "peakParticles": 120,
+      "peakKnots": 32,
+      "activeLit": 48628,
+      "expired": {
+        "kind": "crystal_tree",
+        "particles": 0,
+        "knots": 0,
+        "running": false,
+        "pending": 0,
+        "lit": 0
+      }
+    }
+  ],
+  "baseline": {
+    "type": "file",
+    "path": "C:\\Users\\andyl\\Desktop\\engineering-docs-portal\\.cache\\trail-perf-baseline\\garden-trails.js"
+  }
+}

@@ -6,6 +6,31 @@ const source = fs.readFileSync(path.join(__dirname, '../skins/tracer/pet-animati
 const asset = number => '/api/pet-art/' + number.toString(16).padStart(32, '0') + '.png';
 const animation = () => ({ version: 1, pages: [asset(1), asset(2), asset(3), asset(4)] });
 const denseAnimation = () => ({ version: 2, pages: Array.from({ length: 16 }, (_, i) => asset(i + 1)) });
+function smoothSheet() {
+  const data = new Uint8ClampedArray(1536 * 768 * 4);
+  for (let frame=0;frame<32;frame++) {
+    const x0=frame%8*192,y0=Math.floor(frame/8)*192;
+    for(let y=45;y<125;y++)for(let x=55;x<115;x++)data.set([120,90,180,255],((y0+y)*1536+x0+x)*4);
+    for(let y=75;y<90;y++)for(let x=115;x<123+frame;x++)data.set([230,180,100,255],((y0+y)*1536+x0+x)*4);
+  }
+  return data;
+}
+
+test('32-frame sheets validate and play every cell in order without changing legacy manifests', async () => {
+  const manifest={...denseAnimation(),version:3};
+  assert.deepEqual(Animation.normalize(manifest),manifest);
+  const b=browser({pixels:smoothSheet(),width:2048,height:1024});
+  assert.deepEqual(clone(await b.api.validatePage(asset(1),{version:3})),{width:2048,height:1024,columns:8,rows:4,frames:32});
+  const player=b.api.create({image:asset(1),animation:manifest});
+  assert.equal(player.element.children[0].style.width,'800%');
+  for(let i=0;i<32;i++) {assert.equal(player.element.dataset.frame,String(i));assert.equal(player.element.dataset.row,String(Math.floor(i/8)));b.tick();}
+  assert.equal(player.element.dataset.frame,'0');
+  player.setAction('crafting');assert.equal(player.element.dataset.page,'14');
+  player.destroy();assert.equal(b.timers.size,0);
+  await assert.rejects(browser({pixels:smoothSheet()}).api.validatePage(asset(1),{version:3}),/invalid-animation-sheet/);
+  const blank=smoothSheet();for(let y=0;y<192;y++)blank.fill(0,(y*1536)*4,(y*1536+192)*4);
+  await assert.rejects(browser({pixels:blank,width:2048,height:1024}).api.validatePage(asset(1),{version:3}),/invalid-animation-sheet/);
+});
 const clone = value => JSON.parse(JSON.stringify(value));
 
 function browser({ pixels, width = 1024, height = 1024, broken = false, decodeBroken = false, pixelsBroken = false, hanging = false, reduced = false, hidden = false, autoLoad = true } = {}) {
@@ -15,7 +40,7 @@ function browser({ pixels, width = 1024, height = 1024, broken = false, decodeBr
     appendChild(child) { this.children.push(child); }
     setAttribute(key, value) { this.attributes[key] = value; if (autoLoad && this.tagName === 'img' && key === 'src') this.onload?.(); }
     getAttribute(key) { return this.attributes[key]; }
-    getContext() { return { drawImage() {}, getImageData: () => { if (pixelsBroken) throw new Error('canvas-unavailable'); return { data: pixels }; } }; }
+    getContext() { let loaded;return { drawImage(image) {loaded=image;}, getImageData: () => { if (pixelsBroken) throw new Error('canvas-unavailable'); return { data: typeof pixels==='function'?pixels(loaded._src):pixels }; } }; }
   }
   const document = {
     visibilityState: hidden ? 'hidden' : 'visible',
@@ -26,7 +51,7 @@ function browser({ pixels, width = 1024, height = 1024, broken = false, decodeBr
   const motion = { matches: reduced, addEventListener: (_name, fn) => motionListeners.add(fn), removeEventListener: (_name, fn) => motionListeners.delete(fn) };
   class Image {
     constructor() { this.naturalWidth = width; this.naturalHeight = height; preloads.push(this); }
-    set src(value) { if (value && !hanging) Promise.resolve().then(() => broken ? this.onerror?.() : this.onload?.()); }
+    set src(value) { this._src=value;if (value && !hanging) Promise.resolve().then(() => broken ? this.onerror?.() : this.onload?.()); }
     async decode() { if (broken || decodeBroken) throw new Error('decode-failed'); }
   }
   const context = { document, Image, Blob, URL: { createObjectURL: () => 'blob:test-sheet', revokeObjectURL: value => revoked.push(value) },
@@ -131,7 +156,7 @@ test('dense packs route every action to sixteen consecutive cells without changi
     }
     assert.equal(player.element.dataset.frame, '0');
     const steps = Animation.denseClips[action].frameMs.slice(1, 15);
-    assert.ok(steps.every(ms => ms >= 80 && ms <= 180), 'in-between poses play close together');
+    assert.ok(steps.every(ms => ms >= 160 && ms <= 240), 'in-between poses play close together');
   }
   b.motion(true); assert.equal(b.timers.size, 0); assert.equal(player.element.dataset.frame, '0');
   b.motion(false); b.tick(); b.visibility(true); assert.equal(b.timers.size, 0);
@@ -152,6 +177,80 @@ test('dense validation requires real in-between poses, retaining seams and allow
   const crossing = sheet('dense'); paint(crossing, 60, 191, 50, 5);
   await assert.rejects(browser({ pixels: crossing }).api.validatePage(asset(1), { version: 2 }), /invalid-animation-sheet/);
   await assert.rejects(browser({ pixels: sheet('dense') }).api.validatePage(asset(1), { version: 3 }), /invalid-animation-sheet/);
+});
+
+test('dense quality checks reject drifting or shrinking bodies without relaxing distinct poses', async () => {
+  for(const [scale,offset]of [[1,-40],[.6,0]]){
+    const data=sheet('dense'),original=data.slice(),edge=768,size=192,x0=3*size,y0=3*size;
+    for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+      const sx=Math.floor((x-96-offset)/scale+96),sy=Math.floor((y-125)/scale+125),target=((y+y0)*edge+x+x0)*4;
+      data.fill(0,target,target+4);
+      if(sx>=0&&sy>=0&&sx<size&&sy<size){const source=((sy+y0)*edge+sx+x0)*4;data.set(original.subarray(source,source+4),target);}
+    }
+    await assert.rejects(browser({pixels:data}).api.validatePage(asset(1),{version:2}),/invalid-animation-sheet/);
+  }
+});
+
+test('new generation requires room on every side of every frame, including detached props', async () => {
+  for (const version of [1, 2, 3]) {
+    const columns = version === 3 ? 8 : 4, edge = columns * 192;
+    const settings = { version, generated: true };
+    const make = () => version === 3 ? smoothSheet() : sheet(version === 2 ? 'dense' : 'poses');
+    const check = pixels => browser({ pixels, width: version === 3 ? 2048 : 1024 }).api;
+    await check(make()).validatePage(asset(1), settings);
+    // The last cell tests the final row/column as well as the four local edges.
+    for (const [x, y] of [[8, 80], [80, 8], [181, 80], [80, 181]]) {
+      const pixels = make(), x0 = (columns - 1) * 192, y0 = 3 * 192;
+      for (let dy = 0; dy < 3; dy++) for (let dx = 0; dx < 3; dx++)
+        pixels.set([220, 160, 90, 255], ((y0 + y + dy) * edge + x0 + x + dx) * 4);
+      await check(pixels).validatePage(asset(1), { version });
+      await assert.rejects(check(pixels).validatePage(asset(1), settings), /invalid-animation-sheet/);
+    }
+  }
+});
+
+test('new generation rejects tall ears that lose their safety margin after foot alignment', async () => {
+  for (const version of [2, 3]) {
+    const columns = version === 3 ? 8 : 4, edge = columns * 192;
+    const pixels = version === 3 ? smoothSheet() : sheet('dense');
+    // Source has >8% clear space on every side. Grounding feet at 87.5%
+    // moves the crown from y=20 to y=13, violating the display safety space.
+    for (let frame = 0; frame < columns * 4; frame++)
+      for (let y = 20; y < 175; y++) for (let x = 55; x < 115; x++)
+        pixels.set([120, 90, 180, 255], ((Math.floor(frame / columns) * 192 + y) * edge + frame % columns * 192 + x) * 4);
+    const b = browser({ pixels, width: version === 3 ? 2048 : 1024 });
+    await b.api.validatePage(asset(1), { version });
+    await assert.rejects(b.api.validatePage(asset(1), { version, generated: true }), /invalid-animation-sheet/);
+  }
+});
+
+test('quiet gestures may hold poses and moderate silhouette changes do not fail generation', async () => {
+  const data=sheet('dense'),original=data.slice(),edge=768,size=192;
+  for(let frame=6;frame<16;frame++)for(let y=0;y<size;y++) {
+    const from=((size+y)*edge+size)*4,to=((Math.floor(frame/4)*size+y)*edge+frame%4*size)*4;
+    data.set(original.subarray(from,from+size*4),to);
+  }
+  await browser({pixels:data}).api.validatePage(asset(1),{version:2});
+  const changing=sheet('dense'),copy=changing.slice();
+  for(let y=0;y<size;y++)for(let x=0;x<size;x++) {
+    const sx=Math.floor((x-96)/.85+96),sy=Math.floor((y-125)/.85+125),to=((3*size+y)*edge+3*size+x)*4;
+    changing.fill(0,to,to+4);
+    if(sx>=0&&sy>=0&&sx<size&&sy<size){const from=((3*size+sy)*edge+3*size+sx)*4;changing.set(copy.subarray(from,from+4),to);}
+  }
+  await browser({pixels:changing}).api.validatePage(asset(1),{version:2});
+});
+
+test('compact poses are not rejected by comparing their area to the idle identity', async () => {
+  const reference=sheet('dense'),small=new Uint8ClampedArray(reference.length),edge=768,size=192;
+  for(let frame=0;frame<16;frame++)for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+    const sx=Math.floor((x-96)/.7+96),sy=Math.floor((y-125)/.7+125),x0=frame%4*size,y0=Math.floor(frame/4)*size;
+    if(sx<0||sy<0||sx>=size||sy>=size)continue;
+    const from=((y0+sy)*edge+x0+sx)*4;small.set(reference.subarray(from,from+4),((y0+y)*edge+x0+x)*4);
+  }
+  const b=browser({pixels:url=>url===asset(1)?reference:small});
+  await b.api.validatePage(asset(2),{version:2});
+  await b.api.validatePage(asset(2),{version:2,identityImage:asset(1)});
+  await b.api.validatePage(asset(1),{version:2,identityImage:asset(1)});
 });
 
 test('retained frame metadata is bounded, copied and canonical without changing existing dense manifests', () => {

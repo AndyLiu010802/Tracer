@@ -1,0 +1,650 @@
+{
+  "st_paper_life_breakfast": {
+    "source": "exec-06e2c1e9-b8d9-43b3-bec3-cfdecc2b5409.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_breakfast-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.075,
+    "clearRatio": 0.6058,
+    "sha256": "0f57a9e36f0e7204eaec9ca6ec20c34cf696255475b5a99e6e52471ec1b48595"
+  },
+  "st_glitter_life_breakfast": {
+    "source": "exec-b9f2cbb5-8aec-4ce0-ba92-d558153f08f9.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_breakfast-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0702,
+    "clearRatio": 0.6231,
+    "sha256": "86b1a5e104d2eed5fa52acc725dcd7ab9c575778c688d085d668294e9d2d85bd"
+  },
+  "st_paper_life_journal": {
+    "source": "exec-721cbe05-9fcf-4261-9644-fa43a46edd3a.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_journal-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0845,
+    "clearRatio": 0.6636,
+    "sha256": "4127d5dd5c591f83dcb39ee40b4240a4e3921f1aec711ef7f824dea234397047"
+  },
+  "st_glitter_life_journal": {
+    "source": "exec-d358eedb-7e29-4686-a6e9-2f4cd0651da7.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_journal-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0797,
+    "clearRatio": 0.6334,
+    "sha256": "ba7231e82ba655b0e15693031eeaf9b72f2f19c73b509fdadbfbf6de9952721f"
+  },
+  "st_paper_life_plant": {
+    "source": "exec-40bb6e0d-f255-4f25-af2a-9a03cbe92562.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_plant-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1388,
+    "clearRatio": 0.6325,
+    "sha256": "76d1a3ca9a8f5eb30c40f619b0878c81d4b21a700f770d195052c54fee3bcd54"
+  },
+  "st_glitter_life_plant": {
+    "source": "exec-db679c41-3242-4e99-b124-ec6e6b0f1788.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_plant-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1212,
+    "clearRatio": 0.6241,
+    "sha256": "2b5351f5c6d623935fe6656bb305b3dd53827b6dde05c7c69e1bdea305aa70c2"
+  },
+  "st_paper_life_tea": {
+    "source": "exec-2c4211d6-a19b-43d7-9c15-2ad54464ba50.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_tea-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0821,
+    "clearRatio": 0.6612,
+    "sha256": "6a88a0c906660c0d3304bd77c19bb9668588194e36d6568fe97fbe6a507ed289"
+  },
+  "st_glitter_life_tea": {
+    "source": "exec-3586448b-e543-41d1-bf25-f875d1df379c.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_tea-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0861,
+    "clearRatio": 0.649,
+    "sha256": "2d57eed24871073e39a22ff6fa6d4dfc27dc0971fd9c88ac2e8e18ad450a8dca"
+  },
+  "st_paper_life_sewing": {
+    "source": "exec-afa82a4a-163a-42dd-80bc-d330ed5711b2.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_sewing-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.118,
+    "clearRatio": 0.6511,
+    "sha256": "66634b95f35c69ff03be110fe602421272012ed9058eab47395b155b27b226ab"
+  },
+  "st_glitter_life_sewing": {
+    "source": "exec-89019392-9a99-41a7-aae0-7f3ebebfc5bd.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_sewing-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0582,
+    "clearRatio": 0.5117,
+    "sha256": "599835596a7b7177b7d28076a0660c5c135f33b148ee32929d48f11359d92be1"
+  },
+  "st_paper_life_rainboots": {
+    "source": "exec-9d8529d7-aa73-443b-8dd8-a36163ee9468.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_rainboots-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0957,
+    "clearRatio": 0.6757,
+    "sha256": "d98f0f4d718c8e30f7e4939f6bcec3aeb9b6134e2e7b27770604bc9650e2d8cf"
+  },
+  "st_glitter_life_rainboots": {
+    "source": "exec-dc29917d-33fe-457b-bf95-2238b8021d0f.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_rainboots-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1013,
+    "clearRatio": 0.6125,
+    "sha256": "f1f997503b2d8258f60af1eeafb505ff3ac4f00dbed39d80cd57d968c1e66443"
+  },
+  "st_paper_life_vinyl": {
+    "source": "exec-b12a864f-f93b-43a4-bc5f-4c51115a647d.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_vinyl-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1316,
+    "clearRatio": 0.6408,
+    "sha256": "271ba031a055abe0a165badce807a7c82f1fac00089c8e8cfd5f4570b3e132d4"
+  },
+  "st_glitter_life_vinyl": {
+    "source": "exec-287517b8-064f-4e08-9753-c868bb9f8674.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_vinyl-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1188,
+    "clearRatio": 0.6008,
+    "sha256": "2eed50e6371fad5f5fb4bfc814a4e1bd732db1523d9c98151141d3f338cef62a"
+  },
+  "st_paper_life_bath": {
+    "source": "exec-3968f4c7-2a98-4745-8080-e5e7ae40b6b3.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_bath-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1069,
+    "clearRatio": 0.7193,
+    "sha256": "c6580043847931e61008c3a2075222c9af4f5bd151332210324e1a4fd30b0509"
+  },
+  "st_glitter_life_bath": {
+    "source": "exec-fe5906fb-96e5-4b9c-a891-786f36d314c3.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_bath-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1069,
+    "clearRatio": 0.701,
+    "sha256": "69a1eddf9e84c5901219c38f9782108f7b8ce1dc010a493f1355914380141640"
+  },
+  "st_paper_life_chair": {
+    "source": "exec-e7b99eb8-4af2-4881-af07-e5022ce39642.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_chair-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1419,
+    "clearRatio": 0.6412,
+    "sha256": "c45925c706acba0bf9c896f3fa66bb04b924294b852f2c9df4452ec6c30646dd"
+  },
+  "st_glitter_life_chair": {
+    "source": "exec-80d87096-6a7a-43ae-9dab-9a1a05bcb0fb.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_chair-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1164,
+    "clearRatio": 0.6088,
+    "sha256": "2289132df29ce757a905add10a8491b204c034722271f8d823d645ef76063662"
+  },
+  "st_paper_life_market": {
+    "source": "exec-483e249e-df90-4fb2-9c66-a3f3347fe07c.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_market-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.122,
+    "clearRatio": 0.6168,
+    "sha256": "875307e148c3ee7689b34a00d547bbf52a7cd2383493b11bfc89c3e909b0d1e6"
+  },
+  "st_glitter_life_market": {
+    "source": "exec-88207b28-0ad4-4dca-a6c8-b413b9a41dc0.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_market-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1061,
+    "clearRatio": 0.5771,
+    "sha256": "1c2353ea510392fded1ffd908c1843fbb773da90f39f9bed1bf520ce13187468"
+  },
+  "st_paper_life_laundry": {
+    "source": "exec-41592b37-09ea-4a3b-9906-e4595acf4207.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_laundry-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1204,
+    "clearRatio": 0.6248,
+    "sha256": "6f8e6f92af84f8ab6d1ee13dd4f2598e68f4e23a21f2cf7d6a5bdfb14fbe5e0b"
+  },
+  "st_glitter_life_laundry": {
+    "source": "exec-a17f0546-9bc5-4364-8148-4ee50ae74a8f.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_laundry-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1148,
+    "clearRatio": 0.5948,
+    "sha256": "3c75f08b2c0b8a78aca278555a3c94e17e0e3825745d7a0d8389de6cecdcbe0f"
+  },
+  "st_paper_life_lamp": {
+    "source": "exec-0449fb38-2669-4c10-ae74-2a690b8f822b.png",
+    "output": "skins/tracer/sticker-art/st_paper_life_lamp-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0845,
+    "clearRatio": 0.7025,
+    "sha256": "3b607a7cd4b00ff65a15b7d3e93df24c8dd3c88607ab2b03ce2da056f36348ee"
+  },
+  "st_glitter_life_lamp": {
+    "source": "exec-fe3f63fd-2553-4214-8ca7-6f148ab6b6d2.png",
+    "output": "skins/tracer/sticker-art/st_glitter_life_lamp-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0845,
+    "clearRatio": 0.6974,
+    "sha256": "19c783a3500d6bd86df24d4b208f50a8d55ab28f0aff79f3b3e810e6eefc1b7a"
+  },
+  "st_paper_pets_corgi": {
+    "source": "exec-9447e7e6-7d77-4dce-bc10-3e4d2fe4d937.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_corgi-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0877,
+    "clearRatio": 0.645,
+    "sha256": "169e71a6e0d6f044b4a0e96fd97935cfa1b6c0a2ef4da8a796ab86c8d093507b"
+  },
+  "st_glitter_pets_corgi": {
+    "source": "exec-6d96cfe3-f9ce-4960-81c5-8caf80e411d3.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_corgi-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0909,
+    "clearRatio": 0.6339,
+    "sha256": "66bee2baf1bbed434528a092d695e854b744cd42807fa1bebd978ce89c158668"
+  },
+  "st_paper_pets_cat": {
+    "source": "exec-2934db25-146f-4c52-8c88-a7a685516b0d.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_cat-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.114,
+    "clearRatio": 0.6347,
+    "sha256": "899a9185f6a1b7861838f42938d41fbf1a50e495d491ff03516c0f9de5a1b874"
+  },
+  "st_glitter_pets_cat": {
+    "source": "exec-0405a626-4e4e-491d-861c-858c18d44292.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_cat-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0774,
+    "clearRatio": 0.6136,
+    "sha256": "20e3f7b5b23f7e6615dbabb124d4a2e4a446ffeeabbd66d410e4ee5e1d611cf0"
+  },
+  "st_paper_pets_rabbit": {
+    "source": "exec-376d35d1-73da-4447-a2bd-2fdb08508533.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_rabbit-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.138,
+    "clearRatio": 0.6874,
+    "sha256": "fccadc6cc4de42196f0864c894de5e289b9264bef037496894c43a55e59cfcd6"
+  },
+  "st_glitter_pets_rabbit": {
+    "source": "exec-f598f7e2-46f3-4776-bbae-62279a69a7fe.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_rabbit-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1659,
+    "clearRatio": 0.7065,
+    "sha256": "ed0872e477752900ebba72ca2ead4ed4b7b081d352db5aa93e14f469fbec08d5"
+  },
+  "st_paper_pets_hamster": {
+    "source": "exec-e211a26e-d9c1-4002-8434-abac1312c7a2.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_hamster-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1659,
+    "clearRatio": 0.6751,
+    "sha256": "dc2d0a669ada3125e5d75e4fa28d2470719f72db995478282f7180cb595ccce1"
+  },
+  "st_glitter_pets_hamster": {
+    "source": "exec-c8dd897b-84e5-416d-b76f-1388173e856f.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_hamster-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1667,
+    "clearRatio": 0.6559,
+    "sha256": "b340417bef2f9839909054c0b3ddf852006d65c6d2e680488115804f374c0244"
+  },
+  "st_paper_pets_guinea": {
+    "source": "exec-4b4513d5-67c7-4dfd-946d-e6d645aea54c.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_guinea-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1396,
+    "clearRatio": 0.6422,
+    "sha256": "ccd9be4867e1f0aa10e18969c11ad5f1676d7823d84ea5300fb61aa36fc3f5a8"
+  },
+  "st_glitter_pets_guinea": {
+    "source": "exec-23012246-b2d4-4e6c-a8ec-2d86028225af.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_guinea-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1164,
+    "clearRatio": 0.6146,
+    "sha256": "79cb3d1e13220e8945ec2bbbe3abca27ce92676801b38cee654b366ea5dc016c"
+  },
+  "st_paper_pets_tortoise": {
+    "source": "exec-bed0a787-93bb-4cb9-a190-fd6a337a6906.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_tortoise-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1228,
+    "clearRatio": 0.6821,
+    "sha256": "6201ba090a1728598cfed0fdc26e0ffe474ea510dacb4424a3b20bb067fbaee9"
+  },
+  "st_glitter_pets_tortoise": {
+    "source": "exec-c04d12cc-1eba-4be7-9ce3-49f37ad38fd4.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_tortoise-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1005,
+    "clearRatio": 0.6837,
+    "sha256": "e2a841c5085b85ae37889ae85d91852859de79124ccaa453d9c6283ed981f3e8"
+  },
+  "st_paper_pets_budgie": {
+    "source": "exec-eee8253a-43dd-4ad3-abc6-57d2f3c268a1.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_budgie-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0869,
+    "clearRatio": 0.7537,
+    "sha256": "0e2c16123c7392c37bd4ef0ea88b6baf12211c8016d09b3e862eeb649de1fa3f"
+  },
+  "st_glitter_pets_budgie": {
+    "source": "exec-bade3771-eee2-4467-85e5-ef4b3a4945dc.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_budgie-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1093,
+    "clearRatio": 0.7769,
+    "sha256": "889c2ed0deba35c629442c4f0fc48c6362bf39fc054748fc546e34b41033a5f6"
+  },
+  "st_paper_pets_goldfish": {
+    "source": "exec-38d9ab8a-0d38-4154-ad3c-e2e304bb8726.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_goldfish-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1683,
+    "clearRatio": 0.6501,
+    "sha256": "92ec69a685ae18bccfb82cff3da154806a2cfa297d9c3205c40f8c2c11cb20d1"
+  },
+  "st_glitter_pets_goldfish": {
+    "source": "exec-c1775814-d1b6-43ef-9660-577c10336a29.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_goldfish-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1443,
+    "clearRatio": 0.6222,
+    "sha256": "0fdded892189e10d47e16c1500708b4efbd236d86a0983d521e7f17f3fdac442"
+  },
+  "st_paper_pets_chinchilla": {
+    "source": "exec-eb067dba-bb3f-41ae-835e-2487ab7e77a7.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_chinchilla-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1451,
+    "clearRatio": 0.6489,
+    "sha256": "9b74457bc9d57cb00849ce15cfe5fa8f8efb4aefb6fc5dbe8bbb39b6d461873b"
+  },
+  "st_glitter_pets_chinchilla": {
+    "source": "exec-60329a22-8c0c-4e73-9a6f-e3baacd954f5.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_chinchilla-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1475,
+    "clearRatio": 0.6401,
+    "sha256": "b17417784fc7380f434cce3f84c803dbab51585100748092b1ba7b3e5dea3c91"
+  },
+  "st_paper_pets_ferret": {
+    "source": "exec-eee0bb2c-84c6-41ec-becd-41a730c5cad6.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_ferret-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0997,
+    "clearRatio": 0.6231,
+    "sha256": "2e0f15b0fb21e478025bcfb686c55448c6442ab251f0f20d6ad878c22c70baf5"
+  },
+  "st_glitter_pets_ferret": {
+    "source": "exec-72b274e6-907e-4504-b8f6-982cb9458a75.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_ferret-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0901,
+    "clearRatio": 0.6413,
+    "sha256": "a9e0b150ef575cd0584f10d7e3c6638050c31801fb7fd004aaaa179a8c1b6cb4"
+  },
+  "st_paper_pets_shiba": {
+    "source": "exec-010d402e-60d4-4e6f-9b8b-29b8327abfba.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_shiba-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0933,
+    "clearRatio": 0.6829,
+    "sha256": "14f838e266d40d006f776c98d63b34a4c08785e3a4197eaf1429d971d1c7745c"
+  },
+  "st_glitter_pets_shiba": {
+    "source": "exec-7261c9be-74fe-434b-9fc5-8665a2be9f6a.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_shiba-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0917,
+    "clearRatio": 0.6284,
+    "sha256": "0aea16bf68ec82a88ee2f2621b1db18d9856fa02c91eb3b083950aef8547aa43"
+  },
+  "st_paper_pets_calico": {
+    "source": "exec-984c352e-b27f-4674-8429-7fb896b4d759.png",
+    "output": "skins/tracer/sticker-art/st_paper_pets_calico-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.126,
+    "clearRatio": 0.6173,
+    "sha256": "eff03fd8a49d740175801c9710299714e793087a2bc6d8e67fbd49d171e84a98"
+  },
+  "st_glitter_pets_calico": {
+    "source": "exec-e8e5a4dd-a054-4819-9dc0-170f0ddb38ac.png",
+    "output": "skins/tracer/sticker-art/st_glitter_pets_calico-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1507,
+    "clearRatio": 0.6559,
+    "sha256": "d7ad097d8c678da4078abce12f3060a1932581e3d2cc9a4b51fa52a8f82538f6"
+  },
+  "st_paper_travel_camper": {
+    "source": "exec-1bce60e3-fe51-4a9c-b324-ab4a0757ea35.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_camper-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0829,
+    "clearRatio": 0.5936,
+    "sha256": "f70007284f1f1ef1375bce68a625241ac744ff2cc0f65b54429deee79a229d49"
+  },
+  "st_glitter_travel_camper": {
+    "source": "exec-a270c06e-5126-439d-88bf-fdcc499a039c.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_camper-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0781,
+    "clearRatio": 0.5505,
+    "sha256": "0ae3120f79adf41ae2918cecc34a6a181063109eee8419c51faf39a27368ffea"
+  },
+  "st_paper_travel_camping": {
+    "source": "exec-0cb8286c-a5e1-42d4-bdfb-ac6f5763a0fe.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_camping-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1085,
+    "clearRatio": 0.7023,
+    "sha256": "3d5c224de049aa3205c7d38bc100263b461be7d4b01e7a0b5ee76b3e7d809d19"
+  },
+  "st_glitter_travel_camping": {
+    "source": "exec-67db0f96-dd9e-4c45-94cf-b7f7af6b77cc.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_camping-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0606,
+    "clearRatio": 0.6692,
+    "sha256": "9f50ba557c5c2a2baedc70fef962ab23f2e7e4d1523535aba34cb32535cc69e3"
+  },
+  "st_paper_travel_beach": {
+    "source": "exec-c4079c22-3854-4e03-9267-57a05cf1112f.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_beach-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.122,
+    "clearRatio": 0.6915,
+    "sha256": "0e48af660770cfb3aaf4d5455c1ab5c5f93128ac6cae698b1664c4dafbb7260f"
+  },
+  "st_glitter_travel_beach": {
+    "source": "exec-d8a811b3-2154-4041-bf75-3106f6a92db3.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_beach-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1037,
+    "clearRatio": 0.6565,
+    "sha256": "b951252411d8305029b5eef1a97059c44bcca5044f09610326e3e15c058c2235"
+  },
+  "st_paper_travel_suitcase": {
+    "source": "exec-fb1022ed-d17a-4c8e-94fc-4729e6b5e739.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_suitcase-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1053,
+    "clearRatio": 0.641,
+    "sha256": "ab6d881950b3645f1d89821ba6d76b0da1b11154bf8cedea6da07b2dc1a005c6"
+  },
+  "st_glitter_travel_suitcase": {
+    "source": "exec-2499fcf2-74f4-4e76-ae2a-e340402a2697.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_suitcase-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0845,
+    "clearRatio": 0.5692,
+    "sha256": "b9d287d02bdaf81fce668cd6391ca4af647221375d118f9db86c33bdf1709463"
+  },
+  "st_paper_travel_camera": {
+    "source": "exec-acc2adf6-8a00-46b6-920c-3d8881051d6e.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_camera-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1021,
+    "clearRatio": 0.6367,
+    "sha256": "d8d23a593ab5e1fba4e14a4fa93b0da1f233c36ba37d7af6459d9bf43beca87a"
+  },
+  "st_glitter_travel_camera": {
+    "source": "exec-8a83101d-0881-471c-b19c-d1a3817edd7b.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_camera-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0957,
+    "clearRatio": 0.6121,
+    "sha256": "04b4fb34d9927aa2edfbeb491a1603b37e45bc6d168a41f914457eea178cf4b5"
+  },
+  "st_paper_travel_balloon": {
+    "source": "exec-74c6668a-0d03-4e78-9974-b780a81db9a1.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_balloon-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1029,
+    "clearRatio": 0.7344,
+    "sha256": "a1df3be12e4449eaf0232c2750ba58bc17c6579a2424a3ea849df970a55720a0"
+  },
+  "st_glitter_travel_balloon": {
+    "source": "exec-740d18b8-78d1-4be6-9e3f-2fc7820855ff.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_balloon-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.071,
+    "clearRatio": 0.6885,
+    "sha256": "ae5fab04aab178fcbb73f9208256af3154733c36346b8d25a671591bc81246d0"
+  },
+  "st_paper_travel_train": {
+    "source": "exec-a9889ffb-c1c6-4e91-9f16-555518a9eb24.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_train-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0853,
+    "clearRatio": 0.6307,
+    "sha256": "4473e092a4b3f49085c239a80507b70658e0dcb5161af3260bcc55ae2f0ee7e1"
+  },
+  "st_glitter_travel_train": {
+    "source": "exec-f6a7be2e-6bc0-4903-ac7d-445d71ac23a3.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_train-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1029,
+    "clearRatio": 0.6538,
+    "sha256": "1d7a82250eef452412cd7bc30f78da05cde3c6c775d0981db24bb9b97ec9591d"
+  },
+  "st_paper_travel_sailboat": {
+    "source": "exec-5c5a3bc0-9ba9-4cad-9c63-467a14ea1b50.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_sailboat-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1029,
+    "clearRatio": 0.6748,
+    "sha256": "67493a183edc89915bef17e736c37aabcaaa76a08b75f45fd9f3d3f43edef5a5"
+  },
+  "st_glitter_travel_sailboat": {
+    "source": "exec-629a695b-51c8-4505-8129-25471ca04d95.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_sailboat-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0861,
+    "clearRatio": 0.6454,
+    "sha256": "2a00384df664e12e49b843b10c4e65b57ac24897027d619c966d2c52a71d16e8"
+  },
+  "st_paper_travel_hiking": {
+    "source": "exec-98ca6429-1bbf-4121-84fb-85aad77c2410.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_hiking-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1459,
+    "clearRatio": 0.62,
+    "sha256": "82288d45121ad50d73e773852c341fac5313a8e53608c47ca717beb1eb19e9d4"
+  },
+  "st_glitter_travel_hiking": {
+    "source": "exec-e5d70299-ea9a-4d78-8aa6-dbaeb4adb525.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_hiking-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.126,
+    "clearRatio": 0.5861,
+    "sha256": "40e975eb2fa2c8f5c54805e71475d96fffa9c1d333cac1b6ff4619d0282e1ee7"
+  },
+  "st_paper_travel_cabin": {
+    "source": "exec-0e3faa7e-08fc-428c-80de-e18fffa12076.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_cabin-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1475,
+    "clearRatio": 0.6329,
+    "sha256": "b73762d7af29a82a812a94d932531400e022b374348427af58320bb775eb124c"
+  },
+  "st_glitter_travel_cabin": {
+    "source": "exec-309195ce-ebce-4793-a487-b2a5abd1f9f6.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_cabin-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1475,
+    "clearRatio": 0.6486,
+    "sha256": "50ee84ed29a31907aa7e145f7a5d577e2fe6eb3eeed0641b2a11f8f190c1bb14"
+  },
+  "st_paper_travel_passport": {
+    "source": "exec-178e9e4c-7cca-4f29-adb7-5712e0a654ec.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_passport-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1244,
+    "clearRatio": 0.6441,
+    "sha256": "a755d40c5b2763d5b34dea9540d814a5f6fee2747b3388a370941ca262ca9346"
+  },
+  "st_glitter_travel_passport": {
+    "source": "exec-7887772d-e72d-4ab9-8c37-087cf9e3a685.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_passport-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1108,
+    "clearRatio": 0.6263,
+    "sha256": "978f336bec914b96bc68281e0ab4c390a6c57d4c410aae492ea693f8f656724f"
+  },
+  "st_paper_travel_scooter": {
+    "source": "exec-d09a19c5-6d5d-417d-9ceb-9a238e39e1fa.png",
+    "output": "skins/tracer/sticker-art/st_paper_travel_scooter-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.1124,
+    "clearRatio": 0.6209,
+    "sha256": "4641bf07cf466ac82edad8c8f4baf5aa897f306b5fdee5654287bf2aa9d1d7f3"
+  },
+  "st_glitter_travel_scooter": {
+    "source": "exec-d8b55d38-337c-42a6-a5af-fcfb755dc217.png",
+    "output": "skins/tracer/sticker-art/st_glitter_travel_scooter-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "margin": 0.0885,
+    "clearRatio": 0.6098,
+    "sha256": "63a42b75bc626c4047cbb4cc999582c31fff20474af82b35b5ce312f01f6cd38"
+  }
+}

@@ -41,7 +41,7 @@ test('provider and request changes cannot reuse a generation key, while explicit
   const first = await jobs.run(action, request(), generate);
   assert.deepEqual(await jobs.run(action, request({ name: 'Renamed', personality: 'Lively' }), generate), first, 'metadata edits reuse the already generated artwork');
   assert.equal(calls, 1);
-  for (const changed of [{ kind: 'humanoid' }, { imageModel: 'another-model' }, { distinctiveFeatures: 'Round glasses' }, { photo: 'data:image/png;base64,' + png(2).toString('base64') }, { animationVersion: 1 }])
+  for (const changed of [{ actionDescription: 'Slowly turn a page' }, { kind: 'humanoid' }, { imageModel: 'another-model' }, { distinctiveFeatures: 'Round glasses' }, { photo: 'data:image/png;base64,' + png(2).toString('base64') }, { animationVersion: 1 }])
     await assert.rejects(createJobs(dir).run(action, request(changed), generate), /pet-generation-conflict/);
   await assert.rejects(jobs.run('personal-pet-image', request(), generate), /pet-generation-conflict/);
   const second = await jobs.run(action, request({ generationAttempt: 1 }), generate);

@@ -48,6 +48,11 @@ function req(method, pathname, body, headers) {
   });
 }
 
+test('只读模式拒绝清空账户资料', async () => {
+  const r = await req('POST','/api/account/clear-data',JSON.stringify({password:'unused',confirm:true}),{'content-type':'application/json','x-tracer-account':'1','x-tracer-scope':'guest'});
+  assert.strictEqual(r.status,403);assert.strictEqual(JSON.parse(r.body).error,'readonly');
+});
+
 test('只读模式下 PUT 被拒且不落盘', async () => {
   const r = await req('PUT', '/api/store/ws-ro', '{"tasks":[{"id":"t1"}]}');
   assert.strictEqual(r.status, 403, 'PUT 应被拒绝');

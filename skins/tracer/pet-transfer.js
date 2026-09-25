@@ -62,7 +62,7 @@
           const binary = atob(item.data), bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
           const blob = new Blob([bytes], {type:'image/png'});
           if (summary.animated) await TracerPetAnimation.validateBlob(blob, { version: summary.animationVersion,
-            ...(summary.animationVersion === 2 ? { retainedFrames: candidate.artwork.retainedFrames?.[index] ?? 16 } : {}) });
+            ...(summary.animationVersion >= 2 ? { retainedFrames: candidate.artwork.retainedFrames?.[index] ?? (summary.animationVersion===3?32:16) } : {}) });
           if (destroyed) return;
           // Validation already decodes each animated sheet; only the thumbnail needs a bitmap.
           if (index === 0) {
@@ -111,7 +111,7 @@
     if (!exporting) find('#pet-package-file').onchange = loadFile;
     else {
       const profile = options.profile;
-      describe(profile, !!profile.animation, profile.animation ? profile.animation.pages.length*(profile.animation.version === 2 ? 1 : 4) : 1);
+      describe(profile, !!profile.animation, profile.animation ? profile.animation.pages.length*(profile.animation.version >= 2 ? 1 : 4) : 1);
       if (profile.animation) { player = TracerPetAnimation.create({...profile, label:profile.name, animated:false}); find('.pet-transfer-art').appendChild(player.element); }
       else { const img=document.createElement('img'); img.src=profile.image; img.alt=profile.name; find('.pet-transfer-art').appendChild(img); }
     }

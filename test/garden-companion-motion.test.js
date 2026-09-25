@@ -8,7 +8,7 @@ function fixtureAtlas(){
 }
 function browser(atlas=fixtureAtlas(),autoLoad=true){
   const listeners=new Map(),motionListeners=new Set(),raf=new Map(),observers=[],images=[],pending=[];let next=0,now=0;
-  const sheets=new Map(Object.values(atlas.kinds).flatMap(v=>Object.values(v)).flatMap(v=>Object.values(v)).map(s=>[s.src,s]));
+  const sheets=new Map(Object.values(atlas.kinds).flatMap(v=>Object.values(v)).flatMap(v=>Object.values(v)).flatMap(s=>s.pages||[s]).map(s=>[s.src,s]));
   const media={matches:false,addEventListener(_event,fn){motionListeners.add(fn);},removeEventListener(_event,fn){motionListeners.delete(fn);}};
   class Element{
     constructor(tag,doc){this.tagName=tag.toUpperCase();this.ownerDocument=doc;this.children=[];this.attributes={};this.dataset={};this.style={};this.events=new Map();this.value='';this.textContent='';}
@@ -29,40 +29,40 @@ const options=(env,kind='wildflower',shiny=false)=>({document:env.doc,kind,stage
 const cropOf=element=>element.children[0].children[1].children[0];
 
 test('six normal and shiny companions draw all sixteen independent source cells for every action',async()=>{
-  assert.deepEqual(Motion.actions,Builder.ACTIONS);assert.equal(Motion.actions.length,16);
+  assert.deepEqual(Motion.actions,Builder.ACTIONS);assert.equal(Motion.actions.length,18);
   const env=browser();
   for(const kind of Builder.KINDS)for(const shiny of [false,true]){
     const element=env.doc.createElement('span'),layer=Motion.create(element,options(env,kind,shiny));await env.ready();
     assert.deepEqual(layer.available(),Motion.actions);
     for(const action of Motion.actions){
       layer.render(action,0);await env.ready();let at=0;const seen=new Set();
-      for(let frame=0;frame<16;frame++){
+      for(let frame=0;frame<32;frame++){
         layer.render(action,at+1,false,null,false);const crop=cropOf(element);seen.add(crop.getAttribute('viewBox'));
         assert.equal(element.dataset.motionClip,action);assert.equal(element.dataset.frame,String(frame));assert.equal(element.dataset.sourceFrames,'16');
         assert.match(crop.children[0].getAttribute('href'),new RegExp(`${kind}-${shiny?'shiny':'normal'}-${action}-test.png$`));
         assert.equal(element.children[0].children[1].getAttribute('transform'),'translate(0 0)','drawing changes cannot be replaced by a whole-image transform');at+=Motion.timings[action][frame];
       }
-      assert.equal(seen.size,16);assert.equal(Motion.sample(action,Motion.duration(action)+100,false,false).frame,15,'a one-shot clamps to its final drawing');
-      assert.equal(Motion.sample(action,Motion.duration(action),false,true).frame,action==='rest'?12:0);
+      assert.equal(seen.size,16);assert.equal(Motion.sample(action,Motion.duration(action)+100,false,false).frame,31,'a one-shot clamps to its final drawing');
+      assert.equal(Motion.sample(action,Motion.duration(action),false,true).frame,action==='rest'?24:0);
     }
     layer.destroy();
   }
 });
 
 test('rest holds a settled pose and preserves a complete explicit one-shot',async()=>{
-  const total=Motion.duration('rest'),step=total/16;
-  assert.deepEqual(Motion.sample('rest',0,true),{clip:'rest',frame:12});
-  assert.deepEqual(Motion.sample('rest',total*3,true),{clip:'rest',frame:12});
-  for(let frame=0;frame<16;frame++)assert.equal(Motion.sample('rest',frame*step+1,false,false).frame,frame);
-  for(let frame=0;frame<32;frame++)assert.equal(Motion.sample('rest',total+frame*step+1).frame,12);
-  assert.equal(Motion.sample('rest',total*4,false,false).frame,15,'one-shot never loops back into sleep');
+  const total=Motion.duration('rest'),step=total/32;
+  assert.deepEqual(Motion.sample('rest',0,true),{clip:'rest',frame:24,frames:32});
+  assert.deepEqual(Motion.sample('rest',total*3,true),{clip:'rest',frame:24,frames:32});
+  for(let frame=0;frame<32;frame++)assert.equal(Motion.sample('rest',frame*step+1,false,false).frame,frame);
+  for(let frame=0;frame<32;frame++)assert.equal(Motion.sample('rest',total+frame*step+1).frame,24);
+  assert.equal(Motion.sample('rest',total*4,false,false).frame,31,'one-shot never loops back into sleep');
   const env=browser(),player=Animation.create(options(env));await env.ready();player.setAction('rest');await env.ready();
   env.advance(total+step);assert.ok(Number(player.element.dataset.frame)>=8);
-  env.reduced(true);assert.equal(player.element.dataset.motionClip,'rest');assert.equal(player.element.dataset.frame,'12');assert.equal(env.raf.size,0);
+  env.reduced(true);assert.equal(player.element.dataset.motionClip,'rest');assert.equal(player.element.dataset.frame,'24');assert.equal(env.raf.size,0);
   env.reduced(false);env.advance(total*2);assert.ok(Number(player.element.dataset.frame)>=8,'resuming reduced motion cannot replay the introduction');
   player.setAction('idle');let finished=0;assert.equal(player.preview('rest',()=>finished++),true);await env.ready();
   const seen=new Set();for(let i=0;i<total+30;i+=10){if(player.element.dataset.motionClip==='rest')seen.add(player.element.dataset.frame);env.advance(10);}
-  assert.equal(seen.size,16);assert.equal(finished,1);assert.equal(player.element.dataset.action,'idle');player.destroy();
+  assert.equal(seen.size,32);assert.equal(finished,1);assert.equal(player.element.dataset.action,'idle');player.destroy();
 });
 
 test('in-place actions compensate for displaced drawings and keep the same ground position',async()=>{
@@ -88,12 +88,41 @@ test('switching actions keeps one character scale instead of refitting each prop
   assert.equal(cropOf(element).getAttribute('height'),height);layer.destroy();
 });
 
+test('smaller native action drawings keep the same apparent body size through idle, play and idle',async()=>{
+  const atlas=fixtureAtlas(),sheets=atlas.kinds.wildflower.normal;
+  for(const sheet of Object.values(sheets))sheet.bodySize=100;
+  const play=sheets.play;play.bodySize=75;
+  play.cells=play.cells.map(cell=>({...cell,w:cell.w*.75,h:cell.h*.75,x:cell.rootX+(cell.x-cell.rootX)*.75,y:cell.rootY+(cell.y-cell.rootY)*.75}));
+  const env=browser(atlas),element=env.doc.createElement('span'),layer=Motion.create(element,options(env));await env.ready();
+  layer.render('idle');const first={...cropOf(element).attributes};
+  layer.render('play');await env.ready();layer.render('play');
+  for(const key of ['x','y','width','height'])assert.ok(Math.abs(Number(cropOf(element).getAttribute(key))-Number(first[key]))<1e-6,key);
+  layer.render('idle');assert.deepEqual(cropOf(element).attributes,first);layer.destroy();
+});
+
+test('both original pages load before playback and all 32 source drawings play in order',async()=>{
+  const atlas=fixtureAtlas(),sheets=atlas.kinds.wildflower.normal,first=sheets.play;
+  const second={...first,src:'/garden-art/play-page-2.png',width:2050,height:2054,cells:first.cells.map(c=>Object.fromEntries(Object.entries(c).map(([k,v])=>[k,v*2])))};
+  for(const sheet of Object.values(sheets))sheet.bodySize=100;second.bodySize=200;
+  sheets.play={...first,frames:32,pages:[first,second],cells:[...first.cells.map(c=>({...c,page:0})),...second.cells.map(c=>({...c,page:1}))]};
+  const env=browser(atlas,false),element=env.doc.createElement('span'),layer=Motion.create(element,options(env));env.pending[0].load();await env.ready();
+  layer.render('play');env.pending.find(p=>p.url===first.src).load();await env.ready();
+  assert.equal(layer.waiting('play'),true);layer.render('play');assert.equal(element.dataset.motionClip,'idle');
+  env.pending.find(p=>p.url===second.src).load();await env.ready();assert.equal(layer.waiting('play'),false);
+  let at=0;const seen=new Set();for(let i=0;i<32;i++){
+    layer.render('play',at+1,false,null,false);const crop=cropOf(element),src=crop.children[0].getAttribute('href');
+    assert.equal(src,i<16?first.src:second.src);assert.equal(element.dataset.sourceFrames,'32');
+    assert.equal(crop.getAttribute('height'),'110');seen.add(src+crop.getAttribute('viewBox'));at+=Motion.timings.play[i];
+  }
+  assert.equal(seen.size,32);layer.destroy();
+});
+
 test('slow PNG loading does not consume or skip a one-shot; completion fires once',async()=>{
   const env=browser(fixtureAtlas(),false),player=Animation.create(options(env));env.pending[0].load();await env.ready();let finished=0;
   assert.equal(player.preview('thanks',()=>finished++),true);env.advance(20000);assert.equal(finished,0);assert.equal(player.element.dataset.action,'thanks');assert.equal(player.element.dataset.motion,'fallback');
   env.pending.find(p=>p.url.includes('-thanks-')).load();await env.ready();assert.equal(player.element.dataset.frame,'0');
   const seen=new Set();for(let i=0;i<Motion.duration('thanks')+30;i+=10){if(player.element.dataset.motionClip==='thanks')seen.add(player.element.dataset.frame);env.advance(10);}
-  assert.equal(seen.size,16);assert.equal(finished,1);assert.equal(player.element.dataset.action,'idle');env.advance(10000);assert.equal(finished,1);player.destroy();
+  assert.equal(seen.size,32);assert.equal(finished,1);assert.equal(player.element.dataset.action,'idle');env.advance(10000);assert.equal(finished,1);player.destroy();
 });
 
 test('failed or wrong-sized PNGs keep a safe fallback and explicit retry can recover',async()=>{
@@ -109,11 +138,11 @@ for(const boundary of ['focus','rest','reduced','hidden','offscreen','destroy'])
   if(!['focus','rest'].includes(boundary))assert.equal(env.raf.size,0);if(boundary==='destroy')assert.equal(player.element.dataset.playback,'destroyed');player.destroy();assert.equal(env.raf.size,0);assert.equal(env.listeners(),0);
 });
 
-test('compact preview exposes 16 labels, disables unavailable clips and never dispatches rewards',()=>{
+test('compact preview exposes distinct garden activities, disables missing clips and never dispatches rewards',()=>{
   const env=browser(),host=env.doc.createElement('div');let before=0,done,played=[],destroyed=false;
   const player={availableActions:()=>['idle','hop'],preview(action,callback){played.push(action);done=callback;return true;}},view=Preview.create(host,{beforePlay:()=>before++});
   view.update({player,pet:{id:'garden_apple_shiny'},language:'zh'});const details=view.element,controls=details.children[1],select=controls.children[0].children[0],button=controls.children[1],status=details.children[2];
-  assert.equal(details.hidden,false);assert.equal(select.children.length,16);assert.equal(select.children.filter(c=>!c.disabled).length,2);select.value='hop';button.click();assert.deepEqual(played,['hop']);assert.equal(before,1);assert.match(status.textContent,/正在预览/);done();assert.match(status.textContent,/结束/);
+  assert.equal(details.hidden,false);assert.equal(select.children.length,18);assert.equal(select.children.filter(c=>!c.disabled).length,2);select.value='hop';button.click();assert.deepEqual(played,['hop']);assert.equal(before,1);assert.match(status.textContent,/正在预览/);done();assert.match(status.textContent,/结束/);
   view.update({player,pet:{id:'garden_apple_shiny'},language:'zh',blocked:true});button.click();assert.equal(played.length,1);assert.equal(button.disabled,true);
   const builtin={availableActions:()=>require('../skins/tracer/pet-builtin-animation').actions,preview:player.preview};
   view.update({player:builtin,pet:{id:'luna'},language:'zh'});assert.equal(details.hidden,false);assert.equal(select.children.length,16);select.value='fishing';button.click();assert.equal(played.at(-1),'fishing');assert.match(status.textContent,/钓鱼/);
@@ -136,7 +165,7 @@ test('manifest builder uses real odd dimensions, one baseline, distinct frames, 
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'tracer-companion-atlas-'));
   try{
     const file=path.join(dir,'apple-normal-hop-v2.png'),bytes=pngFixture({width:1025,height:1027});fs.writeFileSync(file,bytes);
-    const result=Builder.build({directory:dir,output:null}),sheet=result.manifest.kinds.apple.normal.hop;assert.equal(result.count,1);assert.equal(result.expected,Builder.KINDS.length*2*16);assert.equal(result.missing.length,result.expected-1);assert.deepEqual(result.rejected,[]);assert.equal(sheet.width,1025);assert.equal(sheet.height,1027);assert.equal(new Set(sheet.frameHashes).size,16);
+    const result=Builder.build({directory:dir,output:null}),sheet=result.manifest.kinds.apple.normal.hop;assert.equal(result.count,1);assert.equal(result.expected,Builder.KINDS.length*2*Builder.ACTIONS.length);assert.equal(result.missing.length,result.expected-1);assert.deepEqual(result.rejected,[]);assert.equal(sheet.width,1025);assert.equal(sheet.height,1027);assert.equal(new Set(sheet.frameHashes).size,16);
     assert.equal(new Set(sheet.cells.map((c,i)=>c.rootY-Math.floor(Math.floor(i/4)*sheet.height/4))).size,1);assert.deepEqual(fs.readFileSync(file),bytes);
     for(const [name,options,message]of [['opaque',{opaque:true},'missing-transparent'],['repeated',{identical:true},'repeated-frame'],['empty',{empty:7},'empty-frame-7']]){const target=path.join(dir,name+'.png');fs.writeFileSync(target,pngFixture(options));assert.throws(()=>Builder.inspectSheet(target),new RegExp(message));}
   }finally{assert.ok(path.resolve(dir).startsWith(path.resolve(os.tmpdir())+path.sep));fs.rmSync(dir,{recursive:true,force:true});}
@@ -183,10 +212,66 @@ test('a taller standing introduction uses actual row gutters without clipping sl
   }finally{assert.ok(path.resolve(dir).startsWith(path.resolve(os.tmpdir())+path.sep));fs.rmSync(dir,{recursive:true,force:true});}
 });
 
-test('every production manifest entry describes an existing transparent file with sixteen unique drawings',()=>{
+test('every production manifest entry describes real pages with unique original drawings',()=>{
   let count=0;for(const [kind,variants]of Object.entries(Atlas.kinds))for(const [variant,actions]of Object.entries(variants))for(const [action,sheet]of Object.entries(actions)){
-    assert.ok(Builder.KINDS.includes(kind)&&['normal','shiny'].includes(variant)&&Motion.actions.includes(action));const file=path.join(__dirname,'../skins/tracer',sheet.src.slice(1)),bytes=fs.readFileSync(file),actual=Builder.inspectSheet(file);
-    assert.equal(sheet.sha256,crypto.createHash('sha256').update(bytes).digest('hex'));assert.deepEqual(sheet.cells,actual.cells);assert.equal(sheet.width,actual.width);assert.equal(sheet.height,actual.height);assert.equal(new Set(sheet.frameHashes).size,16);count++;
+    assert.ok(Builder.KINDS.includes(kind)&&['normal','shiny'].includes(variant)&&Motion.actions.includes(action));
+    const pages=sheet.pages||[sheet],files=pages.map(page=>path.join(__dirname,'../skins/tracer',page.src.slice(1)));
+    const actual=sheet.pages?Builder.inspectPages(files,pages.map(page=>page.src)):Builder.inspectSheet(files[0]);
+    assert.equal(sheet.sha256,actual.sha256);assert.deepEqual(sheet.cells,actual.cells);assert.equal(sheet.width,actual.width);assert.equal(sheet.height,actual.height);assert.equal(new Set(sheet.frameHashes).size,sheet.frames);count++;
   }
-  assert.ok(count>=6&&count<=Builder.KINDS.length*2*16,'only completed, inspected files belong in the manifest');
+  assert.ok(count>=6&&count<=Builder.KINDS.length*2*Builder.ACTIONS.length,'only completed, inspected files belong in the manifest');
+});
+
+test('body size measurement ignores an attached narrow handle and a small solid prop',()=>{
+  const decoded={width:256,height:256,data:Buffer.alloc(256*256*4)};
+  const rect=(x0,y0,x1,y1)=>{for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++)decoded.data[(y*256+x)*4+3]=255;};
+  rect(40,30,120,130);const before=Builder.bodyAnchor(decoded,0,0,256,256,true).bodySize;
+  rect(119,90,175,96);rect(174,65,220,120);
+  assert.equal(Builder.bodyAnchor(decoded,0,0,256,256,true).bodySize,before,'grasping a prop must not shrink the character');
+});
+
+test('a second page cannot pass as 32 originals by copying the first page',()=>{
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'tracer-original-pages-'));
+  try{
+    const first=path.join(dir,'p1.png'),second=path.join(dir,'p2.png');fs.writeFileSync(first,pngFixture());fs.writeFileSync(second,pngFixture());
+    assert.throws(()=>Builder.inspectPages([first,second],['/p1.png','/p2.png']),/repeated-frame-drawings-across-pages/);
+    assert.throws(()=>Builder.inspectPages([first,path.join(dir,'missing.png')],['/p1.png','/missing.png']),/incomplete-original-pages/);
+  }finally{assert.ok(path.resolve(dir).startsWith(path.resolve(os.tmpdir())+path.sep));fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('botanical face calibration ignores changing leaves and an attached colored toy',()=>{
+  const decoded={width:256,height:256,data:Buffer.alloc(256*256*4)};
+  const rect=(x0,y0,x1,y1,color)=>{for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++)decoded.data.set([...color,255],(y*256+x)*4);};
+  rect(40,20,180,180,[70,130,65]);rect(80,55,140,100,[245,220,175]);
+  const before=Builder.botanicalFaceSize(decoded,0,0,256,256);assert.equal(before,60);
+  rect(10,10,75,220,[90,155,80]);rect(150,100,245,180,[175,105,50]);
+  assert.equal(Builder.botanicalFaceSize(decoded,0,0,256,256),before);
+});
+
+test('stable facial proportions take precedence over a denser flower silhouette',async()=>{
+  const atlas=fixtureAtlas(),sheets=atlas.kinds.wildflower.normal;
+  for(const sheet of Object.values(sheets)){sheet.identitySize=80;sheet.bodySize=100;}
+  sheets.play.bodySize=140;const env=browser(atlas),element=env.doc.createElement('span'),layer=Motion.create(element,options(env));await env.ready();
+  layer.render('idle');const before={...cropOf(element).attributes};
+  layer.render('play');await env.ready();layer.render('play');
+  for(const key of ['x','y','width','height'])assert.equal(cropOf(element).getAttribute(key),before[key]);layer.destroy();
+});
+
+for(const action of ['peach-shiny-walk','wildflower-shiny-thanks'])test(`${action} keeps its visible silhouette size across the page transition`,()=>{
+  const pages=[1,2].map(part=>Builder.inspectSheet(path.join(__dirname,`../skins/tracer/garden-art/${action}-v3-p${part}.png`),{botanical:true}));
+  const before=pages[0].cells[15],after=pages[1].cells[0];
+  for(const dimension of ['w','h']){
+    const ratio=(after[dimension]/pages[1].identitySize)/(before[dimension]/pages[0].identitySize);
+    assert.ok(Math.abs(ratio-1)<.05,`visible ${dimension} must not jump at frame 17: ${ratio}`);
+  }
+});
+
+test('cream orchid petals larger than the face cannot change its size calibration',()=>{
+  const decoded={width:256,height:256,data:Buffer.alloc(256*256*4)};
+  const rect=(x0,y0,x1,y1,color)=>{for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++)decoded.data.set([...color,255],(y*256+x)*4);};
+  rect(80,95,140,140,[245,220,175]);
+  rect(89,108,97,119,[70,40,20]);rect(122,108,130,119,[70,40,20]);
+  assert.equal(Builder.botanicalFaceSize(decoded,0,0,256,256),60);
+  rect(35,30,195,75,[245,220,175]);
+  assert.equal(Builder.botanicalFaceSize(decoded,0,0,256,256),60,'larger warm petals must not make idle smaller than play');
 });

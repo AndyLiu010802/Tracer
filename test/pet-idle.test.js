@@ -108,3 +108,51 @@ test('browser export is usable without DOM, storage, or timer APIs', () => {
   const idle = context.self.TracerPetIdle.create();
   assert.equal(idle.update(pet, 0), ''); assert.ok(idle.update(pet, 20000));
 });
+
+test('interactions, explicit pauses, and suspension cannot starve later idle actions', () => {
+  for (const petId of ['sprout', 'miso', 'custom_sample']) {
+    for (const workActivities of [false, true]) {
+      for (const interruption of ['blocked', 'reset', 'suspended']) {
+        const idle = Idle.create(), input = { ...pet, petId, workActivities }, seen = [];
+        const count = workActivities ? 8 : 4;
+        let now = 0;
+        idle.update(input, now);
+        for (let index = 0; index <= count; index++) {
+          now += Idle.quietTime;
+          const action = idle.update(input, now);
+          assert.ok(action);
+          seen.push(action);
+          now += 1000;
+          assert.equal(idle.update(input, now), action, 'ordinary updates keep the current action');
+          if (interruption === 'blocked') {
+            assert.equal(idle.update({ ...input, blocked: true }, ++now), '');
+            now += 1000;
+            assert.equal(idle.update({ ...input, blocked: true }, now), '');
+            assert.equal(idle.update(input, ++now), '');
+          } else if (interruption === 'reset') {
+            idle.reset(++now);
+            idle.reset(++now);
+            assert.equal(idle.update(input, now), '');
+          } else {
+            now += Idle.quietTime + 1;
+            assert.equal(idle.update(input, now), '');
+          }
+        }
+        assert.equal(new Set(seen.slice(0, count)).size, count, `${petId}/${workActivities}/${interruption}`);
+        assert.equal(seen[count], seen[0], 'wrap only after every eligible action has appeared');
+      }
+    }
+  }
+});
+
+test('interruptions during the quiet interval do not consume unseen activities', () => {
+  const idle = Idle.create(), input = { ...pet, workActivities: true };
+  idle.update(input, 0);
+  idle.reset(5000);
+  assert.equal(idle.update({ ...input, blocked: true }, 10000), '');
+  assert.equal(idle.update(input, 15000), '');
+  assert.equal(idle.update(input, 35000), 'farming');
+  for (let now = 45000; now <= 105000; now += 10000) assert.equal(idle.update(input, now), now === 105000 ? '' : 'farming');
+  idle.reset(110000);
+  assert.equal(idle.update(input, 130000), 'reading');
+});

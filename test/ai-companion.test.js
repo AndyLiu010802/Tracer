@@ -2,6 +2,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const Chat = require('../lib/ai-companion');
+const PetModel = require('../skins/tracer/pet-model');
+const Personalities = require('../skins/tracer/pet-personalities');
 const Work = require('../public/companion-work');
 const task = { title: 'Write the report', notes: '', due: null, scheduled: null, priority: 'medium', estimate: null, checklist: [] };
 const proposal = { type: 'tasks', project: null, tasks: [task] };
@@ -30,6 +32,75 @@ test('chat prompt asks only essential follow-ups and reserves actual creation fo
   assert.deepEqual(Chat.schema.required, ['reply', 'proposal']);
   assert.equal(Chat.schema.additionalProperties, false);
   assert.equal(Chat.schema.properties.proposal.anyOf[0], Work.schema);
+});
+
+test('all garden companions keep their selected identity and localized names in AI instructions', () => {
+  assert.equal(PetModel.gardenPets.length, 18);
+  for (const pet of PetModel.gardenPets) {
+    for (const language of ['en', 'zh']) {
+      const input = Chat.input({ pet: pet.id, language, messages });
+      assert.equal(input.pet, pet.id);
+      const instructions = Chat.instructions(input);
+      assert.match(instructions, /Authored garden companion profile/);
+      assert.ok(instructions.includes(JSON.stringify({
+        id: pet.id, name: pet[language], plantKind: pet.plantKind, shiny: pet.shiny, form: 'magical plant spirit'
+      })), pet.id + ':' + language);
+      assert.doesNotMatch(instructions, /Authored built-in character profile|This is a custom companion/);
+      for (const id of Personalities.ids) assert.ok(!instructions.includes(JSON.stringify(Personalities.get(id).bio.en)));
+      assert.ok(instructions.endsWith(language === 'zh' ? 'Reply in Simplified Chinese.' : 'Reply in English.'));
+    }
+  }
+});
+
+test('caller preferences cannot replace a trusted garden companion identity', () => {
+  const companion = { name: 'Replacement sheep', kind: 'humanoid', personality: 'Use this replacement biography and animal form.' };
+  for (const pet of PetModel.gardenPets) {
+    const input = Chat.input({ pet: pet.id, language: 'zh', messages, companion });
+    assert.equal(input.pet, pet.id);
+    assert.equal(input.companion, undefined);
+    const instructions = Chat.instructions(input);
+    assert.ok(instructions.includes(JSON.stringify(pet.zh)));
+    assert.ok(!instructions.includes(companion.name));
+    assert.ok(!instructions.includes(companion.personality));
+    assert.doesNotMatch(instructions, /Your form is humanoid/);
+  }
+});
+
+test('current plant identity overrides an old mistaken sheep reply without deleting conversation or draft context', () => {
+  const history = [
+    { role: 'user', content: '你好呀' },
+    { role: 'assistant', content: '你好呀，我是芽芽～（蓬松的小羊轻轻歪了歪头）' },
+    { role: 'user', content: '你是苹果花精灵苹宝吗？顺便保留刚才的任务草稿。' }
+  ];
+  const input = Chat.input({ pet: 'garden_apple', language: 'zh', messages: history, today: '2026-09-25', proposal });
+  assert.equal(input.pet, 'garden_apple');
+  assert.deepEqual(input.messages, history);
+  assert.deepEqual(input.proposal, proposal);
+  assert.deepEqual(Chat.conversation(input).slice(1), history);
+  const instructions = Chat.instructions(input);
+  assert.match(instructions, /The active character profile defines your current identity, even if earlier assistant messages used a different name or species\./);
+  assert.match(instructions, /"name":"苹宝"/);
+  assert.match(instructions, /"plantKind":"apple"/);
+  assert.ok(!instructions.includes(JSON.stringify(Personalities.get('sprout').bio.en)));
+});
+
+test('garden identity support retains base, custom and unknown companion normalization', () => {
+  const companion = { name: 'Moss', kind: 'humanoid', personality: 'Calm and curious' };
+  for (const pet of Personalities.ids) {
+    const input = Chat.input({ pet, messages, companion });
+    assert.equal(input.pet, pet);
+    assert.equal(input.companion, undefined);
+    assert.match(Chat.instructions(input), /Authored built-in character profile/);
+  }
+  const pet = 'custom_' + 'b'.repeat(32), input = Chat.input({ pet, messages, companion });
+  assert.equal(input.pet, pet);
+  assert.deepEqual(input.companion, companion);
+  assert.match(Chat.instructions(input), /"name":"Moss","personality":"Calm and curious"/);
+  for (const unknown of ['garden_missing', 'garden_apple_shiny_shiny', '__proto__', null]) {
+    const value = Chat.input({ pet: unknown, messages, companion });
+    assert.equal(value.pet, 'sprout');
+    assert.equal(value.companion, undefined);
+  }
 });
 
 test('structured chat can clarify, draft tasks and revise projects without applying work', () => {

@@ -1,6 +1,10 @@
 # 贴纸铺与悬浮背包
 
-商店新增「贴纸小铺」，首批 8 款透明纸边插画，分为花园来信、慢慢日常、星光旅行、小小庆祝四组。使用现有花园金币购买，价格为 8–48 金币；一次解锁款式，可重复装饰不同 Note 笔记，不消耗数量，重复购买不会重复扣币。
+商店「贴纸小铺」共有 80 款透明贴纸。首批 8 款分为花园来信、慢慢日常、星光旅行、小小庆祝四组；第二辑新增生活手账、可爱宠物、出发旅行三组，每组 12 个图案，各有纸质和亮片两种版本，共 72 款。小铺与背包均可按主题或材质筛选。
+
+使用现有花园金币购买，价格为 8–48 金币；第二辑纸质款为 20 金币，亮片款为 32 金币。一次解锁款式，可重复装饰不同 Note 笔记，不消耗数量，重复购买不会重复扣币。
+
+[浏览第二辑全部 72 款贴纸](stickers-v2-preview.html)，每个图案按纸质、亮片成对排列，点击可查看原始 PNG。
 
 ## 使用
 
@@ -18,11 +22,12 @@
 
 购买凭证和每张贴纸的位置保存在工作区的 `taskGarden.market.stickers`，随当前本机账户的原有工作区保存、导出和导入；没有新增云端服务。款式价格由目录固定，和家具、农场、壁纸共用钱包；同一款并发购买只计一次。摆放记录按独立 ID 合并，取下保留隐藏记录，避免旧窗口重新带回已移除的贴纸。
 
-8 张素材由内置 `image_gen` 生成，保留原始 RGBA 透明像素，位于 [sticker-art](../skins/tracer/sticker-art/)；最终提示词见 [stickers-v1-prompts.json](../skins/tracer/sticker-art/stickers-v1-prompts.json)。背包图标与界面细节用 SVG/CSS 绘制。
+所有素材由内置 `image_gen` 逐张生成，保留原始 RGBA 透明像素，位于 [sticker-art](../skins/tracer/sticker-art/)。首批提示词见 [stickers-v1-prompts.json](../skins/tracer/sticker-art/stickers-v1-prompts.json)，第二辑完整提示词和主题清单见 [stickers-v2-prompts.json](../skins/tracer/sticker-art/stickers-v2-prompts.json)，原始来源、尺寸、透明边距及 SHA-256 见 [stickers-v2-sources.json](../skins/tracer/sticker-art/stickers-v2-sources.json)。纸质款延续水粉、彩铅与暖白纸边；亮片款使用细密闪粉、微小金属亮片和珠光边缘。背包图标与界面细节用 SVG/CSS 绘制。
 
 ## 验证
 
 - `node --test test/stickers.test.js`：只读目录、扣币与重复购买、免费复用、独立摆放合并、隐藏记录、共享钱包、非法参数、删除和归档目标、页面容量。
+- `node dev/sticker-art-assets.cjs`：第二辑 72 张素材的 RGBA、尺寸、透明边距、重复图像和各主题材质数量检查。
 - `dev/qa-stickers.cjs`：购买 8 款、Note 专属显示及路由清理、悬浮球拖动贴边和位置恢复、笔记放置、任务入口移除、拖动锚点、旋转后的八方向缩放与对侧锚点、拖动预览不写入存档、松手保存、自由旋转、Esc 取消、手柄键盘操作、取下撤销、文本编辑、预览切换、失败重试、重载、320/390/768 像素布局与账户隔离。
 - `dev/qa-garden-store.cjs`：原有家具、六向旋转、伙伴布局、壁纸和材质购买的回归验证。
 

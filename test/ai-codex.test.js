@@ -89,6 +89,22 @@ test('companion chat reuses the signed-in account with a restricted tool-free tu
  assert.equal(thread.config['features.code_mode_host'],false);assert.ok(f.processes[0].args.includes('features.code_mode_host=false'));
 });
 
+test('subscription chat preserves selected plant identity and trusted profile when old history names a sheep',async t=>{
+ const f=fixture(t);f.login();f.setOutput({reply:'我是苹宝，苹果花精灵。',proposal:null});
+ const messages=[{role:'user',content:'你好呀'},{role:'assistant',content:'我是芽芽，一只蓬松的小绵羊。'},{role:'user',content:'请介绍你自己。'}];
+ for(const shiny of [false,true]){
+  const pet='garden_apple'+(shiny?'_shiny':'');
+  await f.client.handle('codex-chat',{pet,language:'zh',messages,companion:{name:'Wrong caller identity',personality:'Wrong caller biography',kind:'humanoid'}});
+  const thread=f.calls.findLast(c=>c.method==='thread/start').params,turn=f.calls.findLast(c=>c.method==='turn/start').params;
+  const sent=JSON.parse(turn.input[0].text);
+  assert.equal(sent.pet,pet);assert.deepEqual(sent.messages,messages);assert.equal(sent.companion,undefined);
+  assert.match(thread.baseInstructions,/Authored garden companion profile/);
+  assert.ok(thread.baseInstructions.includes(JSON.stringify({id:pet,name:shiny?'闪光 · 苹宝':'苹宝',plantKind:'apple',shiny,form:'magical plant spirit'})));
+  assert.match(thread.baseInstructions,/The active character profile defines your current identity, even if earlier assistant messages used a different name or species\./);
+  assert.doesNotMatch(thread.baseInstructions,/patient cloud sheep|Wrong caller/);
+ }
+});
+
 test('subscription chat returns only validated draft proposals and never sends existing task or project records',async t=>{
  const proposal={type:'project',project:{name:'Report',notes:'Summarize findings',start:null,end:null},tasks:[]};
  const f=fixture(t);f.login();f.setOutput({reply:'What should the project deliver?',proposal:null});
@@ -191,6 +207,19 @@ test('subscription dense sheets preserve their version and continue all sixteen 
  assert.match(turn.input[0].text,/ONE action: tea/);assert.match(turn.input[0].text,/row 4 frames 13-16/);
  assert.equal(turn.input.length,3);assert.equal(turn.input[2].url,'data:image/png;base64,'+encoded);
  assert.equal(thread.config['features.shell_tool'],false);
+});
+
+test('subscription 32-frame sheets use a consistent wide layout and preserve supplied crafting information', async t => {
+ const encoded=spriteSheet(2048,1024).toString('base64');
+ const f=fixture(t,{images:()=>[{id:'image1',type:'imageGeneration',status:'completed',result:encoded}]});f.login();
+ const first=await f.client.handle('codex-pet-image',{...portrait,animationVersion:3,animationPage:0});
+ const last=await f.client.handle('codex-pet-image',{...portrait,animationVersion:3,animationPage:14,identityImage:first.image,actionDescription:'Fold a paper boat'});
+ assert.equal(last.animationVersion,3);assert.equal(last.animationPage,14);
+ const thread=f.calls.findLast(c=>c.method==='thread/start').params,turn=f.calls.findLast(c=>c.method==='turn/start').params;
+ assert.match(thread.baseInstructions,/four rows and eight columns/);assert.match(thread.baseInstructions,/2048x1024/);
+ assert.match(turn.input[0].text,/row 4 frames 25-32/);assert.match(turn.input[0].text,/Fold a paper boat/);
+ assert.doesNotMatch(turn.input[0].text,/4x4|16-frame|square 1024x1024/);
+ assert.equal(turn.input.length,3);
 });
 
 test('image prerequisites stop before a model turn and never fall back to personal API billing',async t=>{

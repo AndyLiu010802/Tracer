@@ -4,6 +4,30 @@
   else root.TaskGarden = api;
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  // Edition prices are permanent receipt values, shared by the shop and export UI.
+  var POSTCARDS = [
+    {id:'pc_field',price:0,name:['原野来信','A letter from the meadow'],colors:['#eee9db','#e0e3cf','#304537','#738269']},
+    {id:'pc_forest',price:60,name:['森林纪念','Forest keepsake'],colors:['#20291f','#293424','#eee9d4','#b1b68b']},
+    {id:'pc_letter',price:80,name:['复古邮笺','Vintage correspondence'],colors:['#efe1c6','#e3d0ae','#584633','#99714d']},
+    {id:'pc_night',price:120,name:['星夜邮局','The midnight post'],colors:['#1e263b','#29334d','#eef0ed','#aebde0']}
+  ];
+  function postcardInfo(id){return POSTCARDS.find(function(i){return i.id===id;});}
+  function postcardLedger(market){return market.postcards||{purchases:[]};}
+  function postcardRecord(raw){
+    if(!raw||!Array.isArray(raw.purchases)||raw.purchases.length>POSTCARDS.length)fail();
+    var seen=new Set();return{purchases:raw.purchases.map(function(p){
+      if(!p||!postcardInfo(p.itemId)||postcardInfo(p.itemId).price===0||seen.has(p.itemId)||!time(p.purchasedAt))fail();
+      seen.add(p.itemId);return{itemId:p.itemId,purchasedAt:p.purchasedAt};
+    })};
+  }
+  function postcards(ws){var saved=postcardLedger(read(ws).market);return{items:POSTCARDS.map(function(i){return Object.assign(clone(i),{owned:i.price===0||saved.purchases.some(function(p){return p.itemId===i.id;})});})};}
+  function buyPostcard(ws,itemId,now){
+    var item=postcardInfo(itemId);if(!item)return{ok:false,reason:'unknown-postcard'};
+    var g=read(ws),saved=postcardLedger(g.market);
+    if(item.price===0||saved.purchases.some(function(p){return p.itemId===itemId;}))return{ok:true,alreadyOwned:true,spent:0};
+    if(totals(g).balance<item.price)return{ok:false,reason:'insufficient-coins'};
+    saved.purchases.push({itemId:itemId,purchasedAt:timestamp(now)});g.market.postcards=saved;ws.taskGarden=validate(g);return{ok:true,spent:item.price};
+  }
   // Version-one receipt prices are immutable; new prices require new item IDs.
   var WALLPAPER_PRICES = {s01:80,s02:80,s03:80,s04:80,s05:100,s06:80,s07:60,s08:60,s09:100,s10:80,d01:180,d02:160,d03:160,d04:160,d05:180,d06:220,d07:160,d08:140,d09:180,d10:200,m01:320,m02:280,m03:240,m04:300,m05:320,m06:300,m07:300,m08:260,m09:360,m10:280,af01:120,af02:180,af03:220,af04:160,af05:240,af06:200,tf01:140,tf02:220,tf03:180,tf04:180,tf05:200,tf06:260};
   var STICKERS = [
@@ -16,6 +40,81 @@
     {id:'st_cake',setId:'celebrate',price:28,name:['草莓小庆祝','Strawberry celebration'],description:['再小的进步，也值得认真庆祝。','Even a small step deserves a little celebration.']},
     {id:'st_medal',setId:'celebrate',price:40,name:['给自己的星星','A star for yourself'],description:['今天也做得很好，奖励自己一颗星。','A little star for showing up today.']}
   ];
+  // Reviewed paper and glitter collection; prompts and provenance live in sticker-art.
+  STICKERS = STICKERS.concat([
+    {"id":"st_paper_life_breakfast","setId":"life","material":"paper","price":20,"name":["奶油早餐 · 纸质","Butter breakfast · Paper"],"description":["给清晨加一点甜。","A little sweetness for the morning."]},
+    {"id":"st_glitter_life_breakfast","setId":"life","material":"glitter","price":32,"name":["奶油早餐 · 亮片","Butter breakfast · Glitter"],"description":["给清晨加一点甜。","A little sweetness for the morning."]},
+    {"id":"st_paper_life_journal","setId":"life","material":"paper","price":20,"name":["手账时光 · 纸质","Journaling hour · Paper"],"description":["把日常写成喜欢的模样。","Keep the little moments on paper."]},
+    {"id":"st_glitter_life_journal","setId":"life","material":"glitter","price":32,"name":["手账时光 · 亮片","Journaling hour · Glitter"],"description":["把日常写成喜欢的模样。","Keep the little moments on paper."]},
+    {"id":"st_paper_life_plant","setId":"life","material":"paper","price":20,"name":["窗边绿意 · 纸质","Windowsill green · Paper"],"description":["陪一片新叶慢慢长大。","A new leaf, one day at a time."]},
+    {"id":"st_glitter_life_plant","setId":"life","material":"glitter","price":32,"name":["窗边绿意 · 亮片","Windowsill green · Glitter"],"description":["陪一片新叶慢慢长大。","A new leaf, one day at a time."]},
+    {"id":"st_paper_life_tea","setId":"life","material":"paper","price":20,"name":["柠檬茶歇 · 纸质","Lemon tea break · Paper"],"description":["这一刻，慢慢喝。","Take this moment slowly."]},
+    {"id":"st_glitter_life_tea","setId":"life","material":"glitter","price":32,"name":["柠檬茶歇 · 亮片","Lemon tea break · Glitter"],"description":["这一刻，慢慢喝。","Take this moment slowly."]},
+    {"id":"st_paper_life_sewing","setId":"life","material":"paper","price":20,"name":["针线小篮 · 纸质","Little sewing basket · Paper"],"description":["把小日子一针针缝好。","Small stitches, happy days."]},
+    {"id":"st_glitter_life_sewing","setId":"life","material":"glitter","price":32,"name":["针线小篮 · 亮片","Little sewing basket · Glitter"],"description":["把小日子一针针缝好。","Small stitches, happy days."]},
+    {"id":"st_paper_life_rainboots","setId":"life","material":"paper","price":20,"name":["雨后散步 · 纸质","After the rain · Paper"],"description":["雨停了，出去走走。","A little walk after the rain."]},
+    {"id":"st_glitter_life_rainboots","setId":"life","material":"glitter","price":32,"name":["雨后散步 · 亮片","After the rain · Glitter"],"description":["雨停了，出去走走。","A little walk after the rain."]},
+    {"id":"st_paper_life_vinyl","setId":"life","material":"paper","price":20,"name":["唱片午后 · 纸质","Vinyl afternoon · Paper"],"description":["让喜欢的旋律慢慢转。","Let your favourite record spin."]},
+    {"id":"st_glitter_life_vinyl","setId":"life","material":"glitter","price":32,"name":["唱片午后 · 亮片","Vinyl afternoon · Glitter"],"description":["让喜欢的旋律慢慢转。","Let your favourite record spin."]},
+    {"id":"st_paper_life_bath","setId":"life","material":"paper","price":20,"name":["泡泡浴时刻 · 纸质","Bubble bath moment · Paper"],"description":["洗掉今天的小疲惫。","A soft landing after a long day."]},
+    {"id":"st_glitter_life_bath","setId":"life","material":"glitter","price":32,"name":["泡泡浴时刻 · 亮片","Bubble bath moment · Glitter"],"description":["洗掉今天的小疲惫。","A soft landing after a long day."]},
+    {"id":"st_paper_life_chair","setId":"life","material":"paper","price":20,"name":["软软阅读角 · 纸质","Cosy reading chair · Paper"],"description":["坐下来，好好歇一会儿。","Sit down and stay a while."]},
+    {"id":"st_glitter_life_chair","setId":"life","material":"glitter","price":32,"name":["软软阅读角 · 亮片","Cosy reading chair · Glitter"],"description":["坐下来，好好歇一会儿。","Sit down and stay a while."]},
+    {"id":"st_paper_life_market","setId":"life","material":"paper","price":20,"name":["周末菜篮 · 纸质","Weekend market basket · Paper"],"description":["把新鲜和好心情一起带回家。","Bring home something fresh."]},
+    {"id":"st_glitter_life_market","setId":"life","material":"glitter","price":32,"name":["周末菜篮 · 亮片","Weekend market basket · Glitter"],"description":["把新鲜和好心情一起带回家。","Bring home something fresh."]},
+    {"id":"st_paper_life_laundry","setId":"life","material":"paper","price":20,"name":["晒好的晴天 · 纸质","Fresh laundry day · Paper"],"description":["干净柔软，像一个晴天。","Fresh, soft and full of sunshine."]},
+    {"id":"st_glitter_life_laundry","setId":"life","material":"glitter","price":32,"name":["晒好的晴天 · 亮片","Fresh laundry day · Glitter"],"description":["干净柔软，像一个晴天。","Fresh, soft and full of sunshine."]},
+    {"id":"st_paper_life_lamp","setId":"life","material":"paper","price":20,"name":["床头小夜灯 · 纸质","Bedside glow · Paper"],"description":["为晚一点的自己留一盏灯。","A little light at the end of the day."]},
+    {"id":"st_glitter_life_lamp","setId":"life","material":"glitter","price":32,"name":["床头小夜灯 · 亮片","Bedside glow · Glitter"],"description":["为晚一点的自己留一盏灯。","A little light at the end of the day."]},
+    {"id":"st_paper_pets_corgi","setId":"pets","material":"paper","price":20,"name":["球球小柯基 · 纸质","Corgi and ball · Paper"],"description":["把快乐滚到你身边。","Rolling a little joy your way."]},
+    {"id":"st_glitter_pets_corgi","setId":"pets","material":"glitter","price":32,"name":["球球小柯基 · 亮片","Corgi and ball · Glitter"],"description":["把快乐滚到你身边。","Rolling a little joy your way."]},
+    {"id":"st_paper_pets_cat","setId":"pets","material":"paper","price":20,"name":["毛线奶牛猫 · 纸质","Tuxedo yarn cat · Paper"],"description":["今天也想和你一起玩。","Always ready for a little play."]},
+    {"id":"st_glitter_pets_cat","setId":"pets","material":"glitter","price":32,"name":["毛线奶牛猫 · 亮片","Tuxedo yarn cat · Glitter"],"description":["今天也想和你一起玩。","Always ready for a little play."]},
+    {"id":"st_paper_pets_rabbit","setId":"pets","material":"paper","price":20,"name":["胡萝卜小兔 · 纸质","Carrot bunny · Paper"],"description":["藏好胡萝卜，也藏好开心。","A carrot and a little happiness."]},
+    {"id":"st_glitter_pets_rabbit","setId":"pets","material":"glitter","price":32,"name":["胡萝卜小兔 · 亮片","Carrot bunny · Glitter"],"description":["藏好胡萝卜，也藏好开心。","A carrot and a little happiness."]},
+    {"id":"st_paper_pets_hamster","setId":"pets","material":"paper","price":20,"name":["瓜子小仓鼠 · 纸质","Sunflower hamster · Paper"],"description":["小小一口，大大满足。","A tiny snack, a happy little moment."]},
+    {"id":"st_glitter_pets_hamster","setId":"pets","material":"glitter","price":32,"name":["瓜子小仓鼠 · 亮片","Sunflower hamster · Glitter"],"description":["小小一口，大大满足。","A tiny snack, a happy little moment."]},
+    {"id":"st_paper_pets_guinea","setId":"pets","material":"paper","price":20,"name":["甜椒豚鼠 · 纸质","Pepper guinea pig · Paper"],"description":["和你分享一口脆甜。","Sharing a crisp little treat."]},
+    {"id":"st_glitter_pets_guinea","setId":"pets","material":"glitter","price":32,"name":["甜椒豚鼠 · 亮片","Pepper guinea pig · Glitter"],"description":["和你分享一口脆甜。","Sharing a crisp little treat."]},
+    {"id":"st_paper_pets_tortoise","setId":"pets","material":"paper","price":20,"name":["生菜小陆龟 · 纸质","Lettuce tortoise · Paper"],"description":["慢一点，也能到达。","Slow steps still get you there."]},
+    {"id":"st_glitter_pets_tortoise","setId":"pets","material":"glitter","price":32,"name":["生菜小陆龟 · 亮片","Lettuce tortoise · Glitter"],"description":["慢一点，也能到达。","Slow steps still get you there."]},
+    {"id":"st_paper_pets_budgie","setId":"pets","material":"paper","price":20,"name":["铃铛小虎皮 · 纸质","Budgie and bell · Paper"],"description":["听见一点清脆的陪伴。","A bright little sound of company."]},
+    {"id":"st_glitter_pets_budgie","setId":"pets","material":"glitter","price":32,"name":["铃铛小虎皮 · 亮片","Budgie and bell · Glitter"],"description":["听见一点清脆的陪伴。","A bright little sound of company."]},
+    {"id":"st_paper_pets_goldfish","setId":"pets","material":"paper","price":20,"name":["水中小金鱼 · 纸质","Little goldfish bowl · Paper"],"description":["把安静的水光留在一角。","A quiet shimmer for your page."]},
+    {"id":"st_glitter_pets_goldfish","setId":"pets","material":"glitter","price":32,"name":["水中小金鱼 · 亮片","Little goldfish bowl · Glitter"],"description":["把安静的水光留在一角。","A quiet shimmer for your page."]},
+    {"id":"st_paper_pets_chinchilla","setId":"pets","material":"paper","price":20,"name":["抱抱龙猫 · 纸质","Chinchilla cuddle · Paper"],"description":["软乎乎地陪着你。","Soft company, close by."]},
+    {"id":"st_glitter_pets_chinchilla","setId":"pets","material":"glitter","price":32,"name":["抱抱龙猫 · 亮片","Chinchilla cuddle · Glitter"],"description":["软乎乎地陪着你。","Soft company, close by."]},
+    {"id":"st_paper_pets_ferret","setId":"pets","material":"paper","price":20,"name":["毯子小雪貂 · 纸质","Ferret in a blanket · Paper"],"description":["把安心卷进小毯子里。","A cosy little place to curl up."]},
+    {"id":"st_glitter_pets_ferret","setId":"pets","material":"glitter","price":32,"name":["毯子小雪貂 · 亮片","Ferret in a blanket · Glitter"],"description":["把安心卷进小毯子里。","A cosy little place to curl up."]},
+    {"id":"st_paper_pets_shiba","setId":"pets","material":"paper","price":20,"name":["领巾小柴犬 · 纸质","Bandana shiba · Paper"],"description":["出门前，先摇摇尾巴。","A happy tail before the day begins."]},
+    {"id":"st_glitter_pets_shiba","setId":"pets","material":"glitter","price":32,"name":["领巾小柴犬 · 亮片","Bandana shiba · Glitter"],"description":["出门前，先摇摇尾巴。","A happy tail before the day begins."]},
+    {"id":"st_paper_pets_calico","setId":"pets","material":"paper","price":20,"name":["纸盒三花猫 · 纸质","Calico in a box · Paper"],"description":["小纸盒也装得下幸福。","Happiness fits in a little box."]},
+    {"id":"st_glitter_pets_calico","setId":"pets","material":"glitter","price":32,"name":["纸盒三花猫 · 亮片","Calico in a box · Glitter"],"description":["小纸盒也装得下幸福。","Happiness fits in a little box."]},
+    {"id":"st_paper_travel_camper","setId":"travel","material":"paper","price":20,"name":["海风房车 · 纸质","Seaside camper · Paper"],"description":["把下一站交给海风。","Let the sea breeze choose the next stop."]},
+    {"id":"st_glitter_travel_camper","setId":"travel","material":"glitter","price":32,"name":["海风房车 · 亮片","Seaside camper · Glitter"],"description":["把下一站交给海风。","Let the sea breeze choose the next stop."]},
+    {"id":"st_paper_travel_camping","setId":"travel","material":"paper","price":20,"name":["山野帐篷 · 纸质","Mountain tent · Paper"],"description":["把一晚安静留给山野。","One quiet night outdoors."]},
+    {"id":"st_glitter_travel_camping","setId":"travel","material":"glitter","price":32,"name":["山野帐篷 · 亮片","Mountain tent · Glitter"],"description":["把一晚安静留给山野。","One quiet night outdoors."]},
+    {"id":"st_paper_travel_beach","setId":"travel","material":"paper","price":20,"name":["贝壳海岸 · 纸质","Shells from the shore · Paper"],"description":["捡一枚海边的小记忆。","A little memory from the shore."]},
+    {"id":"st_glitter_travel_beach","setId":"travel","material":"glitter","price":32,"name":["贝壳海岸 · 亮片","Shells from the shore · Glitter"],"description":["捡一枚海边的小记忆。","A little memory from the shore."]},
+    {"id":"st_paper_travel_suitcase","setId":"travel","material":"paper","price":20,"name":["出发小行李 · 纸质","Ready-to-go suitcase · Paper"],"description":["带上喜欢的东西出发。","Pack a few favourites and go."]},
+    {"id":"st_glitter_travel_suitcase","setId":"travel","material":"glitter","price":32,"name":["出发小行李 · 亮片","Ready-to-go suitcase · Glitter"],"description":["带上喜欢的东西出发。","Pack a few favourites and go."]},
+    {"id":"st_paper_travel_camera","setId":"travel","material":"paper","price":20,"name":["旅行胶片机 · 纸质","Travel film camera · Paper"],"description":["把路上的光收进来。","Keep the light you find along the way."]},
+    {"id":"st_glitter_travel_camera","setId":"travel","material":"glitter","price":32,"name":["旅行胶片机 · 亮片","Travel film camera · Glitter"],"description":["把路上的光收进来。","Keep the light you find along the way."]},
+    {"id":"st_paper_travel_balloon","setId":"travel","material":"paper","price":20,"name":["热气球远行 · 纸质","Balloon daydream · Paper"],"description":["把心情升到云边。","A little closer to the clouds."]},
+    {"id":"st_glitter_travel_balloon","setId":"travel","material":"glitter","price":32,"name":["热气球远行 · 亮片","Balloon daydream · Glitter"],"description":["把心情升到云边。","A little closer to the clouds."]},
+    {"id":"st_paper_travel_train","setId":"travel","material":"paper","price":20,"name":["慢慢小火车 · 纸质","Slow little train · Paper"],"description":["沿着窗外的风景慢慢走。","Take the scenic way."]},
+    {"id":"st_glitter_travel_train","setId":"travel","material":"glitter","price":32,"name":["慢慢小火车 · 亮片","Slow little train · Glitter"],"description":["沿着窗外的风景慢慢走。","Take the scenic way."]},
+    {"id":"st_paper_travel_sailboat","setId":"travel","material":"paper","price":20,"name":["帆船晴日 · 纸质","Sailing day · Paper"],"description":["向着晴朗的地方去。","Set sail for a brighter day."]},
+    {"id":"st_glitter_travel_sailboat","setId":"travel","material":"glitter","price":32,"name":["帆船晴日 · 亮片","Sailing day · Glitter"],"description":["向着晴朗的地方去。","Set sail for a brighter day."]},
+    {"id":"st_paper_travel_hiking","setId":"travel","material":"paper","price":20,"name":["徒步小背包 · 纸质","Little hiking pack · Paper"],"description":["一步一步，走进新风景。","One step into a new view."]},
+    {"id":"st_glitter_travel_hiking","setId":"travel","material":"glitter","price":32,"name":["徒步小背包 · 亮片","Little hiking pack · Glitter"],"description":["一步一步，走进新风景。","One step into a new view."]},
+    {"id":"st_paper_travel_cabin","setId":"travel","material":"paper","price":20,"name":["雪山小木屋 · 纸质","Snowy mountain cabin · Paper"],"description":["在雪山脚下歇歇脚。","A little rest beneath the snowy peaks."]},
+    {"id":"st_glitter_travel_cabin","setId":"travel","material":"glitter","price":32,"name":["雪山小木屋 · 亮片","Snowy mountain cabin · Glitter"],"description":["在雪山脚下歇歇脚。","A little rest beneath the snowy peaks."]},
+    {"id":"st_paper_travel_passport","setId":"travel","material":"paper","price":20,"name":["登机小心情 · 纸质","Ready for takeoff · Paper"],"description":["下一段故事，准备登机。","Your next chapter is ready to board."]},
+    {"id":"st_glitter_travel_passport","setId":"travel","material":"glitter","price":32,"name":["登机小心情 · 亮片","Ready for takeoff · Glitter"],"description":["下一段故事，准备登机。","Your next chapter is ready to board."]},
+    {"id":"st_paper_travel_scooter","setId":"travel","material":"paper","price":20,"name":["小城轻骑 · 纸质","Old-town scooter · Paper"],"description":["拐个弯，遇见喜欢的小城。","Turn a corner and find a little wonder."]},
+    {"id":"st_glitter_travel_scooter","setId":"travel","material":"glitter","price":32,"name":["小城轻骑 · 亮片","Old-town scooter · Glitter"],"description":["拐个弯，遇见喜欢的小城。","Turn a corner and find a little wonder."]}
+  ]);
   function stickerInfo(id){return STICKERS.find(function(i){return i.id===id;});}
   function stickerLedger(market){return market.stickers||{purchases:[],placements:[]};}
   function stickerTarget(ws,type,id){return (type==='note'?ws.notes||[]:[]).find(function(row){return row.id===id;});}
@@ -120,6 +219,29 @@
   function time(x) { return Number.isSafeInteger(x) && x > 0 && x <= MAX_TIME; }
   function timestamp(x) { return time(x) ? x : Date.now(); }
   function variant(ticket) { return ticket === 0 ? 'shiny' : ticket < 100 ? 'rare' : 'normal'; }
+  var PITY_LIMITS = { companion: 30, shiny: 150 };
+  // Receipts survive task deletion and stale saves. Derive both streaks from
+  // first completions instead of persisting counters that can overwrite each other.
+  function pityProgress(garden, award) {
+    var companion = 0, shiny = 0;
+    garden.seeds.filter(function (s) { return s.completedAt && !s.taskId.startsWith('legacy-'); })
+      .sort(function (a, b) { return a.completedAt - b.completedAt || (a.taskId < b.taskId ? -1 : a.taskId > b.taskId ? 1 : 0); })
+      .forEach(function (s) {
+        companion++; shiny++;
+        // Old completed receipts contribute progress but are never rerolled.
+        // Only first completions made under this rule can receive an upgrade.
+        if (award && s.pityVersion === 1) {
+          if (shiny >= PITY_LIMITS.shiny && s.variant !== 'shiny') s.ticket = 0;
+          else if (companion >= PITY_LIMITS.companion && s.variant === 'normal') s.ticket = 1;
+          s.variant = variant(s.ticket);
+        }
+        if (s.variant !== 'normal') companion = 0;
+        if (s.variant === 'shiny') shiny = 0;
+      });
+    return { companion: companion, shiny: shiny,
+      companionRemaining: Math.max(1, PITY_LIMITS.companion - companion), shinyRemaining: Math.max(1, PITY_LIMITS.shiny - shiny) };
+  }
+  function pity(ws) { return pityProgress(read(ws), false); }
   function fail() { throw new Error('Invalid task garden'); }
   function seedRecord(row) {
     if (!row || typeof row.taskId !== 'string' || !/^[a-zA-Z0-9_-]{1,120}$/.test(row.taskId) || typeof row.title !== 'string' || row.title.length > 100000 ||
@@ -136,6 +258,10 @@
       if (v !== null && (!time(v) || v < row.plantedAt)) fail();
       out[key] = v;
     });
+    if (row.pityVersion !== undefined) {
+      if (row.pityVersion !== 1 || !out.completedAt || row.taskId.startsWith('legacy-')) fail();
+      out.pityVersion = 1;
+    }
     if (out.state === 'harvested' !== !!out.harvestedAt || out.state === 'mature' && !out.completedAt ||
         out.harvestedAt && (!out.completedAt || out.harvestedAt < out.completedAt) ||
         out.state === 'destroyed' && !out.destroyedAt || out.retiredAt && !['destroyed', 'harvested'].includes(out.state) ||
@@ -147,7 +273,7 @@
     var seeds = new Map(garden.seeds.map(function (s) { return [s.taskId, s]; }));
     var earned = (garden.market.testCredit?.amount||0)+garden.market.sales.reduce(function (n, sale) { return n + plantInfo(seeds.get(sale.taskId).plantKind).unitPrice; }, 0);
     var spent = garden.market.purchases.reduce(function (n, purchase) { return n + farmInfo(purchase.farmId).price; }, 0) +
-      Collectibles.ledger(garden.market).purchases.reduce(function(n,p){return n+Collectibles.find(p.itemId).price;},0)+wallpaperLedger(garden.market).purchases.reduce(function(n,p){return n+WALLPAPER_PRICES[p.itemId];},0)+stickerLedger(garden.market).purchases.reduce(function(n,p){return n+stickerInfo(p.itemId).price;},0);
+      Collectibles.ledger(garden.market).purchases.reduce(function(n,p){return n+Collectibles.find(p.itemId).price;},0)+wallpaperLedger(garden.market).purchases.reduce(function(n,p){return n+WALLPAPER_PRICES[p.itemId];},0)+postcardLedger(garden.market).purchases.reduce(function(n,p){return n+postcardInfo(p.itemId).price;},0)+stickerLedger(garden.market).purchases.reduce(function(n,p){return n+stickerInfo(p.itemId).price;},0);
     return { balance: earned - spent, earned: earned, spent: spent, equippedFarmId: garden.market.equipped.farmId,
       ownedFarmIds: FARMS.filter(function (f) { return owns(garden.market, f.id); }).map(function (f) { return f.id; }) };
   }
@@ -183,6 +309,7 @@
     }
     if(raw.wallpapers!==undefined)out.wallpapers=wallpaperRecord(raw.wallpapers);
     if(raw.stickers!==undefined)out.stickers=stickerRecord(raw.stickers);
+    if(raw.postcards!==undefined)out.postcards=postcardRecord(raw.postcards);
     if (!owns(out, raw.equipped.farmId) || totals({ seeds: seeds, market: out }).balance < 0) fail();
     out.equipped = { farmId: raw.equipped.farmId, updatedAt: raw.equipped.updatedAt };
     return out;
@@ -277,7 +404,14 @@
       seed.updatedAt = Math.max(seed.updatedAt, eventAt);
       seed.state = state; seed.title = task.title || ''; seed.projectId = task.projectId || null;
       if (state === 'destroyed') seed.destroyedAt = eventAt;
-      if (state === 'mature') seed.completedAt = Math.max(seed.plantedAt, task.doneAt || eventAt);
+      if (state === 'mature' && !seed.completedAt) {
+        // Preserve actual completion order even for batch operations in the
+        // same millisecond; a later task must not upgrade an earlier reward.
+        var lastCompletion = garden.seeds.reduce(function (at, s) { return s.taskId.startsWith('legacy-') ? at : Math.max(at, s.completedAt || 0); }, 0);
+        seed.completedAt = Math.max(seed.plantedAt, task.doneAt || eventAt, Math.min(MAX_TIME, lastCompletion + 1));
+        seed.pityVersion = 1;
+        pityProgress(garden, true);
+      }
     }
     return seed;
   }
@@ -535,6 +669,12 @@
         out.state = 'mature';
       }
     }
+    // Reopening a task or merging a stale growing record must not move its
+    // first completion, count it twice, or remove its eligibility for a guarantee.
+    out.completedAt = authority && authority.completedAt || Math.min(a.completedAt || Infinity, b.completedAt || Infinity);
+    if (out.completedAt === Infinity) out.completedAt = null;
+    delete out.pityVersion;
+    if (out.completedAt && (authority && authority.completedAt ? authority.pityVersion === 1 : a.pityVersion === 1 || b.pityVersion === 1)) out.pityVersion = 1;
     out.retiredAt = a.retiredAt || b.retiredAt || null;
     out.forgottenAt = a.forgottenAt || b.forgottenAt || null;
     out.destroyedAt = Math.max(a.destroyedAt || 0, b.destroyedAt || 0) || null;
@@ -587,11 +727,15 @@
     stickerLedger(sources[0].market).purchases.forEach(function(p){accepted.add('sticker:'+p.itemId);});
     stickerPurchases.forEach(function(p){ordered.push({key:'sticker:'+p.itemId,sticker:true,price:stickerInfo(p.itemId).price,receipt:p});});
     if(sources.some(function(g){return g.market.stickers;}))out.market.stickers=stickerLedger(out.market);
+    var postcardPurchases=new Map();sources.forEach(function(g){postcardLedger(g.market).purchases.forEach(function(p){var old=postcardPurchases.get(p.itemId);if(!old||!authoritative&&p.purchasedAt<old.purchasedAt)postcardPurchases.set(p.itemId,clone(p));});});
+    postcardLedger(sources[0].market).purchases.forEach(function(p){accepted.add('postcard:'+p.itemId);});
+    postcardPurchases.forEach(function(p){ordered.push({key:'postcard:'+p.itemId,postcard:true,price:postcardInfo(p.itemId).price,receipt:p});});
+    if(sources.some(function(g){return g.market.postcards;}))out.market.postcards=postcardLedger(out.market);
     ordered.sort(function(a,b){return Number(accepted.has(b.key))-Number(accepted.has(a.key))||a.receipt.purchasedAt-b.receipt.purchasedAt||a.key.localeCompare(b.key);});
     if(sources.some(function(g){return g.market.collectibles;}))out.market.collectibles=Collectibles.ledger(out.market);
     ordered.forEach(function(entry){
       var p=entry.receipt,item=p.itemId&&Collectibles.find(p.itemId),valid=!item||Collectibles.eligible(item,Collectibles.stats(out.seeds,p.purchasedAt));
-      if(valid&&totals(out).balance>=entry.price){if(entry.sticker)out.market.stickers.purchases.push(p);else if(entry.wallpaper)out.market.wallpapers.purchases.push(p);else if(item)out.market.collectibles.purchases.push(p);else out.market.purchases.push(p);}
+      if(valid&&totals(out).balance>=entry.price){if(entry.postcard)out.market.postcards.purchases.push(p);else if(entry.sticker)out.market.stickers.purchases.push(p);else if(entry.wallpaper)out.market.wallpapers.purchases.push(p);else if(item)out.market.collectibles.purchases.push(p);else out.market.purchases.push(p);}
       else if(authoritative&&!recoverSpending)throw Object.assign(new Error('workspace-stale'),{code:'workspace-stale'});
     });
     if(out.market.collectibles){
@@ -622,6 +766,9 @@
     var sources = [validate(base), validate(local), validate(remote)], out = empty(), seeds = new Map(), fixed = new Map(sources[0].seeds.map(function (s) { return [s.taskId, s]; }));
     sources.forEach(function (g) { g.seeds.forEach(function (s) { seeds.set(s.taskId, mergeSeed(seeds.get(s.taskId), s, fixed.get(s.taskId))); }); });
     out.seeds = Array.from(seeds.values()).sort(function (a, b) { return a.plantedAt - b.plantedAt || a.taskId.localeCompare(b.taskId); });
+    // Reconcile simultaneous completions against the merged ledger, while the
+    // accepted seed identity above still prevents client-side random rerolls.
+    pityProgress(out, true);
     var deleted = new Map(), planets = new Map(), fixedPlanets = new Set(sources[0].planets.map(function (p) { return p.id; }));
     sources.forEach(function (g) {
       g.deletedPlanets.forEach(function (r) { var old = deleted.get(r.projectId); if (!old || old.deletedAt < r.deletedAt) deleted.set(r.projectId, r); });
@@ -680,9 +827,9 @@
     return next;
   }
   return { KINDS: KINDS.slice(), CATALOG: clone(CATALOG), FARMS: clone(FARMS), empty: empty, validate: validate, read: read, draw: draw, variant: variant,
-    stickers:stickers,buySticker:buySticker,layoutSticker:layoutSticker,
+    postcards:postcards,buyPostcard:buyPostcard,stickers:stickers,buySticker:buySticker,layoutSticker:layoutSticker,
     companionPlacement:companionPlacement,layoutCompanion:layoutCompanion,layoutCollectible:layoutCollectible,collectibles:collectibles,buyCollectible:buyCollectible,equipCollectible:equipCollectible,wishCollectible:wishCollectible,
     inventory: inventory, economy: economy, farms: farms, sell: sell, buyFarm: buyFarm, equipFarm: equipFarm,
     taskChanged: taskChanged, reconcile: reconcile, active: active, harvest: harvest, willDestroy: willDestroy, withdrawal: withdrawal,
-    clearCompletedTask: clearCompletedTask, retireTask: retireTask, collection: collection, archiveProject: archiveProject, removePlanet: removePlanet, importLegacy: importLegacy, applyDeletions: applyDeletions, merge: merge, preserve: preserve };
+    clearCompletedTask: clearCompletedTask, retireTask: retireTask, collection: collection, pity: pity, archiveProject: archiveProject, removePlanet: removePlanet, importLegacy: importLegacy, applyDeletions: applyDeletions, merge: merge, preserve: preserve };
 });

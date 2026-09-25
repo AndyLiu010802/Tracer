@@ -72,6 +72,38 @@ test('companion chat uses both configured protocols without sending workspace da
  }
 });
 
+test('both personal API protocols send the selected garden identity despite a mistaken old sheep reply', async t => {
+  const messages = [
+    { role: 'user', content: '你好呀' },
+    { role: 'assistant', content: '我是芽芽，一只蓬松的小绵羊。' },
+    { role: 'user', content: '请介绍你自己。' }
+  ];
+  for (const protocol of ['chat', 'responses']) {
+    let captured;
+    const output = { reply: '我是苹宝，苹果花精灵。', proposal: null };
+    const api = createPersonal(temp(t), { request: async (url, opts) => {
+      captured = JSON.parse(opts.body);
+      const text = JSON.stringify(output);
+      return protocol === 'chat' ? chat(text) : new Response(JSON.stringify({ output: [{ content: [{ type: 'output_text', text }] }] }));
+    } });
+    await api.handle('personal-configure', { ...settings, protocol });
+    for (const shiny of [false, true]) {
+      const pet = 'garden_apple' + (shiny ? '_shiny' : '');
+      assert.deepEqual(await api.handle('personal-chat', {
+        pet, language: 'zh', messages,
+        companion: { name: 'Wrong caller identity', personality: 'Wrong caller biography', kind: 'humanoid' }
+      }), output);
+      const instructions = protocol === 'responses' ? captured.instructions : captured.messages[0].content;
+      const sentMessages = protocol === 'responses' ? captured.input : captured.messages.slice(1);
+      assert.match(instructions, /Authored garden companion profile/);
+      assert.ok(instructions.includes(JSON.stringify({ id: pet, name: shiny ? '闪光 · 苹宝' : '苹宝', plantKind: 'apple', shiny, form: 'magical plant spirit' })));
+      assert.match(instructions, /The active character profile defines your current identity, even if earlier assistant messages used a different name or species\./);
+      assert.doesNotMatch(instructions, /patient cloud sheep|Wrong caller/);
+      assert.deepEqual(sentMessages.slice(1), messages);
+    }
+  }
+});
+
 test('companion protocols clarify then return a validated review draft with local date and no existing workspace', async t => {
   const proposal = { type: 'tasks', project: null, tasks: [{ title: 'Draft the report', notes: 'Summarize findings', due: null, scheduled: null, priority: 'medium', estimate: null, checklist: [] }] };
   for (const protocol of ['chat', 'responses']) {

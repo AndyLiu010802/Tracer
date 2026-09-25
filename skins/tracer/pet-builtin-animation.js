@@ -5,9 +5,9 @@
 })(typeof window !== 'undefined' ? window : globalThis, function (Art) {
   'use strict';
   const actions = Object.freeze(['idle','pet','feed','play','sleep','wake','focus','drag','fishing','exercise','farming','mining','reading','writing','crafting','tea']);
-  const frames = 16;
+  const frames = 32;
   // Each row is an authored pose: head angle/down, left/right shoulder, left/right
-  // ankle, tail, ears, chest compression, gaze, and mouth. Four in-betweens join
+  // ankle, tail, ears, chest compression, gaze, and mouth. Eight in-betweens join
   // each pose. Feet stay planted except for an explicitly authored step/stretch.
   const rest = [0,0,0,0,0,0,0,0,0,0,0];
   const keys = {
@@ -40,14 +40,14 @@
   const path = (fill,d) => '<path fill="'+fill+'" d="'+d+'"/>';
   const group = (body,transform='') => '<g'+(transform?' transform="'+transform+'"':'')+'>'+body+'</g>';
   function pose(action,frame) {
-    const sequence=keys[action], step=(frame%frames)/4, index=Math.floor(step), fraction=step-index;
+    const sequence=keys[action], step=(frame%frames)/(frames/4), index=Math.floor(step), fraction=step-index;
     // Smoothstep in-betweens soften reversals without adding duplicate hold frames.
     const weight=fraction*fraction*(3-2*fraction);
     return sequence[index].map((value,key)=>value+(sequence[index+1][key]-value)*weight);
   }
   function transform(angle=0,x=0,y=0,sx=1,sy=1) { return 'translate('+n(x)+'px,'+n(y)+'px) rotate('+n(angle)+'deg) scale('+n(sx)+','+n(sy)+')'; }
   function props(id,action,frame,p) {
-    const spec=species[id], [x,y]=spec.hand, [cx,cy]=spec.shoulder, progress=frame/16, wave=Math.sin(progress*Math.PI*2), turn=Math.max(0,Math.sin(progress*Math.PI*2-Math.PI/2));
+    const spec=species[id], [x,y]=spec.hand, [cx,cy]=spec.shoulder, progress=frame/frames, wave=Math.sin(progress*Math.PI*2), turn=Math.max(0,Math.sin(progress*Math.PI*2-Math.PI/2));
     const held=body=>group(body,'rotate('+n(p[3]*spec.gain)+' '+cx+' '+cy+')');
     const cup=path('#46675f',`M${x-9} ${y-12}h15v3h5v9h-5v4h-15z`)+path('#c1d8bb',`M${x-7} ${y-10}h11v11h-11z`)+path('#7e5f43',`M${x-6} ${y-9}h9v2h-9z`)+path('#719287',`M${x+6} ${y-7}h3v5h-3z`);
     const book=path('#526d75','M66 119h27v-3h25v25H93v3H66z')+path('#e6d9b3','M69 121h21v18H69zM94 119h21v19H94z')+path('#b4a57f','M73 125h13v2H73zM73 130h11v2H73zM98 123h12v2H98zM98 128h10v2H98z');
@@ -81,7 +81,7 @@
       // the front-facing companions bring the right hand inward toward the face.
       if(id==='ember')p[3]=-p[3];
     }
-    const blink=action==='sleep'?0:at===11?.12:at===10||at===12?.65:1;
+    const blink=action==='sleep'?0:Math.abs(at-22)<2?.12:Math.abs(at-22)<4?.65:1;
     const transforms={
       posture:transform(),head:transform(p[0]*gain,0,p[1]),body:transform(0,0,0,1,1-p[8]*.012),
       'arm-left':transform(p[2]*gain),'arm-right':transform(p[3]*gain),
@@ -118,16 +118,16 @@
       if(['sneeze','soil-pat','moonstone','pebbles','gadget','tail-curled','tongue'].includes(part))opacity=0;
       if(part==='tail-relaxed'&&id==='miso'&&action==='sleep')opacity=0;
       if(part==='tail-curled'&&id==='miso'&&action==='sleep')opacity=1;
-      if(part==='tongue'&&id==='miso'&&action==='feed'&&at>=6&&at<=10)opacity=1;
+      if(part==='tongue'&&id==='miso'&&action==='feed'&&at>=12&&at<=20)opacity=1;
       return '<g class="'+classes+'" style="'+style+';animation:none!important;transform-box:view-box;transform:'+(transforms[part]||'none')+'!important;opacity:'+opacity+'!important">';
     });
     return svg.replace('</svg>',props(id,action,at,p)+'</svg>');
   }
   function duration(action,frame) {
-    if(action==='sleep')return 380;
+    if(action==='sleep')return 240;
     if(frame===0)return action==='idle'?6000:action==='focus'?5000:2200;
-    if(frame===15)return 1800;
-    return action==='idle'||action==='focus'?200:180;
+    if(frame===frames-1)return 1800;
+    return action==='idle'||action==='focus'?130:120;
   }
   function create(options={}) {
     const gardenId=typeof options.pet==='string'?options.pet:options.pet?.id;

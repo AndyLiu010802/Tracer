@@ -126,7 +126,9 @@
       if(nextTreasure)set(collectGoal.label,tr('下一件心愿：','Your next treasure: ')+nextTreasure.name[language==='en'?1:0]+' · '+Math.min(snapshot.economy?.balance||0,nextTreasure.price)+' / '+nextTreasure.price+tr(' 金币 →',' coins →'));
       set(title,tr('伙伴家园','Companion garden'));set(description,tr('开始一项任务，种下一颗惊喜。每次完成，都有花朵替你记住。','Begin a task, plant a little surprise. Let each finished step leave a flower.'));set(planetLink.label,tr('花朵星球','Memory planets'));
       stats.setAttribute('aria-label',tr('今天的进展','Today’s progress'));set(todayTasks.value,number(snapshot.today?.tasks));set(todayTasks.label,tr('今天完成','tasks today'));set(todayFocus.value,number(snapshot.today?.minutes));set(todayFocus.label,tr('专注分钟','focus minutes'));
-      set(gardenTitle,tr('植物图鉴','Botanical collection'));set(gardenHelp,tr('每一朵收获都留在这里。未知的轮廓，等待下一次发现。','Every harvest belongs here. Unfamiliar silhouettes await their first discovery.'));
+      set(gardenTitle,tr('植物图鉴','Botanical collection'));set(gardenHelp,snapshot.pity
+        ? tr('保底：再完成最多 ','Guaranteed within the next ')+number(snapshot.pity.companionRemaining)+tr(' 个任务出精灵，',' completed tasks: a companion; ')+number(snapshot.pity.shinyRemaining)+tr(' 个任务出闪光精灵。出现后重置对应保底。',' tasks: a shiny. Each resets when its companion appears.')
+        : tr('每一朵收获都留在这里。未知的轮廓，等待下一次发现。','Every harvest belongs here. Unfamiliar silhouettes await their first discovery.'));
       set(add.label,tr('前往任务','Go to tasks'));
       set(journalTitle,tr('生长手记','Garden journal'));set(journalHelp,tr('开始、盛放、收藏，都是你的足迹','Beginnings, blooms and memories'));set(journalEmpty,tr('第一颗种子，会记住你开始的这一刻。','Your first seed will remember the moment you began.'));set(footnote,tr('不用赶路。\n按自己的节奏，也会开花。','No need to hurry.\nGood things grow at your pace.'));
       const items=[],seen=new Set();for(const item of Array.isArray(snapshot.plots)?snapshot.plots:[]){if(!item||typeof item.projectId!=='string'||!item.projectId||seen.has(item.projectId))continue;seen.add(item.projectId);items.push(item);}

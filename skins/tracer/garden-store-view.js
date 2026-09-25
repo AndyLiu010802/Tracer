@@ -14,9 +14,10 @@
     const features=new Map();
     for(const id of ['book_cabinet','reading_bench','flower_cart']){const figure=el('button','store-hero-object',heroArt);figure.type='button';figure.dataset.storeFeature=id;figure.innerHTML=root.TracerGardenCollectionArt.markup(id);figure.querySelector('svg')?.setAttribute('preserveAspectRatio','xMidYMax meet');features.set(id,figure);}
     const benefits=el('div','store-benefits',shop),navigation=el('nav','store-navigation',shop),navs=new Map(),navLabels=new Map();
-    for(const [id,artId]of [['furniture','reading_bench'],['stickers',null],['wallpapers',null],['materials',null],['avatarFrames',null],['taskFrames',null],['warehouse','flower_cart']]){
+    for(const [id,artId]of [['furniture','reading_bench'],['stickers',null],['postcards',null],['wallpapers',null],['materials',null],['avatarFrames',null],['taskFrames',null],['warehouse','flower_cart']]){
       const b=button(navigation,id),art=el('span','store-department-art',b);art.setAttribute('aria-hidden','true');
       if(artId)art.innerHTML=root.TracerGardenCollectionArt.markup(artId);
+      else if(id==='postcards')art.textContent='\u2709';
       else if(id==='wallpapers'||id==='stickers'){const picture=el('img','',art);picture.src=id==='stickers'?'/sticker-art/st_bunny-v1.png':'/wallpapers/static-01.png';picture.alt='';if(id==='stickers')picture.className='store-nav-sticker';}
       else if(id==='avatarFrames'||id==='taskFrames')root.TracerFrames.navArt(art,id==='avatarFrames'?'avatarFrame':'taskFrame');
       else for(let i=0;i<3;i++)el('i','store-swatch',art);
@@ -26,6 +27,7 @@
     const furniture=el('section','store-furniture',shop),collection=root.TracerGardenCollectionShop(furniture,onAction);
     const collectionBox=furniture.querySelector('.garden-collection-shop');collectionBox.insertBefore(collectionBox.querySelector('.garden-collect-goal'),collectionBox.querySelector('.garden-collect-status'));
     const stickerSection=el('section','store-stickers',shop),stickerShop=root.TracerStickerShop(stickerSection,onAction);
+    const postcardSection=el('section','store-postcards',shop),postcardShop=root.TracerPostcards.shop(postcardSection,onAction);
     const wallSection=el('section','store-wallpapers',shop),wallHeading=el('div','store-department-heading',wallSection),wallTitle=el('h2','',wallHeading),wallHint=el('p','',wallHeading),filters=el('div','store-wall-filters',wallSection);
     const filterButtons=new Map();for(const id of ['static','dynamic','owned'])filterButtons.set(id,button(filters,'filter-'+id));
     const defaults=el('div','store-defaults',wallSection),defaultBg=button(defaults,'default-background'),defaultMaterial=button(defaults,'default-material'),defaultAvatar=button(defaults,'default-avatarFrame'),defaultTask=button(defaults,'default-taskFrame');
@@ -73,16 +75,16 @@
     }
     function choose(next){tab=next;render();}
     function render(){
-      shop.dataset.department=tab;furniture.hidden=tab!=='furniture';stickerSection.hidden=tab!=='stickers';wallSection.hidden=!['wallpapers','materials','avatarFrames','taskFrames'].includes(tab);warehouse.hidden=tab!=='warehouse';
+      shop.dataset.department=tab;furniture.hidden=tab!=='furniture';stickerSection.hidden=tab!=='stickers';postcardSection.hidden=tab!=='postcards';wallSection.hidden=!['wallpapers','materials','avatarFrames','taskFrames'].includes(tab);warehouse.hidden=tab!=='warehouse';
       navigation.setAttribute('aria-label',tr('店铺分区','Shop departments'));
-      for(const [id,b]of navs){const labels=navLabels.get(id);labels.name.textContent=({furniture:tr('家具小铺','Furniture'),stickers:tr('贴纸小铺','Stickers'),wallpapers:tr('风景画廊','Wallpapers'),materials:tr('材质工坊','Materials'),avatarFrames:tr('头像饰品铺','Portrait atelier'),taskFrames:tr('任务框工坊','Task frames'),warehouse:tr('花园柜台','Garden counter')})[id];labels.note.textContent=({furniture:tr('15 件匠心小物','15 crafted treasures'),stickers:tr('8 张纸边小故事','8 paper treasures'),wallpapers:tr('20 扇风景之窗','20 little escapes'),materials:tr('10 种温柔触感','10 lovely finishes'),avatarFrames:tr('6 枚属于你的徽记','6 personal signatures'),taskFrames:tr('6 种日常的模样','6 styles for your plans'),warehouse:tr('出售收获 · 打理花园','Harvests & gardens')})[id];b.setAttribute('aria-pressed',String(tab===id));}
+      for(const [id,b]of navs){const labels=navLabels.get(id);labels.name.textContent=({postcards:tr('\u661f\u7403\u90ae\u5c40','Postcards'),furniture:tr('家具小铺','Furniture'),stickers:tr('贴纸小铺','Stickers'),wallpapers:tr('风景画廊','Wallpapers'),materials:tr('材质工坊','Materials'),avatarFrames:tr('头像饰品铺','Portrait atelier'),taskFrames:tr('任务框工坊','Task frames'),warehouse:tr('花园柜台','Garden counter')})[id];labels.note.textContent=({postcards:tr('4 \u6b3e\u661f\u7403\u4fe1\u7eb8','4 keepsake styles'),furniture:tr('15 件匠心小物','15 crafted treasures'),stickers:tr((state.stickers?.total||0)+' 款手账贴纸',(state.stickers?.total||0)+' journal stickers'),wallpapers:tr('20 扇风景之窗','20 little escapes'),materials:tr('10 种温柔触感','10 lovely finishes'),avatarFrames:tr('6 枚属于你的徽记','6 personal signatures'),taskFrames:tr('6 种日常的模样','6 styles for your plans'),warehouse:tr('出售收获 · 打理花园','Harvests & gardens')})[id];b.setAttribute('aria-pressed',String(tab===id));}
       eyebrow.textContent='TRACER · GARDEN GENERAL STORE';title.textContent=tr('心愿杂货铺','The wish emporium');walletLabel.textContent=tr('我的金币','YOUR COINS');balance.textContent='◈ '+(state.economy?.balance||0).toLocaleString();back.textContent=tr('回花园 ↗','To the garden ↗');
       heroTag.textContent=tr('橱窗故事 / 午后的慢时光','IN THE WINDOW / A SLOW AFTERNOON');heroTitle.textContent=tr('欢迎光临，\n慢慢挑，慢慢喜欢。','Come on in.\nFind a little joy.');heroText.textContent=tr('木头的温度，花开的声音。\n为你的小天地，添一件心爱之物。','Warm wood. A hint of spring.\nSomething lovely for your own little world.');heroAction.textContent=tr('看看本期橱窗 →','Browse the window →');
       welcome.textContent=tr('小店营业中','COME ON IN');windowLabel.textContent=tr('午后书房 · 玻璃花房','READING NOOKS & GLASSHOUSES');
       for(const [id,b]of features){const item=state.collectibles?.items.find(i=>i.id===id);b.setAttribute('aria-label',tr('橱窗商品：','Window display: ')+(item?.name[state.language==='en'?1:0]||id));}
       benefits.textContent=tr('—  把日常的努力，换成喜欢的风景  —','—  SMALL EFFORTS, LOVELY LITTLE REWARDS  —');closingText.textContent=tr('愿你带走的每一件小物，都让日常多一点欢喜。','May every little treasure make your everyday a little lovelier.');retry.textContent=tr('重试保存','Retry save');
       if(state.error){message.hidden=false;messageText.textContent=state.error;}else if(!pending)message.hidden=true;
-      collection.update(state);stickerShop.update(state);market.update(state);renderWalls();renderDetail();
+      collection.update(state);stickerShop.update(state);postcardShop.update(state);market.update(state);renderWalls();renderDetail();
     }
     function click(event){const feature=event.target.closest('[data-store-feature]');if(feature){const id=feature.dataset.storeFeature,item=state.collectibles?.items.find(i=>i.id===id);if(!item)return;choose('furniture');furniture.querySelector('[data-set-id="'+item.setId+'"]')?.click();furniture.querySelector('[data-collect-action=inspect][data-item-id="'+id+'"]')?.click();return;}
       const card=event.target.closest('[data-wallpaper-id]');if(card){selected=card.dataset.wallpaperId;disposePreview();disposePreview=root.TracerWallpapers.thumbnail(detailImage,catalog.find(i=>i.id===selected),true);renderDetail();detail.showModal();return;}
@@ -99,6 +101,6 @@
     }
     shop.addEventListener('click',click);
     function update(next){if(dead)return;state=next;render();}
-    return{update,department:choose,destroy(){dead=true;abort.abort();disposePreview();if(detail.open)detail.close();collection.destroy();stickerShop.destroy();market.destroy();shop.removeEventListener('click',click);shop.remove();}};
+    return{update,department:choose,destroy(){dead=true;abort.abort();disposePreview();if(detail.open)detail.close();collection.destroy();stickerShop.destroy();postcardShop.destroy();market.destroy();shop.removeEventListener('click',click);shop.remove();}};
   };
 })(typeof window!=='undefined'?window:globalThis);

@@ -15,6 +15,43 @@ test('avatar symbols default to black and accept all twelve zodiac signs with in
 });
 async function fixture(t,options){const dir=await fs.mkdtemp(path.join(os.tmpdir(),'tracer-account-test-'));t.after(async()=>{assert.ok(path.basename(dir).startsWith('tracer-account-test-'));await fs.rm(dir,{recursive:true,force:true});});return{dir,service:createLocalAccounts(dir,options)};}
 const registration=(email='owner@example.com')=>({email,password,profile:{nickname:'小月亮',bio:'我的空间',workspaceName:'月光工作室'}});
+
+test('clear data deletes only the current account files and profile while retaining credentials and guest claims',async t=>{
+  const {dir,service}=await fixture(t),one=await service.register(registration()),two=await service.register(registration('kept@example.com'));
+  const workspace=M.emptyWorkspace();M.addTask(workspace,{title:'Guest source'});
+  await store.writeStore(dir,'workspace',JSON.stringify(workspace));await service.importGuest(one.token);
+  const accountDir=service.directory(one.user.id),otherDir=service.directory(two.user.id);
+  await fs.mkdir(path.join(accountDir,'.ai'),{recursive:true});await fs.writeFile(path.join(accountDir,'.ai','key.json'),'private');
+  await fs.writeFile(path.join(accountDir,'workspace.json.bak'),'private backup');
+  await fs.mkdir(path.join(accountDir,'pet-art'),{recursive:true});await fs.writeFile(path.join(accountDir,'pet-art','custom.png'),'private image');
+  await store.writeStore(otherDir,'workspace',JSON.stringify(workspace));
+  await assert.rejects(service.clearData(one.token,{password}),{code:'confirmation-required'});
+  await assert.rejects(service.clearData(one.token,{password:'wrong',confirm:true}),{code:'invalid-credentials'});
+  assert.equal(await fs.readFile(path.join(accountDir,'.ai','key.json'),'utf8'),'private');
+  const cleared=await service.clearData(one.token,{password,confirm:true});
+  await assert.rejects(fs.stat(accountDir),{code:'ENOENT'});
+  assert.equal((await service.context(cleared.token)).scope,one.user.id);
+  assert.equal((await service.context(cleared.token)).generation,1);
+  assert.equal((await service.context(one.token)).scope,'locked');
+  assert.equal(cleared.user.profile.nickname,'Tracer');assert.equal(cleared.user.profile.bio,'');
+  assert.equal((await service.exportData(cleared.token)).workspace,null);
+  assert.equal((await service.guestPreview(cleared.token)).alreadyImported,true);
+  assert.equal((await store.readStore(dir,'workspace')).tasks[0].title,'Guest source');
+  assert.equal((await store.readStore(otherDir,'workspace')).tasks[0].title,'Guest source');
+  await service.login({email:one.user.email,password});
+  await service.recover({email:one.user.email,recoveryCode:one.recoveryCode,newPassword:password});
+});
+
+test('clear data refuses in-flight operations and rejects all stale generations after completion',async t=>{
+  let closed=0;const {service}=await fixture(t,{beforeClear:async()=>{closed++;}}),one=await service.register(registration());
+  const lease=await service.beginDataRequest(one.token,one.user.id,0);
+  await assert.rejects(service.clearData(one.token,{password,confirm:true}),{code:'account-data-busy'});assert.equal(closed,0);
+  lease.release();lease.release();
+  const cleared=await service.clearData(one.token,{password,confirm:true});assert.equal(closed,1);
+  await assert.rejects(service.beginDataRequest(cleared.token,one.user.id,0),{code:'account-changed'});
+  const fresh=await service.beginDataRequest(cleared.token,one.user.id,1);fresh.release();
+  await assert.rejects(service.clearData('',{password,confirm:true}),{code:'session-expired'});
+});
 test('local registration normalizes email, persists only hashed secrets and survives restart',async t=>{const{dir,service}=await fixture(t),created=await service.register(registration(' OWNER@EXAMPLE.COM '),'Windows Chrome/123');assert.equal(created.user.email,'owner@example.com');assert.equal(created.user.emailVerified,false);assert.equal(created.user.profile.nickname,'小月亮');assert.equal(created.recoveryCode.length,55);const raw=await fs.readFile(path.join(dir,'.accounts/identity.json'),'utf8');assert.ok(!raw.includes(password));assert.ok(!raw.includes(created.token));assert.ok(!raw.includes(created.recoveryCode));const restored=createLocalAccounts(dir);assert.equal((await restored.context(created.token)).user.id,created.user.id);assert.equal((await restored.context('')).scope,'guest');assert.equal((await restored.context('bad-token')).scope,'locked');await assert.rejects(service.register(registration()),{code:'email-in-use'});});
 test('concurrent registrations for one normalized email create exactly one identity',async t=>{const{service}=await fixture(t);const outcomes=await Promise.allSettled([service.register(registration()),service.register(registration('OWNER@example.com'))]);assert.equal(outcomes.filter(r=>r.status==='fulfilled').length,1);assert.equal(outcomes.filter(r=>r.status==='rejected')[0].reason.code,'email-in-use');});
 test('invalid passwords and unknown email have the same login error; throttling bounds retries',async t=>{const{service}=await fixture(t);await service.register(registration());await assert.rejects(service.login({email:'absent@example.com',password}),{code:'invalid-credentials'});for(let n=0;n<12;n++)await assert.rejects(service.login({email:'owner@example.com',password:'incorrect-password'}),{code:'invalid-credentials'});await assert.rejects(service.login({email:'owner@example.com',password}),{code:'try-again-later'});});

@@ -6,7 +6,7 @@ const Model = require('../skins/tracer/pet-model');
 const Packages = require('../lib/pet-package');
 const asset = number => '/api/pet-art/' + number.toString(16).padStart(32, '0') + '.png';
 const profile = version => ({ id: 'custom_' + 'a'.repeat(32), name: ' Moss ', kind: 'creature', personality: ' Quiet ', image: asset(1),
-  ...(version ? { animation: { version, pages: Array.from({ length: version === 2 ? 16 : 4 }, (_, i) => asset(i + 1)) } } : {}) });
+  ...(version ? { animation: { version, pages: Array.from({ length: version >= 2 ? 16 : 4 }, (_, i) => asset(i + 1)) } } : {}) });
 const clone = value => structuredClone(value);
 function deferred() { let resolve; const promise = new Promise(yes => { resolve = yes; }); return { promise, resolve }; }
 const crcTable = Array.from({ length: 256 }, (_, n) => { for (let i = 0; i < 8; i++) n = n & 1 ? 0xedb88320 ^ (n >>> 1) : n >>> 1; return n >>> 0; });
@@ -56,7 +56,7 @@ function environment(version = 1) {
     async loadImage(url, { signal } = {}) {
       assert.match(url, /^\/api\/pet-art\/[a-f0-9]{32}\.png$/); assert.ok(!signal?.aborted); loaded.push(url);
       const page = parseInt(url.slice('/api/pet-art/'.length), 16) - 1;
-      return { width: version ? 768 : 320, height: version ? 768 : 160,
+      return { width: version === 3 ? 1536 : version ? 768 : 320, height: version ? 768 : 160,
         at(x, y) {
           if (!version) return [x < 160 ? 30 : 210, 80, 160, 255];
           const column = Math.floor(x / 192), row = Math.floor(y / 192), localX = x % 192, localY = y % 192;
@@ -65,7 +65,7 @@ function environment(version = 1) {
       };
     },
     createCanvas(width, height) { const value = new Canvas(width, height); canvases.push(value); return value; },
-    frameInsetsForImage() { return Array.from({ length: 16 }, () => [0,0,0,0]); },
+    frameInsetsForImage() { return Array.from({ length: version===3?32:16 }, () => [0,0,0,0]); },
     async validateSheet(blob, settings) {
       assert.equal(blob.type, 'image/png');
       const image = decode(await blob.arrayBuffer());
@@ -97,6 +97,15 @@ test('edit signatures hash the canonical saved profile, including artwork and re
     const value = clone(raw); change(value); assert.notEqual(await Edit.signature(value), expected);
   }
   await assert.rejects(Edit.signature({ ...raw, image: 'https://example.test/private.png' }), /invalid-custom/);
+});
+
+test('32-frame editing crops exactly one square reference cell and preserves all action sheets', async () => {
+  const env=environment(3),raw=profile(3),result=await Edit.prepare(raw,env.options);
+  assert.equal(result.animationVersion,3);
+  assert.deepEqual(result.pages,raw.animation.pages);
+  assert.deepEqual(result.retainedFrames,Array(16).fill(32));
+  const photo=decode(result.photo);assert.equal(photo.width,192);assert.equal(photo.height,192);
+  assert.deepEqual(env.loaded,[raw.image]);assert.equal(env.packs.length,0);
 });
 
 test('v2 editing reuses every URL and retained flag, taking only an idle-frame reference screenshot', async () => {

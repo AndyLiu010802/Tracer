@@ -9,6 +9,8 @@
   const colors=['#c7d7a8','#9ccad9','#c2ade2','#e4b0bc','#e5c58d','#abb7c7'];
   const colorNames=[['苔绿','Moss'],['冰蓝','Ice'],['淡紫','Lilac'],['玫瑰','Rose'],['暖金','Gold'],['银灰','Silver']];
   const errors={
+    'account-data-busy':['账户仍有操作正在进行，请等待 AI 生成或保存完成后重试。','Account operations are still running. Wait for AI generation or saving to finish, then retry.'],
+    'local-data-clear-failed':['账户文件已清空，但浏览器草稿尚未清理完成。请关闭其他 Tracer 窗口后重试。','Account files were cleared, but browser drafts could not be removed. Close other Tracer windows and retry.'],
     'invalid-email':['请填写有效的邮箱地址。','Enter a valid email address.'], 'invalid-password':['密码需为 10–128 个字符。','Use a password with 10–128 characters.'],
     'invalid-profile':['请检查昵称、简介和空间名称的长度。','Check your nickname, bio and space name.'], 'invalid-avatar':['头像格式不支持，请重新选择图片。','Choose another avatar image.'],
     'email-in-use':['这个邮箱已在本机注册，请直接登录。','This email is registered on this computer. Sign in instead.'], 'invalid-credentials':['邮箱或密码不正确。','The email or password is incorrect.'],
@@ -96,6 +98,25 @@
       if(!result.available)return;el('p','account-help',section,tr('将复制游客任务、笔记、项目、完成历史和花园金币。原游客数据保留；同一份数据只能导入一个账户。伙伴草稿和 AI 密钥不导入。','Copies guest tasks, notes, projects, history and garden coins. Guest data stays intact and can be imported into only one account. Companion drafts and AI keys are excluded.'));
       const label=el('label','account-check-label',section),check=el('input','',label);check.type='checkbox';check.id='account-import-confirm';el('span','',label,tr('我确认把这份游客数据导入当前账户','Import this guest data into my current account'));const importButton=button(section,tr('确认导入','Import workspace'),()=>run(async()=>{await beginSwitch();await A.api('import-guest',{});completeSwitch();}),true);importButton.id='account-import-guest';importButton.disabled=true;check.onchange=()=>importButton.disabled=!check.checked;
     }).catch(()=>{if(text.isConnected)text.textContent=tr('暂时无法读取游客数据，请稍后重试。','Guest data is unavailable. Try again later.');});
+    renderClearData(content);
+  }
+  function renderClearData(content){
+    const section=el('section','account-danger-zone',content);
+    el('h4','',section,tr('清空本地资料','Clear local data'));
+    el('p','account-help',section,tr('永久删除当前账户的个人资料、任务、笔记、项目、花园与收藏、伙伴图片及草稿、AI 配置和本地偏好。保留账户邮箱、密码和恢复码，清空后仍保持登录。游客空间和其他账户不受影响。','Permanently delete this account’s profile, tasks, notes, projects, garden, collection, companion images and drafts, AI settings and preferences. Your email, password and recovery code are kept, and you stay signed in. Guest data and other accounts are unaffected.'));
+    const open=button(section,tr('清空账户本地资料','Clear account local data'),()=>{form.hidden=false;open.hidden=true;pw.focus();});open.id='account-clear-data';open.classList.add('account-danger');
+    const form=el('form','account-form',section);form.hidden=true;
+    const pw=field(form,'account-clear-password',tr('输入当前密码','Enter current password'),'password','',{required:true,maxLength:128,autocomplete:'current-password'});
+    const label=el('label','account-check-label',form),check=el('input','',label);check.type='checkbox';check.id='account-clear-confirm';check.required=true;
+    el('span','',label,tr('我确认永久删除这些资料，此操作无法撤销。','I understand that this permanently deletes my data and cannot be undone.'));
+    const actions=el('div','account-clear-actions',form),submit=el('button','account-button account-danger',actions,tr('确认清空所有资料','Permanently clear all data'));submit.type='submit';submit.id='account-clear-submit';submit.disabled=true;
+    check.onchange=()=>submit.disabled=!check.checked;
+    button(actions,tr('取消','Cancel'),()=>{form.reset();form.hidden=true;open.hidden=false;submit.disabled=true;open.focus();});
+    let clearedGeneration=null;
+    form.onsubmit=event=>{event.preventDefault();if(!form.reportValidity())return;run(async()=>{
+      if(clearedGeneration===null){await beginSwitch();const result=await A.api('clear-data',{password:pw.value,confirm:check.checked});clearedGeneration=result.generation;}
+      A.suspend();await A.clearLocalData(clearedGeneration);completeSwitch();
+    });};
   }
   function renderCollection(content){window.TracerWallpapers.mount(content,{flush,run,notice});}
   function download(name,text,type){const url=URL.createObjectURL(new Blob([text],{type})),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
