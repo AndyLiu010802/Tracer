@@ -28,11 +28,13 @@ class Element extends Target{
   getBoundingClientRect(){return{left:0,top:0,width:380,height:260};}
 }
 function fixture(kind,onAction,options={}){
-  const win=new Target(),doc=new Target(),nodes=new Map(),actions=[];
+  const win=new Target(),doc=new Target(),nodes=new Map(),actions=[],figures=[],fishPreviews=[];
   doc.defaultView=win;doc.hidden=false;doc.createElement=tag=>new Element(doc,tag);doc.body=new Element(doc,'body');doc.documentElement=new Element(doc,'html');doc.activeElement=doc.body;doc.elementFromPoint=()=>null;
   doc.dialogs=[];doc.querySelectorAll=selector=>selector==='dialog[open]'?doc.dialogs.filter(dialog=>dialog.open):[];
   doc.getElementById=id=>{if(!nodes.has(id)){const node=new Element(doc);node.id=id;nodes.set(id,node);}return nodes.get(id);};
-  const art={escape:value=>String(value??''),rodMarkup:()=>'',fishMarkup:()=>'',createPond:()=>({update(){},destroy(){}})};
+  const art={escape:value=>String(value??''),rodMarkup:()=>'',fishMarkup:fish=>{fishPreviews.push(fish);return '';},createPond:()=>({update(){},destroy(){}})};
+  art.createFishFigure=(_host,{fish})=>{const figure={kind:'fish',fish,updates:[],destroyed:0,update(next){this.fish=next.fish;this.updates.push(next);},destroy(){this.destroyed++;}};figures.push(figure);return figure;};
+  win.TracerFishingRewards={markup:()=>'',createFigure:(_host,{fish})=>{const figure={kind:'product',fish,destroyed:0,setFish(value){this.fish=value;},destroy(){this.destroyed++;}};figures.push(figure);return figure;}};
   const record=type=>{actions.push(type);onAction?.(type);};
   let update,game,surface,button,keydown,scope,menu; const commands=[]; let entranceReady=options.entranceReady!==false;
   if(kind==='game'){
@@ -48,10 +50,22 @@ function fixture(kind,onAction,options={}){
   const down=(code='KeyF',options={})=>keydown.emit('keydown',{code,target:button,...options});
   const up=(code='KeyF',options={})=>win.emit('keyup',{code,target:button,...options});
   const destroy=()=>kind==='game'?game.destroy():win.emit('beforeunload');
-  return{win,doc,surface,scope:scope||surface,button,actions,commands,set,down,up,destroy,summon:()=>menu({type:'summon-rod'}),finishEntrance:()=>entranceReady=true};
+  return{win,doc,surface,scope:scope||surface,button,actions,commands,figures,fishPreviews,set,down,up,destroy,summon:()=>menu({type:'summon-rod'}),finishEntrance:()=>entranceReady=true};
 }
 
 for(const kind of ['game','desktop']){
+  test(`${kind}: live input and immediate catch presentation never create a second fish GPU context`,()=>{
+    const f=fixture(kind),fish=F.catalog.fish.find(value=>value.id==='dreamray');
+    f.down();f.set('charging',{fish});assert.equal(f.figures.length,0);f.up();assert.deepEqual(f.actions,['cast-start','cast-release']);
+    for(const phase of ['cast','waiting','bite','reeling','escaped'])f.set(phase,{fish});
+    assert.equal(f.figures.length,0,'no invisible WebGL allocation can block the playable phases');
+    assert.equal(f.fishPreviews.length,0);f.set('caught',{fish});f.set('caught',{fish});assert.equal(f.figures.length,0);assert.deepEqual(f.fishPreviews,[fish]);
+    const nextFish=F.catalog.fish.find(value=>value.id==='dragonkoi');f.set('charging',{fish:nextFish});assert.equal(f.fishPreviews.length,1);
+    f.set('caught',{fish:nextFish});assert.equal(f.figures.length,0);assert.deepEqual(f.fishPreviews,[fish,nextFish]);
+    const junk={id:'junk',kind:'junk',variant:'boots',name:['旧靴子','Old boot']};f.set('charging',{fish:junk});assert.equal(f.figures.length,0);
+    f.set('caught',{fish:junk});assert.equal(f.figures.length,1);assert.equal(f.figures[0].kind,'product');
+    f.destroy();assert.equal(f.figures[0].destroyed,1);
+  });
   test(`${kind}: F charges and casts once; repeat cannot hook or recast`,()=>{
     const f=fixture(kind);f.down();f.set('charging');f.down('KeyF',{repeat:true});f.down();
     assert.deepEqual(f.actions,['cast-start']);f.up();f.up();assert.deepEqual(f.actions,['cast-start','cast-release']);

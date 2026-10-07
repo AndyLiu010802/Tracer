@@ -187,14 +187,37 @@ async function main(args = process.argv.slice(2)) {
     await waitFor(mainPage, () => Tracer.fishing.snapshot().language === 'en');
     await mainPage.evaluate(() => Tracer.show('cabin'));
     await mainPage.waitForSelector('.fishing-aquarium-scene[data-count="1"]');
-    const shot = async (page, name) => { await page.screenshot({ path: path.join(output, name), omitBackground: true }); report.screenshots.push(name); };
+    await mainPage.evaluate(() => {
+      window.qaSimulationTrace = [];
+      const step = TracerFishingModel.stepSession;
+      TracerFishingModel.stepSession = function(session, input, delta) {
+        const before = session.phase, at = performance.now();
+        const result = step.apply(this, arguments);
+        if (input?.cancel || input?.release || before !== session.phase) {
+          qaSimulationTrace.push({ at, before, phase: session.phase, reason: session.reason, delta,
+            input: { cancel: !!input?.cancel, release: !!input?.release }, stack: new Error().stack });
+          if (qaSimulationTrace.length > 40) qaSimulationTrace.shift();
+        }
+        return result;
+      };
+    });
+    // Capturing a software-GPU frame can outlast a normal interaction timeout.
+    // This only budgets artifact capture; all behavioral waits keep their limits.
+    const shot = async (page, name) => { await page.screenshot({ path: path.join(output, name), omitBackground: true, timeout: 60000 }); report.screenshots.push(name); };
     await shot(mainPage, '01-main-aquarium.png');
     assert.equal(await mainPage.evaluate(id => Tracer.fishing.snapshot().showcase.fish.some(f => f.id === id), seeded.fryId), true);
-    await app.evaluate(({ app, ipcMain }) => {
+    await app.evaluate(({ app, ipcMain, BrowserWindow }) => {
       const started = Date.now(); globalThis.qaOverlayTrace = [];
       const record = (event, details = {}) => { if (qaOverlayTrace.length < 120) qaOverlayTrace.push({ ms: Date.now() - started, event, ...details }); };
-      for (const channel of ['tracer-fishing-update', 'tracer-fishing-aquarium-update', 'tracer-fishing-command', 'tracer-fishing-aquarium-command']) {
-        ipcMain.prependListener(channel, (_event, value) => { if (channel.endsWith('-update') || value?.type === 'ready') record(channel, { type: value?.type || 'snapshot', hasRod: !!value?.rod, fish: value?.showcase?.fish?.length }); });
+      for (const channel of ['tracer-fishing-update', 'tracer-fishing-aquarium-update', 'tracer-fishing-command', 'tracer-fishing-aquarium-command', 'tracer-fishing-action']) {
+        ipcMain.prependListener(channel, (_event, value) => { if (channel.endsWith('-update') || channel.endsWith('-action') || value?.type === 'ready') record(channel, { type: value?.type || 'snapshot', hasRod: !!value?.rod, fish: value?.showcase?.fish?.length, phase: value?.session?.phase, sessionId: value?.sessionId, sequence: value?.sequence }); });
+      }
+      for (const window of BrowserWindow.getAllWindows()) {
+        const contents = window.webContents, send = contents.send.bind(contents);
+        contents.send = (channel, ...values) => {
+          if (channel === 'tracer-fishing-action') record('forward-fishing-action', { type: values[0]?.type, sessionId: values[0]?.sessionId, sequence: values[0]?.sequence });
+          return send(channel, ...values);
+        };
       }
       app.on('web-contents-created', (_event, contents) => {
         for (const name of ['dom-ready', 'did-finish-load']) contents.on(name, () => record(name, { url: contents.getURL() }));
@@ -242,10 +265,14 @@ async function main(args = process.argv.slice(2)) {
     // turn, immediately after the production listener has started the summon.
     // The later charge/cast still uses Playwright's actual keyboard input.
     await pond.evaluate(() => {
-      window.qaEarlySummon = null; window.qaSummonCount = 0; window.qaKeys = [];
+      window.qaEarlySummon = null; window.qaSummonCount = 0; window.qaKeys = []; window.qaFocusEvents = [];
       for (const type of ['keydown', 'keyup']) window.addEventListener(type, event => {
-        if (event.code === 'KeyF') qaKeys.push({ type, trusted: event.isTrusted, handled: event.defaultPrevented, focused: document.hasFocus(), phase: document.getElementById('desktop-fishing').dataset.phase });
+        if (event.code === 'KeyF') qaKeys.push({ at: performance.now(), type, trusted: event.isTrusted, handled: event.defaultPrevented, focused: document.hasFocus(), phase: document.getElementById('desktop-fishing').dataset.phase });
       });
+      for (const type of ['blur', 'focus', 'focusout', 'visibilitychange']) window.addEventListener(type, event => {
+        qaFocusEvents.push({ at: performance.now(), type, target: event.target?.id || event.target?.nodeName || 'window', related: event.relatedTarget?.id || event.relatedTarget?.nodeName, focused: document.hasFocus(), hidden: document.hidden });
+        if (qaFocusEvents.length > 40) qaFocusEvents.shift();
+      }, true);
       FishingDesktop.onMenuAction(value => {
         if (value.type !== 'summon-rod') return;
         window.qaSummonCount++;
@@ -296,6 +323,25 @@ async function main(args = process.argv.slice(2)) {
     await shot(pond, '04-packaged-cast.png');
     await mainPage.evaluate(() => Tracer.fishing.cancel('packaged-smoke'));
     stage('native pond menu summons, blocks early F and accepts a real F cast');
+    await mainPage.evaluate(() => {
+      Tracer.show('ponds');
+      window.qaMainPondCanvas = document.querySelector('.fishing-page-ponds #fishing-pond-canvas canvas');
+    });
+    assert.equal(await mainPage.evaluate(() => !!window.qaMainPondCanvas), true);
+    await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().find(window => window.webContents.getURL().endsWith('/fishing-desktop.html')).focus());
+    await nativeMenu(pond, 'Summon fishing rod');
+    await waitFor(pond, () => qaSummonCount === 3
+      && TracerFishingRodEffects.summonState(qaSnapshots.at(-1).rod, performance.now() - qaSummonStartedAt, matchMedia('(prefers-reduced-motion: reduce)').matches) === null
+      && document.getElementById('desktop-fishing').dataset.rodVisible === 'true'
+      && document.getElementById('fishing-rod').style.opacity === '1'
+      && document.querySelector('.fishing-summon-canvas')?.hidden);
+    await pond.keyboard.down('f'); await pause(350); await pond.keyboard.up('f');
+    await waitFor(pond, previous => qaPhases.some(value => value.phase === 'cast' && value.id !== previous && qaPhases.some(earlier => earlier.id === value.id && earlier.phase === 'charging')), castId);
+    const pondCastId = await pond.evaluate(previous => qaPhases.find(value => value.phase === 'cast' && value.id !== previous).id, castId);
+    await waitFor(mainPage, id => Tracer.fishing.snapshot().state.casts.some(value => value.id === id), pondCastId);
+    assert.equal(await mainPage.evaluate(() => qaMainPondCanvas === document.querySelector('.fishing-page-ponds #fishing-pond-canvas canvas')), true, 'active pond canvas survives charging and save updates');
+    await mainPage.evaluate(() => Tracer.fishing.cancel('packaged-pond-smoke'));
+    stage('real F casts also work while My Ponds retains its live GPU context');
     report.aquariumMenu = await nativeMenu(aquarium, 'Rotate right');
     await waitFor(aquarium, () => Number(document.querySelector('.fishing-aquarium-volume').dataset.aquariumYaw) === 15);
     await aquarium.evaluate(() => FishingAquariumDesktop.send({ type: 'resize', value: 1.25 }));
@@ -321,7 +367,7 @@ async function main(args = process.argv.slice(2)) {
     stage('native rotation and resize persist; stale, cross-account and wrong-window IPC cannot alter settings');
     const aquariumReload = aquarium.waitForEvent('domcontentloaded', { timeout: 60000 });
     aquariumReload.catch(() => {}); // Keep an earlier main-page failure observable.
-    await mainPage.reload();
+    await mainPage.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
     await waitFor(mainPage, () => window.Tracer?.fishing && Tracer.store.base?.fishing && !Tracer.store.dirty && !Tracer.store.inflight);
     assert.equal(await mainPage.locator('#language-select').inputValue(), 'en');
     assert(await mainPage.evaluate(id => Tracer.fishing.snapshot().showcase.fish.some(f => f.id === id), seeded.fryId));
@@ -353,6 +399,7 @@ async function main(args = process.argv.slice(2)) {
           aquariumFish: document.querySelector('.fishing-aquarium-scene')?.dataset.count,
           snapshots: window.qaSnapshots?.length, phase: document.getElementById('desktop-fishing')?.dataset.phase,
           keys: window.qaKeys, phases: window.qaPhases, summonCount: window.qaSummonCount,
+          focusEvents: window.qaFocusEvents, simulation: window.qaSimulationTrace,
         })) });
       } catch (diagnosticError) { report.rendererDiagnostics.push({ pageUrl: page.url(), unavailable: diagnosticError.message }); }
       try { await page.screenshot({ path: path.join(output, 'failure-' + index + '.png') }); } catch {}
@@ -360,6 +407,10 @@ async function main(args = process.argv.slice(2)) {
     throw error;
   } finally {
     if (app) {
+      try {
+        const page = app.context().pages().find(page => page.url() === origin + '/');
+        if (page) report.simulationTrace = await page.evaluate(() => window.qaSimulationTrace || []);
+      } catch (error) { report.simulationTraceUnavailable = error.message; }
       try {
         report.nativeDiagnostics = await app.evaluate(({ BrowserWindow }) => ({
           events: globalThis.qaOverlayTrace || [],

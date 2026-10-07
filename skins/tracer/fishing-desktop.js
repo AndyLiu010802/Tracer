@@ -120,10 +120,11 @@
     const behavior=['cruise','surge','rest'].includes(session.fishBehavior)?session.fishBehavior:'cruise';status.hidden=phase!=='reeling';status.querySelector('span').textContent=clamp(session.tension)>.8?copy('松线卸力','Ease the line'):copy(({cruise:'游弋',surge:'冲刺',rest:'回气'})[behavior],({cruise:'Cruising',surge:'Surging',rest:'Resting'})[behavior]);status.title=copy('鱼的体力','Fish stamina')+' '+Math.round(clamp(session.stamina===undefined?1:session.stamina)*100)+'%';
     byId('fishing-nibble').textContent=copy('试探，先等一等','A nibble. Wait.');
     const resolved=window.TracerFishingModel?.catchItem?.(session.fishId?session:value.lastCatch?.catch||value.lastCatch),currentFish=resolved?.kind?resolved:value.fish||value.lastCatch?.fish||resolved,product=currentFish?.kind==='junk'||currentFish?.kind==='mystery',figureKey=JSON.stringify([currentFish?.id||'',currentFish?.kind||'',currentFish?.variant||'']),rewards=window.TracerFishingRewards;
-    if(figureKey!==fishKey){
+    // The catch-only flight uses the same model atlas as the collection.
+    // A second fish WebGL context can block input or the whole catch reveal.
+    if(phase==='caught'&&figureKey!==fishKey){
       const nextKind=product?'product':'fish';if(nextKind!==flightKind){flightFigure?.destroy();flightFigure=null;flightFish.replaceChildren();flightKind=nextKind;}
       if(product){if(!flightFigure&&rewards?.createFigure)flightFigure=rewards.createFigure(flightFish,{fish:currentFish});else if(flightFigure)flightFigure.setFish?.(currentFish);else flightFish.innerHTML=rewards?.markup?.(currentFish)||'';}
-      else if(currentFish&&Art.createFishFigure){if(!flightFigure){flightFish.replaceChildren();flightFigure=Art.createFishFigure(flightFish,{fish:currentFish});}else flightFigure.update({fish:currentFish});}
       else{flightFigure?.destroy();flightFigure=null;flightFish.innerHTML=currentFish?Art.fishMarkup(currentFish):'';}
       flightFish.dataset.catchKind=currentFish?.kind||'fish';flightFish.dataset.catchVariant=currentFish?.variant||'';fishKey=figureKey;
     }

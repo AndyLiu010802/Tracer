@@ -67,10 +67,11 @@
       const product=fish?.kind==='junk'||fish?.kind==='mystery',figureKey=JSON.stringify([fish?.id||'',fish?.kind||'',fish?.variant||'']),rewards=win.TracerFishingRewards;
       const productWords=fish?.kind==='mystery'?[en?'A mysterious gift from the water':'从水里钓起一份惊喜',en?'Open it in your aquarium to reveal a gift':'前往水族馆打开，揭晓神秘礼物']:[en?'You fished out a piece of salvage':'钓起一件水中杂物',en?'Saved in your basket · Worth 1 coin':'已收入鱼篓 · 价值 1 金币'];
       if(product&&phase==='caught'){instructions.querySelector('strong').textContent=productWords[0];instructions.querySelector('span').textContent=snapshot.error||productWords[1];}
-      if(figureKey!==lastFish){
+      // Use the collection's model atlas for the brief catch flight. A second
+      // WebGL context must not consume live input or the catch display pause.
+      if(phase==='caught'&&figureKey!==lastFish){
         const nextKind=product?'product':'fish';if(nextKind!==flightKind){flightFigure?.destroy();flightFigure=null;flightFish.replaceChildren();flightKind=nextKind;}
         if(product){if(!flightFigure&&rewards?.createFigure)flightFigure=rewards.createFigure(flightFish,{fish});else if(flightFigure)flightFigure.setFish?.(fish);else flightFish.innerHTML=rewards?.markup?.(fish)||'';}
-        else if(fish&&Art.createFishFigure){if(!flightFigure){flightFish.replaceChildren();flightFigure=Art.createFishFigure(flightFish,{fish});}else flightFigure.update({fish});}
         else{flightFigure?.destroy();flightFigure=null;flightFish.innerHTML=fish?Art.fishMarkup(fish):'';}
         flightFish.dataset.catchKind=fish?.kind||'fish';flightFish.dataset.catchVariant=fish?.variant||'';lastFish=figureKey;
       }

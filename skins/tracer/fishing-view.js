@@ -5,6 +5,7 @@
   function create(host,options={}){
     const doc=host.ownerDocument,section=options.section||'ponds';
     let snapshot=null,signature='',selectedPond='',filter='all',selectedPool='basic',pondPlayer=null,tackleBox=null,tackleSelection='',destroyed=false,feeding=null,editing=false,selectedDecoration='',aquariumPlayer=null,showcaseEditing=false,showcaseDraft=null;
+    let pondPlayerId='',pondVisualKey='';
     const page=doc.createElement('div');page.className='fishing-page fishing-page-'+section;host.append(page);
     const tr=(zh,en)=>snapshot?.language==='en'?en:zh;
     const name=item=>Array.isArray(item?.name)?item.name[snapshot?.language==='en'?1:0]:item?.name||'';
@@ -122,15 +123,27 @@
       const focus=doc.activeElement?.closest('[data-fishing-action]'),focusId=focus&&[focus.dataset.fishingAction,focus.dataset.value];
       const tackleFocus=doc.activeElement?.closest('[data-tackle-focus]'),tackleFocusKey=tackleFocus&&page.contains(tackleFocus)?tackleFocus.dataset.tackleFocus:'';
       if(tackleBox){tackleSelection=tackleBox.getSelectedId();tackleBox.destroy();tackleBox=null;}
-      pondPlayer?.destroy();pondPlayer=null;aquariumPlayer?.destroy();aquariumPlayer=null;
+      // Saving and live cast controls can change without changing a 3D display.
+      // Keep its canvas and GPU context alive while refreshing the surrounding
+      // buttons; recreating it can block the cast clock on software rendering.
+      const retainedAquarium=aquariumPlayer&&page.querySelector('[data-aquarium-display]');
+      const retainedPond=pondPlayer&&page.querySelector('#fishing-pond-canvas');
+      if(!retainedPond){pondPlayer?.destroy();pondPlayer=null;pondPlayerId='';pondVisualKey='';}
+      if(!retainedAquarium){aquariumPlayer?.destroy();aquariumPlayer=null;}
       page.innerHTML=section==='rods'?rods():section==='cabin'?aquarium():section==='tackle'?tackle():ponds();
-      const showcaseHost=page.querySelector('[data-aquarium-display]');if(showcaseHost&&root.TracerFishingAquariumArt){aquariumPlayer=root.TracerFishingAquariumArt.create(showcaseHost);aquariumPlayer.update(showcaseValue(),snapshot.language);}
+      let showcaseHost=page.querySelector('[data-aquarium-display]');
+      if(retainedAquarium&&showcaseHost){showcaseHost.replaceWith(retainedAquarium);showcaseHost=retainedAquarium;}
+      else if(retainedAquarium){aquariumPlayer.destroy();aquariumPlayer=null;}
+      if(showcaseHost&&root.TracerFishingAquariumArt){if(!aquariumPlayer)aquariumPlayer=root.TracerFishingAquariumArt.create(showcaseHost);aquariumPlayer.update(showcaseValue(),snapshot.language);}
       const tackleMount=page.querySelector('[data-tackle-box-mode]');
       if(tackleMount){tackleBox=root.TracerFishingTackle.create(tackleMount,{mode:tackleMount.dataset.tackleBoxMode,selectedId:tackleSelection,onAction:(action,id)=>options.onAction?.(action,id,{pondId:selectedPond})});tackleBox.update(snapshot);if(tackleFocusKey){const node=Array.from(tackleMount.querySelectorAll('[data-tackle-focus]')).find(node=>node.dataset.tackleFocus===tackleFocusKey);(node&&!node.disabled?node:tackleMount.querySelector('.fishing-tackle-slot[tabindex="0"]'))?.focus({preventScroll:true});}}
       if(section==='ponds'){
         const pond=snapshot.state.ponds.find(p=>p.id===selectedPond),style=F.catalog.pondStyles.find(p=>p.id===pond.styleId),fish=snapshot.state.fry.filter(f=>f.pondId===pond.id&&!f.releasedAt).map(f=>({...F.catalog.fish.find(x=>x.id===f.fishId),...f,speciesId:f.fishId}));
-        const viewport=page.querySelector('#fishing-pond-canvas');viewport.className='fishing-pond-viewport';
-        pondPlayer=A.createPond(viewport,{pond:{...style,...pond,style:style.style},fish,catalog:F.catalog,interactive:true,editing,selectedDecorationId:selectedDecoration,onDecorationSelect:id=>{selectedDecoration=id;renderEditor();},onDecorationMove:patch=>options.onAction?.('set-decoration',patch.id,{pondId:selectedPond,patch}),onSelect:fish=>{const id=typeof fish==='string'?fish:fish.id;const row=page.querySelector('[data-value="'+CSS.escape(id)+'"]');row?.closest('.fishing-fish-card')?.scrollIntoView({block:'nearest',behavior:'smooth'});},feeding});
+        const viewport=page.querySelector('#fishing-pond-canvas'),settings={pond:{...style,...pond,style:style.style},fish,catalog:F.catalog,interactive:true,editing,selectedDecorationId:selectedDecoration,onDecorationSelect:id=>{selectedDecoration=id;renderEditor();},onDecorationMove:patch=>options.onAction?.('set-decoration',patch.id,{pondId:selectedPond,patch}),onSelect:fish=>{const id=typeof fish==='string'?fish:fish.id;const row=page.querySelector('[data-value="'+CSS.escape(id)+'"]');row?.closest('.fishing-fish-card')?.scrollIntoView({block:'nearest',behavior:'smooth'});},feeding};
+        const visualKey=JSON.stringify([settings.pond,fish,editing,selectedDecoration,feeding]);
+        if(retainedPond&&pondPlayerId===pond.id){viewport.replaceWith(retainedPond);if(visualKey!==pondVisualKey)pondPlayer.update(settings);}
+        else{pondPlayer?.destroy();viewport.className='fishing-pond-viewport';pondPlayer=A.createPond(viewport,settings);pondPlayerId=pond.id;}
+        pondVisualKey=visualKey;
       }
       if(focusId)page.querySelector('[data-fishing-action="'+focusId[0]+'"][data-value="'+CSS.escape(focusId[1])+'"]')?.focus({preventScroll:true});
     }
