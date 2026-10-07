@@ -44,7 +44,7 @@
 }
 .btn:hover { background: var(--border); }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d0e10; }
-.btn-primary:hover { filter: brightness(1.08); }
+.btn-primary:hover { background: var(--accent); filter: brightness(1.08); }
 .btn-danger { color: #e86a8a; }
 .btn-danger:hover { background: rgba(232, 106, 138, .12); }
 .btn:disabled { opacity: .45; cursor: default; }

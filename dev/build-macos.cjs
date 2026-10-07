@@ -16,6 +16,14 @@ async function main() {
   const config = signed
     ? { forceCodeSigning: true, mac: { notarize: true } }
     : { mac: { identity: '-', hardenedRuntime: false, notarize: false } };
-  await build({ targets: Platform.MAC.createTarget(['dmg', 'zip'], Arch[arch]), publish: 'never', config });
+  const release=process.env.TRACER_LOCAL_BUILD==='1'?{}:require('./commercial-release.cjs').config();
+  // A configuration file replaces package.build instead of merging resource arrays twice.
+  const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+  const staging=fs.mkdtempSync(path.join(os.tmpdir(),'tracer-mac-config-'));
+  const configPath=path.join(staging,'release.cjs');
+  const base=process.env.TRACER_LOCAL_BUILD==='1'?require('../package.json').build:release;
+  fs.writeFileSync(configPath,'module.exports='+JSON.stringify({...base,...config,mac:{...base.mac,...config.mac}}));
+  try { await build({ targets: Platform.MAC.createTarget(['dmg', 'zip'], Arch[arch]), publish: 'never', config:configPath }); }
+  finally { fs.unlinkSync(configPath);fs.rmdirSync(staging); }
 }
 main().catch(error => { console.error(error.message); process.exit(1); });

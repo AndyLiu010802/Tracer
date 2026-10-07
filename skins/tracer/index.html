@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="/render-activity.js"></script>
 <script src="/account-context.js"></script>
+<script src="/focus-model.js"></script>
+<script src="/pet-animation.js"></script><script src="/pet-model.js"></script><script src="/backup-preferences.js"></script>
 <script src="/account-storage.js"></script>
 <link rel="stylesheet" href="/account.css">
+<link rel="stylesheet" href="/workspace-backup.css">
+<link rel="stylesheet" href="/feedback.css">
 <!-- 标签页伪装：内部工程工作台。favicon 是半月，呼应日月轮回主题。 -->
 <title>Tracer — Engineering</title>
 <link rel="icon" href="/tracer-logo.png">
@@ -23,6 +27,7 @@
 </script>
 <link rel="stylesheet" href="/skin.css">
 <link rel="stylesheet" href="/board.css">
+<link rel="stylesheet" href="/getting-started.css">
 <link rel="stylesheet" href="/notes.css">
 <link rel="stylesheet" href="/planner.css">
 <link rel="stylesheet" href="/timeline.css">
@@ -30,6 +35,7 @@
 <link rel="stylesheet" href="/insights.css">
 <link rel="stylesheet" href="/garden.css">
 <link rel="stylesheet" href="/garden-planets.css">
+<link rel="stylesheet" href="/postcards.css">
 <link rel="stylesheet" href="/garden-home.css">
 <link rel="stylesheet" href="/garden-world.css">
 <link rel="stylesheet" href="/garden-pastoral.css">
@@ -37,21 +43,27 @@
 <link rel="stylesheet" href="/wellness.css">
 <link rel="stylesheet" href="/crystal.css">
 <link rel="stylesheet" href="/ai-assistant.css">
-<link rel="stylesheet" href="/pet.css">
-<link rel="stylesheet" href="/pet-interactions.css">
-<link rel="stylesheet" href="/pet-idle.css">
-<link rel="stylesheet" href="/pet-animation.css">
-<link rel="stylesheet" href="/pet-transfer.css">
-<link rel="stylesheet" href="/pet-character-motion.css">
-<link rel="stylesheet" href="/pet-chat.css">
+
+
+
+
+
+
+
+
 <link rel="stylesheet" href="/window-controls.css">
 <link rel="stylesheet" href="/garden-plant.css">
-<link rel="stylesheet" href="/garden-companion-preview.css">
+
 <link rel="stylesheet" href="/garden-task.css">
 <link rel="stylesheet" href="/garden-care.css">
 <link rel="stylesheet" href="/garden-market.css">
 <link rel="stylesheet" href="/garden-collection-shop.css">
 <link rel="stylesheet" href="/garden-store.css">
+<link rel="stylesheet" href="/fishing.css">
+<link rel="stylesheet" href="/fishing-rewards.css">
+<link rel="stylesheet" href="/fishing-scene.css">
+<link rel="stylesheet" href="/fishing-tackle.css">
+<link rel="stylesheet" href="/fishing-aquarium.css">
 <link rel="stylesheet" href="/stickers.css">
 <link rel="stylesheet" href="/material-preview.css">
 </head>
@@ -78,14 +90,14 @@
     </span>
     <span class="crumb crumb-strong">Tracer</span>
   </div>
-  <div class="top-mid"><button type="button" id="pet-generation-status" hidden aria-label="Companion generation progress"><span class="pet-generation-label"></span><span class="pet-generation-count"></span><progress max="16" value="0" aria-label="Companion action progress"></progress></button></div>
   <div class="top-right">
     <button class="new-btn" id="daily-card-toggle" aria-controls="daily-card" aria-expanded="true"></button>
     <button class="new-btn" id="focus-open-compact" hidden></button>
     <button class="new-btn" id="ai-open">✦ AI 计划</button>
-    <button class="new-btn" id="pet-open">✦ Companions</button>
+    <button class="new-btn" id="fishing-open">⌁ Fishing</button>
     <select class="new-btn" id="language-select" aria-label="Language"><option value="en">English</option><option value="zh">中文</option></select>
     <button class="new-btn" id="new-btn" title="New task">+ New</button>
+    <button type="button" class="new-btn" id="feedback-open" aria-haspopup="dialog">Feedback</button>
     <span class="dial"><span class="sundial" id="sundial"></span><span class="clock" id="clock"></span></span>
     <span class="avatar-wrap">
       <button type="button" class="avatar account-trigger" id="account-open" title="账户 / Account" aria-label="账户 / Account" aria-haspopup="dialog">☾</button>
@@ -114,6 +126,9 @@
       <a class="nav-item" data-sec="timeline" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2 4h7M5 8h8M3 12h6"/><path d="M8 1.5v13" stroke-dasharray="1.5 2"/></svg>Timeline</a>
       <a class="nav-item" data-sec="insights" role="tab" tabindex="0"><svg viewBox="0 0 16 16"><path d="M2.5 13.5V9M6.2 13.5V5M9.9 13.5V7.5M13.5 13.5V3"/></svg>Insights</a>
       <a class="nav-item" data-sec="garden" role="tab" tabindex="0" id="nav-garden"><svg viewBox="0 0 16 16"><path d="M8 14V7M8 7C8 4 6 2 3 2c0 3 2 5 5 5M8 7c0-2.5 1.7-4.5 4.5-4.5C12.5 5 10.5 7 8 7"/></svg>Garden</a>
+      <a class="nav-item" data-sec="ponds" role="tab" tabindex="0" id="nav-ponds"><svg viewBox="0 0 16 16"><ellipse cx="8" cy="8" rx="6" ry="3"/><path d="M2 8v3c0 4 12 4 12 0V8M5 7l2-1 3 1-3 1Z"/></svg>My ponds</a>
+      <a class="nav-item" data-sec="cabin" role="tab" tabindex="0" id="nav-cabin"><svg viewBox="0 0 16 16"><path d="M2 3h12v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2ZM1 2h14M1 14h14M5 8q2-3 4 0l2-1v2l-2-1q-2 3-4 0Z"/></svg>Legendary aquarium</a>
+      <a class="nav-item" data-sec="rods" role="tab" tabindex="0" id="nav-rods"><svg viewBox="0 0 16 16"><path d="m2 14 8-12 3 2v6c0 4-4 4-4 1"/></svg>Fishing rods</a>
       <a class="nav-item" data-sec="shop" role="tab" tabindex="0" id="nav-shop"><svg viewBox="0 0 16 16"><path d="M2 6h12l-1-4H3zM3 6v8h10V6M6 14V9h4v5"/></svg>Shop</a>
       <a class="nav-item" data-sec="planets" role="tab" tabindex="0" id="nav-planets"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4.5"/><ellipse cx="8" cy="8" rx="7" ry="2.4" transform="rotate(-25 8 8)"/></svg>Memory planets</a>
     </div>
@@ -185,9 +200,12 @@
       </div>
     </section>
     <section class="sec" id="sec-garden">
-      <header class="sec-head"><h1 id="garden-section-title">Companion home</h1><span class="sec-sub" id="garden-section-subtitle">A little place for the work you care about</span><button class="btn" id="garden-pet-open">✦ Companions</button></header>
+      <header class="sec-head"><h1 id="garden-section-title">Task garden</h1><span class="sec-sub" id="garden-section-subtitle">Small steps, growing things</span></header>
       <div id="garden-home-root"></div>
     </section>
+    <section class="sec" id="sec-ponds"><div id="fishing-ponds-root"></div></section>
+    <section class="sec" id="sec-cabin"><div id="fishing-cabin-root"></div></section>
+    <section class="sec" id="sec-rods"><div id="fishing-rods-root"></div></section>
     <section class="sec" id="sec-shop"><div id="garden-store-root"></div></section>
     <section class="sec" id="sec-planets"><div id="garden-planets-root"></div></section>
   </main>
@@ -200,6 +218,7 @@
     <div class="rail-block" id="aside-slot"
          data-panel-tag="ref"
          data-panel-title="Reference"
+         data-panel-source="Reference URL"
          data-panel-meta="cached &middot; utf8"></div>
   </aside>
 
@@ -209,6 +228,7 @@
 
 <script src="/project-deletion.js"></script>
 <script src="/task-history.js"></script>
+<script src="/fishing-model.js"></script>
 <script src="/task-garden.js"></script>
 <script src="/model.js"></script>
 <script src="/companion-work.js"></script>
@@ -224,6 +244,8 @@
 <script src="/rail.js"></script>
 <script src="/inbox.js"></script>
 <script src="/task-editor.js"></script>
+<script src="/getting-started-model.js"></script>
+<script src="/getting-started.js"></script>
 <script src="/board.js"></script>
 <script src="/projects.js"></script>
 <script src="/notes.js"></script>
@@ -232,56 +254,88 @@
 <script src="/map.js"></script>
 <script src="/insights-model.js"></script>
 <script src="/insights.js"></script>
-<script src="/focus-model.js"></script>
 <script src="/daily-content.js"></script>
 <script src="/music-model.js"></script>
 <script src="/music.js"></script>
 <script src="/wellness.js"></script>
 <script src="/ai-planner.js"></script>
 <script src="/ai-assistant.js"></script>
-<script src="/pet-animation.js"></script>
-<script src="/pet-personalities.js"></script>
+
+
 <script src="/garden-plant-atlas.js"></script>
 <script src="/garden-plant-art.js"></script>
-<script src="/garden-wildflower-atlas.js"></script>
-<script src="/garden-wildflower-motion.js"></script>
-<script src="/garden-companion-atlas.js"></script>
-<script src="/garden-companion-motion.js"></script>
-<script src="/garden-companion-preview.js"></script>
+
+
+
+
+
+
 <script src="/garden-plant-animation.js"></script>
 <script src="/garden-harvest-model.js"></script>
-<script src="/pet-model.js"></script>
-<script src="/garden-trails.js"></script>
-<script src="/pet-art.js"></script>
-<script src="/pet-illustrated-atlas.js"></script>
-<script src="/pet-illustrated-animation.js"></script>
-<script src="/pet-builtin-animation.js"></script>
-<script src="/pet-idle.js"></script>
-<script src="/pet-idle-art.js"></script>
-<script src="/pet-chat-state.js"></script>
-<script src="/pet-view.js"></script>
-<script src="/pet-creator.js"></script>
-<script src="/pet-generation-draft.js"></script>
-<script src="/pet-transfer.js"></script>
-<script src="/pet-edit-draft.js"></script>
-<script src="/pet.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script src="/garden-care-art.js"></script>
 <script src="/garden-collection-art.js"></script>
 <script src="/garden-layout-editor.js"></script>
   <script src="/garden-world-view.js"></script>
 <script src="/garden-collection-shop.js"></script>
 <script src="/garden-market-view.js"></script>
+<script src="/fishing-aquarium-motion.js"></script>
+<script src="/fishing-lighting.js"></script>
+<script src="/fishing-art.js"></script>
+<script src="/fishing-rewards.js"></script>
+<script src="/fishing-rod-effects.js"></script>
+<script src="/fishing-motion.js"></script>
+<script src="/fishing-rod-renderer.js"></script>
+<script src="/fishing-game.js"></script>
+<script src="/fishing-tackle.js"></script>
+<script src="/fishing-aquarium.js"></script>
+<script src="/fishing-view.js"></script>
 <script src="/garden-home-view.js"></script>
+<script src="/postcards.js"></script>
 <script src="/garden-planets-view.js"></script>
 <script src="/sticker-shop.js"></script>
 <script src="/frames.js"></script><script src="/garden-store-view.js"></script>
 <script src="/garden.js"></script>
+<script src="/fishing.js"></script>
 <link rel="stylesheet" href="/wallpaper-shop.css"><link rel="stylesheet" href="/wallpaper-materials.css"><link rel="stylesheet" href="/material-contrast.css"><link rel="stylesheet" href="/frames.css">
 <script src="/wallpaper-motion.js"></script><script src="/wallpaper-optics.js"></script><script src="/wallpaper-shop.js"></script>
 <script src="/account.js"></script>
+<script src="/workspace-backup.js"></script>
+<script src="/feedback-model.js"></script>
+<script src="/feedback.js"></script>
 <script src="/stickers.js"></script>
 <link rel="stylesheet" href="/celebrations.css">
 <script src="/celebrations-model.js"></script><script src="/celebrations.js"></script>
 <link rel="stylesheet" href="/workspace-layout.css">
+<!-- TRACER_LOCAL_VFX_BEGIN -->
+<link rel="stylesheet" href="/local-vfx/entry.css">
+<script src="/local-vfx/entry.js"></script>
+<!-- TRACER_LOCAL_VFX_END -->
 </body>
 </html>

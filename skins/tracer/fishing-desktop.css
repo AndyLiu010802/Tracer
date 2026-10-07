@@ -1,0 +1,46 @@
+:root{font-family:system-ui,"Microsoft YaHei",sans-serif;color:#46351e;background:transparent;color-scheme:light}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden}button{font:inherit}
+/* Scale the complete scene locally, keeping motion in its original coordinates. */
+#desktop-fishing{position:fixed;left:0;top:0;width:380px;height:260px;zoom:.8;background:transparent;pointer-events:none;user-select:none}
+#desktop-fishing [hidden]{display:none!important}
+#fishing-pond{position:absolute;right:0;bottom:3px;width:266px;height:214px;background:transparent!important;border:0!important;box-shadow:none!important;outline:none;pointer-events:auto;touch-action:none;cursor:pointer}
+#fishing-pond canvas{width:100%;height:100%;display:block;background:transparent!important}
+#fishing-pond .fishing-pond-fallback{min-height:0;height:100%;background:transparent}
+#fishing-rod{position:absolute;left:42px;top:77px;width:102px;height:170px;padding:0;margin:0;border:0;background:none;outline:none;cursor:pointer;touch-action:none;pointer-events:auto;transform-origin:18% 88%;filter:drop-shadow(1px 3px 2px #17281d30);transition:transform .2s}
+#fishing-rod .fishing-rod-art{width:100%;height:100%;display:block}#fishing-rod:focus-visible{filter:drop-shadow(0 0 3px #fff2af)}
+/* Visibility preserves the rod geometry used by the casting animation. */
+#desktop-fishing[data-rod-visible=false] #fishing-rod,#desktop-fishing[data-rod-visible=false] #fishing-line,#desktop-fishing[data-rod-visible=false] .fishing-motion-fx,#desktop-fishing[data-rod-visible=false] .fishing-flow-canvas,#desktop-fishing[data-rod-visible=false] .fishing-summon-canvas{visibility:hidden;pointer-events:none}
+.fishing-summon-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+#fishing-rod{z-index:2}#fishing-line{z-index:3}#fishing-float,#fishing-bite{z-index:4}
+#fishing-line{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}#fishing-line path{fill:none;stroke:#f4ecd1db;stroke-width:.95;filter:drop-shadow(0 .5px .5px #1d38366b)}
+#fishing-float{position:absolute;left:254px;top:142px;width:30px;height:32px;margin:0;padding:0;border:0;background:none;pointer-events:auto;cursor:pointer;touch-action:none}
+#fishing-float i{position:absolute;top:3px;left:12px;width:7px;height:17px;border-radius:45% 45% 34% 34%;border:.7px solid #5f4b37;background:linear-gradient(90deg,#302f2736,transparent 35%,#fff8 47%,transparent 63%,#302f274d),linear-gradient(#b96345 48%,#fff6d7 49%,#d9c7a5 95%);box-shadow:inset 0 1px 1px #fff7,0 2px 3px #1738324d}
+#fishing-float i:before{content:'';position:absolute;left:2px;top:-5px;width:1px;height:5px;background:#514936;border-radius:1px}
+#fishing-float b{position:absolute;left:0;top:19px;width:30px;height:8px;border:1px solid #efffe7bb;border-radius:50%;animation:desktopRipple 1.8s infinite}
+#fishing-bite{position:absolute;left:269px;top:115px;width:0;height:25px;pointer-events:none;animation:desktopBite .45s infinite}
+#fishing-power{position:absolute;left:50px;bottom:8px;width:87px;height:7px;background:#624932cc;border:1px solid #4a3a25;border-radius:4px;overflow:hidden;box-shadow:0 2px 4px #51402c30;pointer-events:none}
+#fishing-power i{display:block;height:100%;background:#cadd79;width:0}
+#fishing-reel{position:absolute;right:20px;top:83px;display:flex;gap:4px;height:118px;padding:5px;background:linear-gradient(110deg,#31483eea,#172e28f2);border:1px solid #b9a57891;border-radius:10px;box-shadow:inset 0 1px 0 #fff2,inset 0 0 0 2px #11251e55,0 3px 8px #102b2340;pointer-events:none}
+.desktop-reel-track{width:14px;height:100%;border-radius:6px;background:linear-gradient(90deg,#12281e,#44614d 65%,#203d2d);box-shadow:inset 0 1px 5px #071a2077;position:relative;overflow:hidden}.desktop-reel-target{position:absolute;left:1px;right:1px;background:linear-gradient(90deg,#b9c991b8,#d8e1b1d9,#c1cf96b8);border:1px solid #ecedb999;border-radius:4px;box-shadow:inset 0 1px 1px #fff5,0 0 5px #d1dea333}.desktop-reel-fish{position:absolute;left:0;width:100%;height:12px;color:#ffebba;transform:translateY(50%);filter:drop-shadow(0 1px 1px #263425aa)}.desktop-reel-fish svg{width:14px;height:12px;display:block;overflow:visible}.desktop-reel-fish path{fill:currentColor}.desktop-reel-fish circle{fill:#586446}.desktop-reel-progress{width:3px;border-radius:3px;overflow:hidden;background:#d0ddba21;position:relative}.desktop-reel-progress i{position:absolute;bottom:0;width:100%;border-radius:3px;background:linear-gradient(#e4ddb1,#83ad86)}
+#fishing-toast{position:absolute;left:158px;right:16px;top:11px;width:max-content;max-width:195px;padding:5px 8px;border:1px solid #815b37;border-radius:8px;background:#f4e6bcf2;box-shadow:0 3px 12px #45332335;font-size:11px;display:flex;align-items:center;gap:5px;pointer-events:none;line-height:1.5}
+#fishing-toast .fishing-fish-art{width:42px;height:29px}#fishing-toast small{display:block;font-size:9px;color:#72864b}
+.desktop-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+#desktop-fishing[data-phase=charging] #fishing-rod{transform:rotate(calc(-8deg - var(--cast-power,0)*22deg))}#desktop-fishing[data-phase=cast] #fishing-rod{transform:rotate(12deg)}#desktop-fishing[data-phase=reeling] #fishing-rod{animation:desktopRod .85s ease-in-out infinite}#desktop-fishing[data-phase=bite] #fishing-float{animation:desktopFloat .26s infinite}
+@keyframes desktopRipple{from{transform:scale(.5);opacity:.85}to{transform:scale(1.7);opacity:0}}@keyframes desktopBite{50%{transform:translateY(-4px)}}@keyframes desktopFloat{50%{transform:translateY(6px)}}@keyframes desktopRod{50%{transform:rotate(-5deg)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.has-fishing-motion #fishing-rod,.has-fishing-motion #fishing-float{animation:none!important;transition:none!important}
+#fishing-flight-fish{position:absolute;width:78px;height:52px;pointer-events:none;z-index:9;transform-origin:center;filter:drop-shadow(1px 3px 2px #304c3b44)}
+#fishing-flight-fish canvas{display:block;width:100%;height:100%;background:transparent}
+#fishing-catch-shadow{position:absolute;z-index:8;width:33px;height:9px;opacity:0;border-radius:50%;background:radial-gradient(ellipse,#162b2342,transparent 70%);filter:blur(.6px);pointer-events:none}
+#fishing-power{height:6px;border:1px solid #ab9c7366;background:#20382bd9;box-shadow:inset 0 1px 2px #071c20aa,0 2px 5px #17302133}#fishing-power i{background:linear-gradient(90deg,#87ae84,#e7d8a3);border-radius:3px}
+#fishing-toast{border-color:#aa977d70;border-radius:10px;background:linear-gradient(125deg,#f5edd9f5,#e8dcc1f5);color:#3f503e;box-shadow:inset 0 1px 0 #fff9,0 3px 9px #203d2c2b;letter-spacing:.01em}
+#fishing-tackle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#fishing-status{position:absolute;right:19px;top:207px;display:flex;align-items:center;gap:4px;padding:3px 5px;border:1px solid #b9b48d55;border-radius:8px;background:#20372de8;color:#dfdfbf;font-size:9px;box-shadow:inset 0 1px 0 #fff1,0 2px 5px #14302722;pointer-events:none}
+#fishing-status .fishing-stamina{width:25px;height:3px}
+#desktop-fishing[data-fish-behavior=surge] #fishing-status{color:#e9c98d}
+#desktop-fishing[data-fish-behavior=surge] .desktop-reel-fish{color:#ffdda0}
+#desktop-fishing[data-nibbling=true] #fishing-float b{border-color:#fcf4b4;animation-duration:.6s}
+#fishing-nibble{font-size:9px}
+#fishing-bite:after{content:'';position:absolute;left:-10px;bottom:-2px;height:3px;width:calc(20px*var(--bite-time,1));background:#fff0ab;border-radius:2px}
+
+#desktop-fishing[data-moving=true] #fishing-pond,#desktop-fishing[data-moving=true] #fishing-rod{cursor:grab}

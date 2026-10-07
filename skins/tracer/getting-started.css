@@ -1,0 +1,37 @@
+.getting-started {
+  margin: 0 0 22px; padding: 24px;
+  border: 1px solid var(--border); border-radius: 16px;
+  background: linear-gradient(125deg, var(--accent-soft), transparent 65%), var(--panel);
+}
+.getting-started-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.getting-started-eyebrow { color: var(--accent); font-size: 10px; font-weight: 650; letter-spacing: 1.4px; }
+.getting-started h2 { margin: 9px 0 6px; font-size: clamp(19px, 2.1vw, 27px); line-height: 1.25; letter-spacing: -.6px; }
+.getting-started-heading p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 13px; }
+.getting-started-heading > .btn { flex-shrink: 0; background: transparent; }
+.getting-started-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; list-style: none; padding: 0; margin: 24px 0; }
+.getting-started-step { display: flex; gap: 10px; min-width: 0; }
+.getting-started-number { flex: 0 0 25px; height: 25px; display: grid; place-items: center; font-size: 11px; border: 1px solid var(--border); border-radius: 50%; color: var(--muted); }
+.getting-started-step.is-current .getting-started-number, .getting-started-step.is-done .getting-started-number { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.getting-started-step strong { font-size: 12px; font-weight: 600; line-height: 1.5; }
+.getting-started-step p { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.getting-started-form > label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+.getting-started-form > div { display: flex; align-items: stretch; gap: 10px; }
+.getting-started-form input { min-width: 0; flex: 1; width: 100%; border: 1px solid var(--border); background: var(--bg); color: var(--fg); border-radius: var(--radius); font: inherit; font-size: 13px; padding: 11px 12px; }
+.getting-started input:focus-visible, .getting-started button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.getting-started input:disabled { opacity: .65; }
+.getting-started-form .btn { flex-shrink: 0; }
+.getting-started-task { font-size: 15px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+.getting-started-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.getting-started-message { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 12px 0 0; }
+.getting-started-message + .btn { margin-top: 10px; }
+#getting-started-slot[hidden] { display: none; }
+@media (max-width: 900px) {
+  .getting-started { padding: 18px; }
+  .getting-started-steps { grid-template-columns: 1fr; gap: 12px; margin: 20px 0; }
+  .getting-started-step p { margin-top: 2px; }
+}
+@media (max-width: 600px) {
+  .getting-started-heading { flex-wrap: wrap; gap: 12px; }
+  .getting-started-form > div { flex-direction: column; }
+  .getting-started-actions > .btn { width: 100%; }
+}

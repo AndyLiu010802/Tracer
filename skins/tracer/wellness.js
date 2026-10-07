@@ -43,11 +43,40 @@
     else T.ui.notice(message);
   }
   function locked(callback) { return navigator.locks ? navigator.locks.request(window.TracerAccount ? TracerAccount.storageName('tracer-focus-state') : 'tracer-focus-state', callback) : Promise.resolve().then(callback); }
+  function accountWritable() { return !window.TracerAccount || !(TracerAccount.locked || TracerAccount.switching); }
+  function finishSavedTask(current) {
+    if (!T.store.data || !T.store.base || T.store.lost || T.store.conflict) return false;
+    var id = current.task && current.task.id;
+    if (!id) return false;
+    var saved = (T.store.base.tasks || []).find(function (task) { return task.id === id; });
+    var live = (T.store.data.tasks || []).find(function (task) { return task.id === id; });
+    return !!(saved && saved.status === 'done' && live && live.status === 'done' && F.finishTask(current, id));
+  }
   function change(callback) {
     return locked(function () {
-      state = load(); pruneDeletedTasks(state); flushActivity(state); F.settle(state, Date.now()); callback(state); pruneDeletedTasks(state);
-      localStorage.setItem(KEY, JSON.stringify(state));
-    }).then(function () { draw(); maybeAlert(); }).catch(function () { showError(L('timerStorageError')); });
+      if (!accountWritable() || !T.store.data || T.store.lost) return false;
+      var next = load(); pruneDeletedTasks(next); flushActivity(next);
+      if (!finishSavedTask(next)) F.settle(next, Date.now());
+      callback(next); pruneDeletedTasks(next);
+      localStorage.setItem(KEY, JSON.stringify(next)); state = next;
+      return true;
+    }).then(function (changed) { if (changed) { draw(); maybeAlert(); window.dispatchEvent(new Event('tracer-focus-change')); } }).catch(function () { showError(L('timerStorageError')); });
+  }
+  function resetCompletedFocus() {
+    return locked(function () {
+      if (!accountWritable() || !T.store.data || !T.store.base || T.store.lost || T.store.conflict) return false;
+      // Read after acquiring the shared timer lock: another window may already
+      // have started a different task while this workspace save was in flight.
+      var current = load();
+      if (!finishSavedTask(current)) return false;
+      // Task completion does not fabricate a completed focus session.
+      flushActivity(current);
+      localStorage.setItem(KEY, JSON.stringify(current)); state = current;
+      return true;
+    }).then(function (changed) {
+      if (changed) { draw(true); window.dispatchEvent(new Event('tracer-focus-change')); }
+      return changed;
+    }).catch(function () { showError(L('timerStorageError')); return false; });
   }
   function unlockSound() {
     try {
@@ -74,6 +103,7 @@
     if (!canSound && !canNotify) return;
     alertBusy = true;
     locked(function () {
+      if (!accountWritable()) return;
       var current = load();
       if (!current.alarm || current.lastNotifiedId === current.alarm.id) return;
       // Claim the alert under the same cross-tab lock; opening another tab will not ring twice.
@@ -236,7 +266,7 @@
     F.removeTasks(value, ids);
   }
   T.refreshWellness = function () { pruneDeletedTasks(state); change(function () {}); drawDaily(); draw(true); if (T.music) T.music.refreshLabels(); };
-  T.ready.then(function () { T.refreshWellness(); });
+  T.ready.then(function () { return resetCompletedFocus().then(function () { T.refreshWellness(); }); });
   async function openForTask(id) {
     var task=M.findTask(T.store.data,id);if(!task||task.status==='done')return false;
     var kept=false;
@@ -250,7 +280,8 @@
     return !kept;
   }
   T.focus = { open: openTimer, openForTask: openForTask, toggle: startPause, read: function () { return F.read(state); } };
-  window.addEventListener('storage', function (event) { if (event.key === KEY || !event.key) { state = load(); draw(true); } if (event.key === APPEARANCE || !event.key) { appearance = loadAppearance(); drawDaily(); } });
+  window.addEventListener('tracer-workspace-saved', resetCompletedFocus);
+  window.addEventListener('storage', function (event) { if (event.key === KEY || !event.key) { state = load(); draw(true); window.dispatchEvent(new Event('tracer-focus-change')); } if (event.key === APPEARANCE || !event.key) { appearance = loadAppearance(); drawDaily(); } });
   function tick() {
     drawDaily();
     if (!busy && ((state.running && Date.now() >= state.endAt) || Object.keys(pendingActivity.keys).length || pendingActivity.unknown)) { busy = true; change(function () {}).finally(function () { busy = false; }); }

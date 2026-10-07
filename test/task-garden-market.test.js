@@ -81,9 +81,11 @@ test('unharvested and destroyed plants cannot be sold; failures leave workspace 
   assert.equal(row(workspace, 'sunflower').available, 0); assert.equal(growing.status, 'doing');
 });
 
-test('quantity sales choose normal plants first, then oldest receipts, while rare companions and collection survive', () => {
+test('quantity sales preserve historical rare receipts while choosing ordinary plants first', () => {
   const workspace = ws();
   harvest(workspace, 'shiny_old', 2, 0, null, 100); harvest(workspace, 'rare_old', 2, 70, null, 110);
+  // Prior-edition receipts remain valid when opening an existing garden.
+  for (const [id,ticket] of [['shiny_old',0],['rare_old',70]]) { const seed=workspace.taskGarden.seeds.find(s=>s.taskId===id);seed.ticket=ticket;seed.variant=G.variant(ticket); }
   harvest(workspace, 'normal_new', 2, 9000, null, 200); harvest(workspace, 'normal_old', 2, 100, null, 190);
   const collection = G.collection(workspace), seeds = clone(workspace.taskGarden.seeds);
   const sale = G.sell(workspace, 'lavender', 2, 500);
@@ -109,6 +111,45 @@ test('a sale is all-or-nothing and reloading a sold task cannot generate additio
   complete(reloaded, reloadedTask, 600); G.harvest(reloaded, reloadedTask.id, 700);
   assert.equal(G.sell(reloaded, 'cherry', 1, 800).ok, false);
   assert.equal(G.economy(reloaded).earned, 28); assert.equal(row(reloaded, 'cherry').harvested, 1);
+});
+
+test('sell all settles mixed farms once and preserves harvested seeds and botanical records', () => {
+  const workspace = cyber();
+  for (let i = 0; i < 3; i++) harvest(workspace, 'cyber_stock_' + i, i, 1234, null, 600 + i);
+  G.equipFarm(workspace, 'meadow', 700);
+  harvest(workspace, 'peach_stock', 4, 1234, null, 710);
+  harvest(workspace, 'cherry_stock', 5, 1234, null, 720);
+  const growing = plant(workspace, 'growing_stock', 0, 1234, null, 730);
+  const mature = plant(workspace, 'mature_stock', 1, 1234, null, 740); complete(workspace, mature, 750);
+  const before = clone(workspace), collection = G.collection(workspace);
+  const result = G.sellAll(workspace, 650);
+  assert.equal(result.ok, true); assert.equal(result.changed, true);
+  assert.equal(result.quantity, 5); assert.equal(result.earned, 32 + 36 + 40 + 30 + 28);
+  assert.equal(result.balance, 166); assert.equal(result.taskIds.length, 5);
+  assert.ok(G.inventory(workspace).every(p => p.available === 0));
+  assert.deepEqual(workspace.taskGarden.seeds, before.taskGarden.seeds);
+  assert.deepEqual(workspace.tasks, before.tasks); assert.equal(growing.status, 'doing');
+  assert.deepEqual(workspace.taskGarden.market.purchases, before.taskGarden.market.purchases);
+  assert.deepEqual(G.collection(workspace), collection);
+  const reloaded = S.validate(clone(workspace)), bytes = JSON.stringify(reloaded);
+  assert.deepEqual(G.sellAll(reloaded, 900), { ok: true, changed: false, quantity: 0, earned: 0, balance: 166, taskIds: [] });
+  assert.equal(JSON.stringify(reloaded), bytes); assert.equal(reloaded.taskGarden.market.sales.length, 13);
+});
+
+test('sell all with no harvested stock is a no-op without creating garden state', () => {
+  const workspace = ws(), before = JSON.stringify(workspace);
+  assert.deepEqual(G.sellAll(workspace, 300), { ok: true, changed: false, quantity: 0, earned: 0, balance: 0, taskIds: [] });
+  assert.equal(JSON.stringify(workspace), before);
+});
+
+test('overlapping sell-all and individual sales merge without duplicate coins or stock', () => {
+  const base = ws(); harvest(base, 'peach', 4); harvest(base, 'cherry', 5);
+  const left = clone(base), right = clone(base);
+  G.sellAll(left, 300); G.sell(right, 'cherry', 1, 310);
+  const merged = S.merge(base, left, right).workspace;
+  assert.equal(G.economy(merged).balance, 58);
+  assert.equal(G.read(merged).market.sales.length, 2);
+  assert.ok(G.inventory(merged).every(p => p.available === 0));
 });
 
 test('farm purchase requires earned coins, is permanent and idempotent, and does not silently equip', () => {
@@ -141,7 +182,7 @@ test('equip is persistent, switching is free, and logical timestamps withstand a
   assert.deepEqual(G.economy(S.validate(clone(workspace))), { balance: 0, earned: 240, spent: 240, equippedFarmId: 'cyber', ownedFarmIds: ['meadow', 'cyber'] });
 });
 
-test('new cyber seeds use only the selected farm pool with unchanged independent rarity draws', () => {
+test('new cyber seeds use the selected farm pool and always grow ordinary flowers', () => {
   const workspace = cyber();
   for (let i = 0; i < 3; i++) {
     for (const ticket of [0, 99, 100, 9999]) {
@@ -150,7 +191,7 @@ test('new cyber seeds use only the selected farm pool with unchanged independent
       workspace.tasks.push(task);
       const seed = G.taskChanged(workspace, task, 600, limit => { draws.push(limit); return limit === 3 ? i : ticket; });
       assert.deepEqual(draws, [3, 10000]); assert.equal(seed.plantKind, G.KINDS[6 + i]); assert.equal(seed.farmId, 'cyber');
-      assert.equal(seed.variant, G.variant(ticket));
+      assert.equal(seed.variant, 'normal'); assert.ok(seed.ticket >= 100);
     }
   }
   G.equipFarm(workspace, 'meadow', 700);
@@ -169,7 +210,7 @@ test('withdrawing and restarting after farm changes never rerolls species, rarit
   fresh.status = 'todo'; G.taskChanged(workspace, fresh, 1000);
   fresh.status = 'doing'; G.taskChanged(workspace, fresh, 1100, () => { throw new Error('must not draw'); });
   const seed = G.active(workspace).find(s => s.taskId === 'fresh');
-  assert.deepEqual([seed.plantKind, seed.farmId, seed.ticket, seed.variant], ['volt_berry', 'cyber', 77, 'rare']);
+  assert.deepEqual([seed.plantKind, seed.farmId, seed.ticket, seed.variant], ['volt_berry', 'cyber', 177, 'normal']);
 });
 
 test('mixed project planets preserve farm identities, sold blossoms and unlocked companions after collection deletion', () => {

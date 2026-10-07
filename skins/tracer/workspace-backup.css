@@ -1,0 +1,14 @@
+.backup-dialog{max-width:680px}
+.backup-content{padding:22px 30px 30px}
+.backup-content h3{font-size:17px;font-weight:550;margin:26px 0 14px}
+.backup-space{color:#d9e6cc;font-size:13px;margin:0 0 8px}
+.backup-actions,.backup-snapshot-list{display:flex;flex-wrap:wrap;gap:10px}
+.backup-snapshot-list:not(:empty){margin-top:14px}
+.backup-snapshot-list button{font-size:11px!important}
+.backup-preview{margin-top:22px;border-top:1px solid #526348}
+.backup-counts{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 18px;font-size:13px;margin:18px 0;color:#d9e6cc}
+.backup-counts dt{color:#aabb9c}.backup-counts dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.backup-dialog [hidden]{display:none!important}
+.backup-dialog button:disabled{opacity:.5;cursor:not-allowed}
+.backup-dialog .account-field input[type=file]{min-width:0;width:100%;overflow:hidden}
+@media(max-width:650px){.backup-content{padding:18px 20px 24px}.backup-actions{flex-direction:column}.backup-actions button{width:100%}.backup-counts{font-size:12px;gap:9px}.backup-snapshot-list button{max-width:100%;overflow-wrap:anywhere}}

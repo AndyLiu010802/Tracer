@@ -10,7 +10,7 @@
   T.openProject = function (id) {
     var project = id && M.findProject(T.store.data,id);
     if (id && (!project || project.status === 'completed')) return false;
-    filterId=id||null;render();T.show('board');if(T.renderBoard)T.renderBoard();return true;
+    filterId=id||null;render();T.show('board');return true;
   };
 
   function render() {
@@ -33,7 +33,6 @@
         filterId = a.dataset.id || null;
         render();
         T.show('board');
-        if (T.renderBoard) T.renderBoard();
       });
     });
     document.getElementById('proj-add').addEventListener('click', addProjectDialog);
@@ -85,7 +84,7 @@
     }, function () {
       var result = M.clearCompletedTasks(T.store.data, projectId || undefined);
       if (!result || !result.ok) return;
-      T.touch(); T.redraw(); if (T.renderBoard) T.renderBoard();
+      T.touch(); T.redraw();
       T.ui.notice(text('已清除 ' + result.count + ' 项任务，花园中的成熟花朵与完成记录已保留。', result.count + ' tasks cleared. Mature flowers remain in your garden and completion records are kept.'));
     });
   }

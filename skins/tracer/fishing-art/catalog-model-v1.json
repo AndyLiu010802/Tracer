@@ -1,0 +1,756 @@
+{
+  "version": 1,
+  "sources": {
+    "skins/tracer/fishing-lighting.js": "01d5546554057140638a94012b71a1bc796e77ad618548dfaec74cb083b12f45",
+    "skins/tracer/fishing-art.js": "6c23d6019d596606e664b0a9add4e7652519f04db1e234682fbc9ec6d57f1b13",
+    "skins/tracer/fishing-rod-renderer.js": "e0dc20ebbe3090ff67a188e441432e35f57f9b4fefdb40e602b0eb7c0de217e1",
+    "public/fishing-model.js": "d97f5f34d62ce21cb075a4ac51c2b9331894cddeb70afcaaaf6cd470303ea8c8",
+    "dev/build-fishing-catalog-art.cjs": "8dba2fa5f0b71af06530602da4071ad707fd2807ca360b8e3b7a423b9725d1ce"
+  },
+  "atlases": [
+    {
+      "file": "rods-model-v1.png",
+      "columns": 5,
+      "rows": 4,
+      "cellWidth": 300,
+      "cellHeight": 500,
+      "width": 1500,
+      "height": 2000,
+      "renderer": "webgl",
+      "ids": [
+        "bamboo",
+        "willow",
+        "carbon",
+        "copper",
+        "rosewood",
+        "tide",
+        "clockwork",
+        "frost",
+        "jade",
+        "moon",
+        "phoenix",
+        "cloud",
+        "astral",
+        "dragon",
+        "lotus",
+        "guandao",
+        "katana",
+        "golden"
+      ],
+      "items": [
+        {
+          "id": "bamboo",
+          "bounds": [
+            22,
+            15,
+            278,
+            485
+          ],
+          "occupiedPixels": 10714,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "willow",
+          "bounds": [
+            322,
+            15,
+            578,
+            485
+          ],
+          "occupiedPixels": 11848,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "carbon",
+          "bounds": [
+            622,
+            15,
+            878,
+            485
+          ],
+          "occupiedPixels": 10118,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "copper",
+          "bounds": [
+            922,
+            15,
+            1178,
+            485
+          ],
+          "occupiedPixels": 10238,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "rosewood",
+          "bounds": [
+            1222,
+            15,
+            1478,
+            485
+          ],
+          "occupiedPixels": 10719,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "tide",
+          "bounds": [
+            22,
+            515,
+            278,
+            985
+          ],
+          "occupiedPixels": 11964,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "clockwork",
+          "bounds": [
+            322,
+            515,
+            578,
+            985
+          ],
+          "occupiedPixels": 12468,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "frost",
+          "bounds": [
+            622,
+            515,
+            878,
+            985
+          ],
+          "occupiedPixels": 11158,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "jade",
+          "bounds": [
+            922,
+            515,
+            1178,
+            985
+          ],
+          "occupiedPixels": 11620,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "moon",
+          "bounds": [
+            1222,
+            515,
+            1478,
+            985
+          ],
+          "occupiedPixels": 11300,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "phoenix",
+          "bounds": [
+            22,
+            1015,
+            278,
+            1485
+          ],
+          "occupiedPixels": 14735,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "cloud",
+          "bounds": [
+            322,
+            1015,
+            578,
+            1485
+          ],
+          "occupiedPixels": 13498,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "astral",
+          "bounds": [
+            622,
+            1015,
+            878,
+            1485
+          ],
+          "occupiedPixels": 11619,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "dragon",
+          "bounds": [
+            922,
+            1015,
+            1178,
+            1485
+          ],
+          "occupiedPixels": 12414,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "lotus",
+          "bounds": [
+            1222,
+            1015,
+            1478,
+            1485
+          ],
+          "occupiedPixels": 12295,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "guandao",
+          "bounds": [
+            22,
+            1515,
+            278,
+            1985
+          ],
+          "occupiedPixels": 15341,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "katana",
+          "bounds": [
+            322,
+            1515,
+            578,
+            1985
+          ],
+          "occupiedPixels": 12159,
+          "sourceBounds": [
+            284,
+            285,
+            713,
+            1071
+          ]
+        },
+        {
+          "id": "golden",
+          "bounds": [
+            622,
+            1515,
+            878,
+            1985
+          ],
+          "occupiedPixels": 10000,
+          "sourceBounds": [
+            283,
+            285,
+            713,
+            1072
+          ]
+        }
+      ],
+      "sha256": "1c84b0620c070e1d7362f9d9a65a05abf6a0beae2627c315effa8214ba89bfa5"
+    },
+    {
+      "file": "fish-model-v1.png",
+      "columns": 5,
+      "rows": 5,
+      "cellWidth": 328,
+      "cellHeight": 216,
+      "width": 1640,
+      "height": 1080,
+      "renderer": "webgl",
+      "ids": [
+        "minnow",
+        "crucian",
+        "carp",
+        "perch",
+        "trout",
+        "sardine",
+        "mackerel",
+        "catfish",
+        "koi",
+        "goldfish",
+        "seahorse",
+        "angelfish",
+        "lantern",
+        "lotusfin",
+        "moonfin",
+        "crystal",
+        "phoenixfish",
+        "dreamray",
+        "dragonkoi",
+        "galaxywhale",
+        "gulpuffer",
+        "grumpangler",
+        "flopray",
+        "snagglefin"
+      ],
+      "items": [
+        {
+          "id": "minnow",
+          "bounds": [
+            10,
+            54,
+            318,
+            162
+          ],
+          "occupiedPixels": 16687,
+          "sourceBounds": [
+            297,
+            270,
+            796,
+            445
+          ]
+        },
+        {
+          "id": "crucian",
+          "bounds": [
+            338,
+            17,
+            646,
+            199
+          ],
+          "occupiedPixels": 32190,
+          "sourceBounds": [
+            331,
+            229,
+            764,
+            484
+          ]
+        },
+        {
+          "id": "carp",
+          "bounds": [
+            666,
+            39,
+            974,
+            177
+          ],
+          "occupiedPixels": 24051,
+          "sourceBounds": [
+            277,
+            239,
+            815,
+            480
+          ]
+        },
+        {
+          "id": "perch",
+          "bounds": [
+            994,
+            34,
+            1302,
+            182
+          ],
+          "occupiedPixels": 23987,
+          "sourceBounds": [
+            286,
+            224,
+            805,
+            472
+          ]
+        },
+        {
+          "id": "trout",
+          "bounds": [
+            1322,
+            53,
+            1630,
+            163
+          ],
+          "occupiedPixels": 17879,
+          "sourceBounds": [
+            290,
+            268,
+            813,
+            453
+          ]
+        },
+        {
+          "id": "sardine",
+          "bounds": [
+            10,
+            271,
+            318,
+            377
+          ],
+          "occupiedPixels": 16644,
+          "sourceBounds": [
+            276,
+            261,
+            828,
+            450
+          ]
+        },
+        {
+          "id": "mackerel",
+          "bounds": [
+            338,
+            272,
+            646,
+            376
+          ],
+          "occupiedPixels": 16469,
+          "sourceBounds": [
+            267,
+            262,
+            835,
+            454
+          ]
+        },
+        {
+          "id": "catfish",
+          "bounds": [
+            666,
+            262,
+            974,
+            386
+          ],
+          "occupiedPixels": 18690,
+          "sourceBounds": [
+            317,
+            291,
+            841,
+            502
+          ]
+        },
+        {
+          "id": "koi",
+          "bounds": [
+            994,
+            258,
+            1302,
+            390
+          ],
+          "occupiedPixels": 22612,
+          "sourceBounds": [
+            292,
+            254,
+            797,
+            470
+          ]
+        },
+        {
+          "id": "goldfish",
+          "bounds": [
+            1322,
+            230,
+            1630,
+            417
+          ],
+          "occupiedPixels": 32960,
+          "sourceBounds": [
+            271,
+            206,
+            731,
+            485
+          ]
+        },
+        {
+          "id": "seahorse",
+          "bounds": [
+            110,
+            438,
+            218,
+            642
+          ],
+          "occupiedPixels": 8042,
+          "sourceBounds": [
+            499,
+            231,
+            679,
+            568
+          ]
+        },
+        {
+          "id": "angelfish",
+          "bounds": [
+            392,
+            438,
+            592,
+            642
+          ],
+          "occupiedPixels": 23532,
+          "sourceBounds": [
+            382,
+            192,
+            715,
+            529
+          ]
+        },
+        {
+          "id": "lantern",
+          "bounds": [
+            695,
+            438,
+            945,
+            642
+          ],
+          "occupiedPixels": 25608,
+          "sourceBounds": [
+            365,
+            167,
+            781,
+            505
+          ]
+        },
+        {
+          "id": "lotusfin",
+          "bounds": [
+            994,
+            472,
+            1302,
+            608
+          ],
+          "occupiedPixels": 22521,
+          "sourceBounds": [
+            245,
+            241,
+            764,
+            470
+          ]
+        },
+        {
+          "id": "moonfin",
+          "bounds": [
+            1341,
+            438,
+            1611,
+            642
+          ],
+          "occupiedPixels": 24518,
+          "sourceBounds": [
+            314,
+            183,
+            749,
+            509
+          ]
+        },
+        {
+          "id": "crystal",
+          "bounds": [
+            10,
+            697,
+            318,
+            815
+          ],
+          "occupiedPixels": 12797,
+          "sourceBounds": [
+            244,
+            241,
+            838,
+            467
+          ]
+        },
+        {
+          "id": "phoenixfish",
+          "bounds": [
+            338,
+            692,
+            646,
+            820
+          ],
+          "occupiedPixels": 20133,
+          "sourceBounds": [
+            201,
+            233,
+            768,
+            469
+          ]
+        },
+        {
+          "id": "dreamray",
+          "bounds": [
+            716,
+            654,
+            924,
+            858
+          ],
+          "occupiedPixels": 14884,
+          "sourceBounds": [
+            267,
+            158,
+            763,
+            644
+          ]
+        },
+        {
+          "id": "dragonkoi",
+          "bounds": [
+            1011,
+            654,
+            1285,
+            858
+          ],
+          "occupiedPixels": 22069,
+          "sourceBounds": [
+            334,
+            192,
+            885,
+            600
+          ]
+        },
+        {
+          "id": "galaxywhale",
+          "bounds": [
+            1322,
+            674,
+            1630,
+            838
+          ],
+          "occupiedPixels": 25083,
+          "sourceBounds": [
+            188,
+            174,
+            813,
+            508
+          ]
+        },
+        {
+          "id": "gulpuffer",
+          "bounds": [
+            83,
+            870,
+            245,
+            1074
+          ],
+          "occupiedPixels": 21104,
+          "sourceBounds": [
+            428,
+            158,
+            735,
+            545
+          ]
+        },
+        {
+          "id": "grumpangler",
+          "bounds": [
+            390,
+            870,
+            594,
+            1074
+          ],
+          "occupiedPixels": 26636,
+          "sourceBounds": [
+            431,
+            181,
+            737,
+            487
+          ]
+        },
+        {
+          "id": "flopray",
+          "bounds": [
+            720,
+            870,
+            920,
+            1074
+          ],
+          "occupiedPixels": 16607,
+          "sourceBounds": [
+            290,
+            175,
+            802,
+            695
+          ]
+        },
+        {
+          "id": "snagglefin",
+          "bounds": [
+            1059,
+            870,
+            1237,
+            1074
+          ],
+          "occupiedPixels": 12335,
+          "sourceBounds": [
+            406,
+            166,
+            800,
+            616
+          ]
+        }
+      ],
+      "sha256": "db5fb6e80b7fd61cb16e3632087f4598744500393fc53bc361c319a9c0807d4f"
+    }
+  ]
+}

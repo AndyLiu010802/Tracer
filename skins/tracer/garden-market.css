@@ -11,3 +11,5 @@
 @media(prefers-reduced-motion:reduce){.garden-market *{scroll-behavior:auto!important;transition:none!important}}
 .garden-home .garden-market .garden-market-plant-art>svg{width:100%;height:100%;max-width:100%;pointer-events:none}
 .garden-market-plant-art{pointer-events:none}
+.garden-market-sell-all{margin-left:auto;max-width:100%;font-variant-numeric:tabular-nums}
+@container garden-market (max-width:480px){.garden-market-sell-all{width:100%;margin-left:0}}

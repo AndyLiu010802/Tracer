@@ -31,7 +31,7 @@
       var complete = t.checklist.filter(function (c) { return c.done; }).length, total = t.checklist.length;
       progress = '<div class="card-progress"><div class="card-progress-caption"><span>' + L('checklist') + '</span><span class="card-checks">' + complete + ' / ' + total + '</span></div><progress value="' + complete + '" max="' + total + '" aria-label="' + L('checklistProgress', { done: complete, total: total }) + '"></progress></div>';
     }
-    if (t.estimate != null) tags += '<span class="card-hours">◷ ' + (t.spent || 0) + ' / ' + t.estimate + ' h</span>';
+    if (t.estimate != null) tags += '<span class="card-hours" title="' + text('手填工时 / 预计工时（小时）', 'Manual time / estimate (hours)') + '">◷ ' + (t.spent == null ? '—' : t.spent) + ' / ' + t.estimate + ' h</span>';
     var blockers = M.blockers(ws, t);
     if (blockers.length) tags += '<span class="card-blocked" title="' + M.esc(blockers.map(function (v) { return v.seq + ' ' + v.title; }).join('\n')) + '">⊘ ' + L('blocked', { count: blockers.length }) + '</span>';
     var dueState = M.taskDueState(t);
@@ -59,8 +59,9 @@
     var project = filter && M.findProject(ws, filter), completed = scope.length - open.length;
     var html = '<header class="sec-head board-heading"><div><h1>' + M.esc(project ? project.name : L('board')) + '</h1>'
       + '<span class="sec-sub">' + L('boardSummary', { open: open.length, overdue: open.filter(function (t) { return M.taskDueState(t) === 'overdue'; }).length, done: completed }) + '</span></div>'
-      + '<div class="board-heading-actions">' + (project ? '<button type="button" class="btn btn-primary" id="board-complete-project">' + text('完成并归档项目', 'Complete and archive') + '</button>' : '')
+      + '<div class="board-heading-actions"><button type="button" class="btn" id="getting-started-open">' + text('入门引导', 'Getting started') + '</button>' + (project ? '<button type="button" class="btn" id="board-project-review">' + text('项目复盘', 'Project review') + '</button><button type="button" class="btn btn-primary" id="board-complete-project">' + text('完成并归档项目', 'Complete and archive') + '</button>' : '')
       + '<button type="button" class="btn" id="board-clear-completed"' + (completed ? '' : ' disabled') + '>' + text('清除已完成', 'Clear completed') + (completed ? ' · ' + completed : '') + '</button></div></header>'
+      + '<div id="getting-started-slot" hidden></div>'
       + '<div class="board-tools"><input type="search" id="board-search" aria-label="' + L('search') + '" placeholder="' + L('search') + '" value="' + M.esc(filters.query) + '">'
       + '<select id="board-priority" aria-label="' + L('priority') + '"><option value="">' + L('allPriorities') + '</option>' + ['urgent', 'high', 'medium', 'low'].map(function (k) { return '<option value="' + k + '">' + L(k) + '</option>'; }).join('') + '</select>'
       + '<select id="board-due" aria-label="' + L('dueDate') + '"><option value="">' + L('anyDue') + '</option><option value="overdue">' + L('overdue') + '</option><option value="today">' + L('today') + '</option><option value="upcoming">' + L('upcoming') + '</option></select>'
@@ -85,9 +86,13 @@
     sec.querySelector('#board-priority').value = filters.priority;
     sec.querySelector('#board-due').value = filters.due;
     wire(ws);
+    if (T.gettingStarted) T.gettingStarted.mount(sec.querySelector('#getting-started-slot'));
   }
 
   function wire(ws) {
+    sec.querySelector('#getting-started-open').onclick = function () { if (T.gettingStarted) T.gettingStarted.open(); };
+    var reviewButton = sec.querySelector('#board-project-review');
+    if (reviewButton) reviewButton.onclick = function () { T.openProjectReview(T.projectFilter()); };
     function focusCard(id) { var c = sec.querySelector('.card[data-id="' + id + '"]'); if (c) c.focus(); }
     function editable(task) { var project = task && task.projectId && M.findProject(T.store.data, task.projectId); return task && (!project || project.status !== 'completed'); }
     function move(id, status, beforeId) {

@@ -27,11 +27,8 @@
 .garden-world[data-farm=cyber] .garden-ground-grain{stroke:#87bfba}
 .garden-world[data-farm=cyber] .garden-world-plot[data-empty=true] .garden-ground-top{fill:#45b9d008;stroke:#98ebee7a;stroke-dasharray:4 3}
 .garden-world[data-farm=cyber] .garden-world-plot:hover .garden-ground-top,.garden-world[data-farm=cyber] .garden-world-plot[aria-pressed=true] .garden-ground-top{stroke:#d5adf6;stroke-width:2}
-.garden-world[data-farm=cyber] .garden-world-companion-perch{left:65.89%;top:40.82%}
-.garden-home .garden-world[data-farm=cyber] .garden-world-surface .garden-home-companion{left:65.89%;top:40.82%}
-.garden-home .garden-world[data-farm=cyber] .garden-world-surface .garden-home-companion-caption{left:69.8%;top:34.7%}
 .garden-home .garden-world[data-farm=cyber] .garden-world-plot{height:8.8%;width:13.2%}
-.garden-world[data-farm=cyber] .garden-world-plot-label,.garden-world[data-farm=cyber] .garden-home-companion-name,.garden-world[data-farm=cyber] .garden-home-companion-state{background:#172b40eb;color:#d4dff4;border-color:#95bada50}
+.garden-world[data-farm=cyber] .garden-world-plot-label{background:#172b40eb;color:#d4dff4;border-color:#95bada50}
 .garden-world[data-farm=cyber] .garden-world-pollen{background:#95cdef;box-shadow:0 0 6px #83bceb}
 .garden-world-hint{color:#9da88a}
 .garden-world-detail{background:#171e19;border-color:#a2b48626;box-shadow:none}
@@ -84,16 +81,9 @@
 .garden-world-seed-plus{left:50%;top:85.795%;bottom:auto;transform:translate(-50%,-50%);font-size:20px;line-height:1;color:#fff8cf}
 .garden-world-plot-label{bottom:-23%;max-width:128%;color:#e4e4c8;background:#344b30ed;border-color:#889f6f66;box-shadow:0 2px 0 #223e2233;font-size:9px}
 .garden-world-plot[aria-pressed=true] .garden-world-plot-label{background:#e3dfa6;color:#536338;border-color:#f0e7b4}
-.garden-world-companion-perch{position:absolute;left:66.5%;top:43.5%;width:10%;aspect-ratio:120/56;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
-.garden-world-companion-perch img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
-.garden-home .garden-world-surface .garden-home-companion{left:66.5%;top:43.5%;width:11%;height:auto;aspect-ratio:1;max-width:none;bottom:auto;transform:translate(-50%,-87%);z-index:10}
-.garden-home .garden-world-surface .garden-home-companion-caption{left:73%;right:auto;width:19%;top:42%;bottom:auto;gap:2px;display:flex;flex-direction:column;align-items:center}
-.garden-home .garden-world-surface .garden-home-companion-name{background:#344b30ed;color:#e8e5c5;padding:2px 6px;border:1px solid #9fae7933;font-size:10px}
-.garden-home .garden-world-surface .garden-home-companion-state{background:#344b30dd;color:#cad4b8;padding:1px 5px;font-size:8px}
 .garden-world-effects{inset:-170% -20% 0}
 @container garden-home (max-width:540px){
   .garden-world-surface{aspect-ratio:900/520;margin-top:12px}.garden-world-plot-label{font-size:7px;padding:1px 3px;bottom:-26%}
-  .garden-world-seed-plus{font-size:15px}.garden-home .garden-world-surface .garden-home-companion-name{font-size:7px;padding:1px 3px}
-  .garden-home .garden-world-surface .garden-home-companion-state{display:none}
+  .garden-world-seed-plus{font-size:15px}
   .garden-home .garden-world-plot{min-height:44px;min-width:44px}
 }

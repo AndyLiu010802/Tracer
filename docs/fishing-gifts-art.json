@@ -1,0 +1,86 @@
+{
+  "generator": "Built-in image_gen tool",
+  "created": "2026-10-07",
+  "assets": [
+    {
+      "id": "tide_crown",
+      "kind": "gift",
+      "path": "skins/tracer/fishing-art/gift-tide_crown-v1.png",
+      "transparent": true,
+      "prompt": "Square transparent game avatar frame, premium realistic anime game collectible, extraordinarily crafted but restrained. ONE circular sea-emperor coronet frame of champagne-gold filigree, rich translucent aquamarine enamel wave curls, tiny ivory pearls seated in scalloped settings, symmetrical finely engraved seahorse ornaments on lower side arcs, one small gold crown at twelve o'clock. A few pale-blue cut gems, handcrafted fine relief wave engraving, polished thin bevels and soft ambient occlusion. Front-facing orthographic perfectly circular. Outer diameter 88% of square, inner circular opening diameter EXACTLY 64% of square, centered at exact center; the whole central opening must be entirely transparent. Nothing crosses the inner opening, no portrait, no filled disc, no scenery, no text, no numbers, no shadows outside art. Leave transparent safe padding. Beautiful refined nautical luxury coherent with miniature aquarium decor, carefully modeled continuous materials rather than glued basic shapes. Actual transparent alpha background AND central hole.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-616f1122-ca89-4186-ad85-e5b9dc02f5c8.png"
+    },
+    {
+      "id": "moon_jelly",
+      "kind": "gift",
+      "path": "skins/tracer/fishing-art/gift-moon_jelly-v1.png",
+      "transparent": true,
+      "prompt": "Square transparent premium anime-realistic game avatar frame, ONE centered circular heirloom jewel themed moonlit jellyfish. Thin iridescent silver-platinum ring with mother-of-pearl and opalescent lavender facets, at top a beautifully translucent crystal jellyfish bell with layered milky moon opal, delicate flowing silver tentacles curling ALONG the outside ring, pearl droplets and tiny crescent inlays lower sides. Graceful restraint, airy ethereal sea fantasy, physically shaded dimensional relief, exquisite glass thickness, fine metal settings. Front orthographic. Outer diameter 88% canvas. Completely clear TRANSPARENT circular portrait hole centered exactly, diameter exactly 64% canvas, nothing intrudes in this hole. No face/portrait, no scenery, no text or numbers or checkerboard. Fully transparent alpha around artwork and inside opening. Soft studio lighting, no flat icon style.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-ec9334c0-fdcc-4801-a5af-9ed839a00cb8.png"
+    },
+    {
+      "id": "dragon_seal",
+      "kind": "gift",
+      "path": "skins/tracer/fishing-art/gift-dragon_seal-v1.png",
+      "transparent": true,
+      "prompt": "Square transparent premium realistic-anime game avatar jewelry frame. A single continuous emerald-jade Chinese azure dragon coiled into a circular ring, small stout majestic body proportions yet dignified fierce face, delicate antlers and whiskers kept outside the opening; finely carved overlapping jade scales and gold inlaid cloud motifs, luminous pale celadon belly, modest gold talon holding a small pearl below. Treat dragon as carved translucent nephrite sculpture with interior scattering, precise engraved relief, gold jewelry clasp details. A noble artifact, not a scary monster, not a silly smile, not plastic. Outer ring diameter88% square, exact centered fully transparent circular portrait aperture diameter64% square, keep dragon and every ornament OUTSIDE that hole, ample transparent margin. Frontal orthographic, no avatar, no landscape, no text, no watermark. Actual transparent background and transparent center.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-ab4d990f-a390-4249-853a-52242c411307.png"
+    },
+    {
+      "id": "sunken_library",
+      "kind": "gift",
+      "path": "skins/tracer/fishing-art/gift-sunken_library-v1.png",
+      "transparent": false,
+      "prompt": "Premium collectible 16:9 computer background illustration, realistic anime environmental art, painterly precision, cinematic but calm, no text. Title concept Sunken Library: a submerged ancient art-nouveau reading room seen through crystal-clear aquamarine water, pearl limestone arches with intricate bronze marine scrollwork, weathered books sealed in glass vitrines, delicate anemones and small silver fish, warm amber desk lanterns contrasting turquoise god rays, detailed patinated brass instruments on a right-side dark walnut shelf. Beautiful coherent architecture and authentic material detail, not shape collage. Left half quiet deep teal water and softly receding arches with gentle contrast for interface readability. On lower right reserve a clean wide wooden shelf for a miniature aquarium, without drawing the aquarium itself. No UI, no logos, no letters, no people. Tasteful rare fishing reward; moody sophisticated aquatic fantasy.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-25f11f74-924e-47d0-af76-ccaa7058efd6.png"
+    },
+    {
+      "id": "cloud_koi_garden",
+      "kind": "gift",
+      "path": "skins/tracer/fishing-art/gift-cloud_koi_garden-v1.png",
+      "transparent": false,
+      "prompt": "Premium collectible 16:9 computer background, realistic anime film background with fine painterly environmental details. Theme Cloud Koi Garden: refined Chinese celadon pavilion floating over a pale rose dawn cloud sea, jade-inlaid railing, sculpted white limestone, gracefully arcing miniature pine and golden ginkgo leaves, celestial koi moving through distant mist like subtle silhouettes, warm sun refracting in ceramic roof glaze. Delicate wind chime, finely carved lotus stone lantern at right, turquoise-green silk tassel. Rich realistic material craftsmanship and ambient shadows, restrained gold accents. Lower right a clean smooth ivory stone display ledge wide enough for a desktop aquarium, leave it EMPTY. Left two thirds calm misty sky and subtle layered clouds for readable desktop icons. No lettering, no logos, no UI, no people, no pasted panels. Breathtaking serene highly detailed anime fantasy scenery, balanced coherent composition.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-12ecfa1e-95a0-417e-acb5-080359b96197.png"
+    },
+    {
+      "id": "starlit_harbor",
+      "kind": "gift",
+      "path": "skins/tracer/fishing-art/gift-starlit_harbor-v1.png",
+      "transparent": false,
+      "prompt": "Premium rare fishing collectible wallpaper, landscape 16:9. Realistic anime environmental painting with intricate craftsmanship. Theme Starwhale Night Harbor: quiet intimate observatory boathouse at midnight, open arched window onto indigo harbor and an immense translucent star-whale constellation drifting in the distant sky, not looming or scary. Brass astrolabe, carefully crafted rope knots and tiny nautical lantern at far right, beautifully worn blue-gray timber with inlaid silver compass rose, tiny harbor lights reflected on still water. Luminous pale cyan and soft pearl-gold, velvet indigo star field. Keep left half dark simple sky/water negative space for interface; a clear empty walnut display shelf on lower right for aquarium, do not draw an aquarium. Fine dimensional details, coherent light and realistic materials, restrained magic, no text/no UI/no logos/no people. Calm luxurious collectible art.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-feb3b0a3-38fb-4529-9fbc-6151286d48bb.png"
+    },
+    {
+      "id": "boots",
+      "kind": "product",
+      "path": "skins/tracer/fishing-art/catch-boots-v1.png",
+      "transparent": true,
+      "prompt": "One discarded old fishing boot, exquisitely detailed realistic anime game inventory item, isolated on actual transparent alpha background. Three quarter view, worn olive brown rubber and leather wading boot with folded cuff, frayed stitched panels, lacing eyelets, heavy worn tread, tiny algae blade and clear water droplets, soft dimensional material shading. Charming humble found object, not gross, no foot or person, no scenery, no pedestal, no text, no logo, no shadow outside silhouette. Square composition with generous transparent padding, occupies80%.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-c64118e6-7b05-472a-bc11-5f29f5f18c40.png"
+    },
+    {
+      "id": "broken_watch",
+      "kind": "product",
+      "path": "skins/tracer/fishing-art/catch-broken_watch-v1.png",
+      "transparent": true,
+      "prompt": "One broken antique wristwatch caught while fishing, premium realistic anime game inventory item on actual transparent alpha background. Three-quarter tilted view of patinated brass round wristwatch, cracked glass with fine controlled fractures, slightly bent hands, weathered dark brown leather strap curved loosely, tiny worn stitches and green oxidization around bezel, small water droplets. Detailed authentic materials, humble old junk but visually charming and readable, no lettering or brand, no scenery, no pedestal, no external shadow. Centered square composition with ample transparent margin.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-b95a6040-9214-436a-b508-f6029711ba8c.png"
+    },
+    {
+      "id": "trash_bag",
+      "kind": "product",
+      "path": "skins/tracer/fishing-art/catch-trash_bag-v1.png",
+      "transparent": true,
+      "prompt": "One small tied waterlogged rubbish bag fished from a pond, premium detailed realistic anime game inventory item, isolated actual transparent alpha. Dark charcoal gray bag loosely bulging with asymmetrical realistic continuous crumpled plastic folds, tied handles at top, soft wet reflections, one tiny green leaf stuck to side and two water droplets, harmless clean collectible junk, not gross, no exposed garbage, no text or logo, no scenery or platform, no external shadow. Three-quarter view, carefully shaded folds, centered square, generous transparent margins.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-31f4fb7f-cb93-43f8-ae9c-9f399dce54e7.png"
+    },
+    {
+      "id": "mystery_bundle",
+      "kind": "product",
+      "path": "skins/tracer/fishing-art/catch-mystery_bundle-v1.png",
+      "transparent": true,
+      "prompt": "One extraordinary sealed mystery fishing gift parcel, realistic anime premium game collectible, actual transparent alpha background. Small luxurious treasure parcel wrapped in deep petrol teal silk with woven wave jacquard, antique champagne gold corner protectors engraved with tiny marine scrolls, elegant slender pearl-white ribbon tied asymmetrically, central mother-of-pearl nautilus clasp and ornate brass keyhole, a few modest aquamarine inlaid stones, intricate stitching and seams, warm interior magical glimmer only through seams. A beautiful coherent handcrafted artifact, restrained luxury not clutter, closed with contents completely concealed. Three-quarter view, physical depth and shadows within object, no floor or outside shadow, no writing or logo, no scenery, centered square generous transparent margins.",
+      "generatedSource": "generated-images/01a10e58-17dc-7b02-aef4-d70e559feffc/exec-66b65c6a-3afa-43be-a292-ffdd373b2702.png"
+    }
+  ]
+}

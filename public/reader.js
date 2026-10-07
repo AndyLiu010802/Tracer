@@ -146,6 +146,7 @@
     var panelTag = slot.getAttribute('data-panel-tag');
     var panelTitle = slot.getAttribute('data-panel-title');
     var panelMeta = slot.getAttribute('data-panel-meta');
+    var panelSource = slot.getAttribute('data-panel-source');
     if (panelTag) panel.querySelector('.fx-tag').textContent = panelTag;
     if (panelTitle) panel.querySelector('.fx-title').textContent = panelTitle;
     if (panelMeta) panel.querySelector('.fx-meta').textContent = panelMeta;
@@ -153,6 +154,7 @@
     el.panel = panel;
     el.head = panel.querySelector('.fx-head');
     el.src = panel.querySelector('.fx-src');
+    if (panelSource) { el.src.placeholder = panelSource; el.src.setAttribute('aria-label', panelSource); }
     el.frame = panel.querySelector('.fx-frame');
     el.fxBtn = panel.querySelector('[data-act="fx"]');
     el.dimBtn = panel.querySelector('[data-act="dim"]');
@@ -174,28 +176,48 @@
   }
 
   function setupNativeBrowser() {
-    var zh = localStorage.getItem('tracer.language') !== 'en';
+    var lastStatus = null, messageKind = 'intro', lastError = '';
+    function chinese() {
+      if (window.TracerLocale) return window.TracerLocale.language() === 'zh';
+      try { return localStorage.getItem('tracer.language') === 'zh'; } catch (e) { return false; }
+    }
     el.panel.classList.add('fx-native');
     el.frame.hidden = true;
     el.fxBtn.hidden = true; el.dimBtn.hidden = true;
     el.panel.querySelector('.fx-tag').textContent = 'WEB';
-    el.panel.querySelector('.fx-title').textContent = zh ? '内置浏览器' : 'Browser';
-    el.src.placeholder = zh ? '输入网址' : 'Enter a website address';
-    el.src.setAttribute('aria-label', el.src.placeholder);
-    el.panel.querySelector('[data-act="go"]').textContent = zh ? '打开' : 'Go';
     el.panel.querySelector('.fx-hint').textContent = 'Chromium';
     var external = document.createElement('button');
     external.className = 'fx-icon'; external.dataset.act = 'external'; external.textContent = '↗';
-    external.title = zh ? '用系统浏览器打开' : 'Open in system browser';
     el.head.insertBefore(external, el.head.querySelector('[data-act="hide"]'));
     var message = document.createElement('div'); message.className = 'fx-browser-message';
-    message.innerHTML = '<strong></strong><p></p><button class="fx-go" data-act="reload">' + (zh ? '重试' : 'Retry') + '</button>';
+    message.innerHTML = '<strong></strong><p></p><button class="fx-go" data-act="reload"></button>';
     el.frame.parentElement.appendChild(message);
-    message.querySelector('strong').textContent = zh ? '在这里浏览网页' : 'Browse alongside your work';
-    message.querySelector('p').textContent = zh ? '输入网址，直接访问网站。' : 'Enter an address to open the website directly.';
-    message.querySelector('button').hidden = true;
     var meta = el.panel.querySelector('.fx-meta');
-    meta.textContent = zh ? '独立浏览器 · 登录状态自动保存' : 'Browser · persistent session';
+    function refreshLabels() {
+      var zh = chinese(), data = lastStatus;
+      el.panel.querySelector('.fx-title').textContent = zh ? '内置浏览器' : 'Browser';
+      el.src.placeholder = zh ? '输入网址' : 'Enter a website address';
+      el.src.setAttribute('aria-label', el.src.placeholder);
+      el.panel.querySelector('[data-act="go"]').textContent = zh ? '打开' : 'Go';
+      external.title = zh ? '用系统浏览器打开' : 'Open in system browser';
+      external.setAttribute('aria-label', external.title);
+      message.querySelector('button').textContent = zh ? '重试' : 'Retry';
+      message.querySelector('button').hidden = messageKind !== 'error';
+      message.hidden = messageKind === 'hidden';
+      message.querySelector('strong').textContent = messageKind === 'error'
+        ? (zh ? '暂时无法打开此网页' : 'This page could not load')
+        : (zh ? '在这里浏览网页' : 'Browse alongside your work');
+      message.querySelector('p').textContent = messageKind === 'error' ? lastError
+        : (zh ? '输入网址，直接访问网站。' : 'Enter an address to open the website directly.');
+      meta.textContent = !data ? (zh ? '独立浏览器 · 登录状态自动保存' : 'Browser · persistent session')
+        : data.download ? data.download : data.error
+          ? (zh ? '可重试，或点击右上角 ↗ 使用系统浏览器' : 'Retry, or use ↗ to open your system browser')
+          : data.loading ? (zh ? '正在加载…' : 'Loading…')
+            : (zh ? '直接连接 · ' : 'Direct · ') + (data.title || 'Chromium');
+    }
+    refreshLabels();
+    var languagePicker = document.getElementById('language-select');
+    if (languagePicker) languagePicker.addEventListener('change', refreshLabels);
     nativeBrowser.onState(function (data) {
       if (typeof data.visible === 'boolean') el.panel.dataset.browserVisible = String(data.visible);
       if (data.focusAddress) { el.src.focus(); el.src.select(); return; }
@@ -203,14 +225,9 @@
       if (typeof data.back === 'boolean') el.panel.querySelector('[data-act="back"]').disabled = !data.back;
       if (typeof data.forward === 'boolean') el.panel.querySelector('[data-act="fwd"]').disabled = !data.forward;
       if (data.error) {
-        message.hidden = false;
-        message.querySelector('strong').textContent = zh ? '暂时无法打开此网页' : 'This page could not load';
-        message.querySelector('p').textContent = data.error;
-        message.querySelector('button').hidden = false;
-        meta.textContent = zh ? '可重试，或点击右上角 ↗ 使用系统浏览器' : 'Retry, or use ↗ to open your system browser';
-      } else if (data.error === '') { message.hidden = true; }
-      if (!data.error && !data.download) meta.textContent = data.loading ? (zh ? '正在加载…' : 'Loading…') : (zh ? '直接连接 · ' : 'Direct · ') + (data.title || 'Chromium');
-      if (data.download) meta.textContent = data.download;
+        messageKind = 'error'; lastError = data.error;
+      } else if (data.error === '') { messageKind = 'hidden'; }
+      lastStatus = data; refreshLabels();
     });
     new ResizeObserver(syncNativeLayout).observe(el.frame.parentElement);
     new MutationObserver(syncNativeLayout).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'class', 'style'] });

@@ -1,0 +1,13 @@
+{
+  "asset": "skins/tracer/fishing-art/bite-hooked-gold-v1.png",
+  "tool": "Built-in image_gen.imagegen",
+  "reference": "User-supplied gold embossed pixel-art 上钩了！ wordmark",
+  "transparentBackground": true,
+  "display": {
+    "desktopHeightCssPx": 25,
+    "panelHeightCssPx": 27,
+    "anchor": "Centered above the moving bobber; visible only in the bite phase",
+    "sizing": "Preserves the former exclamation mark font height, with proportional image width"
+  },
+  "prompt": "Edit the attached reference image into a production-ready transparent game UI sprite. Image 1 is the exact edit target, not just a style suggestion. Remove ONLY its white background and preserve the actual gold embossed pixel-art lettering, outlines, shape and original composition: exact Chinese text 上钩了！ (three Chinese characters then an exclamation mark). Preserve the sharp gold highlights, pale yellow front faces, dark brown 3D beveled sides and dark outline, retro game lettering. Keep the same proportions, same letters and same restrained depth; do not redesign, change spelling, add symbols, add glows, or create a scene. Letters opaque with real transparent alpha surrounding them and in character counters. Tightly frame the complete wordmark with only a tiny transparent margin, no cropping of strokes, no extra border. This is a tiny fish-bite HUD sprite to render at about 25 px letter height, so preserve crisp readable contours. Output only the transparent wordmark asset."
+}

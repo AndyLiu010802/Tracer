@@ -14,9 +14,11 @@
     const features=new Map();
     for(const id of ['book_cabinet','reading_bench','flower_cart']){const figure=el('button','store-hero-object',heroArt);figure.type='button';figure.dataset.storeFeature=id;figure.innerHTML=root.TracerGardenCollectionArt.markup(id);figure.querySelector('svg')?.setAttribute('preserveAspectRatio','xMidYMax meet');features.set(id,figure);}
     const benefits=el('div','store-benefits',shop),navigation=el('nav','store-navigation',shop),navs=new Map(),navLabels=new Map();
-    for(const [id,artId]of [['furniture','reading_bench'],['stickers',null],['wallpapers',null],['materials',null],['avatarFrames',null],['taskFrames',null],['warehouse','flower_cart']]){
+    for(const [id,artId]of [['fishing',null],['furniture','reading_bench'],['stickers',null],['postcards',null],['wallpapers',null],['materials',null],['avatarFrames',null],['taskFrames',null],['warehouse','flower_cart']]){
       const b=button(navigation,id),art=el('span','store-department-art',b);art.setAttribute('aria-hidden','true');
       if(artId)art.innerHTML=root.TracerGardenCollectionArt.markup(artId);
+      else if(id==='fishing')art.innerHTML=root.TracerFishingArt.rodMarkup(root.TracerFishingModel.catalog.rods.find(r=>r.id==='moon'));
+      else if(id==='postcards')art.textContent='\u2709';
       else if(id==='wallpapers'||id==='stickers'){const picture=el('img','',art);picture.src=id==='stickers'?'/sticker-art/st_bunny-v1.png':'/wallpapers/static-01.png';picture.alt='';if(id==='stickers')picture.className='store-nav-sticker';}
       else if(id==='avatarFrames'||id==='taskFrames')root.TracerFrames.navArt(art,id==='avatarFrames'?'avatarFrame':'taskFrame');
       else for(let i=0;i<3;i++)el('i','store-swatch',art);
@@ -24,8 +26,10 @@
     }
     const message=el('div','store-message',shop),messageText=el('span','',message),retry=button(message,'retry');message.setAttribute('role','status');message.hidden=true;
     const furniture=el('section','store-furniture',shop),collection=root.TracerGardenCollectionShop(furniture,onAction);
+    const fishingSection=el('section','store-fishing',shop),fishingShop=root.TracerFishingView.create(fishingSection,{section:'tackle',onAction:(...args)=>root.Tracer.fishing?.action(...args)});
     const collectionBox=furniture.querySelector('.garden-collection-shop');collectionBox.insertBefore(collectionBox.querySelector('.garden-collect-goal'),collectionBox.querySelector('.garden-collect-status'));
     const stickerSection=el('section','store-stickers',shop),stickerShop=root.TracerStickerShop(stickerSection,onAction);
+    const postcardSection=el('section','store-postcards',shop),postcardShop=root.TracerPostcards.shop(postcardSection,onAction);
     const wallSection=el('section','store-wallpapers',shop),wallHeading=el('div','store-department-heading',wallSection),wallTitle=el('h2','',wallHeading),wallHint=el('p','',wallHeading),filters=el('div','store-wall-filters',wallSection);
     const filterButtons=new Map();for(const id of ['static','dynamic','owned'])filterButtons.set(id,button(filters,'filter-'+id));
     const defaults=el('div','store-defaults',wallSection),defaultBg=button(defaults,'default-background'),defaultMaterial=button(defaults,'default-material'),defaultAvatar=button(defaults,'default-avatarFrame'),defaultTask=button(defaults,'default-taskFrame');
@@ -40,6 +44,9 @@
     Promise.all(['/wallpaper-catalog.json','/frame-catalog.json'].map(url=>fetch(url,{signal:abort.signal}).then(r=>{if(!r.ok)throw new Error('catalog');return r.json();}))).then(lists=>lists.flat()).then(items=>{if(dead)return;catalog=items.map(i=>({...i,asset:i.asset?(['avatarFrame','taskFrame'].includes(i.type)?i.asset:'/wallpapers/'+i.asset.split('/').pop()):undefined}));renderWalls();}).catch(e=>{if(!dead&&e.name!=='AbortError')wallEmpty.textContent=tr('壁纸暂时无法载入，请重新打开商店。','Wallpapers could not load. Please reopen the shop.');});
     const owned=()=>new Set((state.wallpapers?.purchases||[]).map(i=>i.itemId));
     const appearance=()=>state.wallpapers?.appearance||{};
+    const giftOverrides=slot=>root.TracerWallpapers.giftOverrides(slot);
+    const isEquipped=item=>{const slot=root.TracerFrames.slot(item);return!giftOverrides(slot)&&appearance()[slot+'ItemId']===item.id;};
+    let giftAppearanceSignature='';const giftAppearanceObserver=new MutationObserver(()=>{const next=JSON.stringify([doc.documentElement.dataset.fishingAvatar,doc.documentElement.dataset.fishingBackground]);if(next===giftAppearanceSignature||dead)return;giftAppearanceSignature=next;renderWalls();renderDetail();});giftAppearanceObserver.observe(doc.documentElement,{attributes:true,attributeFilter:['data-fishing-avatar','data-fishing-background']});
     function renderWalls(){
       if(dead)return;
       const frameTab=tab==='avatarFrames'||tab==='taskFrames';
@@ -47,19 +54,19 @@
       wallHint.textContent=tab==='avatarFrames'?tr('用你的头像试戴。一次收藏，可随时佩戴或收起。','Try it on your portrait. Collect once, wear or put away whenever you like.'):tab==='taskFrames'?tr('应用于任务看板和日程卡片。任务框优先于整体边框；收起后恢复整体主题。','Styles your board and planner cards. Task frames take priority over the workspace material; removing one restores that theme.'):tr('先点开欣赏，再决定收藏。壁纸与材质可分别搭配。','Open a preview, then choose your favourite. Mix wallpapers and materials freely.');
       filters.hidden=tab!=='wallpapers';defaultBg.hidden=defaultMaterial.hidden=frameTab;defaultAvatar.hidden=tab!=='avatarFrames';defaultTask.hidden=tab!=='taskFrames';
       wallSettings.hidden=tab!=='wallpapers';if(settingsLanguage!==state.language){settingsLanguage=state.language;wallSettings.replaceChildren();root.TracerWallpapers.opacityControl(wallSettings);}
-      defaultAvatar.textContent=tr('收起头像框','Remove avatar frame');defaultTask.textContent=tr('收起任务框，跟随整体主题','Remove task frame & follow theme');defaultAvatar.disabled=pending||!appearance().avatarFrameItemId;defaultTask.disabled=pending||!appearance().taskFrameItemId;
+      defaultAvatar.textContent=tr('收起头像框','Remove avatar frame');defaultTask.textContent=tr('收起任务框，跟随整体主题','Remove task frame & follow theme');defaultAvatar.disabled=pending||!appearance().avatarFrameItemId&&!giftOverrides('avatarFrame');defaultTask.disabled=pending||!appearance().taskFrameItemId;
       defaultBg.textContent=tr('恢复默认壁纸','Default wallpaper');defaultMaterial.textContent=tr('恢复默认材质','Default material');
-      defaultBg.disabled=pending||!appearance().backgroundItemId;defaultMaterial.disabled=pending||!appearance().materialItemId;
+      defaultBg.disabled=pending||!appearance().backgroundItemId&&!giftOverrides('background');defaultMaterial.disabled=pending||!appearance().materialItemId;
       const labels={static:tr('静态风景','Still scenes'),dynamic:tr('缓缓流动','Gentle motion'),owned:tr('我的收藏','My collection')};
       for(const [id,b]of filterButtons){b.textContent=labels[id];b.setAttribute('aria-pressed',String(id===wallFilter));}
       const saved=owned(),items=catalog.filter(i=>tab==='avatarFrames'?i.type==='avatarFrame':tab==='taskFrames'?i.type==='taskFrame':tab==='materials'?i.type==='material':wallFilter==='owned'?saved.has(i.id)&&['static','dynamic'].includes(i.type):i.type===wallFilter);
       wallEmpty.hidden=items.length>0;wallEmpty.textContent=catalog.length?tr('这里还没有收藏。先去看看喜欢的风景吧。','No treasures here yet. Find a view you love.'):tr('正在布置橱窗…','Preparing the displays…');
-      const signature=JSON.stringify([state.language,tab,wallFilter,items.map(i=>i.id),[...saved],appearance()]);if(signature===wallSignature)return;wallSignature=signature;wallGrid.replaceChildren();
+      const signature=JSON.stringify([state.language,tab,wallFilter,items.map(i=>i.id),[...saved],appearance(),giftOverrides('avatarFrame'),giftOverrides('background')]);if(signature===wallSignature)return;wallSignature=signature;wallGrid.replaceChildren();
       for(const item of items){const card=el('button','store-wall-card',wallGrid);card.type='button';card.dataset.wallpaperId=item.id;if(['avatarFrame','taskFrame'].includes(item.type))card.dataset.frameType=item.type;card.setAttribute('aria-label',tr('欣赏：','Preview: ')+tr(item.name,item.en));
-        root.TracerWallpapers.thumbnail(el('div','store-wall-card-image',card),item);const copy=el('div','store-wall-card-copy',card);el('span','store-eyebrow',copy,item.type==='avatarFrame'?tr('头像珍饰','PORTRAIT ATELIER'):item.type==='taskFrame'?tr('日常信笺','THE EVERYDAY EDIT'):item.type==='dynamic'?tr('流光微尘','MOTION STUDY'):item.type==='material'?tr('材质珍藏','MATERIAL STUDY'):tr('静态风景','STILL SCENE'));el('h3','',copy,tr(item.name,item.en));el('span','store-wall-price',copy,appearance()[root.TracerFrames.slot(item)+'ItemId']===item.id?tr('正在使用','In use'):saved.has(item.id)?tr('已收藏 · 点击预览','Collected · Preview'):'◈ '+item.price);}
+        root.TracerWallpapers.thumbnail(el('div','store-wall-card-image',card),item);const copy=el('div','store-wall-card-copy',card);el('span','store-eyebrow',copy,item.type==='avatarFrame'?tr('头像珍饰','PORTRAIT ATELIER'):item.type==='taskFrame'?tr('日常信笺','THE EVERYDAY EDIT'):item.type==='dynamic'?tr('流光微尘','MOTION STUDY'):item.type==='material'?tr('材质珍藏','MATERIAL STUDY'):tr('静态风景','STILL SCENE'));el('h3','',copy,tr(item.name,item.en));el('span','store-wall-price',copy,isEquipped(item)?tr('正在使用','In use'):saved.has(item.id)?tr('已收藏 · 点击预览','Collected · Preview'):'◈ '+item.price);}
     }
     function renderDetail(){
-      const item=catalog.find(i=>i.id===selected);if(!item)return;const has=owned().has(item.id),slot=root.TracerFrames.slot(item),equipped=appearance()[slot+'ItemId']===item.id;
+      const item=catalog.find(i=>i.id===selected);if(!item)return;const has=owned().has(item.id),equipped=isEquipped(item);
       close.textContent=tr('关闭','Close');detailName.textContent=tr(item.name,item.en);detailText.textContent=tr(item.description,item.descriptionEn||item.en+' · '+(item.type==='material'?'A complete finish for your workspace.':item.type==='dynamic'?'A quietly moving view.':'A view to make your space your own.'));
       detailPrice.textContent=(has?tr('永久收藏，可随时更换','Yours forever. Change it whenever you like.'):'◈ '+item.price+tr(' 金币',' coins'))+(item.type==='taskFrame'?tr(' · 优先于整体边框样式',' · Takes priority over workspace materials'):'');
       buy.textContent=!A?.context.user?tr('登录后收藏','Sign in to collect'):has?equipped?tr('收起，恢复默认','Put away & use default'):item.type==='avatarFrame'?tr('佩戴头像框','Wear this frame'):item.type==='taskFrame'?tr('应用到任务卡','Apply to task cards'):tr('装扮我的空间','Apply to my space'):tr('收藏 · ','Collect · ')+item.price+tr(' 金币',' coins');
@@ -67,22 +74,24 @@
     }
     async function flush(){await T.ready;if(T.store.dirty)T.saveNow();const deadline=Date.now()+15000;while(T.store.inflight&&Date.now()<deadline)await new Promise(r=>setTimeout(r,40));if(T.store.dirty||T.store.inflight||T.store.conflict||T.store.lost)throw new Error('save-pending');}
     async function mutate(action,input){
-      if(pending)return;pending=true;renderDetail();try{await flush();const result=await A.api(action,input);root.TracerWallpapers.synchronize(result.collection);state={...state,wallpapers:result.collection.ledger,economy:{...state.economy,balance:result.collection.balance}};message.hidden=true;update(state);}
+      if(pending)return;pending=true;const account=root.TracerWallpapers.selectionContext();renderDetail();try{await flush();if(!root.TracerWallpapers.selectionCurrent(account))throw new Error('account-changed');const result=await A.api(action,input);if(!root.TracerWallpapers.selectionCurrent(account))throw new Error('account-changed');root.TracerWallpapers.synchronize(result.collection);state={...state,wallpapers:result.collection.ledger,economy:{...state.economy,balance:result.collection.balance}};const switched=await root.TracerWallpapers.finishAppearanceSelection(action,input,account);if(!root.TracerWallpapers.selectionCurrent(account))throw new Error('account-changed');message.hidden=switched;if(!switched)messageText.textContent=tr('商店选择已保存，礼包外观暂未能收起。仍保留当前礼包外观，请再次应用重试。','The shop selection was saved, but the fishing gift could not be put away. Your gift is still active; apply again to retry.');update(state);}
       catch{message.hidden=false;messageText.textContent=tr('暂时未能保存，请稍后重试。','Could not save this change. Please try again.');}
       finally{pending=false;renderDetail();renderWalls();}
     }
     function choose(next){tab=next;render();}
     function render(){
-      shop.dataset.department=tab;furniture.hidden=tab!=='furniture';stickerSection.hidden=tab!=='stickers';wallSection.hidden=!['wallpapers','materials','avatarFrames','taskFrames'].includes(tab);warehouse.hidden=tab!=='warehouse';
+      shop.dataset.department=tab;furniture.hidden=tab!=='furniture';fishingSection.hidden=tab!=='fishing';stickerSection.hidden=tab!=='stickers';postcardSection.hidden=tab!=='postcards';wallSection.hidden=!['wallpapers','materials','avatarFrames','taskFrames'].includes(tab);warehouse.hidden=tab!=='warehouse';
       navigation.setAttribute('aria-label',tr('店铺分区','Shop departments'));
-      for(const [id,b]of navs){const labels=navLabels.get(id);labels.name.textContent=({furniture:tr('家具小铺','Furniture'),stickers:tr('贴纸小铺','Stickers'),wallpapers:tr('风景画廊','Wallpapers'),materials:tr('材质工坊','Materials'),avatarFrames:tr('头像饰品铺','Portrait atelier'),taskFrames:tr('任务框工坊','Task frames'),warehouse:tr('花园柜台','Garden counter')})[id];labels.note.textContent=({furniture:tr('15 件匠心小物','15 crafted treasures'),stickers:tr('8 张纸边小故事','8 paper treasures'),wallpapers:tr('20 扇风景之窗','20 little escapes'),materials:tr('10 种温柔触感','10 lovely finishes'),avatarFrames:tr('6 枚属于你的徽记','6 personal signatures'),taskFrames:tr('6 种日常的模样','6 styles for your plans'),warehouse:tr('出售收获 · 打理花园','Harvests & gardens')})[id];b.setAttribute('aria-pressed',String(tab===id));}
+      for(const [id,b]of navs){const labels=navLabels.get(id);labels.name.textContent=({postcards:tr('\u661f\u7403\u90ae\u5c40','Postcards'),furniture:tr('家具小铺','Furniture'),stickers:tr('贴纸小铺','Stickers'),wallpapers:tr('风景画廊','Wallpapers'),materials:tr('材质工坊','Materials'),avatarFrames:tr('头像饰品铺','Portrait atelier'),taskFrames:tr('任务框工坊','Task frames'),warehouse:tr('花园柜台','Garden counter')})[id];labels.note.textContent=({postcards:tr('4 \u6b3e\u661f\u7403\u4fe1\u7eb8','4 keepsake styles'),furniture:tr('15 件匠心小物','15 crafted treasures'),stickers:tr((state.stickers?.total||0)+' 款手账贴纸',(state.stickers?.total||0)+' journal stickers'),wallpapers:tr('20 扇风景之窗','20 little escapes'),materials:tr('10 种温柔触感','10 lovely finishes'),avatarFrames:tr('6 枚属于你的徽记','6 personal signatures'),taskFrames:tr('6 种日常的模样','6 styles for your plans'),warehouse:tr('出售收获 · 打理花园','Harvests & gardens')})[id];b.setAttribute('aria-pressed',String(tab===id));}
       eyebrow.textContent='TRACER · GARDEN GENERAL STORE';title.textContent=tr('心愿杂货铺','The wish emporium');walletLabel.textContent=tr('我的金币','YOUR COINS');balance.textContent='◈ '+(state.economy?.balance||0).toLocaleString();back.textContent=tr('回花园 ↗','To the garden ↗');
+      navLabels.get('fishing').name.textContent=tr('鱼竿与鱼饵','Rods & bait');navLabels.get('fishing').note.textContent=tr('惊喜盲盒 · 7 种鱼饵','Mystery rods · 7 baits');
+      hero.hidden=tab==='fishing';benefits.hidden=tab==='fishing';
       heroTag.textContent=tr('橱窗故事 / 午后的慢时光','IN THE WINDOW / A SLOW AFTERNOON');heroTitle.textContent=tr('欢迎光临，\n慢慢挑，慢慢喜欢。','Come on in.\nFind a little joy.');heroText.textContent=tr('木头的温度，花开的声音。\n为你的小天地，添一件心爱之物。','Warm wood. A hint of spring.\nSomething lovely for your own little world.');heroAction.textContent=tr('看看本期橱窗 →','Browse the window →');
       welcome.textContent=tr('小店营业中','COME ON IN');windowLabel.textContent=tr('午后书房 · 玻璃花房','READING NOOKS & GLASSHOUSES');
       for(const [id,b]of features){const item=state.collectibles?.items.find(i=>i.id===id);b.setAttribute('aria-label',tr('橱窗商品：','Window display: ')+(item?.name[state.language==='en'?1:0]||id));}
       benefits.textContent=tr('—  把日常的努力，换成喜欢的风景  —','—  SMALL EFFORTS, LOVELY LITTLE REWARDS  —');closingText.textContent=tr('愿你带走的每一件小物，都让日常多一点欢喜。','May every little treasure make your everyday a little lovelier.');retry.textContent=tr('重试保存','Retry save');
       if(state.error){message.hidden=false;messageText.textContent=state.error;}else if(!pending)message.hidden=true;
-      collection.update(state);stickerShop.update(state);market.update(state);renderWalls();renderDetail();
+      collection.update(state);stickerShop.update(state);postcardShop.update(state);market.update(state);if(tab==='fishing')fishingShop.update(state.fishing);renderWalls();renderDetail();
     }
     function click(event){const feature=event.target.closest('[data-store-feature]');if(feature){const id=feature.dataset.storeFeature,item=state.collectibles?.items.find(i=>i.id===id);if(!item)return;choose('furniture');furniture.querySelector('[data-set-id="'+item.setId+'"]')?.click();furniture.querySelector('[data-collect-action=inspect][data-item-id="'+id+'"]')?.click();return;}
       const card=event.target.closest('[data-wallpaper-id]');if(card){selected=card.dataset.wallpaperId;disposePreview();disposePreview=root.TracerWallpapers.thumbnail(detailImage,catalog.find(i=>i.id===selected),true);renderDetail();detail.showModal();return;}
@@ -94,11 +103,11 @@
       if(action==='wall-buy'){
         if(!A?.context.user){detail.close();doc.getElementById('account-open')?.click();return;}
         const item=catalog.find(i=>i.id===selected);if(!item)return;const slot=root.TracerFrames.slot(item);
-        void mutate(owned().has(item.id)?'wallpaper-equip':'wallpaper-purchase',owned().has(item.id)?{slot,itemId:appearance()[slot+'ItemId']===item.id?null:item.id}:{itemId:item.id});
+        void mutate(owned().has(item.id)?'wallpaper-equip':'wallpaper-purchase',owned().has(item.id)?{slot,itemId:isEquipped(item)?null:item.id}:{itemId:item.id});
       }
     }
     shop.addEventListener('click',click);
     function update(next){if(dead)return;state=next;render();}
-    return{update,department:choose,destroy(){dead=true;abort.abort();disposePreview();if(detail.open)detail.close();collection.destroy();stickerShop.destroy();market.destroy();shop.removeEventListener('click',click);shop.remove();}};
+    return{update,department(name,baitId){choose(name);if(name==='fishing'&&baitId)fishingShop.selectBait?.(baitId);},destroy(){dead=true;abort.abort();giftAppearanceObserver.disconnect();disposePreview();if(detail.open)detail.close();collection.destroy();fishingShop.destroy();stickerShop.destroy();postcardShop.destroy();market.destroy();shop.removeEventListener('click',click);shop.remove();}};
   };
 })(typeof window!=='undefined'?window:globalThis);

@@ -63,6 +63,7 @@
     return `<svg class="garden-home-plant-art garden-pixel-plant" data-kind="${kind}" data-rare="${!!rare}" viewBox="0 0 160 176" fill="none" shape-rendering="crispEdges" aria-hidden="true">${shadow}${group('body',body,'80px 149px')}${group('leaf-left',left,'77px 124px')}${group('leaf-right',right,'83px 124px')}${group('head',head,headOrigin)}${spark}</svg>`;
   }
   function markup(value,level=0,rare=false,shiny=false){
+    rare=false;shiny=false;
     const kind=kinds.includes(value)?value:'wildflower',stage=Number.isFinite(level)?Math.max(0,Math.min(4,Math.floor(level))):0;
     if(!Atlas?.[kind]||stage===0)return pixelMarkup(stage===0?kind:'wildflower',stage,false);
     const data=Atlas[kind],variant=stage===4&&rare?(shiny?5:4):stage===4?3:stage===1?0:stage===2?1:2,cell=data.cells[variant];

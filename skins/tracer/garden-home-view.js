@@ -22,10 +22,8 @@
   function TracerGardenHomeView(host, onAction) {
     if(!host || !host.ownerDocument)throw new TypeError('Garden home requires a host element');
     const doc=host.ownerDocument, realm=doc.defaultView || root;
-    let destroyed=false, language='zh', player=null, petSignature='', eventSignature='', currentAction='',pageIndex=0,lastSnapshot=null;
-    let activity='',activityTimer=null,lastPetSnapshot=null,activitySerial=0;
+    let destroyed=false, language='zh', eventSignature='',pageIndex=0,lastSnapshot=null;
     const plots=new Map(),taskCounts=new Map();
-    const isGardenCompanion=pet=>!!pet&&!pet.custom&&/^garden_(wildflower|sunflower|lavender|apple|peach|cherry|neon_orchid|volt_berry|crystal_tree)(?:_shiny)?$/.test(pet.id);
     const home=doc.createElement('div');home.className='garden-home';
     const el=(tag,cls,parent,text)=>{const item=doc.createElement(tag);item.className=cls;if(text!==undefined)item.textContent=text;if(parent)parent.appendChild(item);return item;};
     const set=(node,value)=>{const text=String(value??'');if(node.textContent!==text)node.textContent=text;};
@@ -42,17 +40,8 @@
         const index=(lastSnapshot?.plots||[]).findIndex(item=>item.projectId===value);
         if(index>=0&&Math.floor(index/6)!==pageIndex){pageIndex=Math.floor(index/6);update(lastSnapshot);}return;
       }
-      if(type==='companion-activity'){
-        if(lastPetSnapshot?.petSleeping||lastPetSnapshot?.focus?.running)return;
-        if(isGardenCompanion(lastPetSnapshot?.pet)){playResident(value);return;}
-        activity=({water:'farming',music:'play',pet:'pet',greet:'wake',breeze:'tea'})[value]||'idle';
-        if(lastPetSnapshot)updatePet(lastPetSnapshot.pet,lastPetSnapshot);
-        clearTimeout(activityTimer);activityTimer=setTimeout(()=>{activity='';if(lastPetSnapshot&&!destroyed)updatePet(lastPetSnapshot.pet,lastPetSnapshot);},3300);return;
-      }return onAction?.(type,value);
+      return onAction?.(type,value);
     }),residence=world.surface;
-    const companion=button(residence,'garden-home-companion','open-companion');companion.label.hidden=true;
-    const companionArt=el('span','garden-home-companion-art',companion.node),companionCaption=el('div','garden-home-companion-caption',residence),companionName=el('strong','garden-home-companion-name',companionCaption),companionState=el('span','garden-home-companion-state',companionCaption);
-    world.attachCompanion(companion.node,companionCaption);
     const pages=el('nav','garden-task-pages',hero),pageInfo=el('span','garden-task-page-info',pages),pagePrev=button(pages,'garden-home-button','previous-page'),pageCount=el('span','garden-task-page-count',pages),pageNext=button(pages,'garden-home-button','next-page');
     world.surface.after(pages);
     pages.setAttribute('aria-label','Garden pages');
@@ -62,6 +51,9 @@
     const journal=el('aside','garden-home-journal',body),journalHeading=el('div','garden-home-journal-heading',journal),journalIcon=el('span','garden-home-icon',journalHeading);journalIcon.innerHTML=icons.leaf;
     const journalTitle=el('h2','garden-home-section-title',journalHeading),journalHelp=el('p','garden-home-section-help',journal),eventList=el('ol','garden-home-events',journal),journalEmpty=el('p','garden-home-journal-empty',journal),journalFoot=el('div','garden-home-journal-foot',journal);
     const stamp=el('span','garden-home-stamp',journalFoot);stamp.innerHTML=icons.bloom;const footnote=el('p','garden-home-footnote',journalFoot);
+    const waters=el('section','fishing-garden-links',home);
+    const watersHeading=el('h2','',waters),watersCopy=el('p','',waters),watersButtons=el('div','',waters);
+    const pondsLink=button(watersButtons,'garden-home-button','open-ponds'),cabinLink=button(watersButtons,'garden-home-button','open-cabin'),rodsLink=button(watersButtons,'garden-home-button','open-rods'),castLink=button(watersButtons,'garden-home-button','open-fishing');
     host.appendChild(home);
     function click(event){const node=event.target.closest?.('[data-home-action]');if(!node||!home.contains(node)||node.disabled||destroyed)return;const action=node.dataset.homeAction;if(action==='open-market'){onAction?.('open-shop');return;}if(action==='previous-page'||action==='next-page'){pageIndex+=action==='previous-page'?-1:1;update(lastSnapshot);return;}if(typeof onAction==='function')onAction(action,node.dataset.projectId||undefined);}
     home.addEventListener('click',click);
@@ -76,7 +68,7 @@
       const names={wildflower:tr('野花','Wildflower'),sunflower:tr('向日葵','Sunflower'),lavender:tr('薰衣草','Lavender'),apple:tr('苹果树','Apple tree'),peach:tr('桃树','Peach tree'),cherry:tr('樱桃树','Cherry tree'),neon_orchid:tr('霓虹兰','Neon orchid'),volt_berry:tr('电光莓','Volt berry'),crystal_tree:tr('晶芯树','Crystal tree')};
       set(entry.name,item.total?names[kind]:tr('尚未发现','Undiscovered'));
       set(entry.count,item.total?tr('已收获 ','Harvested ')+item.total+tr(' 次',' times'):tr('等待一颗种子带来惊喜','A seed holds a little surprise'));
-      set(entry.variants,item.total?tr('奇幻伙伴 ','Companions ')+number(item.rare)+tr(' · 闪光 ',' · Shiny ')+number(item.shiny):'???');
+      set(entry.variants,item.total?tr('珍稀花色 ','Rare colours ')+number(item.rare)+tr(' · 闪光 ',' · Shiny ')+number(item.shiny):'???');
       entry.card.setAttribute('aria-label',item.total?names[kind]+tr('，已收获 ','; harvested ')+item.total:tr('尚未发现的植物轮廓','Silhouette of an undiscovered plant'));
     }
     function updatePageLabels(items){
@@ -84,49 +76,16 @@
       set(pagePrev.label,tr('← 上一片','← Previous'));set(pageNext.label,tr('下一片 →','Next →'));
       pages.setAttribute('aria-label',tr('任务花圃翻页','Task garden pages'));
     }
-    function clearActivity(){clearTimeout(activityTimer);activityTimer=null;activity='';activitySerial++;}
-    function playResident(action){
-      const snapshot=lastPetSnapshot;
-      if(!snapshot||snapshot.petSleeping||snapshot.focus?.running||!isGardenCompanion(snapshot.pet)||typeof player?.play!=='function')return false;
-      clearActivity();const activePlayer=player,serial=activitySerial;
-      // The plant player owns its clip length. Never loop a greeting with the
-      // generic companion timer, or finish a replacement player's old clip.
-      return activePlayer.play(action,()=>{if(!destroyed&&player===activePlayer&&serial===activitySerial&&lastPetSnapshot)updatePet(lastPetSnapshot.pet,lastPetSnapshot);});
-    }
-    function updatePet(pet,snapshot){
-      lastPetSnapshot=snapshot;
-      const label=pet ? (language==='zh'?pet.zh:pet.en)||pet.name||pet.id : tr('选择一位伙伴','Choose a companion');
-      const signature=pet?JSON.stringify([pet.id,pet.image||'',pet.animation||null]):'none';
-      if(signature!==petSignature){
-        clearActivity();
-        player?.destroy();player=null;petSignature=signature;currentAction='';companionArt.replaceChildren();
-        try{
-          if(pet?.custom&&pet.animation&&realm.TracerPetAnimation?.normalize(pet.animation))player=realm.TracerPetAnimation.create({image:pet.image,animation:pet.animation,label,animated:true});
-          else if(pet?.custom&&typeof pet.image==='string'&&/^\/api\/pet-art\/[a-f0-9]{32}\.png$/.test(pet.image)){
-            const img=el('img','garden-home-static-companion',companionArt);img.src=pet.image;img.alt=label;img.draggable=false;
-          }else if(pet&&!pet.custom&&realm.TracerPetBuiltinAnimation)player=realm.TracerPetBuiltinAnimation.create({pet,label,animated:true});
-          if(player)companionArt.appendChild(player.element);
-        }catch{player?.destroy();player=null;}
-        if(!companionArt.firstChild){const fallback=el('span','garden-home-companion-placeholder',companionArt);fallback.innerHTML=icons.leaf;}
-      }
-      if(snapshot.petSleeping||snapshot.focus?.running)clearActivity();
-      const action=snapshot.petSleeping?'sleep':snapshot.focus?.running?'focus':activity||'idle';
-      if(player&&action!==currentAction){player.setAction(action);currentAction=action;}
-      if(player)player.element.setAttribute('aria-label',label);
-      const portrait=companionArt.querySelector('img.garden-home-static-companion');if(portrait)portrait.alt=label;
-      set(companionName,label);set(companionState,!pet?tr('让家园多一份陪伴','A little company for your garden'):snapshot.petSleeping?tr('正睡得香甜','Resting peacefully'):snapshot.focus?.running?tr('陪你专注 · ','Focusing with you · ')+(snapshot.focus.clock||''):tr('在这里，陪你慢慢来','Here for your next small step'));
-      companion.node.setAttribute('aria-label',tr('打开伙伴小屋：','Open companion home: ')+label);
-      home.dataset.petAction=action;
-    }
     function update(snapshot={}){
       if(destroyed)return;lastSnapshot=snapshot;language=snapshot.language==='en'?'en':'zh';home.lang=language==='zh'?'zh-CN':'en';
+      set(watersHeading,tr('花园之外，一池小天地','A little world beneath the garden'));set(watersCopy,tr('收集鱼竿，钓到稀有鱼，把鱼苗养进你的立体鱼塘。','Collect rods, catch rare fish and raise their fry in your 3D ponds.'));set(pondsLink.label,tr('我的鱼塘 →','My ponds →'));set(cabinLink.label,tr('传奇水族箱 →','Legendary aquarium →'));set(rodsLink.label,tr('鱼竿收藏 →','Fishing rods →'));set(castLink.label,tr('去钓鱼 ↗','Go fishing ↗'));
       set(eyebrow,tr('每一点进展，都在生长','SMALL STEPS, GROWING THINGS'));
       set(marketLink.label,tr('商店与收藏','Shop & collection'));
       const nextTreasure=snapshot.collectibles?.target;collectGoal.node.hidden=!nextTreasure;
       if(nextTreasure)set(collectGoal.label,tr('下一件心愿：','Your next treasure: ')+nextTreasure.name[language==='en'?1:0]+' · '+Math.min(snapshot.economy?.balance||0,nextTreasure.price)+' / '+nextTreasure.price+tr(' 金币 →',' coins →'));
-      set(title,tr('伙伴家园','Companion garden'));set(description,tr('开始一项任务，种下一颗惊喜。每次完成，都有花朵替你记住。','Begin a task, plant a little surprise. Let each finished step leave a flower.'));set(planetLink.label,tr('花朵星球','Memory planets'));
+      set(title,tr('任务花园','Task garden'));set(description,tr('开始一项任务，种下一颗惊喜。每次完成，都有花朵替你记住。','Begin a task, plant a little surprise. Let each finished step leave a flower.'));set(planetLink.label,tr('花朵星球','Memory planets'));
       stats.setAttribute('aria-label',tr('今天的进展','Today’s progress'));set(todayTasks.value,number(snapshot.today?.tasks));set(todayTasks.label,tr('今天完成','tasks today'));set(todayFocus.value,number(snapshot.today?.minutes));set(todayFocus.label,tr('专注分钟','focus minutes'));
-      set(gardenTitle,tr('植物图鉴','Botanical collection'));set(gardenHelp,tr('每一朵收获都留在这里。未知的轮廓，等待下一次发现。','Every harvest belongs here. Unfamiliar silhouettes await their first discovery.'));
+      set(gardenTitle,tr('植物图鉴','Botanical collection'));set(gardenHelp,tr('每一朵收获都留在这里。完成任务、收获植物，赚取金币装点鱼塘。','Every harvest belongs here. Finish tasks and sell plants to furnish your ponds.'));
       set(add.label,tr('前往任务','Go to tasks'));
       set(journalTitle,tr('生长手记','Garden journal'));set(journalHelp,tr('开始、盛放、收藏，都是你的足迹','Beginnings, blooms and memories'));set(journalEmpty,tr('第一颗种子，会记住你开始的这一刻。','Your first seed will remember the moment you began.'));set(footnote,tr('不用赶路。\n按自己的节奏，也会开花。','No need to hurry.\nGood things grow at your pace.'));
       const items=[],seen=new Set();for(const item of Array.isArray(snapshot.plots)?snapshot.plots:[]){if(!item||typeof item.projectId!=='string'||!item.projectId||seen.has(item.projectId))continue;seen.add(item.projectId);items.push(item);}
@@ -146,13 +105,12 @@
       set(pageCount,(pageIndex+1)+' / '+pageTotal);updatePageLabels(items);
       const events=(Array.isArray(snapshot.events)?snapshot.events:[]).filter(item=>item&&['seed','harvest','bloom'].includes(item.type)).slice(0,5),signature=JSON.stringify([language,events]);
       if(signature!==eventSignature){eventSignature=signature;eventList.replaceChildren();for(const event of events){const row=el('li','garden-home-event',eventList);row.dataset.eventType=event.type;const mark=el('span','garden-home-event-icon',row);mark.innerHTML=icons[event.type==='harvest'?'check':event.type==='seed'?'leaf':'bloom'];const content=el('div','garden-home-event-content',row);el('span','garden-home-event-title',content,(event.type==='seed'?tr('种下 · ','Planted · '):event.type==='harvest'?tr('收藏 · ','Collected · '):tr('盛放 · ','Bloomed · '))+event.title);const details=el('span','garden-home-event-details',content);const parts=[String(event.projectName||''),date(event.at,true)].filter(Boolean);set(details,parts.join(' · '));}journalEmpty.hidden=events.length>0;}
-      updatePet(snapshot.pet||null,snapshot);
+
       world.update({...snapshot,plots:items,scenePlots:items.slice(pageIndex*6,pageIndex*6+6)});
       market?.update({language,collectibles:snapshot.collectibles,inventory:snapshot.inventory||[],economy:snapshot.economy||{},farms:snapshot.farms||[],busy:!!snapshot.busy,error:snapshot.error||''});
       set(errorText,typeof snapshot.error==='string'?snapshot.error:'');set(retry.label,tr('重试保存','Retry save'));error.hidden=!errorText.textContent;
-      if(completedTask)playResident('celebrate');
     }
-    function destroy(){if(destroyed)return;destroyed=true;clearActivity();world.destroy();market?.destroy();player?.destroy();player=null;plots.clear();taskCounts.clear();home.removeEventListener('click',click);home.remove();}
+    function destroy(){if(destroyed)return;destroyed=true;world.destroy();market?.destroy();plots.clear();taskCounts.clear();home.removeEventListener('click',click);home.remove();}
     update();return {update,destroy,selectTask(id){const index=(lastSnapshot?.plots||[]).findIndex(item=>item.projectId===id);if(index>=0){pageIndex=Math.floor(index/6);update(lastSnapshot);world.select?.(id);}}};
   }
   TracerGardenHomeView.plant=function(kind,stage){

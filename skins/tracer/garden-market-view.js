@@ -25,7 +25,7 @@
     const message=el('div','garden-market-message',market);message.hidden=true;message.setAttribute('role','status');const messageText=el('span','garden-market-message-text',message),retry=button(message,'garden-market-secondary','retry-save');
     const decision=el('section','garden-market-decision',market);decision.hidden=true;decision.setAttribute('role','dialog');decision.setAttribute('aria-modal','false');const decisionCopy=el('div','garden-market-decision-copy',decision),decisionTitle=el('h3','garden-market-decision-title',decisionCopy),decisionBody=el('p','garden-market-decision-body',decisionCopy),decisionNote=el('p','garden-market-decision-note',decisionCopy),decisionActions=el('div','garden-market-decision-actions',decision),cancel=button(decisionActions,'garden-market-secondary','cancel'),confirm=button(decisionActions,'garden-market-primary','confirm');
     const collectionShop=options.collections===false?null:realm.TracerGardenCollectionShop?.(market,onAction);
-    const summary=el('div','garden-market-summary',market),summaryStored=el('span','garden-market-summary-item',summary),summaryKinds=el('span','garden-market-summary-item',summary),summarySold=el('span','garden-market-summary-item',summary);
+    const summary=el('div','garden-market-summary',market),summaryStored=el('span','garden-market-summary-item',summary),summaryKinds=el('span','garden-market-summary-item',summary),summarySold=el('span','garden-market-summary-item',summary),sellAll=button(summary,'garden-market-sell-all garden-market-primary','sell-all');
     const shelf=el('div','garden-market-shelf',market),empty=el('div','garden-market-empty',market);icon(empty,'box');const emptyTitle=el('h3','garden-market-empty-title',empty),emptyCopy=el('p','garden-market-empty-copy',empty);
     const shop=el('section','garden-market-shop',market),shopHeading=el('div','garden-market-shop-heading',shop),shopTitles=el('div','garden-market-shop-titles',shopHeading),shopTitle=el('h3','garden-market-shop-title',shopTitles),shopHelp=el('p','garden-market-shop-help',shopTitles),shopBadge=el('span','garden-market-shop-badge',shopHeading),shopGrid=el('div','garden-market-farms',shop);
     const footnote=el('p','garden-market-footnote',market);icon(footnote,'leaf');const footnoteText=el('span','',footnote);
@@ -76,15 +76,8 @@
     function closeConfirmation(focus=true){confirmation=null;decision.hidden=true;if(focus&&restoreFocus?.isConnected)restoreFocus.focus();restoreFocus=null;}
     function renderConfirmation(){
       if(!confirmation){decision.hidden=true;return;}decision.hidden=false;
-      const c=confirmation;let valid=true;
-      if(c.type==='sell'){
-        const row=stock.get(c.plantKind)?.row,price=number(row?.unitPrice);valid=!!row&&number(row.available)>=c.quantity&&price===c.unitPrice;
-        set(decisionTitle,tr('出售这份收获？','Sell this harvest?'));set(decisionBody,n(c.quantity)+' '+tr('株 ','')+label(c.plantKind)+' × '+n(c.unitPrice)+tr(' 金币 = ',' coins = ')+n(c.quantity*c.unitPrice)+tr(' 金币',' coins'));
-        set(decisionNote,valid?tr('出售后减少仓库库存；植物图鉴、植物伙伴和项目星球都会保留。','Only warehouse stock is sold. Your botanical collection, companions and memory planets stay with you.'):tr('库存已发生变化，请取消后重新选择数量。','Stock has changed. Cancel and choose a quantity again.'));set(confirm,tr('确认出售，获得 ','Sell for ')+n(c.quantity*c.unitPrice)+tr(' 金币',' coins'));
-      }else{
-        const row=farmCards.get(c.farmId)?.row;valid=!!row&&!row.owned&&number(row.price)===c.price&&number(snapshot.economy?.balance)>=c.price;
+      const c=confirmation,row=farmCards.get(c.farmId)?.row,valid=!!row&&!row.owned&&number(row.price)===c.price&&number(snapshot.economy?.balance)>=c.price;
         set(decisionTitle,tr('收藏一片新的风景','Bring home a new landscape'));set(decisionBody,farms[c.farmId].name[language==='en'?1:0]+' · '+n(c.price)+tr(' 金币',' coins'));set(decisionNote,valid?tr('解锁后可随时切换。已有植物继续生长，新开始的任务使用新农场的种子。','Once unlocked, switch whenever you like. Existing plants keep growing; new tasks use the equipped farm’s seeds.'):tr('金币余额或农场状态已变化，请取消后重试。','Your balance or farm ownership has changed. Cancel and try again.'));set(confirm,tr('确认解锁','Confirm unlock'));
-      }
       decision.setAttribute('aria-label',decisionTitle.textContent);confirm.disabled=!valid||locked();cancel.disabled=!!(snapshot.busy||localPending);set(cancel,tr('暂时保留','Keep for now'));
     }
     function updateMessage(){
@@ -94,13 +87,14 @@
       if(destroyed)return;market.lang=language==='en'?'en':'zh-CN';market.setAttribute('aria-label',tr('收获仓库与农场商店','Harvest warehouse and farm shop'));market.setAttribute('aria-busy',String(!!(snapshot.busy||localPending)));
       set(eyebrow,tr('让每一份努力，有新的去处','A LITTLE HARVEST, A NEW HORIZON'));set(title,tr('收获仓库','Harvest warehouse'));set(intro,tr('把成熟的植物收好，也把下一片风景慢慢攒起来。','Keep what you have grown, and save toward your next little landscape.'));set(walletLabel,tr('花园金币','Garden coins'));set(balance,n(snapshot.economy?.balance));
       collectionShop?.update({...snapshot,language,busy:!!(snapshot.busy||localPending),error:snapshot.error||localError});
-      const rows=(Array.isArray(snapshot.inventory)?snapshot.inventory:[]).filter(row=>row&&names[row.plantKind]&&(number(row.harvested)||number(row.available)||number(row.sold))),seen=new Set();let total=0,sold=0;
-      rows.forEach((row,index)=>{if(seen.has(row.plantKind))return;seen.add(row.plantKind);let entry=stock.get(row.plantKind);if(!entry){entry=createStock(row.plantKind);stock.set(row.plantKind,entry);}updateStock(entry,row,index);total+=number(row.available);sold+=number(row.sold);});
+      const rows=(Array.isArray(snapshot.inventory)?snapshot.inventory:[]).filter(row=>row&&names[row.plantKind]&&(number(row.harvested)||number(row.available)||number(row.sold))),seen=new Set();let total=0,sold=0,proceeds=0;
+      rows.forEach((row,index)=>{if(seen.has(row.plantKind))return;seen.add(row.plantKind);let entry=stock.get(row.plantKind);if(!entry){entry=createStock(row.plantKind);stock.set(row.plantKind,entry);}updateStock(entry,row,index);total+=number(row.available);sold+=number(row.sold);proceeds+=number(row.available)*number(row.unitPrice);});
       for(const[kind,entry]of stock)if(!seen.has(kind)){entry.card.remove();stock.delete(kind);}
+      set(sellAll,total?tr('全部出售 · ','Sell all · ')+n(total)+tr(' 株 · ',' plants · ')+n(proceeds)+tr(' 金币',' coins'):tr('暂无可出售植物','No plants to sell'));sellAll.disabled=locked()||total===0;
       set(summaryStored,tr('仓库中 ','Stored ')+n(total)+tr(' 株',' plants'));set(summaryKinds,tr('已收获 ','Discovered ')+n(seen.size)+tr(' 种',' species'));set(summarySold,tr('累计出售 ','Sold ')+n(sold)+tr(' 株',' plants'));empty.hidden=seen.size>0;shelf.hidden=seen.size===0;set(emptyTitle,tr('第一份收获，即将住进这里','A home for your first harvest'));set(emptyCopy,tr('完成进行中的任务，在花园收获成熟植物。留下喜欢的，也可以出售，为新农场积攒金币。','Finish a task you have started, then harvest its mature plant. Keep your favorites or sell a few to save for a new farm.'));
       set(shopTitle,tr('下一片风景','Your next landscape'));set(shopHelp,tr('用收获换一座喜欢的农场，让新的种子在这里发芽。','Turn your harvests into a favorite new farm, with new seeds to discover.'));set(shopBadge,tr('农场收藏','FARM COLLECTION'));
       for(const[id,entry]of farmCards){const provided=(snapshot.farms||[]).find(row=>row?.id===id);updateFarm(entry,provided||{id,price:id==='cyber'?240:0,owned:id==='meadow',equipped:id==='meadow'});}
-      set(footnoteText,tr('出售植物不会失去图鉴记录、已解锁伙伴或星球纪念。','Selling plants keeps your collection records, unlocked companions and memory planets.'));updateMessage();renderConfirmation();
+      set(footnoteText,tr('点击出售即可获得金币，植物图鉴和星球纪念会保留。','Sell to receive coins immediately. Botanical records and memory planets stay with you.'));updateMessage();renderConfirmation();
     }
     async function dispatch(type,payload){
       if(destroyed||localPending||snapshot.busy||typeof onAction!=='function')return;
@@ -115,15 +109,16 @@
       if(action==='cancel'){closeConfirmation();return;}
       if(action==='confirm'){
         if(locked()||!confirmation)return;renderConfirmation();if(confirm.disabled)return;const c=confirmation;
-        dispatch(c.type==='sell'?'sell-plants':'buy-farm',c.type==='sell'?{plantKind:c.plantKind,quantity:c.quantity}:{farmId:c.farmId});return;
+        dispatch('buy-farm',{farmId:c.farmId});return;
       }
       if(locked())return;
+      if(action==='sell-all'){restoreFocus=node;dispatch('sell-all-plants');return;}
       const entry=stock.get(node.dataset.plantKind);
       if(entry&&['less','more','all'].includes(action)){const available=number(entry.row.available),qty=currentQuantity(entry)||1;entry.value=action==='all'?available:Math.min(available,Math.max(1,qty+(action==='more'?1:-1)));entry.quantity.value=String(entry.value);updateTrade(entry);return;}
-      if(action==='sell'&&entry){const quantity=currentQuantity(entry);if(!quantity)return;confirmation={type:'sell',plantKind:entry.row.plantKind,quantity,unitPrice:number(entry.row.unitPrice)};}
+      if(action==='sell'&&entry){const quantity=currentQuantity(entry);if(!quantity)return;restoreFocus=node;dispatch('sell-plants',{plantKind:entry.row.plantKind,quantity});return;}
       else if(action==='farm'){
         const row=farmCards.get(node.dataset.farmId)?.row;if(!row||row.equipped)return;if(row.owned){dispatch('equip-farm',{farmId:row.id});return;}
-        if(number(snapshot.economy?.balance)<number(row.price))return;confirmation={type:'buy',farmId:row.id,price:number(row.price)};
+        if(number(snapshot.economy?.balance)<number(row.price))return;confirmation={farmId:row.id,price:number(row.price)};
       }else return;
       restoreFocus=node;renderConfirmation();confirm.focus({preventScroll:true});decision.scrollIntoView?.({block:'nearest',behavior:realm.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches?'instant':'smooth'});
     }

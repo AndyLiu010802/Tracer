@@ -56,8 +56,10 @@ jobs:
             done
           fi
       - run: npm ci
-      - run: npm test
-      - run: npm run test:desktop
+      - name: Run all tests in isolated profiles
+        run: |
+          node -e "require('fs').mkdirSync('.cache',{recursive:true})"
+          node dev/test-isolated.cjs --suite all --output .cache/macos-release-tests
       - name: Build DMG and ZIP
         env:
           TRACER_MAC_SIGNED: ${{ inputs.signed && '1' || '0' }}

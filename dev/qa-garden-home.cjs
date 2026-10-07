@@ -1,5 +1,5 @@
 'use strict';
-// Local-only integration QA. Every workspace, companion image and browser store
+// Local-only integration QA. Every workspace and browser store
 // is synthetic; outbound requests and AI operations are blocked.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -8,7 +8,6 @@ const { chromium } = require(process.env.TRACER_QA_PLAYWRIGHT || 'playwright');
 const M = require('../skins/tracer/model');
 const S = require('../public/workspace-sync');
 const F = require('../skins/tracer/focus-model');
-const { fixtures } = require('./qa-pet-dense-animation.cjs');
 
 const pause = () => new Promise(resolve => setTimeout(resolve, 25));
 async function until(fn, label, timeout = 20000) {
@@ -73,7 +72,7 @@ async function main() {
   const { server } = require('../server'); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const origin = 'http://127.0.0.1:' + server.address().port;
   let browser;
-  const audit = { external: [], ai: [], errors: [], legacyRequests: [], failPut: false, failGet: false, images: new Map() };
+  const audit = { external: [], ai: [], errors: [], legacyRequests: [], failPut: false, failGet: false };
   try {
     browser = await chromium.launch({ channel: process.env.TRACER_QA_BROWSER || 'msedge', headless: true });
     const context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, serviceWorkers: 'block' });
@@ -85,7 +84,6 @@ async function main() {
         if (request.method() !== 'GET') audit.ai.push(url.pathname);
         return route.fulfill({ json: { configured: false, imageGeneration: false } });
       }
-      if (audit.images.has(url.pathname)) return route.fulfill({ contentType: 'image/png', body: audit.images.get(url.pathname) });
       if (url.pathname === '/api/store/workspace' && request.method() === 'GET' && audit.failGet) return route.fulfill({ status: 503, json: { error: 'synthetic-read-failure' } });
       if (url.pathname === '/api/store/workspace' && request.method() === 'PUT' && audit.failPut) { audit.failPut = false; return route.fulfill({ status: 503, json: { error: 'synthetic-save-failure' } }); }
       return route.continue();
@@ -99,9 +97,7 @@ async function main() {
     await page.goto(origin); await page.waitForFunction(() => window.Tracer?.garden && Tracer.store.data);
     await page.locator('#nav-garden').focus(); await page.keyboard.press('Enter'); await page.locator('.garden-home').waitFor();
     await assertLegacyRemoved(page, farmBytes);
-    const builtin = page.locator('.garden-home-companion-art .pet-builtin-sprite'); await builtin.waitFor();
-    assert.equal(await builtin.getAttribute('data-frames'), '16'); const originalFrame = await builtin.getAttribute('data-frame');
-    await until(async () => await builtin.getAttribute('data-frame') !== originalFrame, 'builtin companion animation advances');
+    assert.equal(await page.locator('.garden-home-companion').count(),0,'retired companion UI stays absent');
     await page.locator('.garden-home-empty').waitFor();
     await addPlot(page, projects[0].id, 'wildflower');
     const first = await plot(page, projects[0].id); assert.equal(first.stage, 1); assert.deepEqual(first.taskIds, [historical.id]); assert.equal(first.focusMinutes, 25);
@@ -177,14 +173,6 @@ async function main() {
     assert.deepEqual(await plot(page, projects[0].id), bloom, 'completing the same task again adds no receipt or growth');
     console.log('PASS saved-task growth, failed-save protection, project navigation, real focus completion, active/paused focus protection, bloom and receipt deduplication across reload');
 
-    // Use a synthetic dense custom companion through the same selected-pet store.
-    const artwork = await fixtures(page), pages = artwork.sheets.map((bytes, index) => { const url = '/api/pet-art/' + (index + 1).toString(16).padStart(32, '0') + '.png'; audit.images.set(url, bytes); return url; });
-    const custom = { id: 'custom_' + 'a'.repeat(32), name: 'QA Garden Friend', personality: '', kind: 'humanoid', image: pages[0], animation: { version: 2, pages } };
-    await page.evaluate(custom => { const state = Tracer.pet.read(); TracerPetModel.addCustom(state, custom); const value = JSON.stringify(state); localStorage.setItem('tracer.pet.v1', value); window.dispatchEvent(new StorageEvent('storage', { key: 'tracer.pet.v1', newValue: value })); }, custom);
-    await refresh(page); await page.locator('.garden-home-companion-art .pet-animated-sprite').waitFor();
-    await page.locator('[data-home-action="open-companion"]').click(); await page.locator('.pet-home').waitFor();
-    assert.equal(await page.evaluate(() => Tracer.pet.read().selected), custom.id); await page.locator('.pet-top [data-act="close"]').click();
-
     // An older window must not interpret an unknown project as a deletion when
     // another window has just saved that project and planted its first plot.
     const second = await context.newPage(); second.on('pageerror', error => audit.errors.push(error.message));
@@ -251,7 +239,7 @@ async function main() {
       const raw = { v:1,plots:Array.from({length:6},(_,i)=>({projectId:'qa-'+i,plantKind:['wildflower','sunflower','lavender'][i%3],plantedAt:1,initialized:true,stage:4,commemoratedAt:2,taskIds:Array.from({length:20},(_,n)=>'task-'+i+'-'+n),focusIds:[],focusMinutes:0})) };
       const ws = {projects:raw.plots.map(p=>({id:p.projectId,name:['春日计划','写作与阅读','探索新的灵感','健康生活','每周回顾','下一个梦想'][Number(p.projectId.at(-1))]})),tasks:[]};
       const data = TracerGardenModel.snapshot(raw,ws,{},Date.now());
-      view.update({language:'zh',pet:TracerPetModel.catalog(Tracer.pet.read()).find(p=>!p.custom),journey:data.journey,plots:data.plots.map(p=>({projectId:p.projectId,name:p.projectName,plant:p.plantKind,stage:p.stage,done:20,total:20,completedCount:p.completedTasks,focusMinutes:0,growth:p.growth,bloomAt:p.commemoratedAt})),today:{tasks:3,minutes:75}});
+      view.update({language:'zh',journey:data.journey,plots:data.plots.map(p=>({projectId:p.projectId,name:p.projectName,plant:p.plantKind,stage:p.stage,done:20,total:20,completedCount:p.completedTasks,focusMinutes:0,growth:p.growth,bloomAt:p.commemoratedAt})),today:{tasks:3,minutes:75}});
     });
     assert.equal(await page.locator('#qa-garden-world .garden-world').getAttribute('data-level'), '6');
     assert.equal(await page.locator('#qa-garden-world .garden-world-toast').textContent(), '', 'initial hydration at maximum level stays quiet');
@@ -268,7 +256,7 @@ async function main() {
     console.log('PASS interactive world, keyboard selection, retained focus, localized plant dialogue, level decorations, collection, mature garden and reduced motion');
     await assertLegacyRemoved(page, farmBytes);
     assert.deepEqual(audit.external, []); assert.deepEqual(audit.ai, []); assert.deepEqual(audit.errors, []); assert.deepEqual(audit.legacyRequests, [], 'no old game script, stylesheet or artwork should be requested');
-    console.log('PASS selected custom companion, bilingual narrow layout, six-plot limit, no legacy engine requests, byte-identical legacy save and deleted-project removal without resurrection');
+    console.log('PASS bilingual narrow layout, six-plot limit, no legacy engine requests, byte-identical legacy save and deleted-project removal without resurrection');
     console.log('Artifacts: ' + artifacts);
   } catch (error) {
     console.error('Artifacts: ' + artifacts); if (browser) { const page = browser.contexts()[0]?.pages()[0]; if (page) await page.screenshot({ path: path.join(artifacts, 'failure.png'), animations: 'disabled' }).catch(() => {}); }

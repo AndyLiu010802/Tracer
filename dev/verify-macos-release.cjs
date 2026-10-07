@@ -3,6 +3,7 @@ const fs = require('node:fs'), path = require('node:path'), os = require('node:o
 const cp = require('node:child_process'), crypto = require('node:crypto'), assert = require('node:assert/strict');
 const net = require('node:net'), { once } = require('node:events'), asar = require('@electron/asar');
 const vm = require('node:vm');
+const { verifyPackagedSources } = require('./verify-packaged-sources.cjs');
 const root = path.resolve(__dirname, '..'), version = require('../package.json').version;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -18,25 +19,26 @@ function runtimeFiles(folder) {
   return result;
 }
 
-function verifyCompanionModules(archive) {
+function verifyDataModules(archive, extract=(source,file)=>asar.extractFile(source,file.split('/').join(path.sep))) {
   const loaded = new Map();
   function load(file) {
     if (loaded.has(file)) return loaded.get(file).exports;
-    assert.ok(file.startsWith('skins/tracer/') && file.endsWith('.js'), 'Only packaged companion modules are evaluated');
+    assert.ok(file.startsWith('skins/tracer/') && file.endsWith('.js'), 'Only packaged data modules are evaluated');
     const module = { exports: {} }; loaded.set(file, module);
-    vm.runInNewContext(asar.extractFile(archive, file.split('/').join(path.sep)).toString('utf8'), {
+    vm.runInNewContext(extract(archive,file).toString('utf8'), {
       module,
       require: name => {
-        assert.ok(name.startsWith('./'), 'Companion model dependencies are local');
+        assert.ok(name.startsWith('./'), 'Data model dependencies are local');
         return load(path.posix.normalize(path.posix.join(path.posix.dirname(file), name + '.js')));
       },
     }, { filename: file, timeout: 5000 });
     return module.exports;
   }
-  const animation = load('skins/tracer/pet-animation.js'), builtins = load('skins/tracer/pet-builtin-animation.js');
-  const model = load('skins/tracer/pet-model.js'), art = load('skins/tracer/pet-art.js');
+  // These validators are still required to restore historical account backups.
+  // Character renderers and their artwork are intentionally no longer shipped.
+  const animation = load('skins/tracer/pet-animation.js'), model = load('skins/tracer/pet-model.js');
   const actions = Array.from(animation.actions);
-  assert.equal(actions.length, 16); assert.deepEqual(Array.from(builtins.actions), actions); assert.equal(builtins.frames, 16);
+  assert.equal(actions.length, 16);
   const pages = actions.map((_, index) => '/api/pet-art/' + (index + 1).toString(16).padStart(32, '0') + '.png');
   const dense = { version: 2, pages };
   assert.equal(JSON.stringify(animation.normalize(dense)), JSON.stringify(dense), 'Packaged renderer accepts sixteen-action manifests');
@@ -52,13 +54,9 @@ function verifyCompanionModules(archive) {
   const state = model.fresh(), profile = { id: 'custom_' + 'a'.repeat(32), name: 'Package smoke companion', kind: 'creature', personality: '', image: pages[0], animation: dense };
   model.addCustom(state, profile);
   assert.equal(JSON.stringify(model.read(JSON.parse(JSON.stringify(state))).customs[0].animation), JSON.stringify(dense), 'Packaged model preserves dense animation on reload');
-  assert.equal(Object.keys(art.rigs).length, 6);
-  for (const id of Object.keys(art.rigs)) for (const action of actions) {
-    const frames = Array.from({ length: 16 }, (_, frame) => builtins.snapshot(id, action, frame));
-    assert.equal(new Set(frames).size, 16, `${id}/${action} contains sixteen distinct built-in poses`);
-    assert.ok(frames.every(frame => frame.startsWith('<svg') && !/NaN|undefined|Infinity/.test(frame)), `${id}/${action} renders valid pose data`);
-    assert.equal(builtins.snapshot(id, action, 16), frames[0], `${id}/${action} wraps to its initial pose`);
-  }
+  const fishing=load('skins/tracer/fishing-model.js');
+  assert.ok(fishing.catalog.fish.length>0&&fishing.catalog.rods.length>0,'Packaged fishing catalogs are available');
+  assert.equal(fishing.validate(fishing.empty()).equippedRodId,'bamboo','Packaged fishing state validates');
 }
 
 async function main() {
@@ -69,16 +67,8 @@ async function main() {
   const dist = path.join(root, 'dist');
   const app = path.join(dist, arch === 'arm64' ? 'mac-arm64' : 'mac', 'Tracer.app');
   const resources = path.join(app, 'Contents/Resources'), archive = path.join(resources, 'app.asar');
-  const files = asar.listPackage(archive).map(file => file.replaceAll('\\', '/'));
-  assert.deepEqual(files.filter(file => /(^|\/)(workspace\.json|bookmarks\.json|accounts\.json|connection\.json|local\.config\.json|\.env|\.cache|\.pet-art|\.codex|\.agents|personal\.json|output)(\/|$)/.test(file)), [], 'No personal workspace, generated artwork or credentials in package');
-  assert.equal(JSON.parse(asar.extractFile(archive, 'package.json')).version, version);
-  assert.deepEqual(files.filter(file => /(^|\/)wechat(\/|$)|\/lib\/cloud-sync\.js$|\/skins\/tracer\/sync-ui\.js$/.test(file)), [], 'Retired WeChat code is absent from the installer');
-  const sources = ['server.js', 'ai-service/provider.js', ...['desktop', 'lib', 'public', 'skins'].flatMap(runtimeFiles)];
-  for (const file of sources) {
-    assert.ok(asar.extractFile(archive, file).equals(fs.readFileSync(path.join(root, file))), `${file} matches source`);
-  }
-  assert.deepEqual(files.filter(file => file.includes('/ai-service/') && !file.endsWith('/ai-service/provider.js')), [], 'Only the public provider adapter is bundled');
-  verifyCompanionModules(archive);
+  const { files: sources } = verifyPackagedSources(archive, root);
+  verifyDataModules(archive);
   const cpu = arch === 'arm64' ? 'arm64' : 'x86_64';
   const nativeHook = path.join(resources, 'app.asar.unpacked/node_modules/uiohook-napi/prebuilds', 'darwin-' + arch, 'uiohook-napi.node');
   for (const binary of [path.join(app, 'Contents/MacOS/Tracer'), nativeHook]) {
@@ -127,16 +117,17 @@ async function main() {
     }
     assert.ok(ready, 'Packaged app starts its local task service');
     const origin = `http://127.0.0.1:${port}`;
-    for (const file of sources.filter(file => /^skins\/tracer\/pet[^/]*\.(js|css|html)$/.test(file))) {
+    for (const file of sources.filter(file => /^skins\/tracer\/(?:fishing[^/]*|pet-(?:model|animation))\.(js|css|html)$/.test(file))) {
       const response = await fetch(origin + '/' + path.posix.basename(file), { signal: AbortSignal.timeout(5000) });
       assert.ok(response.ok, `${file} is available from the packaged service`);
       assert.ok(Buffer.from(await response.arrayBuffer()).equals(asar.extractFile(archive, file)), `${file} serves the packaged bytes`);
     }
-    for (const url of ['/', '/pet.html']) {
+    for (const url of ['/', '/fishing-desktop.html', '/fishing-aquarium-desktop.html']) {
       const response = await fetch(origin + url, { signal: AbortSignal.timeout(5000) }), html = await response.text();
       assert.ok(response.ok);
       let previous = -1;
-      for (const name of ['pet-animation.js', 'pet-model.js', 'pet-art.js', 'pet-builtin-animation.js', 'pet-view.js']) {
+      const scripts = url==='/' ? ['fishing-model.js', 'fishing-art.js', 'fishing-rod-effects.js', 'fishing-motion.js', 'fishing-game.js', 'fishing-view.js', 'fishing.js'] : url==='/fishing-desktop.html' ? ['fishing-art.js', 'fishing-rod-effects.js', 'fishing-motion.js', 'fishing-desktop.js'] : ['fishing-aquarium-motion.js', 'fishing-art.js', 'fishing-aquarium.js', 'fishing-aquarium-desktop.js'];
+      for (const name of scripts) {
         const position = html.indexOf('src="/' + name + '"');
         assert.ok(position > previous, `${url} loads ${name} in dependency order`); previous = position;
       }
@@ -164,8 +155,8 @@ async function main() {
     return crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, name))).digest('hex') + '  ' + name;
   });
   fs.writeFileSync(path.join(dist, `SHA256SUMS-${version}-mac-${arch}.txt`), sums.join('\n') + '\n');
-  console.log(`PASS Mac ${arch} ${version}: ${sources.length} source files, dense and legacy animation models, six built-ins with sixteen poses per action, served companion assets, architecture, privacy, signing, native AI runtime and service startup.`);
+  console.log(`PASS Mac ${arch} ${version}: ${sources.length} source files, legacy backup validators, active fishing model and served assets, architecture, privacy, signing, native AI runtime and service startup.`);
   console.log('Manual Mac UI, background input permission and real-account AI behavior are not exercised by this smoke test.');
 }
-module.exports = { runtimeFiles, verifyCompanionModules };
+module.exports = { runtimeFiles, verifyDataModules };
 if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });

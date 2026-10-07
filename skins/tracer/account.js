@@ -9,6 +9,8 @@
   const colors=['#c7d7a8','#9ccad9','#c2ade2','#e4b0bc','#e5c58d','#abb7c7'];
   const colorNames=[['苔绿','Moss'],['冰蓝','Ice'],['淡紫','Lilac'],['玫瑰','Rose'],['暖金','Gold'],['银灰','Silver']];
   const errors={
+    'account-data-busy':['账户仍有操作正在进行，请等待 AI 生成或保存完成后重试。','Account operations are still running. Wait for AI generation or saving to finish, then retry.'],
+    'local-data-clear-failed':['账户文件已清空，但浏览器草稿尚未清理完成。请关闭其他 Tracer 窗口后重试。','Account files were cleared, but browser drafts could not be removed. Close other Tracer windows and retry.'],
     'invalid-email':['请填写有效的邮箱地址。','Enter a valid email address.'], 'invalid-password':['密码需为 10–128 个字符。','Use a password with 10–128 characters.'],
     'invalid-profile':['请检查昵称、简介和空间名称的长度。','Check your nickname, bio and space name.'], 'invalid-avatar':['头像格式不支持，请重新选择图片。','Choose another avatar image.'],
     'email-in-use':['这个邮箱已在本机注册，请直接登录。','This email is registered on this computer. Sign in instead.'], 'invalid-credentials':['邮箱或密码不正确。','The email or password is incorrect.'],
@@ -19,7 +21,7 @@
     'guest-empty':['游客工作区没有可导入的数据。','There is no guest workspace to import.'], 'account-not-empty':['当前账户已有数据，不能覆盖导入。','This account already has data and cannot be overwritten.'],
     'save-pending':['工作区尚未保存，请处理保存提示后重试。','Save your workspace before continuing.'], 'password-mismatch':['两次输入的密码不一致。','The passwords do not match.'],
     'avatar-too-large':['请选择不超过 5 MB 的图片。','Choose an image smaller than 5 MB.'], 'avatar-read-failed':['无法读取这张图片，请选择 PNG、JPEG 或 WebP。','Choose a valid PNG, JPEG or WebP image.'],
-    'account-limit':['本机账户数量已达到上限。','This computer has reached its account limit.'], 'generation-pending':['请先暂停伙伴生成并等待草稿保存，再切换账户。','Pause companion generation and save its draft before switching accounts.'],
+    'account-limit':['本机账户数量已达到上限。','This computer has reached its account limit.'],
     'avatar-crop-pending':['请先确认或取消头像裁剪。','Apply or cancel the avatar crop first.']
   };
   let user=A.context.user,tab='profile',authTab='login',busy=false,selectedAvatar=user?.profile.avatar||{kind:'preset',value:'moon',color:colors[0],iconColor:'#000000'},recovery=null,afterRecovery=null,cropCleanup=null,cropPending=false;
@@ -31,8 +33,7 @@
   function failure(error){const pair=errors[error.message];notice(pair?tr(...pair):tr('操作未完成，请稍后重试。','The request did not finish. Try again.'),'error');}
   async function run(action){if(busy)return;busy=true;dialog.setAttribute('aria-busy','true');const controls=[...dialog.querySelectorAll('button,input,textarea,select')];const prior=new Map(controls.map(x=>[x,x.disabled]));controls.forEach(x=>x.disabled=true);try{await action();}catch(error){A.resume();failure(error);}finally{busy=false;dialog.removeAttribute('aria-busy');controls.filter(x=>x.isConnected).forEach(x=>x.disabled=prior.get(x));}}
   async function flush(){
-    if(T.pet?.canSwitchAccount&&!T.pet.canSwitchAccount())throw new Error('generation-pending');
-    if(T.pet?.prepareAccountSwitch)await T.pet.prepareAccountSwitch();
+    if(T.fishing?.prepareAccountSwitch)await T.fishing.prepareAccountSwitch();
     await T.ready;const state=T.store;if(state.lost||state.conflict)throw new Error('save-pending');
     if(state.dirty)T.saveNow();const deadline=Date.now()+10000;while(state.inflight&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,40));
     if(state.dirty||state.inflight||state.lost||state.conflict)throw new Error('save-pending');
@@ -51,6 +52,7 @@
   function renderAuth(){const shell=el('div','account-auth-shell',dialog),intro=el('aside','account-auth-intro',shell);el('span','account-intro-moon',intro,'☾');el('h3','',intro,tr('属于你的 Tracer','Your own Tracer'));el('p','',intro,tr('任务、花园与个人设置，都在自己的空间里慢慢积累。','Keep tasks, your garden and personal preferences together in your own space.'));
     ['独立工作区|Separate workspace','可自定义头像与昵称|Your own avatar and name','恢复码找回密码|Recover access with a recovery code'].forEach(text=>{const [zh,en]=text.split('|');el('p','account-auth-feature',intro,'✧ '+tr(zh,en));});
     el('p','account-local-note',intro,tr('账户与数据保存在这台电脑。邮箱用于登录标识，不发送验证邮件。','Accounts and data stay on this computer. Your email is a login identifier; no verification email is sent.'));
+    button(intro,tr('备份与恢复游客空间','Back up & restore guest space'),()=>{dialog.close();T.backup.open();}).id='account-backup';
     const content=el('section','account-auth-content',shell),tabs=el('div','account-auth-tabs',content);
     [['login','登录','Sign in'],['register','创建账户','Create account'],['recover','找回密码','Recover']].forEach(([id,zh,en])=>{const b=button(tabs,tr(zh,en),()=>{authTab=id;render();});b.className='account-auth-tab'+(authTab===id?' active':'');b.id='account-auth-'+id;b.setAttribute('aria-pressed',String(authTab===id));});
     const form=el('form','account-form',content);form.autocomplete='on';
@@ -89,13 +91,33 @@
     el('h4','',content,tr('本机登录会话','Sessions on this computer'));const sessions=el('div','account-sessions',content);loadSessions(sessions);
   }
   async function loadSessions(target){target.textContent=tr('正在读取…','Loading…');try{const result=await A.api('sessions');if(!target.isConnected)return;target.replaceChildren();result.sessions.forEach(session=>{const row=el('div','account-session',target),info=el('div','',row);el('strong','',info,session.label+(session.current?tr(' · 当前',' · Current'):''));el('span','account-help',info,new Date(session.createdAt).toLocaleString());if(!session.current)button(row,tr('退出','Sign out'),()=>run(async()=>{await A.api('revoke-session',{id:session.id});await loadSessions(target);notice(tr('该会话已退出。','Session signed out.'));}));});}catch(error){if(target.isConnected)target.textContent=tr('暂时无法读取登录会话。','Sessions are unavailable right now.');}}
-  function renderData(content){el('h3','',content,tr('我的数据','My data'));const status=el('div','account-data-status',content);el('span','',status,'◉');el('div','',status,tr('保存在本机 · 云服务未连接','Saved locally · Cloud service not connected'));el('p','account-help',content,tr('任务、笔记和花园属于当前账户。更换电脑前请导出备份。','Tasks, notes and your garden belong to this account. Export a backup before changing computers.'));
+  function renderData(content){el('h3','',content,tr('我的数据','My data'));const status=el('div','account-data-status',content);el('span','',status,'◉');el('div','',status,tr('保存在本机 · 云服务未连接','Saved locally · Cloud service not connected'));el('p','account-help',content,tr('任务、笔记和花园属于当前账户。本地备份支持在当前安装中恢复同一空间；资料导出供自行查阅，不是跨设备迁移。','Tasks, notes and your garden belong to this account. Local backups restore this same space in this installation. Profile exports are for reference, not device migration.'));
+    button(content,tr('备份与恢复','Back up & restore'),()=>{dialog.close();T.backup.open();},true).id='account-backup';
     button(content,tr('导出账户资料与工作区','Export profile & workspace'),()=>run(async()=>{await flush();const data=await A.api('export');data.preferences=A.exportPreferences();download('tracer-account-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(data,null,2),'application/json');notice(tr('导出文件已准备好，包含当前账户资料与工作区，不含密码、恢复码或 AI 密钥。','Export prepared with your profile and workspace, excluding passwords, recovery codes and AI keys.'));})).id='account-export';
     const section=el('section','account-import',content);el('h4','',section,tr('导入游客工作区','Import guest workspace'));const text=el('p','account-help',section,tr('正在检查游客数据…','Checking guest data…'));
     A.api('guest-preview').then(result=>{if(!section.isConnected)return;text.textContent=result.pendingImport?tr('上次导入尚未完成，可以安全重试。','The previous import is incomplete. You can safely retry.'):result.alreadyImported?tr('这份游客工作区已经导入当前账户。','This guest workspace was already imported.'):result.claimed?tr('这份游客工作区已导入另一个账户。','This guest workspace was imported into another account.'):result.targetHasData?tr('当前账户已有数据。为避免覆盖，不能再导入游客工作区。','This account already has data. Guest import is disabled to prevent overwriting it.'):tr('游客空间：','Guest space: ')+result.counts.tasks+tr(' 个任务 · ',' tasks · ')+result.counts.notes+tr(' 篇笔记 · ',' notes · ')+result.counts.projects+tr(' 个项目',' projects');
-      if(!result.available)return;el('p','account-help',section,tr('将复制游客任务、笔记、项目、完成历史和花园金币。原游客数据保留；同一份数据只能导入一个账户。伙伴草稿和 AI 密钥不导入。','Copies guest tasks, notes, projects, history and garden coins. Guest data stays intact and can be imported into only one account. Companion drafts and AI keys are excluded.'));
+      if(!result.available)return;el('p','account-help',section,tr('将复制游客任务、笔记、项目、完成历史、花园金币，以及鱼竿、鱼饵、渔获、鱼苗、鱼塘和小屋。原游客数据保留；同一份数据只能导入一个账户。AI 密钥和草稿不导入。','Copies guest tasks, notes, projects, history, garden coins, rods, bait, catches, fry, ponds and cabins. Guest data stays intact and can be imported into only one account. AI keys and drafts are excluded.'));
       const label=el('label','account-check-label',section),check=el('input','',label);check.type='checkbox';check.id='account-import-confirm';el('span','',label,tr('我确认把这份游客数据导入当前账户','Import this guest data into my current account'));const importButton=button(section,tr('确认导入','Import workspace'),()=>run(async()=>{await beginSwitch();await A.api('import-guest',{});completeSwitch();}),true);importButton.id='account-import-guest';importButton.disabled=true;check.onchange=()=>importButton.disabled=!check.checked;
     }).catch(()=>{if(text.isConnected)text.textContent=tr('暂时无法读取游客数据，请稍后重试。','Guest data is unavailable. Try again later.');});
+    renderClearData(content);
+  }
+  function renderClearData(content){
+    const section=el('section','account-danger-zone',content);
+    el('h4','',section,tr('清空本地资料','Clear local data'));
+    el('p','account-help',section,tr('永久删除当前账户的个人资料、任务、笔记、项目、花园与收藏、鱼竿、鱼饵、渔获、鱼苗、鱼塘、小屋、历史资源、AI 配置和本地偏好。保留账户邮箱、密码和恢复码，清空后仍保持登录。游客空间和其他账户不受影响。','Permanently delete this account’s profile, tasks, notes, projects, garden, collections, rods, bait, catches, fry, ponds, cabins, legacy resources, AI settings and preferences. Your email, password and recovery code are kept, and you stay signed in. Guest data and other accounts are unaffected.'));
+    const open=button(section,tr('清空账户本地资料','Clear account local data'),()=>{form.hidden=false;open.hidden=true;pw.focus();});open.id='account-clear-data';open.classList.add('account-danger');
+    const form=el('form','account-form',section);form.hidden=true;
+    const pw=field(form,'account-clear-password',tr('输入当前密码','Enter current password'),'password','',{required:true,maxLength:128,autocomplete:'current-password'});
+    const label=el('label','account-check-label',form),check=el('input','',label);check.type='checkbox';check.id='account-clear-confirm';check.required=true;
+    el('span','',label,tr('我确认永久删除这些资料，此操作无法撤销。','I understand that this permanently deletes my data and cannot be undone.'));
+    const actions=el('div','account-clear-actions',form),submit=el('button','account-button account-danger',actions,tr('确认清空所有资料','Permanently clear all data'));submit.type='submit';submit.id='account-clear-submit';submit.disabled=true;
+    check.onchange=()=>submit.disabled=!check.checked;
+    button(actions,tr('取消','Cancel'),()=>{form.reset();form.hidden=true;open.hidden=false;submit.disabled=true;open.focus();});
+    let clearedGeneration=null;
+    form.onsubmit=event=>{event.preventDefault();if(!form.reportValidity())return;run(async()=>{
+      if(clearedGeneration===null){await beginSwitch();const result=await A.api('clear-data',{password:pw.value,confirm:check.checked});clearedGeneration=result.generation;}
+      A.suspend();await A.clearLocalData(clearedGeneration);completeSwitch();
+    });};
   }
   function renderCollection(content){window.TracerWallpapers.mount(content,{flush,run,notice});}
   function download(name,text,type){const url=URL.createObjectURL(new Blob([text],{type})),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}

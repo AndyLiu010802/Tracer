@@ -5,12 +5,15 @@ const fs = require('node:fs');
 const fsp = require('node:fs/promises');
 const path = require('node:path');
 const { URL } = require('node:url');
+const { createHash } = require('node:crypto');
 
 const rewrite = require('./lib/rewrite.js');
 const proxy = require('./lib/proxy.js');
 const store = require('./lib/store.js');
 
 const ROOT = __dirname;
+const packageVersion = require('./package.json').version;
+const reportVersion = typeof packageVersion === 'string' && /^\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)(?:\.\d+)?)?$/.test(packageVersion) ? packageVersion : 'unknown';
 const serveMusic = require('./lib/music').createMusic(process.env.DOCS_PORTAL_MUSIC_DIR || path.join(ROOT, 'music'));
 // autoHide 取值：
 //   'off'        不自动隐藏，只留老板键
@@ -31,10 +34,25 @@ const PANEL_ASSETS = new Set(['/reader.js', '/reader.css', '/conceal-policy.js']
 // DEFAULTS/优先级，而不必受这台机器上 local.config.json 实际配的是哪套皮肤摆布。
 function loadConfig(root = ROOT, env = process.env) {
   let fromFile;
-  try {
-    fromFile = JSON.parse(fs.readFileSync(path.join(root, 'local.config.json'), 'utf8'));
-  } catch {
-    fromFile = {};
+  if (Object.hasOwn(env, 'DOCS_PORTAL_CONFIG_FILE')) {
+    // An explicit isolation/config path must never fall back to local config.
+    const file = env.DOCS_PORTAL_CONFIG_FILE;
+    try {
+      if (typeof file !== 'string' || !path.isAbsolute(file)
+        || (process.platform === 'win32' && !/^(?:[a-z]:[\\/]|\\\\[^\\]+\\[^\\]+\\)/i.test(file))) throw new Error('absolute path required');
+      fromFile = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (!fromFile || typeof fromFile !== 'object' || Array.isArray(fromFile)) throw new Error('object required');
+    } catch {
+      const error = new Error('DOCS_PORTAL_CONFIG_FILE must select a readable absolute JSON object file');
+      error.code = 'DOCS_PORTAL_CONFIG_OVERRIDE';
+      throw error;
+    }
+  } else {
+    try {
+      fromFile = JSON.parse(fs.readFileSync(path.join(root, 'local.config.json'), 'utf8'));
+    } catch {
+      fromFile = {};
+    }
   }
   // 环境变量优先级最高。验证脚本靠它换端口，才不会和正在使用的实例撞车；
   // 测试靠 SKIN 固定皮肤，否则断言会被 local.config.json 里配的皮肤左右。
@@ -61,7 +79,6 @@ const STATE_FILE = process.env.DOCS_PORTAL_STATE_FILE || path.join(ROOT, 'bookma
 // 实际的读写（写队列、原子替换、.bak 回退）在 lib/store.js 里，方便脱离 HTTP 单测。
 const DATA_DIR = process.env.DOCS_PORTAL_DATA_DIR || path.join(ROOT, 'data');
 const aiGateway = require('./lib/ai-gateway').createGateway(DATA_DIR);
-const petGenerationJobs = require('./lib/pet-generation-jobs').createJobs(DATA_DIR);
 const STORE_NAME_RE = /^[a-z][a-z0-9-]{0,31}$/;
 // 只读存储开关：置 1 时 /api/store/* 和 /api/state 的写操作一律拒写（读不受影响）。
 // 给探针、审查脚本、自动化冒烟用——它们该设 DOCS_PORTAL_DATA_DIR 指向临时目录，
@@ -71,13 +88,15 @@ const STORE_NAME_RE = /^[a-z][a-z0-9-]{0,31}$/;
 // DOCS_PORTAL_DATA_DIR 管，这个开关是它唯一的写保护，因此两个端点都要接进来，
 // 兜底的承诺才是真的。
 const READONLY_STORE = process.env.DOCS_PORTAL_READONLY_STORE === '1';
-const accounts = require('./lib/accounts').createLocalAccounts(DATA_DIR);
+const accounts = require('./lib/accounts').createLocalAccounts(DATA_DIR, { beforeClear: async dir => {
+  await accountServices.get(dir)?.aiGateway.close();
+  accountServices.delete(dir);
+} });
 const accountHttp = require('./lib/account-http').createAccountHttp(accounts, { readBody, readonly: READONLY_STORE });
-const accountServices = new Map([[DATA_DIR, { aiGateway, petGenerationJobs }]]);
+const accountServices = new Map([[DATA_DIR, { aiGateway }]]);
 function servicesFor(dir) {
   if (!accountServices.has(dir)) accountServices.set(dir, {
     aiGateway: require('./lib/ai-gateway').createGateway(dir),
-    petGenerationJobs: require('./lib/pet-generation-jobs').createJobs(dir),
   });
   return accountServices.get(dir);
 }
@@ -105,13 +124,19 @@ function safeJoin(dir, rel) {
 // HTML/CSS/JS 仍走 no-store，保证改动即时可见。
 const CACHEABLE_EXT = new Set(['.webp', '.png', '.jpg', '.svg', '.woff2']);
 
-async function serveFile(res, filePath, fallbackType) {
+async function serveFile(req, res, filePath, fallbackType) {
   try {
     const buf = await fsp.readFile(filePath);
     const ext = path.extname(filePath).toLowerCase();
     const type = MIME[ext] || fallbackType || 'application/octet-stream';
-    const cache = CACHEABLE_EXT.has(ext) ? 'public, max-age=86400' : 'no-store';
-    res.writeHead(200, { 'content-type': type, 'cache-control': cache });
+    const modelAtlas = /^(fish|rods)-model-v\d+\.png$/.test(path.basename(filePath));
+    const cache = modelAtlas ? 'no-cache' : CACHEABLE_EXT.has(ext) ? 'public, max-age=86400' : 'no-store';
+    const headers = { 'content-type': type, 'cache-control': cache };
+    if (modelAtlas) {
+      headers.etag = '"' + createHash('sha256').update(buf).digest('hex') + '"';
+      if (req.headers['if-none-match'] === headers.etag) { res.writeHead(304, headers); res.end(); return true; }
+    }
+    res.writeHead(200, headers);
     res.end(buf);
     return true;
   } catch {
@@ -176,6 +201,11 @@ function readBody(req, limit = 256 * 1024) {
 }
 
 async function handleRequest(req, res) {
+  try { return await routeRequest(req, res); }
+  finally { req.releaseAccountData?.(); }
+}
+
+async function routeRequest(req, res) {
   const base = 'http://' + config.host + ':' + config.port;
   let url;
   try {
@@ -187,6 +217,13 @@ async function handleRequest(req, res) {
   let pathname = decodeURIComponent(url.pathname);
   // 解码后可能出现 ../ 或 Windows 反斜杠；统一分隔符并规范化后再匹配路由。
   pathname = path.posix.normalize(pathname.replace(/\\/g, '/'));
+  // Character companions have been replaced by desktop fishing. Old deep
+  // links must not reactivate their renderers in an upgraded installation.
+  if (/^\/pet(?:[-.][^/]*)?\.html$/.test(pathname) || pathname === '/pet.html') {
+    res.writeHead(410, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('桌宠已移除，请在花园下方打开我的鱼塘。 / Companions have been replaced by My ponds.');
+    return;
+  }
   if (pathname[0] !== '/') pathname = '/' + pathname;
   const loopbackHost = /^(127\.0\.0\.1|localhost|\[::1\])(?::\d+)?$/i.test(req.headers.host || '');
 
@@ -196,30 +233,27 @@ async function handleRequest(req, res) {
   if (scopedRequest) {
     const transport = require('./lib/account-http');
     if (!transport.trusted(req)) { req.resume?.(); transport.send(res,403,{ok:false}); return; }
-    let context;
-    try { context = await accounts.context(accounts.tokenFrom(req)); }
-    catch { req.resume?.(); transport.send(res,503,{error:'account-storage-unavailable'}); return; }
-    activeScope = context.scope;
     const expected = req.headers['x-tracer-scope'] || url.searchParams.get('__tracer_account');
-    if (activeScope === 'locked' || (expected && expected !== activeScope) || (!expected && activeScope !== 'guest' && !pathname.startsWith('/api/pet-art/'))) {
-      req.resume?.(); transport.send(res,activeScope === 'locked' ? 401 : 409,{error:'account-changed'}); return;
-    }
+    try {
+      const access = await accounts.beginDataRequest(accounts.tokenFrom(req), expected, req.headers['x-tracer-generation'] || url.searchParams.get('__tracer_generation'), pathname.startsWith('/api/pet-art/') && ['GET','HEAD'].includes(req.method), req.headers['x-tracer-restore'] || url.searchParams.get('__tracer_restore'));
+      activeScope = access.scope; req.releaseAccountData = access.release;
+    } catch (error) { req.resume?.(); transport.send(res,error.status || 503,{error:error.code || 'account-storage-unavailable', ...(error.code === 'store-corrupt' ? { ok: false, corrupt: true } : {})}); return; }
     if (activeScope !== 'guest') activeDataDir = accounts.directory(activeScope);
   }
 
   if (pathname.startsWith('/api/ai/')) {
-    const { aiGateway, petGenerationJobs } = servicesFor(activeDataDir);
+    const { aiGateway } = servicesFor(activeDataDir);
     const send = (status, body) => { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); res.end(JSON.stringify(body)); };
     if (!loopbackHost || !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress) || req.headers['x-tracer-ai'] !== '1' || (req.headers.origin && req.headers.origin !== 'http://' + req.headers.host)) { send(403, { error: 'forbidden' }); return; }
     const action = pathname.slice('/api/ai/'.length);
+    if (['personal-pet-image', 'codex-pet-image'].includes(action)) { req.resume?.(); send(410, { error: 'pet-generation-retired' }); return; }
+    if (['personal-chat', 'codex-chat'].includes(action)) { req.resume?.(); send(410, { error: 'pet-system-retired' }); return; }
     try {
       if (['status', 'personal-status', 'codex-status'].includes(action) && req.method === 'GET') { send(200, await aiGateway.handle(action)); return; }
       if (READONLY_STORE || req.method !== 'POST' || !String(req.headers['content-type']).startsWith('application/json')) { send(403, { error: 'forbidden' }); return; }
-      const data = JSON.parse(await readBody(req, action === 'extract' ? 14500000 : ['personal-pet-image', 'codex-pet-image'].includes(action) ? 5700000 : 900000));
+      const data = JSON.parse(await readBody(req, action === 'extract' ? 14500000 : 900000));
       send(200, action === 'extract' ? await require('./lib/ai-extract').extract(data) :
-        ['personal-pet-image', 'codex-pet-image'].includes(action)
-          ? await petGenerationJobs.run(action, data, () => aiGateway.handle(action, data))
-          : await aiGateway.handle(action, data));
+        await aiGateway.handle(action, data));
     } catch (e) { send(400, { error: /^[a-z-]{3,50}$/.test(e.message) ? e.message : 'request-failed' }); }
     return;
   }
@@ -340,7 +374,8 @@ async function handleRequest(req, res) {
         return;
       }
       try {
-        JSON.parse(body); // 只验证是合法 JSON，结构由皮肤自理
+        const parsed = JSON.parse(body); // Workspace epochs require an object container.
+        if (name === 'workspace' && (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))) throw new Error('invalid-workspace');
       } catch {
         res.writeHead(400, { 'content-type': 'application/json' }).end('{"ok":false}');
         return;
@@ -348,6 +383,14 @@ async function handleRequest(req, res) {
       let acceptedWorkspace;
       try {
         await store.writeStore(activeDataDir, name, body, name === 'workspace' ? (previous, next) => {
+          // Restore epochs belong to the server. A normal save can neither
+          // manufacture one nor remove the marker that locks older windows.
+          if ((previous?.meta?.backupRestore?.id || '') !== String(req.headers['x-tracer-restore'] || url.searchParams.get('__tracer_restore') || '')) throw Object.assign(new Error('workspace-stale'), { code: 'workspace-stale' });
+          if (next && typeof next === 'object' && !Array.isArray(next)) {
+            next.meta = next.meta && typeof next.meta === 'object' && !Array.isArray(next.meta) ? next.meta : {};
+            delete next.meta.backupRestore;
+            if (previous?.meta?.backupRestore) next.meta.backupRestore = previous.meta.backupRestore;
+          }
           require('./lib/account-wallpapers').preserve(previous,next);
           if (previous?.meta?.accountImport && previous.meta.accountImport !== next?.meta?.accountImport) throw Object.assign(new Error('workspace-stale'),{code:'workspace-stale'});
           const history = require('./public/task-history');
@@ -375,6 +418,7 @@ async function handleRequest(req, res) {
           }
           if (receipts.length) { result.meta = result.meta || {}; result.meta.companionReceipts = receipts; }
           require('./public/task-garden').preserve(previous, result);
+          require('./public/fishing-model').preserve(previous, result);
           acceptedWorkspace = result;
           return result;
         } : undefined);
@@ -414,15 +458,16 @@ async function handleRequest(req, res) {
   }
 
   // 小窗组件
-  if (PANEL_ASSETS.has(pathname) || ['/workspace-sync.js', '/ai-planner.js', '/companion-work.js', '/tracer-logo.png'].includes(pathname)) {
+  if (PANEL_ASSETS.has(pathname) || ['/workspace-sync.js', '/backup-preferences.js', '/ai-planner.js', '/companion-work.js', '/tracer-logo.png'].includes(pathname)) {
     const f = safeJoin(PUBLIC_DIR, pathname);
-    if (f && await serveFile(res, f)) return;
+    if (f && await serveFile(req, res, f)) return;
   }
 
   // 皮肤首页
   if (pathname === '/' || pathname === '/index.html') {
     try {
-      const html = await fsp.readFile(path.join(SKIN_DIR, 'index.html'), 'utf8');
+      let html = await fsp.readFile(path.join(SKIN_DIR, 'index.html'), 'utf8');
+      if (config.skin === 'tracer') html = html.replace(/<\/head>/i, '<meta name="tracer-version" content="' + reportVersion + '">\n</head>');
       const body = injectReader(html, {
         base, skin: config.skin,
         autoHide: config.autoHide, idleMinutes: config.idleMinutes,
@@ -438,7 +483,7 @@ async function handleRequest(req, res) {
 
   // 皮肤静态资源
   const skinFile = safeJoin(SKIN_DIR, pathname);
-  if (skinFile && await serveFile(res, skinFile)) return;
+  if (skinFile && await serveFile(req, res, skinFile)) return;
 
   // 404 也要保持文档站的样子，不能露出 Node 默认响应。
   res.writeHead(404, { 'content-type': 'text/html; charset=utf-8' });
@@ -460,4 +505,4 @@ if (require.main === module) {
 }
 
 server.on('close', () => require('./lib/ai-gateway').closeCodex());
-module.exports = { server, handleRequest, config, injectReader, safeJoin, loadConfig };
+module.exports = { server, accounts, handleRequest, config, injectReader, safeJoin, loadConfig };

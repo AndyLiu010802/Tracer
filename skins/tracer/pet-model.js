@@ -10,8 +10,10 @@
     { id: 'brook', en: 'Brook', zh: '溪溪', species: ['小企鹅', 'River penguin'], metric: 'focus', target: 25, color: '#8bc6de' },
     { id: 'ember', en: 'Ember', zh: '小焰', species: ['赤狐', 'Ember fox'], metric: 'tasks', target: 10, color: '#eb9478' },
     { id: 'luna', en: 'Luna', zh: '月芽', species: ['月光兔', 'Moon rabbit'], metric: 'streak', target: 3, color: '#baa8eb' },
-    { id: 'nova', en: 'Nova', zh: '星芽', species: ['星星幼龙', 'Starlight dragon'], metric: 'focus', target: 120, color: '#89d9c5' }
-  ].map(pet => ({ ...pet, kind: 'creature' }));
+    { id: 'nova', en: 'Nova', zh: '星芽', species: ['星星幼龙', 'Starlight dragon'], metric: 'focus', target: 120, color: '#89d9c5' },
+    { id: 'edward', en: 'Edward', zh: '爱德华', species: ['炼金术师 · 哥哥', 'Alchemist · older brother'], metric: 'welcome', target: 1, color: '#d88869', alchemy: true, kind: 'humanoid' },
+    { id: 'alphonse', en: 'Alphonse', zh: '阿尔冯斯', species: ['盔甲里的温柔灵魂 · 弟弟', 'A gentle soul in armor · younger brother'], metric: 'welcome', target: 1, color: '#90b2c3', alchemy: true, kind: 'humanoid' }
+  ].map(pet => ({ ...pet, kind: pet.kind || 'creature' }));
   const customLimit = 12;
   const gardenPets = ['wildflower','sunflower','lavender','apple','peach','cherry','neon_orchid','volt_berry','crystal_tree'].flatMap((plantKind,index)=>[false,true].map(shiny=>({
     id:'garden_'+plantKind+(shiny?'_shiny':''),plantKind,garden:true,shiny,kind:'creature',
@@ -52,14 +54,14 @@
   const clamp = (v, fallback = 70) => Number.isFinite(v) ? Math.min(100, Math.max(0, v)) : fallback;
   const day = time => { const d = new Date(time); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
   function fresh(now = Date.now()) {
-    return { v: 1, selected: 'sprout', unlocked: ['sprout'], customs: [], pets: {}, updatedAt: now, reminders: true, snoozedUntil: 0, lastReminder: 0, lastAction: '', lastActionAt: 0 };
+    return { v: 1, selected: 'sprout', unlocked: ['sprout','edward','alphonse'], customs: [], pets: {}, updatedAt: now, reminders: true, snoozedUntil: 0, lastReminder: 0, lastAction: '', lastActionAt: 0 };
   }
   function read(raw, now = Date.now()) {
     const s = fresh(now);
     if (!raw || raw.v !== 1) return s;
     s.customs = customProfiles(raw.customs);
     const available = catalog({...s,unlocked:Array.isArray(raw.unlocked)?raw.unlocked:[]});
-    s.unlocked = Array.from(new Set(['sprout', ...s.customs.map(p => p.id), ...(Array.isArray(raw.unlocked) ? raw.unlocked : [])])).filter(id => available.some(p => p.id === id));
+    s.unlocked = Array.from(new Set(['sprout','edward','alphonse', ...s.customs.map(p => p.id), ...(Array.isArray(raw.unlocked) ? raw.unlocked : [])])).filter(id => available.some(p => p.id === id));
     s.selected = s.unlocked.includes(raw.selected) ? raw.selected : 'sprout';
     for (const pet of available) {
       const old = raw.pets && raw.pets[pet.id];

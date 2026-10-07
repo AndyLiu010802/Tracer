@@ -5,9 +5,18 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 function funded(){const ws=M.emptyWorkspace();for(let i=0;i<8;i++){const t=M.addTask(ws,{title:'Fund '+i});t.status='doing';G.taskChanged(ws,t,100,n=>n===10000?1000:4);t.status='done';t.doneAt=101;t.updatedAt=101;G.taskChanged(ws,t,101);G.harvest(ws,t.id,102);}G.sell(ws,'peach',8,200);M.addNote(ws,{title:'Journal',body:'Keep my words'});return ws;}
 function place(ws,id='placement',extra={}){return G.layoutSticker(ws,{id,itemId:'st_bunny',targetType:'note',targetId:ws.notes[0].id,...extra},400);}
 test('catalogue is read-only, purchases charge immutable prices once and old saves remain valid',()=>{
- const ws=funded(),before=JSON.stringify(ws),list=G.stickers(ws);assert.equal(list.total,8);assert.equal(list.owned,0);assert.equal(JSON.stringify(ws),before);list.items[0].price=0;assert.equal(G.stickers(ws).items[0].price,12);
+ const ws=funded(),before=JSON.stringify(ws),list=G.stickers(ws);assert.equal(list.total,80);assert.equal(list.owned,0);assert.equal(JSON.stringify(ws),before);list.items[0].price=0;assert.equal(G.stickers(ws).items[0].price,12);
  assert.equal(G.buySticker(ws,'st_bunny',300).spent,12);const owned=JSON.stringify(ws);assert.equal(G.buySticker(ws,'st_bunny',301).alreadyOwned,true);assert.equal(JSON.stringify(ws),owned);assert.equal(G.economy(S.validate(clone(ws))).balance,228);
  const poor=M.emptyWorkspace(),bytes=JSON.stringify(poor);assert.equal(G.buySticker(poor,'st_bunny').reason,'insufficient-coins');assert.equal(JSON.stringify(poor),bytes);
+});
+test('paper and glitter stickers from every new theme survive purchase, placement and save validation',()=>{
+ const ws=funded();let spent=0;
+ for(const [theme,subject]of [['life','breakfast'],['pets','corgi'],['travel','camper']])for(const material of ['paper','glitter']){
+  const id='st_'+material+'_'+theme+'_'+subject,item=G.stickers(ws).items.find(i=>i.id===id);assert.ok(item,id+' is available');assert.equal(item.setId,theme);assert.equal(item.material,material);
+  assert.equal(G.buySticker(ws,id,300).spent,item.price);spent+=item.price;assert.equal(G.buySticker(ws,id,301).alreadyOwned,true);
+  assert.equal(G.layoutSticker(ws,{id:'placement_'+id,itemId:id,targetType:'note',targetId:ws.notes[0].id},400).ok,true);
+ }
+ const saved=S.validate(clone(ws));assert.equal(G.stickers(saved).owned,6);assert.equal(G.stickers(saved).placements.length,6);assert.equal(G.economy(saved).balance,240-spent);assert.equal(saved.notes[0].body,'Keep my words');
 });
 test('owned stickers are reusable on separate notes without changing text or charging again',()=>{
  const ws=funded();G.buySticker(ws,'st_bunny',300);const other=M.addNote(ws,{title:'Another page'}),content=JSON.stringify([ws.tasks,ws.notes]);assert.equal(place(ws).ok,true);assert.equal(place(ws,'copy',{targetType:'note',targetId:other.id,x:23,y:75,rotation:32,size:150}).ok,true);

@@ -34,7 +34,7 @@
 
 - 全量核心及桌面测试：660 通过，0 失败。包括新增原生可见性同步测试、隐藏后动画暂停/恢复与监听释放、输入不重复读取存储的回归检查。
 - `dev/qa-desktop-lifecycle.cjs`：Windows x64 原生 Electron 启动、笔记保存/快捷键/重载、最小化暂停动态壁纸与材质、后台专注完成、托盘隐藏与恢复。
-- `dev/qa-account-desktop.cjs`：原生账户注册、恢复码页面暂停桌宠、账户和游客隔离、桌宠账户切换。
+- 当前替代验证：`dev/qa-fishing-desktop.cjs` 覆盖透明钓鱼窗口、实际捕获、收竿取消和刷新隔离；账户边界由 `desktop/test/fishing.test.js` 与账户测试覆盖。
 - `dev/qa-stickers.cjs`：Note 专属悬浮背包、八方向缩放、旋转、取消、保存重试、移动端布局和账户隔离。
 - `dev/qa-garden-store.cjs`：独立商店、30 款壁纸/材质预览、家具六向旋转、购买与余额、伙伴拖动、保存重试、持久化和双语布局。
 

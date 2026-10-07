@@ -62,6 +62,18 @@
 .ins-snapshot { display:grid; grid-template-columns:110px 1fr; gap:12px; font-size:12px; }.ins-snapshot dt { color:#8897a6; }.ins-snapshot dd { margin:0; overflow-wrap:anywhere; }
 #sec-insights button:focus-visible,#sec-insights input:focus-visible,#sec-insights select:focus-visible { outline:2px solid #9ac7b0; outline-offset:3px; }
 #sec-insights button:disabled { opacity:.4; cursor:default; }
+.project-review{margin-bottom:24px;border-top-color:#aacdaf66}
+.project-review .ins-panel-head{align-items:flex-start}.project-review h2{font-size:18px;overflow-wrap:anywhere}
+.review-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:22px 0}
+.review-metric{min-width:0}.review-metric dt{font-size:11px;line-height:1.6;color:#b7c5bd}
+.review-metric dd{margin:10px 0 7px;font-size:26px;line-height:1.25;color:#ebf2ec;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.review-metric p{margin:0;color:#98a89f;font-size:10px;line-height:1.6}
+.review-comparison{border-block:1px solid #ffffff12;padding:15px 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 18px;align-items:center}
+.review-comparison h3{margin:0;font-size:12px;font-weight:500;color:#b7c8bc}.review-comparison strong{font-size:18px;color:#d2ddce;font-variant-numeric:tabular-nums}
+.review-comparison p{grid-column:1/-1;margin:0;font-size:11px;line-height:1.7;color:#98a89f}
+.review-notes{margin-top:14px;font-size:11px;line-height:1.8;color:#9caaa4}.review-notes p{margin:7px 0}.review-notes .review-caveat{color:#d1c098}
+@media(max-width:1050px){.review-metrics{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:20px}}
+@media(max-width:450px){.review-comparison{grid-template-columns:1fr}.review-metric dd{font-size:23px}.review-notes{font-size:10px}.ins-filters label{min-width:0;max-width:100%}.ins-filters input,.ins-filters select{max-width:100%;min-width:0}}
 @media(max-width:1250px) { .ins-grid { grid-template-columns:1fr; }.ins-distribution { justify-content:center; }.ins-statuslist { max-width:350px; }.ins-local-note { display:none; }.ins-header { flex-wrap:wrap; }.ins-activity { display:block; }.ins-activity .ins-panel-head { margin-bottom:18px; } }
 @media(max-width:900px) { .ins-tiles { grid-template-columns:repeat(2,minmax(0,1fr)); }.ins-panel { padding:16px; }.ins-tile { padding:15px; }.ins-periods button { padding:7px 9px; } }
 @media(max-width:900px) { .ins-activity { display:block; }.ins-activity .ins-panel-head { margin-bottom:18px; }.ins-heatmap { grid-template-rows:repeat(7,12px); } }

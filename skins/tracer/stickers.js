@@ -10,7 +10,7 @@
   const head=el('header','sticker-bag-head',bag),mark=el('div','sticker-bag-mark',head);mark.innerHTML=icon;
   const copy=el('div','',head),title=el('h2','',copy),count=el('p','',copy),close=button(head,'close');title.id='sticker-backpack-title';
   const help=el('p','sticker-bag-help',bag),filters=el('div','sticker-bag-filters',bag),filterButtons=new Map();
-  for(const id of ['all','garden','slow','stars','celebrate']){const b=button(filters,'filter');b.dataset.filter=id;filterButtons.set(id,b);}
+  for(const id of ['all','life','pets','travel','paper','glitter','garden','slow','stars','celebrate']){const b=button(filters,'filter');b.dataset.filter=id;filterButtons.set(id,b);}
   const grid=el('div','sticker-bag-grid',bag),empty=el('p','sticker-bag-empty',bag),footer=el('footer','sticker-bag-footer',bag),edit=button(footer,'edit'),shop=button(footer,'shop');
   const bar=el('div','sticker-modebar',doc.body),status=el('span','',bar),undo=button(bar,'undo'),retry=button(bar,'retry'),done=button(bar,'done');bar.hidden=true;status.setAttribute('role','status');
   const hud=el('div','sticker-transform',doc.body),hudName=el('span','sticker-transform-name',hud);hud.hidden=true;hud.setAttribute('role','group');
@@ -20,7 +20,7 @@
   const ghost=el('img','sticker-placement-ghost',doc.body);ghost.alt='';ghost.hidden=true;
   let opened=false,editing=false,armed=null,selected=null,selectedSurface=null,drag=null,busy=false,error='',filter='all',queued=false,undoStack=[],pendingOp=null;
   const inNotes=()=>T.currentSec()==='notes';
-  let catalogue={items:[],placements:[],owned:0,total:8},ledgerRef=null,language='',bagSignature='';
+  let catalogue={items:[],placements:[],owned:0,total:0},ledgerRef=null,language='',bagSignature='';
   const accepted=()=>T.store.base||T.store.data,clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),allRows=()=>accepted()?.taskGarden?.market?.stickers?.placements||[],row=id=>allRows().find(p=>p.id===id);
   let orb={side:'right',y:1},orbDrag=null,suppressOrbClick=false;
   try{const saved=JSON.parse(localStorage.getItem('tracer.stickerOrb'));if(saved&&['left','right'].includes(saved.side)&&Number.isFinite(saved.y))orb={side:saved.side,y:clamp(saved.y,0,1)};}catch{}
@@ -68,8 +68,8 @@
     }
     doc.body.classList.toggle('sticker-decorating',editing);doc.body.classList.toggle('sticker-bag-open',opened);fab.hidden=!inNotes()||!!T.store.lost;fab.disabled=busy;fab.setAttribute('aria-label',tr('打开贴纸背包','Open sticker backpack'));fab.title=tr('贴纸背包 · 拖动可贴边','Sticker backpack · Drag to dock');fab.setAttribute('aria-expanded',String(opened));badge.hidden=!data.owned;text(badge,data.owned);
     bag.hidden=!inNotes()||!opened;text(title,tr('我的小背包','My little backpack'));text(count,data.owned+' / '+data.total+tr(' 款已收藏',' collected'));text(close,'×');close.setAttribute('aria-label',tr('关闭背包','Close backpack'));text(help,tr('选一张，再点笔记里想贴的位置。贴纸仅用于 Note，正文照常编辑。','Pick a sticker, then click your note to place it. Stickers belong in Notes; text stays editable.'));
-    const labels={all:tr('全部','All'),garden:tr('花园','Garden'),slow:tr('日常','Daily'),stars:tr('星光','Stars'),celebrate:tr('庆祝','Joy')};for(const [id,b]of filterButtons){text(b,labels[id]);b.setAttribute('aria-pressed',String(id===filter));}
-    const items=data.items.filter(i=>i.owned&&(filter==='all'||filter===i.setId)),signature=JSON.stringify([language,items.map(i=>i.id)]);
+    const labels={all:tr('全部','All'),life:tr('生活','Life'),pets:tr('宠物','Pets'),travel:tr('旅行','Travel'),paper:tr('纸质','Paper'),glitter:tr('亮片','Glitter'),garden:tr('花园','Garden'),slow:tr('日常','Daily'),stars:tr('星光','Stars'),celebrate:tr('庆祝','Joy')};for(const [id,b]of filterButtons){text(b,labels[id]);b.setAttribute('aria-pressed',String(id===filter));}
+    const items=data.items.filter(i=>i.owned&&(filter==='all'||filter===i.setId||filter===(i.material||'paper'))),signature=JSON.stringify([language,items.map(i=>i.id)]);
     if(signature!==bagSignature){bagSignature=signature;grid.replaceChildren();for(const item of items){const b=button(grid,'use');b.className='sticker-bag-item';b.dataset.itemId=item.id;const img=el('img','',b);img.src='/sticker-art/'+item.id+'-v1.png';img.alt='';img.draggable=false;const name=el('span','',b);text(name,local(item.name));b.title=local(item.name);}}
     grid.querySelectorAll('button').forEach(b=>b.disabled=busy);empty.hidden=!!items.length;text(empty,tr('这一格还空着。去贴纸铺挑一点喜欢的吧。','This pocket is empty. Find something lovely at the sticker stall.'));text(edit,editing?tr('完成装饰','Finish decorating'):tr('调整已有贴纸','Arrange stickers'));edit.disabled=busy;text(shop,tr('逛贴纸铺 ↗','Visit sticker stall ↗'));shop.disabled=busy;
     bar.hidden=!inNotes()||!editing&&!error;text(status,error||(busy?tr('正在保存贴纸…','Saving sticker…'):armed?tr('点笔记贴下 · Esc 取消','Click your note to place · Esc cancels'):tr('装饰模式 · 拖动贴纸，方向键微调 · Esc 完成','Decorate · Drag stickers or use arrow keys · Esc finishes')));text(done,tr('完成','Done'));done.disabled=busy;text(undo,tr('撤销','Undo'));undo.disabled=busy||!undoStack.length;text(retry,tr('重试保存','Retry save'));retry.hidden=!error||!T.store.dirty;retry.disabled=busy;

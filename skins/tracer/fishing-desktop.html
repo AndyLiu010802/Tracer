@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-src 'none'">
+  <title>Tracer · 桌面钓鱼</title>
+  <link rel="stylesheet" href="/fishing-scene.css">
+  <link rel="stylesheet" href="/fishing-rewards.css">
+  <link rel="stylesheet" href="/fishing-desktop.css">
+</head>
+<body>
+  <main id="desktop-fishing" data-phase="idle" data-rod-visible="false" aria-label="鱼竿和小水潭">
+    <div id="fishing-pond" tabindex="0" role="button" aria-label="按住鱼塘蓄力，松开抛竿，也可使用 F 或空格"></div>
+    <svg id="fishing-line" viewBox="0 0 380 260" aria-hidden="true"><path/></svg>
+    <button id="fishing-rod" type="button" tabindex="-1" aria-hidden="true" aria-label="按住鱼竿蓄力，松开抛竿"></button>
+    <button id="fishing-float" type="button" hidden aria-label="鱼儿咬钩时点击提竿"><i></i><b></b></button>
+    <span id="fishing-bite" hidden aria-hidden="true"><img class="fishing-bite-art" src="/fishing-art/bite-hooked-gold-v1.png" alt="" draggable="false"></span>
+    <span id="fishing-nibble" class="fishing-nibble-cue" hidden>试探，先等一等</span>
+    <div id="fishing-cast-target" class="fishing-cast-target" hidden aria-hidden="true"></div>
+    <div id="fishing-catch-shadow" aria-hidden="true"></div>
+    <div id="fishing-flight-fish" hidden aria-hidden="true"></div>
+    <div id="fishing-power" hidden role="progressbar" aria-label="抛竿力度"><i></i></div>
+    <div id="fishing-reel" hidden role="progressbar" aria-label="收线进度"><div class="desktop-reel-track"><i class="desktop-reel-target"></i><b class="desktop-reel-fish"><svg viewBox="0 0 24 16" aria-hidden="true"><path d="M2 8C5 2 12 1 18 6L23 3V13L18 10C12 15 5 14 2 8Z"/><circle cx="6" cy="7" r="1"/></svg></b></div><div class="desktop-reel-progress"><i></i></div></div>
+    <div id="fishing-toast" hidden role="status"></div>
+    <div id="fishing-status" hidden><span></span><i class="fishing-stamina"><b></b></i></div>
+
+    <span id="fishing-live" class="desktop-sr-only" aria-live="polite"></span>
+  </main>
+  <script src="/fishing-lighting.js"></script>
+<script src="/fishing-art.js"></script>
+  <script src="/fishing-rewards.js"></script>
+  <script src="/fishing-rod-effects.js"></script>
+  <script src="/fishing-motion.js"></script>
+  <script src="/fishing-rod-renderer.js"></script>
+  <script src="/fishing-desktop.js"></script>
+</body>
+</html>

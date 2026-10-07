@@ -5,9 +5,11 @@ function fixture(ticket=0){const ws=M.emptyWorkspace(),p=M.addProject(ws,{name:'
 test('completed projects celebrate the accepted transition, not initial load, imports, task completion or repeated snapshots',()=>{
  const {ws,p,task}=fixture(150),before=copy(ws);assert.deepEqual(C.changes(null,ws),[]);M.moveTask(ws,task.id,'done');assert.deepEqual(C.changes(before,ws),[]);const beforeArchive=copy(ws);assert.ok(M.completeProject(ws,p.id).ok);assert.deepEqual(C.changes(beforeArchive,ws).map(e=>e.type),['project']);assert.deepEqual(C.changes(ws,copy(ws)),[]);assert.equal(C.valid(C.changes(beforeArchive,ws)[0],ws),true);assert.deepEqual(C.changes(M.emptyWorkspace(),ws).filter(e=>e.type==='project'),[]);
 });
-test('shiny reveal waits for the first mature receipt, does not repeat after harvesting or reopening',()=>{
- const {ws,task}=fixture(),growing=copy(ws);assert.deepEqual(C.changes(M.emptyWorkspace(),ws),[]);M.moveTask(ws,task.id,'done');const event=C.changes(growing,ws)[0];assert.equal(event.type,'shiny');assert.ok(C.valid(event,ws));const mature=copy(ws);G.harvest(ws,task.id);assert.deepEqual(C.changes(mature,ws),[]);assert.ok(C.valid(event,ws));
- const other=fixture(),initial=copy(other.ws);M.moveTask(other.ws,other.task.id,'done');const otherEvent=C.changes(initial,other.ws)[0],first=copy(other.ws);M.moveTask(other.ws,other.task.id,'doing');assert.equal(C.valid(otherEvent,other.ws),false);M.moveTask(other.ws,other.task.id,'done');assert.deepEqual(C.changes(first,other.ws),[]);
+test('historical shiny receipts announce once while all newly planted flowers stay ordinary',()=>{
+ const legacy=()=>{const value=fixture();Object.assign(value.ws.taskGarden.seeds[0],{ticket:0,variant:'shiny'});return value;};
+ const {ws,task}=legacy(),growing=copy(ws);assert.deepEqual(C.changes(M.emptyWorkspace(),ws),[]);M.moveTask(ws,task.id,'done');const event=C.changes(growing,ws)[0];assert.equal(event.type,'shiny');assert.ok(C.valid(event,ws));const mature=copy(ws);G.harvest(ws,task.id);assert.deepEqual(C.changes(mature,ws),[]);assert.ok(C.valid(event,ws));
+ const other=legacy(),initial=copy(other.ws);M.moveTask(other.ws,other.task.id,'done');const otherEvent=C.changes(initial,other.ws)[0],first=copy(other.ws);M.moveTask(other.ws,other.task.id,'doing');assert.equal(C.valid(otherEvent,other.ws),false);M.moveTask(other.ws,other.task.id,'done');assert.deepEqual(C.changes(first,other.ws),[]);
+ for(const ticket of [0,5,99,1000]){const fresh=fixture(ticket),before=copy(fresh.ws);M.moveTask(fresh.ws,fresh.task.id,'done');assert.deepEqual(C.changes(before,fresh.ws),[]);assert.equal(fresh.ws.taskGarden.seeds[0].variant,'normal');}
 });
 test('rare, normal, forgotten and legacy plants do not create shiny announcements',()=>{
  for(const ticket of [5,1000]){const {ws,task}=fixture(ticket),before=copy(ws);M.moveTask(ws,task.id,'done');assert.deepEqual(C.changes(before,ws),[]);}

@@ -53,15 +53,6 @@
 .garden-world[data-layout-editing=true] .garden-world-ornament[aria-pressed=true]{outline:2px dashed #e4cc86;outline-offset:4px;background:#c7d9940d}
 .garden-world[data-layout-editing=true] .garden-world-plot{pointer-events:none}
 .garden-layout-controls[hidden],.garden-layout-hint[hidden]{display:none}
-
-.garden-home .garden-world-surface .garden-home-companion[data-layout-id] .garden-home-companion-art{transform:scaleX(var(--ornament-flip,1))}
-/* Companion frame players share plant artwork classes, but must fit their own
-   square hit box instead of inheriting the flower card's fixed pixel height. */
-.garden-home .garden-home-companion-art .garden-home-plant-art{display:block;width:100%;height:100%;max-width:none}
-.garden-home .garden-world-surface .garden-home-companion-caption[data-layout-caption]{width:max-content;max-width:calc(100% - 16px);transform:none;line-height:1.5}
-.garden-world[data-layout-editing=true] .garden-home-companion[data-layout-id]{touch-action:none;cursor:grab}
-.garden-world[data-layout-editing=true] .garden-home-companion[data-layout-id][aria-pressed=true]{outline:2px dashed #e4cc86;outline-offset:4px}
-.garden-home-companion[hidden],.garden-home-companion-caption[hidden]{display:none!important}
 .garden-collect-card[data-set=reading]{background:radial-gradient(ellipse at 50% 20%,#c4a77225,transparent 65%),#2b2821;border-color:#c6ae8844}
 .garden-collect-card[data-set=greenhouse]{background:radial-gradient(ellipse at 50% 20%,#9bd4c42c,transparent 65%),#1c2c28;border-color:#9dcabf44}
 

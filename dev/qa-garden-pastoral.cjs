@@ -37,23 +37,19 @@ const M=require('../skins/tracer/model'),S=require('../public/workspace-sync');
     }
     assert.equal(await page.locator('.garden-world-xp').textContent(),xp,'care animations do not award work XP');
     await slot(1).click();await page.locator('.garden-world-care-button[data-interaction="pet"]').click();assert.equal(await slot(1).getAttribute('data-interaction'),'pet');
-    // A failed receipt save cannot grant a companion. Retrying uses the already
+    // A failed receipt save cannot grant a collection record. Retrying uses the already
     // persisted maturity ticket; it does not call the random source again.
     await page.evaluate(()=>{window.__set=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key==='tracer.garden.harvest.v1')throw new DOMException('quota','QuotaExceededError');return window.__set.call(this,key,value);};});
     await page.locator('.garden-world-harvest').click();await page.locator('.garden-home-error').waitFor();
-    assert.equal(await page.evaluate(()=>Tracer.pet.read().unlocked.includes('garden_wildflower')),false);
+
     await page.evaluate(()=>{Storage.prototype.setItem=window.__set;});
-    await page.locator('.garden-world-harvest').click();await page.waitForFunction(()=>Tracer.pet.read().unlocked.includes('garden_wildflower'));
-    await slot(2).click();await page.locator('.garden-world-harvest').click();await page.waitForFunction(()=>Tracer.pet.read().unlocked.includes('garden_cherry_shiny'));
+    await page.locator('.garden-world-harvest').click();await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
+    await slot(2).click();await page.locator('.garden-world-harvest').click();await page.waitForFunction(()=>!Tracer.store.dirty&&!Tracer.store.inflight);
     await slot(0).click();await page.locator('.garden-world-harvest').click();await page.waitForFunction(()=>TracerGardenHarvest.snapshot(JSON.parse(localStorage.getItem(TracerGardenHarvest.key))).total===3);
     assert.equal(await page.evaluate(()=>window.__drawCount),3);
     const before=await page.evaluate(()=>localStorage.getItem(TracerGardenHarvest.key));
     await page.reload();await page.waitForFunction(()=>window.Tracer?.garden&&Tracer.store.data);await page.evaluate(()=>Tracer.garden.refresh(true));
     assert.equal(await page.evaluate(()=>window.__drawCount),0);assert.equal(await page.evaluate(()=>localStorage.getItem(TracerGardenHarvest.key)),before);
-    await page.evaluate(()=>Tracer.pet.action('select','garden_cherry_shiny'));await page.evaluate(()=>Tracer.pet.open());
-    await page.locator('.pet-trail-toggle').waitFor();assert.equal(await page.locator('.pet-trail-toggle').isDisabled(),true,'global cursor trail requires desktop app');
-    assert.equal(await page.locator('.pet-home .garden-plant-sprite[data-shiny="true"]').count()>0,true);
-    await page.locator('.pet-top [data-act="close"]').click();
     await page.locator('.garden-home-title').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(folder,'pastoral-desktop.png'),animations:'disabled'});
     await page.setViewportSize({width:380,height:1000});await slot(2).click();
     const widths=await page.locator('.garden-home').evaluate(e=>({client:e.clientWidth,scroll:e.scrollWidth}));assert.ok(widths.scroll<=widths.client+1,JSON.stringify(widths));

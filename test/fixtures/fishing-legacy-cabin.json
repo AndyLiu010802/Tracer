@@ -1,0 +1,288 @@
+{
+  "workspace": {
+    "projects": [],
+    "tasks": [],
+    "notes": [],
+    "inbox": [],
+    "meta": {
+      "seqCounter": 0,
+      "rev": 0
+    },
+    "fishing": {
+      "version": 1,
+      "updatedAt": 10,
+      "equippedRodId": "bamboo",
+      "equippedBaitId": "worm",
+      "equippedCabinId": "cottage",
+      "boxes": [],
+      "casts": [],
+      "catches": [],
+      "fry": [],
+      "ponds": [
+        {
+          "id": "pond_starter",
+          "styleId": "meadow",
+          "createdAt": 0,
+          "updatedAt": 0,
+          "archivedAt": null,
+          "sealedFishIds": [],
+          "decorationLayoutAt": 0,
+          "decorations": [
+            {
+              "id": "decoration_default_0",
+              "kind": "tree",
+              "x": -2.18,
+              "z": -1.8,
+              "rotation": 0,
+              "scale": 0.95,
+              "updatedAt": 0
+            },
+            {
+              "id": "decoration_default_1",
+              "kind": "bush",
+              "x": -2.24,
+              "z": 0.7,
+              "rotation": 0,
+              "scale": 0.7,
+              "updatedAt": 0
+            },
+            {
+              "id": "decoration_default_2",
+              "kind": "flowers",
+              "x": -1.85,
+              "z": 1.94,
+              "rotation": 0,
+              "scale": 0.8,
+              "updatedAt": 0
+            },
+            {
+              "id": "decoration_default_3",
+              "kind": "rocks",
+              "x": 2.18,
+              "z": -1.56,
+              "rotation": 1,
+              "scale": 0.9,
+              "updatedAt": 0
+            },
+            {
+              "id": "decoration_default_4",
+              "kind": "reeds",
+              "x": 2.23,
+              "z": 0.83,
+              "rotation": 0,
+              "scale": 0.75,
+              "updatedAt": 0
+            },
+            {
+              "id": "decoration_default_5",
+              "kind": "dock",
+              "x": 0.24,
+              "z": 2.16,
+              "rotation": 0,
+              "scale": 0.95,
+              "updatedAt": 0
+            },
+            {
+              "id": "decoration_default_6",
+              "kind": "basket",
+              "x": 1.1,
+              "z": 2.22,
+              "rotation": 1,
+              "scale": 0.7,
+              "updatedAt": 0
+            }
+          ]
+        }
+      ],
+      "transactions": [
+        {
+          "id": "ftx_a_1_5fl0m",
+          "kind": "cabin",
+          "itemId": "cottage",
+          "quantity": 1,
+          "amount": -180,
+          "createdAt": 10
+        }
+      ]
+    },
+    "taskGarden": {
+      "version": 1,
+      "seeds": [],
+      "planets": [],
+      "deletedPlanets": [],
+      "market": {
+        "version": 1,
+        "sales": [],
+        "purchases": [],
+        "equipped": {
+          "farmId": "meadow",
+          "updatedAt": 0
+        },
+        "testCredit": {
+          "id": "fishing_legacy_cabin_credit",
+          "amount": 3000,
+          "updatedAt": 1
+        },
+        "fishingTransactions": [
+          {
+            "id": "ftx_a_1_5fl0m",
+            "kind": "cabin",
+            "itemId": "cottage",
+            "quantity": 1,
+            "amount": -180,
+            "createdAt": 10
+          }
+        ]
+      }
+    }
+  },
+  "signedBackup": {
+    "payload": {
+      "format": "tracer-workspace-backup",
+      "version": 1,
+      "createdAt": "1970-01-01T00:01:40.000Z",
+      "scope": "guest",
+      "workspace": {
+        "tasks": [],
+        "projects": [],
+        "notes": [],
+        "inbox": [],
+        "meta": {
+          "seqCounter": 0,
+          "rev": 0,
+          "syncVersion": 0
+        },
+        "taskGarden": {
+          "version": 1,
+          "seeds": [],
+          "planets": [],
+          "deletedPlanets": [],
+          "market": {
+            "version": 1,
+            "sales": [],
+            "purchases": [],
+            "equipped": {
+              "farmId": "meadow",
+              "updatedAt": 0
+            },
+            "testCredit": {
+              "id": "fishing_legacy_cabin_credit",
+              "amount": 3000,
+              "updatedAt": 1
+            },
+            "fishingTransactions": [
+              {
+                "id": "ftx_a_1_5fl0m",
+                "kind": "cabin",
+                "itemId": "cottage",
+                "quantity": 1,
+                "amount": -180,
+                "createdAt": 10
+              }
+            ]
+          }
+        },
+        "fishing": {
+          "version": 1,
+          "updatedAt": 10,
+          "equippedRodId": "bamboo",
+          "equippedBaitId": "worm",
+          "equippedCabinId": "cottage",
+          "boxes": [],
+          "casts": [],
+          "catches": [],
+          "fry": [],
+          "ponds": [
+            {
+              "id": "pond_starter",
+              "styleId": "meadow",
+              "createdAt": 0,
+              "updatedAt": 0,
+              "archivedAt": null,
+              "sealedFishIds": [],
+              "decorationLayoutAt": 0,
+              "decorations": [
+                {
+                  "id": "decoration_default_0",
+                  "kind": "tree",
+                  "x": -2.18,
+                  "z": -1.8,
+                  "rotation": 0,
+                  "scale": 0.95,
+                  "updatedAt": 0
+                },
+                {
+                  "id": "decoration_default_1",
+                  "kind": "bush",
+                  "x": -2.24,
+                  "z": 0.7,
+                  "rotation": 0,
+                  "scale": 0.7,
+                  "updatedAt": 0
+                },
+                {
+                  "id": "decoration_default_2",
+                  "kind": "flowers",
+                  "x": -1.85,
+                  "z": 1.94,
+                  "rotation": 0,
+                  "scale": 0.8,
+                  "updatedAt": 0
+                },
+                {
+                  "id": "decoration_default_3",
+                  "kind": "rocks",
+                  "x": 2.18,
+                  "z": -1.56,
+                  "rotation": 1,
+                  "scale": 0.9,
+                  "updatedAt": 0
+                },
+                {
+                  "id": "decoration_default_4",
+                  "kind": "reeds",
+                  "x": 2.23,
+                  "z": 0.83,
+                  "rotation": 0,
+                  "scale": 0.75,
+                  "updatedAt": 0
+                },
+                {
+                  "id": "decoration_default_5",
+                  "kind": "dock",
+                  "x": 0.24,
+                  "z": 2.16,
+                  "rotation": 0,
+                  "scale": 0.95,
+                  "updatedAt": 0
+                },
+                {
+                  "id": "decoration_default_6",
+                  "kind": "basket",
+                  "x": 1.1,
+                  "z": 2.22,
+                  "rotation": 1,
+                  "scale": 0.7,
+                  "updatedAt": 0
+                }
+              ]
+            }
+          ],
+          "transactions": [
+            {
+              "id": "ftx_a_1_5fl0m",
+              "kind": "cabin",
+              "itemId": "cottage",
+              "quantity": 1,
+              "amount": -180,
+              "createdAt": 10
+            }
+          ]
+        }
+      },
+      "preferences": {}
+    },
+    "checksum": "26d5f724384ec02aebfb0f693b3757a312ac4f03ed323964b0cd48be437b5791",
+    "signature": "6e87fa0af8f75dbce73fe7740b72ea9d8e426bcbcc45ce610882f3b7f0147168"
+  }
+}

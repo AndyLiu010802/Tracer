@@ -14,3 +14,7 @@ bookmarks.json
 /.playwright-mcp/
 /output/
 /cloud/.openai/
+# Local reference artwork and private planning notes stay on this machine.
+/skins/tracer/local-vfx/haunt-art/fade-v1/
+/docs/commercialization-plan-overseas-12-weeks.md
+/docs/development-plan-30h-week.md

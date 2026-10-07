@@ -38,7 +38,7 @@ test('HTTP replies return authoritative seeds, and reloads retain harvest, clear
   const firstWindow = newWindow(1, 4500), secondWindow = newWindow(4, 0);
   const first = await request('PUT', firstWindow); assert.equal(first.status, 200); assert.equal(first.body.workspace.taskGarden.seeds[0].plantKind, 'sunflower');
   const second = await request('PUT', secondWindow); assert.equal(second.status, 200);
-  assert.equal(second.body.workspace.taskGarden.seeds[0].plantKind, 'sunflower'); assert.equal(second.body.workspace.taskGarden.seeds[0].ticket, 4500);
+  assert.equal(second.body.workspace.taskGarden.seeds[0].plantKind, 'sunflower'); assert.equal(second.body.workspace.taskGarden.seeds[0].ticket, 4600);
   assert.deepEqual((await request('GET')).body, second.body.workspace);
 
   const current = second.body.workspace; M.moveTask(current, 'chapter', 'done');

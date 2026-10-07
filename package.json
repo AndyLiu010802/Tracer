@@ -1,7 +1,7 @@
 {
   "name": "tracer-desktop",
   "private": true,
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "Tracer bilingual task manager with ChatGPT subscription login, personal AI APIs and simple planning.",
   "main": "desktop/main.js",
   "author": {
@@ -10,11 +10,14 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test test/*.test.js",
-    "dist": "electron-builder --win nsis --x64",
+    "dist": "electron-builder --config dev/desktop-commercial.config.cjs --win nsis --x64",
     "dist:mac": "node dev/build-macos.cjs",
     "dist:mac:arm64": "node dev/build-macos.cjs arm64",
     "dist:mac:x64": "node dev/build-macos.cjs x64",
-    "test:desktop": "node --test desktop/test/*.test.js"
+    "test:desktop": "node --test desktop/test/*.test.js",
+    "dist:local": "node dev/build-local.cjs",
+    "dist:commercial:manifest": "node dev/commercial-release.cjs",
+    "dist:mac:local": "node dev/build-local.cjs mac"
   },
   "dependencies": {
     "mammoth": "1.12.3",
@@ -46,7 +49,24 @@
       "!desktop/README.md",
       "!**/*.bak",
       "!**/*.log",
-      "package.json"
+      "package.json",
+      "!skins/tracer/garden-art/*-normal-*-v2.png",
+      "!skins/tracer/garden-art/*-shiny-*-v2.png",
+      "!skins/tracer/pet-art/*-v1.png",
+      "!skins/tracer/pet-art/anime-v1/*-draft.png",
+      "!desktop/pet*",
+      "!desktop/garden-trail*",
+      "!skins/tracer/pet*",
+      "!skins/tracer/pet-art/**",
+      "!skins/tracer/garden-companion*",
+      "!skins/tracer/garden-wildflower-motion.js",
+      "!skins/tracer/garden-wildflower-atlas.js",
+      "!skins/tracer/garden-trails.js",
+      "!skins/tracer/companion-inbetweens.js",
+      "!skins/tracer/garden-art/*-normal-*.png",
+      "!skins/tracer/garden-art/*-shiny-*.png",
+      "skins/tracer/pet-model.js",
+      "skins/tracer/pet-animation.js"
     ],
     "extraResources": [
       {

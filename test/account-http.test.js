@@ -7,6 +7,25 @@ test.before(()=>new Promise(resolve=>server.listen(0,'127.0.0.1',()=>{origin='ht
 test.after(async()=>{await new Promise(resolve=>server.close(resolve));assert.ok(path.basename(dir).startsWith('tracer-account-http-'));await fsp.rm(dir,{recursive:true,force:true});});
 async function call(route,{cookie,scope='guest',data,method,headers={}}={}){const r=await fetch(origin+route,{method:method||(data===undefined?'GET':'POST'),headers:{'x-tracer-account':'1','x-tracer-scope':scope,...(cookie?{cookie}:{}),...(data===undefined?{}:{'content-type':'application/json'}),...headers},body:data===undefined?undefined:JSON.stringify(data)});const text=await r.text();let body;try{body=JSON.parse(text);}catch{body=text;}return{status:r.status,body,cookie:r.headers.get('set-cookie')?.split(';')[0],headers:r.headers};}
 const register=email=>call('/api/account/register',{data:{email,password:'long test password',profile:{nickname:'Test User'}}});
+
+test('clear-data keeps current login, rejects stale tabs using the new cookie and resets cached AI settings',async()=>{
+  const registered=await register('clear@example.com'),own={cookie:registered.cookie,scope:registered.body.user.id};
+  const workspace=require('../skins/tracer/model').emptyWorkspace();require('../skins/tracer/model').addTask(workspace,{title:'Remove me'});
+  await call('/api/store/workspace',{...own,method:'PUT',data:workspace});
+  await call('/api/ai/configure',{...own,headers:{'x-tracer-ai':'1'},data:{url:'https://example.com'}});
+  assert.equal((await call('/api/account/clear-data',{...own,data:{password:'wrong',confirm:true}})).status,401);
+  assert.equal((await call('/api/store/workspace',own)).body.tasks.length,1);
+  const cleared=await call('/api/account/clear-data',{...own,data:{password:'long test password',confirm:true}});
+  assert.equal(cleared.status,200);assert.equal(cleared.body.token,undefined);assert.ok(cleared.cookie);
+  const fresh={...own,cookie:cleared.cookie,headers:{'x-tracer-generation':'1'}};
+  assert.equal((await call('/api/account/session',fresh)).body.scope,own.scope);
+  assert.equal((await call('/api/store/workspace',fresh)).body,null);
+  assert.equal((await call('/api/ai/status',{...fresh,headers:{...fresh.headers,'x-tracer-ai':'1'}})).body.url,'');
+  assert.equal((await call('/api/store/workspace',{...own,cookie:cleared.cookie,method:'PUT',data:workspace})).status,409);
+  assert.equal((await call('/api/account/profile',{...own,cookie:cleared.cookie,data:{nickname:'Old tab'}})).status,409);
+  assert.equal((await call('/api/store/workspace',{...own,method:'PUT',data:workspace})).status,401);
+  assert.equal((await call('/api/store/workspace',{...fresh,method:'PUT',data:workspace})).status,200);
+});
 test('wallpaper API debits persisted harvest coins, protects receipts from stale saves and requires ownership',async()=>{
   const a=await register('shop@example.com'),own={cookie:a.cookie,scope:a.body.user.id},G=require('../public/task-garden'),M=require('../skins/tracer/model'),workspace=M.emptyWorkspace();
   for(let i=0;i<8;i++){const t={id:'harvest'+i,title:'Harvest',status:'doing',projectId:null,createdAt:100,updatedAt:100};workspace.tasks.push(t);G.taskChanged(workspace,t,100,n=>n===10000?1000:4);t.status='done';t.doneAt=t.updatedAt=101;G.taskChanged(workspace,t,101);G.harvest(workspace,t.id,102);}G.sell(workspace,'peach',8,200);

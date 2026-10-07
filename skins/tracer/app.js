@@ -7,7 +7,7 @@
   var I = window.TracerLocale || { message: function (s) { return s; }, t: function (s) { return s; } };
 
   // ---------- 分区路由 ----------
-  var SECTIONS = ['inbox', 'notes', 'board', 'map', 'planner', 'timeline', 'insights', 'garden', 'shop', 'planets'];
+  var SECTIONS = ['inbox', 'notes', 'board', 'map', 'planner', 'timeline', 'insights', 'garden', 'ponds', 'cabin', 'rods', 'shop', 'planets'];
   var LS_SEC = 'tracer.sec';
   var current = null;
   var hooks = {};                       // {sec: [fn]}
@@ -238,6 +238,8 @@
     }).then(function () {
       store.inflight = false;
       persistDraft();
+      // Consumers observe the settled save state, including a failed save kept for retry.
+      window.dispatchEvent(new Event('tracer-workspace-saved'));
       // Keyed garden controls must leave their saving state even when an input
       // or task dialog is focused and the broader workspace redraw is deferred.
       if (window.Tracer.garden) window.Tracer.garden.refresh();
@@ -315,13 +317,14 @@
     store.data.completionHistory = next.completionHistory;
     store.data.projectDeletions = next.projectDeletions;
     store.data.taskGarden = next.taskGarden;
+    store.data.fishing = next.fishing;
     store.data.meta = next.meta; store.epoch++;
   }
   function redraw() {
     if (window.Tracer.garden) window.Tracer.garden.refresh();
     if (window.Tracer.renderProjects) window.Tracer.renderProjects();
     if (window.Tracer.refreshWellness) window.Tracer.refreshWellness();
-    if (window.Tracer.pet) window.Tracer.pet.refresh();
+    if (window.Tracer.fishing) window.Tracer.fishing.refresh();
     fireAll(current);
   }
   function restoreDraft() {

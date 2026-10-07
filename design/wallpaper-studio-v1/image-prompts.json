@@ -1,0 +1,65 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "id": "01",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-6d972ba0-47aa-42e5-97fe-6c7bf1d99788.png",
+      "asset": "assets/static-01.png",
+      "prompt": "Use case: stylized-concept. Asset: full-bleed premium desktop wallpaper for Tracer productivity app, landscape 16:9 composition. Create a serene midnight-blue alpine lake, slender silver crescent moon reflected in still water, atmospheric layered blue mountain silhouettes and delicate mist, exquisite fine-art matte photographic realism, restrained cinematic lighting, near-black navy and blue-silver palette. Plenty of quiet low-detail negative space in central 60 percent so task panels remain readable; horizon low, beautiful detail along lower and far-right edges, tiny restrained stars. No text, no interface, no logos, no borders, no people. Output a single finished high-resolution wallpaper."
+    },
+    {
+      "id": "02",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-2a89c461-905b-4187-ac65-ddabe420a3c3.png",
+      "asset": "assets/static-02.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. An emerald and sage temperate rainforest at dawn, layers of soft mist receding between tall elegant trunks, moss-covered foreground at lower edge, tiny fern details on the right, jade greens, deepest forest shadows, painterly photographic realism. A finished exquisite tranquil image with spacious low-detail middle area for readable task panels. Composition understated, landscape horizon low, most fine detail at peripheral edges. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    },
+    {
+      "id": "03",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-d7e66fcf-8a4e-4ea6-91be-48e6ce01bc7e.png",
+      "asset": "assets/static-03.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. An ethereal rose-pink salt lake with distant mauve mountains, soft lavender-to-peach dusk sky reflected in glass-still water, fine crystalline salt along the lower-right edge, refined dreamlike landscape photography, dusty pink, mauve, warm ivory. A finished exquisite tranquil image with spacious low-detail middle area for readable task panels. Composition understated, landscape horizon low, most fine detail at peripheral edges. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    },
+    {
+      "id": "04",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-dfff037a-70f3-4adb-a47c-a28f42ba4425.png",
+      "asset": "assets/static-04.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. Minimal sculptural desert dunes at golden hour, sweeping smooth sand ridges across bottom third, spacious deep amber atmospheric sky, rich terracotta shadows and warm honey highlights, elevated fine-art landscape photography, meticulous subtle sand grain. A finished exquisite tranquil image with spacious low-detail middle area for readable task panels. Composition understated, landscape horizon low, most fine detail at peripheral edges. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    },
+    {
+      "id": "05",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-0ba4a52c-c88a-4c9f-ac62-c4595ec1b3df.png",
+      "asset": "assets/static-05.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. A tranquil wisteria garden in blue hour, hanging violet blossoms framing upper right, a delicate pale crescent moon and quiet reflective pond, dreamy dusty lilac and indigo shadows, elegant botanical illustration with cinematic depth, center open and uncluttered. Finished refined tranquil wallpaper with spacious low-detail middle area for readable task panels. Most rich details near edges, landscape horizon low. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    },
+    {
+      "id": "06",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-2693683e-7437-49b9-9fb2-0483b7b150c4.png",
+      "asset": "assets/static-06.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. A pristine arctic landscape with pale icy cyan glacier cliffs on the far right, smooth turquoise still water, white snow and silver mist across a spacious very pale sky, minimal fine-art travel photography, crystalline ice detail, calm glacial blue and pearl. Finished refined tranquil wallpaper with spacious low-detail middle area for readable task panels. Most rich details near edges, landscape horizon low. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    },
+    {
+      "id": "07",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-105509a5-d39b-419d-acf7-eea0155b2ad7.png",
+      "asset": "assets/static-07.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. Abstract yet natural layered canyon mesas in burnt sienna and burgundy, minimalist terracotta mountain silhouettes receding in atmospheric dusty coral mist, subtle matte gouache texture, elegant editorial landscape art, quiet expansive sky, warm clay and oxblood palette. Finished refined tranquil wallpaper with spacious low-detail middle area for readable task panels. Most rich details near edges, landscape horizon low. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    },
+    {
+      "id": "08",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-0505afa8-7b2d-4849-8c8e-fd1e34e895b6.png",
+      "asset": "assets/static-08.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. A sunlit meadow of delicate ivory daisies and pale butter-yellow wildflowers mainly along the bottom and far-right, very soft sage hills, warm cream morning sky, fresh airy botanical editorial photography, warm ivory and soft yellow palette, subtle real film grain. Finished refined tranquil wallpaper with spacious low-detail middle area for readable task panels. Most rich details near edges, landscape horizon low. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    },
+    {
+      "id": "09",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-2ebe7ef2-212d-4a0d-a772-a5551da092bb.png",
+      "asset": "assets/static-09.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. A contemporary Chinese ink landscape, distant mountain silhouettes in deep teal and blue-black fading into pale mist, tiny elegant pine at lower-right on rocky island, a very broad quiet lake and generous ivory negative space, refined traditional ink wash on handmade paper, no calligraphy, no seals. Finished refined tranquil wallpaper with spacious low-detail middle area for readable task panels. Most rich details near edges, landscape horizon low. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    },
+    {
+      "id": "10",
+      "source": "generated-images/01a0cbb4-50ce-7a61-92e4-fed35d97ba42/exec-0da28685-b151-414f-9dd5-bc2da83646ab.png",
+      "asset": "assets/static-10.png",
+      "prompt": "Use case: stylized-concept. Asset: premium full-bleed desktop wallpaper for Tracer productivity app, landscape 16:9. A sophisticated monochrome lunar landscape, silver-gray smooth moon dunes and delicately textured crater ridges along bottom edge, a tiny pale luminous planet at far upper-right in charcoal-black spacious sky, quiet museum-quality science-fiction matte art, graphite, platinum and lunar white. Finished refined tranquil wallpaper with spacious low-detail middle area for readable task panels. Most rich details near edges, landscape horizon low. No text, interface, watermark, borders or people. Single wallpaper, no collage."
+    }
+  ]
+}

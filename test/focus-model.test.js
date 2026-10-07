@@ -77,6 +77,33 @@ test('reset discards unfinished work but preserves completed history and task as
   assert.equal(s.history.length, 1); assert.equal(s.history[0].task.id, 'task1'); assert.equal(s.runId, ''); assert.equal(s.remaining, 300000);
 });
 
+test('finishing the bound task resets running, paused and completed timers without changing earned history or settings', () => {
+  for (const mode of ['focus', 'short', 'long']) for (const phase of ['running', 'paused', 'completed']) {
+    const s = F.fresh();
+    s.settings = { focus: 45, short: 7, long: 20, rounds: 3, sound: false, notifications: true };
+    s.history = [{ id: 'earned', endedAt: 1000, minutes: 25, task: { id: 'first', title: 'Completed work' } }];
+    s.totalMinutes = 125; s.roundsDone = 5; s.activity = { keys: { a: 2 }, clicks: 3, unknown: 4 };
+    s.task = { id: 'current', title: 'Current work', projectId: 'project' };
+    F.reset(s, mode); F.start(s, 2000, 'unfinished');
+    if (phase === 'paused') F.pause(s, 12000);
+    if (phase === 'completed') F.settle(s, s.endAt);
+    s.lastNotifiedId = 'last-alarm';
+    const before = structuredClone(s);
+    assert.equal(F.finishTask(s, 'current'), true);
+    assert.equal(s.task, null); assert.equal(s.mode, 'focus'); assert.equal(s.remaining, 45 * 60000); assert.equal(s.duration, s.remaining);
+    assert.equal(s.running, false); assert.equal(s.endAt, null); assert.equal(s.runId, ''); assert.equal(s.completed, false); assert.equal(s.alarm, null); assert.equal(s.lastNotifiedId, '');
+    for (const key of ['history', 'totalMinutes', 'roundsDone', 'settings', 'activity']) assert.deepEqual(s[key], before[key], mode + ':' + phase + ':' + key);
+    assert.equal(F.finishTask(s, 'current'), false, 'repeat completion is harmless');
+  }
+});
+
+test('finishing an unrelated task does not alter the current timer or create history', () => {
+  const s = F.fresh(); s.task = { id: 'current', title: 'Keep working' }; F.start(s, 1000, 'current-run');
+  const before = structuredClone(s);
+  assert.equal(F.finishTask(s, 'another'), false); assert.deepEqual(s, before);
+  assert.equal(F.finishTask(s, ''), false); assert.deepEqual(s, before);
+});
+
 test('local calendar day controls statistics and daily quote independent of timezone offset', () => {
   const s = F.fresh(), yesterday = new Date(2026, 8, 14, 23, 40).getTime(); F.start(s, yesterday, 'midnight'); F.settle(s, s.endAt);
   assert.equal(F.today(s, yesterday).count, 0); assert.equal(F.today(s, new Date(2026, 8, 15, 9).getTime()).count, 1);

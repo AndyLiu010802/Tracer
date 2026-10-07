@@ -31,10 +31,6 @@
 .garden-world-plot[data-empty=true] .garden-world-plot-label{opacity:0;transition:opacity .15s}
 .garden-world-plot[data-empty=true]:hover .garden-world-plot-label,.garden-world-plot[data-empty=true]:focus-visible .garden-world-plot-label{opacity:1}
 .garden-world-seed-plus{position:absolute;bottom:12%;font-size:22px;color:#ccdab080}
-.garden-home .garden-world-surface .garden-home-companion{left:72%;top:38%;bottom:auto;width:12%;max-width:none;z-index:10;filter:drop-shadow(4px 8px 2px #173e3333)}
-.garden-home .garden-world-surface .garden-home-companion-caption{left:73%;right:3%;bottom:34%;gap:1px 5px}
-.garden-home .garden-world-surface .garden-home-companion-name{font-size:11px;color:#eff0d1}
-.garden-home .garden-world-surface .garden-home-companion-state{font-size:9px;color:#c1d0b3;text-shadow:0 1px 4px #193b30}
 .garden-world-hint{margin:0 24px 17px;text-align:center;color:#a3b69c;font-size:10px;line-height:1.8}
 .garden-world-detail{display:flex;align-items:center;gap:18px;margin:0 28px 22px;padding:17px 20px;background:#0e211c75;border:1px solid #b5c99324;border-radius:12px;min-height:128px}
 .garden-world-portrait{width:78px;flex:none;align-self:center}
@@ -84,7 +80,6 @@
   .garden-home .garden-home-intro{display:block;padding:22px 20px 18px}.garden-home .garden-home-today{margin-top:16px;gap:25px}.garden-home .garden-home-title{font-size:26px}
   .garden-world-heading{margin:0 18px;gap:7px}.garden-world-xp{margin-left:0;width:100%;font-size:9px}.garden-world-level-progress{margin-left:18px;width:calc(100% - 36px)}
   .garden-world-surface{margin:6px auto 0;aspect-ratio:900/540}.garden-world-plot-label{font-size:7px;max-width:130%;bottom:-12%}.garden-world-seed-plus{font-size:16px}
-  .garden-home .garden-world-surface .garden-home-companion{width:14%;left:73%;top:39%}.garden-home .garden-world-surface .garden-home-companion-caption{left:74%;right:1%;bottom:32%}.garden-home .garden-world-surface .garden-home-companion-state{display:none}.garden-home .garden-world-surface .garden-home-companion-name{font-size:8px}
   .garden-world-hint{font-size:9px;margin:3px 16px 14px}.garden-world-detail{display:grid;grid-template-columns:45px minmax(0,1fr);gap:8px;margin:0 12px 18px;padding:12px}.garden-world-portrait{width:45px}.garden-home .garden-world-portrait .garden-home-plant-art{width:45px;height:68px}
   .garden-world-identity{gap:5px}.garden-world-name{font-size:11px}.garden-world-speech{font-size:11px}.garden-world-next{font-size:9px}.garden-home .garden-world-focus{grid-column:2;justify-self:start;min-height:36px}.garden-world-collection{padding:0 12px 18px}.garden-world-badges{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.garden-world-badge{padding:8px}.garden-world-toast{top:90px;width:max-content;font-size:10px}
 }

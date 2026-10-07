@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const H=require('../skins/tracer/garden-harvest-model'),P=require('../skins/tracer/pet-model');
 const A=require('../skins/tracer/garden-plant-art'),Motion=require('../skins/tracer/garden-plant-animation');
 const mature=(id,kind='wildflower')=>({projectId:id,plantKind:kind,stage:4,commemoratedAt:100});
-test('10,000 equiprobable outcomes contain 99 rare companions, one shiny companion and 9,900 ordinary plants',()=>{
+test('legacy harvest ticket decoding preserves the historical 99 rare and one shiny receipt',()=>{
   const counts={normal:0,rare:0,shiny:0};for(let ticket=0;ticket<10000;ticket++)counts[H.rarity(ticket)]++;
   assert.deepEqual(counts,{normal:9900,rare:99,shiny:1});
   assert.equal(H.draw({getRandomValues(array){array[0]=0;}}),0);
@@ -39,10 +39,10 @@ test('only collected rare plants enter the existing roster, shiny variants stay 
   assert.equal(P.catalog(restored).find(p=>p.id===restored.selected).shiny,true);
   assert.equal(restored.customs.length,0,'garden friends do not consume custom image slots');
 });
-test('all six ordinary plant kinds and all five growth stages contain no face; only mature variants gain a face',()=>{
+test('all plant kinds and growth stages remain flowers without character faces, including historical variants',()=>{
   for(const kind of A.kinds)for(let stage=0;stage<5;stage++){
     assert.doesNotMatch(A.markup(kind,stage),/data-plant-part="face"/);
-    if(stage===4)assert.match(A.markup(kind,stage,true),/data-plant-part="face"/);
+    assert.doesNotMatch(A.markup(kind,stage,true),/data-plant-part="face"/);
   }
   assert.doesNotMatch(A.markup('<script>',NaN),/<script>/);
 });

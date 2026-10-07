@@ -5,6 +5,15 @@ on:
     branches: ['codex/release-*']
     paths-ignore: ['**/*.md']
   workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Native installers to build and publish'
+        type: choice
+        options: [windows, all]
+        default: windows
+
+env:
+  TRACER_RELEASE_PLATFORMS: ${{ inputs.platforms || 'windows' }}
 
 permissions:
   contents: read
@@ -18,19 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - runner: windows-latest
-            platform: windows
-            arch: x64
-            executable: dist/win-unpacked/Tracer.exe
-          - runner: macos-15
-            platform: mac
-            arch: arm64
-            executable: dist/mac-arm64/Tracer.app/Contents/MacOS/Tracer
-          - runner: macos-15-intel
-            platform: mac
-            arch: x64
-            executable: dist/mac/Tracer.app/Contents/MacOS/Tracer
+        include: ${{ fromJSON(inputs.platforms == 'all' && '[{"runner":"windows-latest","platform":"windows","arch":"x64","executable":"dist/win-unpacked/Tracer.exe"},{"runner":"macos-15","platform":"mac","arch":"arm64","executable":"dist/mac-arm64/Tracer.app/Contents/MacOS/Tracer"},{"runner":"macos-15-intel","platform":"mac","arch":"x64","executable":"dist/mac/Tracer.app/Contents/MacOS/Tracer"}]' || '[{"runner":"windows-latest","platform":"windows","arch":"x64","executable":"dist/win-unpacked/Tracer.exe"}]') }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     defaults:
@@ -43,10 +40,15 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - name: Read the tested release version
+        id: release_metadata
+        run: node -e "require('fs').appendFileSync(process.env.GITHUB_OUTPUT,'version='+require('./package.json').version+'\n')"
       - name: Check native filesystem aliases
         run: node -e "const fs=require('fs'),os=require('os'),p=require('path');const t=os.tmpdir(),r=fs.realpathSync.native(t);console.log(JSON.stringify({platform:process.platform,node:process.version,temp:t,canonical:r,difference:p.relative(p.resolve(t),r)}));const d=fs.mkdtempSync(p.join(t,'tracer-path-check-')),f=p.join(d,'probe');fs.writeFileSync(f,'probe');console.log(JSON.stringify({file:f,canonical:fs.realpathSync.native(f),nlink:fs.statSync(f).nlink}));fs.unlinkSync(f);fs.rmdirSync(d);"
-      - run: node --test --test-concurrency=4 test/*.test.js
-      - run: npm run test:desktop
+      - name: Run all core and desktop tests in isolated profiles
+        run: |
+          node -e "require('fs').mkdirSync('.cache',{recursive:true})"
+          node dev/test-isolated.cjs --suite all --output .cache/release-tests
       - name: Build Windows installer
         if: matrix.platform == 'windows'
         shell: pwsh
@@ -67,40 +69,29 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
         run: npm install --prefix .cache/release-qa --no-save --package-lock=false playwright@1.63.0
-      - name: Verify packaged companion playback and file compatibility
+      - name: Verify packaged fishing, aquarium and commercial profile
+        timeout-minutes: 8
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
-        run: node dev/qa-pet-dense-release.cjs '${{ matrix.executable }}'
+        run: node dev/qa-packaged-fishing.cjs '${{ matrix.executable }}'
       - name: Verify packaged lifecycle and background timing
         timeout-minutes: 5
         if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
         run: node dev/qa-desktop-lifecycle.cjs '${{ matrix.executable }}'
-      - name: Verify packaged local account isolation
-        timeout-minutes: 5
-        if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
-        env:
-          TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
-        run: node dev/qa-account-desktop.cjs '${{ matrix.executable }}'
-      - name: Verify packaged nine shiny companion trails
-        timeout-minutes: 5
-        if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
-        env:
-          TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
-        run: node dev/qa-garden-trail.cjs '${{ matrix.executable }}'
       - name: Install recovery test browser
         id: qa_browser
         if: ${{ !cancelled() && steps.qa_driver.outcome == 'success' }}
         run: node .cache/release-qa/node_modules/playwright/cli.js install chromium
-      - name: Verify companion draft recovery and background generation
+      - name: Verify workspace recovery, account isolation and current customization
         if: ${{ !cancelled() && steps.qa_browser.outcome == 'success' }}
         env:
           TRACER_QA_PLAYWRIGHT: ${{ github.workspace }}/.cache/release-qa/node_modules/playwright
           TRACER_QA_BROWSER: chromium
         run: |
           failures=0
-          for script in qa-pet-generation-recovery qa-pet-creator-lifecycle qa-companion-work qa-workspace-recovery qa-task-garden-actions qa-accounts qa-wallpaper-shop qa-stickers qa-drag-anchor; do
+          for script in qa-workspace-recovery qa-task-garden-actions qa-accounts qa-wallpaper-shop qa-stickers qa-drag-anchor; do
             node "dev/$script.cjs" || failures=1
           done
           exit "$failures"
@@ -110,11 +101,12 @@ jobs:
           compression-level: 0
           if-no-files-found: error
           path: |
-            dist/Tracer-Setup-*.exe
-            dist/Tracer-Setup-*.exe.blockmap
-            dist/Tracer-*-mac-${{ matrix.arch }}.dmg
-            dist/Tracer-*-mac-${{ matrix.arch }}.zip
-            dist/SHA256SUMS-*.txt
+            dist/Tracer-Setup-${{ steps.release_metadata.outputs.version }}-x64.exe
+            dist/Tracer-Setup-${{ steps.release_metadata.outputs.version }}-x64.exe.blockmap
+            dist/Tracer-${{ steps.release_metadata.outputs.version }}-mac-${{ matrix.arch }}.dmg
+            dist/Tracer-${{ steps.release_metadata.outputs.version }}-mac-${{ matrix.arch }}.zip
+            dist/SHA256SUMS-${{ steps.release_metadata.outputs.version }}.txt
+            dist/SHA256SUMS-${{ steps.release_metadata.outputs.version }}-mac-${{ matrix.arch }}.txt
       - name: Preserve native UI evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -123,15 +115,17 @@ jobs:
           if-no-files-found: ignore
           include-hidden-files: true
           path: |
-            .cache/pet-dense-release-*/*.png
-            .cache/pet-dense-release-*/launch.log
-            .cache/pet-generation-recovery-*/*.png
-            .cache/companion-work-*/*.png
+            .cache/packaged-fishing-*/*.png
+            .cache/packaged-fishing-*/*.json
+            .cache/packaged-fishing-*/*.log
+            .cache/release-tests/*.json
+            .cache/release-tests/*/*.json
+            .cache/release-tests/*/*.tap
+            .cache/release-tests/*/*.log
             .cache/workspace-recovery-*/*.png
-            .cache/garden-home-*/*.png
             .cache/lifecycle-*/electron.log
-            .cache/account-desktop-*/*.png
-            .cache/garden-trail-*/*.png
+            .cache/account-ui-*/*.png
+            .cache/wallpaper-ui-*/*.png
             .cache/task-garden-actions-*/*.png
             .cache/drag-anchor-*/*.png
             .cache/stickers-*/*.png
@@ -151,7 +145,7 @@ jobs:
           pattern: Tracer-*
           path: artifacts
           merge-multiple: true
-      - name: Validate all platform files and combine checksums
+      - name: Validate selected platform files and combine checksums
         run: node dev/verify-release-artifacts.cjs stage artifacts release
       - name: Upload complete release as a draft
         env:

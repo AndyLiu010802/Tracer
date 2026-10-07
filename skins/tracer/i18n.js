@@ -15,8 +15,8 @@
     var projectsLabel = document.getElementById('projects-label'); if (projectsLabel) projectsLabel.textContent = t('projects');
     var saveDot = document.getElementById('save-dot'); if (saveDot) { saveDot.title = I.message(lang, saveDot.title); saveDot.setAttribute('aria-label', saveDot.title); }
     if (window.Tracer) {
-      if (window.Tracer.store.data) { window.Tracer.redraw(); if (window.Tracer.renderBoard) window.Tracer.renderBoard(); }
-      if (window.Tracer.refreshWellness) window.Tracer.refreshWellness();
+      if (window.Tracer.store.data) window.Tracer.redraw();
+      else if (window.Tracer.refreshWellness) window.Tracer.refreshWellness();
     }
   }
   window.TracerLocale = { t: t, message: function (text) { return I.message(lang, text); }, language: function () { return lang; } };

@@ -2,10 +2,11 @@
   var api = factory(typeof module === 'object' && module.exports ? require('./task-history') : root.TaskHistory,
     typeof module === 'object' && module.exports ? require('./project-deletion') : root.ProjectDeletion,
     typeof module === 'object' && module.exports ? require('./companion-work') : root.TracerCompanionWork,
-    typeof module === 'object' && module.exports ? require('./task-garden') : root.TaskGarden);
+    typeof module === 'object' && module.exports ? require('./task-garden') : root.TaskGarden,
+    typeof module === 'object' && module.exports ? require('./fishing-model') : root.TracerFishingModel);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.WorkspaceSync = api;
-})(typeof self !== 'undefined' ? self : this, function (History, Deletion, CompanionWork, Garden) {
+})(typeof self !== 'undefined' ? self : this, function (History, Deletion, CompanionWork, Garden, Fishing) {
   'use strict';
   var collections = ['tasks', 'projects', 'notes', 'inbox'];
   function clone(value) { return value === undefined ? undefined : JSON.parse(JSON.stringify(value)); }
@@ -110,6 +111,7 @@
       Garden.preserve(remote, out, { merge: true });
       Garden.reconcile(out);
     }
+    if(base.fishing||local.fishing||remote.fishing){out.fishing=Fishing.merge(base.fishing,local.fishing,remote.fishing);Fishing.preserve(remote,out);}
     Deletion.apply(out);
     return { workspace: out, conflicts: conflicts, relocatedArchivedTasks: recovery.relocated, recoveredArchivedTasks: recovery.recovered };
   }
@@ -120,6 +122,7 @@
     if (input.projectDeletions !== undefined) output.projectDeletions = Deletion.validate(input.projectDeletions);
     if (input.completionHistory !== undefined) output.completionHistory = History.validate(input.completionHistory);
     if (input.taskGarden !== undefined) output.taskGarden = Garden.validate(input.taskGarden);
+    if (input.fishing !== undefined) output.fishing = Fishing.validate(input.fishing);
     var textFields = { tasks: ['seq', 'title', 'notes', 'projectId', 'priority', 'scheduled', 'due', 'status', 'assignee', 'acceptance', 'type'],
       projects: ['name', 'color', 'status', 'start', 'end', 'timelineMode'], notes: ['title', 'body', 'projectId'], inbox: ['text'] };
     collections.forEach(function (name) {
@@ -189,6 +192,7 @@
     });
     var receipts = CompanionWork.validateReceipts(input.meta && input.meta.companionReceipts);
     if (receipts.length) output.meta.companionReceipts = receipts;
+    Fishing.validateWorkspace(output);
     return Garden.applyDeletions(Deletion.apply(output));
   }
   function validDate(s) {

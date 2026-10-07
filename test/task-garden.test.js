@@ -30,13 +30,13 @@ test('only starting work plants a secure random seed; existing done tasks do not
   const seed = G.read(ws).seeds[0]; assert.equal(seed.taskId, task.id); assert.ok(G.KINDS.includes(seed.plantKind)); assert.equal(seed.state, 'growing');
   assert.equal(G.reconcile(ws), false);
 });
-test('species and rarity are independent, with exactly 1 shiny and 99 ordinary rare tickets', () => {
+test('historical rarity decoding remains compatible while new plants are ordinary flowers', () => {
   const counts = { normal: 0, rare: 0, shiny: 0 };
   for (let i = 0; i < 10000; i++) counts[G.variant(i)]++;
   assert.deepEqual(counts, { normal: 9900, rare: 99, shiny: 1 });
   for (let kind = 0; kind < 6; kind++) {
     const ws = workspace(); started(ws, 't', null, kind, 0); assert.equal(G.read(ws).seeds[0].plantKind, G.KINDS[kind]);
-    assert.equal(G.read(ws).seeds[0].variant, 'shiny');
+    assert.equal(G.read(ws).seeds[0].variant, 'normal'); assert.ok(G.read(ws).seeds[0].ticket >= 100);
   }
 });
 test('random draw rejects out-of-range values before modulo and never falls back to Math.random', () => {
@@ -66,7 +66,7 @@ test('completion matures and one harvest permanently consumes that task reward a
   assert.deepEqual(G.harvest(ws, task.id, 400), first);
   change(ws, task, 'todo', 500); change(ws, task, 'doing', 600); change(ws, task, 'done', 700);
   assert.equal(G.active(ws).length, 0); assert.equal(G.harvest(ws, task.id, 800).harvestedAt, 300);
-  assert.deepEqual(G.collection(ws)[2], { plantKind: 'lavender', total: 1, normal: 0, rare: 1, shiny: 0, unlocked: true });
+  assert.deepEqual(G.collection(ws)[2], { plantKind: 'lavender', total: 1, normal: 1, rare: 0, shiny: 0, unlocked: true });
 });
 test('model transitions hook planting, renaming, moving projects and deletion without mutating harvested snapshots', () => {
   const ws = workspace(), project = M.addProject(ws, { name: 'A' }), second = M.addProject(ws, { name: 'B' });
@@ -183,7 +183,7 @@ test('cleared mature flowers survive stale edits and can be harvested and sold o
     assert.equal(G.active(merged).length, 1);
     assert.equal(G.active(merged)[0].state, 'mature');
     assert.equal(G.active(merged)[0].title, task.title);
-    assert.equal(G.active(merged)[0].variant, 'shiny');
+    assert.equal(G.active(merged)[0].variant, 'normal');
   }
   const replay = clone(stale); G.preserve(cleared, replay); G.reconcile(replay);
   assert.equal(replay.tasks.length, 0); assert.equal(G.active(replay)[0].state, 'mature');
@@ -223,7 +223,7 @@ test('serialized preservation rejects a stale reroll and retains missing harvest
   const saved = workspace(), task = started(saved, 't', null, 3, 8000), stale = clone(saved);
   change(saved, task, 'done', 200); G.harvest(saved, task.id, 300);
   stale.taskGarden.seeds[0].plantKind = 'wildflower'; stale.taskGarden.seeds[0].ticket = 0; stale.taskGarden.seeds[0].variant = 'shiny'; stale.taskGarden.seeds[0].updatedAt = 500;
-  G.preserve(saved, stale); assert.equal(stale.taskGarden.seeds[0].plantKind, 'apple'); assert.equal(stale.taskGarden.seeds[0].ticket, 8000); assert.equal(stale.taskGarden.seeds[0].harvestedAt, 300);
+  G.preserve(saved, stale); assert.equal(stale.taskGarden.seeds[0].plantKind, 'apple'); assert.equal(stale.taskGarden.seeds[0].ticket, 8100); assert.equal(stale.taskGarden.seeds[0].harvestedAt, 300);
   const oldClient = clone(saved); delete oldClient.taskGarden; G.preserve(saved, oldClient);
   assert.deepEqual(oldClient.taskGarden, saved.taskGarden);
 });

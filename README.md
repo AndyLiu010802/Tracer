@@ -1,40 +1,40 @@
 # Tracer
 
-当前源码的「伙伴家园」已改为任务花园：任务开始进行时自动种下随机种子，完成收获后积累植物图鉴；项目完成归档后生成可旋转浏览的花朵星球。花圃按页展示，项目可以拥有多株植物。当前选择的内置或自定义伙伴继续住在家园。旧休闲区的农场、钓鱼、挖矿和冒险已移除，旧存档保留在本机。0.4.0 同时加入本地账户、30 款壁纸与材质、笔记贴纸及九款异色伙伴专属拖尾。
+当前版本以任务花园与桌面钓鱼组成休闲系统。人物桌宠、花精灵、伙伴聊天和生成界面已移除；花园、植物图鉴与花朵星球继续保留。现有 18 款鱼竿（含黄金隐藏款）、盲盒、7 种鱼饵、24 种鱼、传奇水族箱和六种 3D 鱼塘。水族箱展示已钓获的传奇鱼，也可摆到桌面，拖动、缩放及左右旋转；鱼、植被与鱼竿均采用非像素美术。完整规则见[桌面钓鱼与鱼塘](docs/desktop-fishing.md)。
 
-仍可单独重新生成不满意的伙伴动作，保存前保留原动作和养成进度；含保留旧帧与新动作的导出文件，最低仍需 Tracer 0.3.8 打开。
+鱼塘永久免费：珍稀、史诗鱼捕获后额外获得鱼苗，每池最多五条，组建中可以放生换鱼。确认五条后，鱼塘成为可随时查看和投喂的永久收藏，并自动开启下一座。传奇鱼苗入住独立水族箱，最多三条。旧工作区的任务、花园与历史备份继续兼容。
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[Tracer 0.4.0 发布入口：Windows / Mac](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)** · **[Mac 安装与构建](docs/macos-install.md)** · [0.4.0 更新说明](docs/desktop-release-0.4.0.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[Tracer 0.4.2：Windows 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.2)** · [Mac 0.4.0 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0) · **[Mac 安装与构建](docs/macos-install.md)** · [0.4.2 更新说明](docs/desktop-release-0.4.2.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-**0.4.0 已发布并完成验证。** [统一下载页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)提供 Windows x64、Apple 芯片 Mac 与 Intel Mac 安装包。三个平台均通过 **654 项核心测试、23 项桌面测试**，以及实际打包应用中的账户隔离、九款拖尾、伙伴动画、保存恢复和后台计时验收；七项公开附件、下载地址与统一 SHA-256 校验值已核验。[查看本次构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35834504837)。
+**0.4.2 本次先提供 Windows x64。** 新版包含桌面钓鱼、独立主题鱼竿动作、六种鱼塘、可旋转的传奇水族箱、鱼苗育养与专属神秘礼包，详见 [0.4.2 更新与验证说明](docs/desktop-release-0.4.2.md)。
 
-0.4.0 使用[同一个发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)分发 Windows、Apple 芯片 Mac 和 Intel Mac 安装包，包含相同版本的桌宠与任务管理功能。附件在三个平台的原生云端构建与验证全部通过后发布，共用一份 SHA-256 校验文件。
+Mac 继续提供已验证的 0.4.0：Apple 芯片和 Intel 版本均可从 [0.4.0 发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)下载。[0.4.0 三平台构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35834504837)。
 
 | 电脑类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Windows x64 | [Tracer-Setup-0.4.0-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-Setup-0.4.0-x64.exe) | — |
+| Windows x64 | [Tracer-Setup-0.4.2-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.2/Tracer-Setup-0.4.2-x64.exe) | — |
 | Mac：Apple 芯片（M 系列） | [Tracer-0.4.0-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-arm64.zip) |
 | Mac：Intel | [Tracer-0.4.0-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-x64.zip) |
 
-Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置；任务、设置、桌宠和个人工作区保留。
+Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置。Windows 0.4.2 分发版使用独立工作区，旧版存档保留在原目录，不会自动迁移；详见[安装说明](docs/desktop-release-0.4.2.md#安装)。
 
 
 Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证。真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
 
 - **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
-- **本地数据**：任务、完成历史和设置保存在 `%APPDATA%\tracer-desktop\`。升级及正常卸载保留用户数据；分享的安装包使用接收者自己的工作区。
-- **核对下载**：Windows 安装程序目前未签名，Mac 包为 ad-hoc 签名。发布附件提供统一的 [SHA256SUMS-0.4.0.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/SHA256SUMS-0.4.0.txt)，覆盖 Windows EXE、[blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-Setup-0.4.0-x64.exe.blockmap)和两种 Mac 架构的 DMG、ZIP；blockmap 无需单独安装。
+- **本地数据**：Windows 0.4.2 分发版使用 `%APPDATA%\tracer-desktop-commercial\`；源码与历史版本使用 `%APPDATA%\tracer-desktop\`。两个目录独立，旧数据不自动迁入；正常卸载保留用户数据，分享的安装包使用接收者自己的工作区。
+- **核对下载**：Windows 使用 [SHA256SUMS-0.4.2.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.2/SHA256SUMS-0.4.2.txt)，覆盖 EXE 和 [blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.2/Tracer-Setup-0.4.2-x64.exe.blockmap)；blockmap 无需单独安装。Mac 0.4.0 使用其发布页的 [SHA256SUMS-0.4.0.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/SHA256SUMS-0.4.0.txt)。
 
 ## 功能
 
 - 本地账户与资料、头像和星座图案；账户隔离工作区、金币、收藏与偏好，保留云服务接口。
 - 种植金币购买静态壁纸、动态壁纸及材质外观各 10 款；笔记专属贴纸与悬浮背包。
-- 九款异色伙伴专属鼠标拖尾，可在伙伴面板中分别开关并记住设置。
+- 桌面钓鱼覆盖蓄力抛竿、等待咬钩、及时提竿、控竿收线和捕获结算；鱼饵决定鱼种范围。
 - 任务搜索、状态与优先级筛选、拖拽看板；任务支持截止日期、计划日期、估时、依赖、清单和验收要求。
 - 项目、日程、时间线、笔记与完成历史统计。
 - 笔记列表支持收起、拖动调宽并记住偏好；窄布局自动为正文留出完整宽度。
@@ -42,33 +42,17 @@ Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Ap
 - 可隐藏的每日名言与自然风景玻璃卡片，中英文界面切换。
 - 独立 Chromium 参考浏览器，支持页面脚本、登录、后退前进和下载；网站自身的访问限制与网络条件仍然适用。
 - AI 计划助手：读取本地 PDF、Word 和文本资料，根据截止日期和可投入工时预览任务拆解与排程。
-- 桌面伙伴：6 个内置伙伴的 16 种动作各有 16 帧；更新后新生成的伙伴每个动作也使用 16 张连续图像，共 256 帧。旧照片与旧 4 帧动作包继续兼容，安装更新不会自动调用 AI 或重绘已有伙伴。
+- 鱼竿盲盒公开概率和保底，重复鱼竿返还金币；鱼塘包含六种免费场景，每种鱼有不同的投喂反馈。
 
-### 伙伴家园
+### 任务花园与鱼塘
 
 开始一项任务，自动种下一颗随机种子，任务完成后成熟。植物包括野花、向日葵、薰衣草、苹果树、桃树和樱桃树，不再由用户手选。每页显示六块花圃，可翻页浏览其他任务；同一个项目可以种出多株植物。收获后，图鉴记录各类植物的次数，未解锁种类显示黑色轮廓。
 
-种类和稀有度在同一任务首次种植时固定。撤回任务前提示销毁当前植物，重新开始不能重抽；每项任务最多收获一次。普通植物没有表情，变异植物收获后成为伙伴，闪光伙伴继续支持桌面鼠标拖尾。
+种类在同一任务首次种植时固定。撤回任务前提示销毁当前植物，重新开始不能重抽；每项任务最多收获一次。新种植不再产生花精灵，收获金币可以购买鱼竿盲盒和鱼饵。
 
-看板支持清除已完成任务：只移除任务卡片，成熟植物留在花园等待手动收获，已有图鉴、伙伴和完成历史保留。项目全部任务完成后可以归档，花朵汇成独立收藏区域中的 3D 星球，支持旋转浏览。此前清理过任务卡片的花朵同样会进入星球；用户也可删除不再想保留的收藏项目。
+看板支持清除已完成任务：只移除任务卡片，成熟植物留在花园等待手动收获，已有图鉴和完成历史保留。项目全部任务完成后可以归档，花朵汇成独立收藏区域中的 3D 星球，支持旋转浏览。此前清理过任务卡片的花朵同样会进入星球；用户也可删除不再想保留的收藏项目。
 
-家园沿用当前选择的内置或自定义伙伴。任务花园和星球记录随工作区一起保存，旧花园与休闲区存档保留。完整规则见[任务花园与花朵星球](docs/task-garden-and-planets.md)，专注与桌面拖尾见[专注与家园说明](docs/focus-and-appearance.md)。
-
-### 与伙伴创建任务或项目
-
-在主窗口或原生桌宠的「聊天」中描述新任务或项目，伙伴会在需要时追问，再给出方案预览。可继续聊天修改方案或取消；只有确认后才会保存到本机工作区。日期与工时均可留空，普通聊天不会自动创建任务。
-
-每个窗口分别保存各伙伴的本地对话、未发送文字与待确认方案，关闭、刷新或重启后可恢复。创建结果未确认时，请先重试同一请求；它会检查本机保存记录，避免重复创建，确认保存前不能改成新请求。向 AI 发送的内容限于当前对话、当天日期、待完善方案和伙伴资料，不会自动发送已有工作区或照片。
-
-0.3.9 已移除微信小程序和配对、云同步模块；本机工作区、旧恢复草稿和本地保存能力继续保留。
-
-### 伙伴生成与恢复
-
-生成窗口可以暂时收起，应用保持运行时会在后台继续。导航栏显示已完成动作数，点击即可返回；完成后会提醒保存并重新打开预览。如果你正在编辑任务或其他弹窗，预览会等该窗口关闭后再出现。收起未保存的结果会保留照片、设置和全部动作，并提醒从导航栏返回保存。
-
-参考照片会先缩放，连同设置和已完成动作暂存于本机 IndexedDB 恢复草稿。刷新或重新启动后可以继续剩余动作，恢复草稿不会自动调用 AI。每页动作会先保存进度，再请求下一页；暂存失败会暂停生成。保存伙伴或确认「放弃草稿」后，会清除草稿中的参考照片。
-
-改名字或性格保留已有动作；更换照片、修改会影响形象的设置或重新生成全部动作，需要确认后才清除结果。完整结果的主按钮只打开预览，保存失败可直接重试。生成中、完整伙伴尚未保存或草稿暂存异常时，刷新或真正退出应用会先提醒确认；普通收起窗口不会取消生成。
+任务花园、星球、鱼竿、捕获记录、鱼塘和水族箱随账户工作区一起保存。鱼塘和水族箱入口位于花园下方；商店提供鱼竿盲盒与鱼饵分类。捕获的成鱼可以出售，额外获得的鱼苗独立留在育养箱；珍稀和史诗鱼可放入鱼塘，传奇鱼可放入水族箱。鱼塘确认珍藏后固定居民，仍可投喂和观看成长。
 
 ### AI 服务状态
 
@@ -100,7 +84,7 @@ npm run dist:mac
 node dev/verify-macos-release.cjs
 ```
 
-统一发布使用仓库的 **Actions → Desktop release**（`.github/workflows/desktop-release.yml`）：推送到 `codex/release-*` 分支或手动运行，会在 Windows、Apple 芯片 Mac 和 Intel Mac 上分别原生构建与验证；三个平台全部通过后，才发布同一个版本的安装包和合并后的 SHA-256 文件。独立 Mac 签名、公证测试仍可使用 **macOS desktop** 工作流，配置见 [Mac 发布流程](docs/macos-install.md#维护者构建与发布)。
+统一发布使用仓库的 **Actions → Desktop release**（`.github/workflows/desktop-release.yml`）：推送到 `codex/release-*` 分支默认构建并验证 Windows x64，手动运行可选择 Windows 或全部平台。所选平台全部通过后，才发布安装包和 SHA-256 校验文件；全部平台模式包含 Apple 芯片和 Intel Mac 的原生构建。独立 Mac 签名、公证测试仍可使用 **macOS desktop** 工作流，配置见 [Mac 发布流程](docs/macos-install.md#维护者构建与发布)。
 
 ### 浏览器开发模式
 

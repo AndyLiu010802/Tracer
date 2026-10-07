@@ -99,11 +99,11 @@ test('mixed package versions, layouts and animation counts are rejected before w
   let writes=0;
   for(const value of invalids) await assert.rejects(Packages.importPackage(room(t),value,async()=>{writes++;}),/invalid-pet-package/);
   assert.equal(writes,0);
-  assert.throws(()=>Packages.inspect({...raw,version:3}),/unsupported-pet-package/);
+  assert.throws(()=>Packages.inspect({...raw,version:4}),/unsupported-pet-package/);
 });
 
 test('invalid formats, damaged images, oversized fields and unsupported versions never reach storage',async t=>{
-  const valid=packet(), invalids=[null,[],{...valid,version:3},{...valid,format:'other'},{...valid,photo:'private'}];
+  const valid=packet(), invalids=[null,[],{...valid,version:4},{...valid,format:'other'},{...valid,photo:'private'}];
   for(const mutate of [p=>p.companion.name='',p=>p.companion.name='x'.repeat(41),p=>p.companion.personality='x'.repeat(601),p=>p.companion.kind='other',p=>p.artwork.layout='svg',p=>p.artwork.images=[],p=>p.artwork.images.push(image(png())),p=>p.artwork.images[0].sha256='0'.repeat(64),p=>p.artwork.images[0].data='https://evil.test/image.png',p=>p.artwork.images[0].data+=' ',p=>p.artwork.images[0].path='../private',p=>p.artwork.images[0]=image(Buffer.from('<svg onload=alert(1)>'))]) { const p=clone(valid);mutate(p);invalids.push(p); }
   let writes=0;
   for(const raw of invalids) await assert.rejects(Packages.importPackage(room(t),raw,async()=>{writes++;}),/pet-package/);

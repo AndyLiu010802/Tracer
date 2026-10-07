@@ -15,7 +15,7 @@ const stage=message=>console.log('[lifecycle QA] '+new Date().toISOString()+' '+
     await app.context().route('**/*',r=>new URL(r.request().url()).origin===origin?r.continue():r.abort());
     let page;for(let i=0;i<120;i++){page=app.context().pages().find(p=>p.url()===origin+'/');if(page)break;await new Promise(r=>setTimeout(r,100));}assert.ok(page,'main page starts');page.on('pageerror',e=>errors.push(e.message));
     stage('wait for main workspace');
-    await page.waitForFunction(()=>window.Tracer?.store?.base&&Tracer.focus&&Tracer.pet&&window.TracerWallpaperMotion);
+    await page.waitForFunction(()=>window.Tracer?.store?.base&&Tracer.focus&&Tracer.fishing&&window.TracerWallpaperMotion);
     await page.waitForFunction(()=>document.tracerHidden===false);
     stage('save note and verify native edit shortcut');
     const noteId=await page.evaluate(()=>{const n=TracerModel.addNote(Tracer.store.data,{title:'Lifecycle note',body:'Saved before hiding'});Tracer.touch();Tracer.saveNow();return n.id;});

@@ -58,6 +58,11 @@
     s.duration = s.settings[s.mode] * 60000; s.remaining = s.duration;
     s.running = false; s.endAt = null; s.runId = ''; s.completed = false; s.alarm = null;
   }
+  function finishTask(s, id) {
+    if (!id || !s.task || s.task.id !== id) return false;
+    reset(s, 'focus'); s.task = null; s.lastNotifiedId = '';
+    return true;
+  }
   function start(s, now, id) {
     settle(s, now);
     if (s.running || s.completed) return false;
@@ -68,5 +73,5 @@
   function nextMode(s) { return s.mode === 'focus' ? (s.roundsDone > 0 && s.roundsDone % s.settings.rounds === 0 ? 'long' : 'short') : 'focus'; }
   function today(s, now) { var key = dayKey(now), rows = s.history.filter(function (h) { return dayKey(h.endedAt) === key; }); return { count: rows.length, minutes: rows.reduce(function (sum, h) { return sum + h.minutes; }, 0) }; }
   function format(ms) { var seconds = Math.max(0, Math.ceil(ms / 1000)); return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0'); }
-  return { fresh: fresh, read: read, config: config, dayKey: dayKey, removeTasks: removeTasks, remaining: remaining, settle: settle, reset: reset, start: start, pause: pause, nextMode: nextMode, today: today, format: format };
+  return { fresh: fresh, read: read, config: config, dayKey: dayKey, removeTasks: removeTasks, remaining: remaining, settle: settle, reset: reset, finishTask: finishTask, start: start, pause: pause, nextMode: nextMode, today: today, format: format };
 });

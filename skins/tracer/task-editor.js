@@ -32,6 +32,7 @@
         + field('assignee', t.assignee, 'text', 'ownerHint') + field('labels', (t.labels || []).join(', '), 'text', 'labelsHint')
         + field('scheduled', t.scheduled, 'date') + field('due', t.due, 'date')
         + '<div class="task-hours">' + field('estimate', t.estimate, 'number') + field('spent', t.spent, 'number') + '</div>'
+        + '<p class="field-help" id="task-hours-help">' + L('manualTimeHint') + '</p>'
         + (t.createdAt ? '<div class="task-timestamps"><span>' + L('createdAt') + '</span>' + M.esc(new Date(t.createdAt).toLocaleString()) + '<span>' + L('updatedAt') + '</span>' + M.esc(new Date(t.updatedAt || t.createdAt).toLocaleString()) + '</div>' : '')
         + '</aside></div><p id="task-error" role="alert" hidden></p><footer class="modal-actions task-editor-actions">'
         + (id ? '<button class="btn btn-danger" id="f-del">' + L('delete') + '</button>' : '')
@@ -79,7 +80,7 @@
               var project = fields.projectId && M.findProject(T.store.data, fields.projectId);
               if (fields.projectId && (!project || project.status === 'completed')) throw new Error(window.TracerLocale.language() === 'zh' ? '这个项目已经归档或删除，请选择进行中的项目。' : 'This project was archived or deleted. Choose an active project.');
               if (id) M.updateTask(T.store.data, id, fields); else M.addTask(T.store.data, fields);
-              T.touch(); dirty = false; close(true); T.redraw(); if (T.renderBoard) T.renderBoard(); if (after) after();
+              T.touch(); dirty = false; close(true); T.redraw(); if (after) after();
               T.ui.notice(L(id ? 'taskSaved' : 'taskCreated'));
             } catch (e) { showError(e); }
           }
@@ -96,7 +97,7 @@
       box.addEventListener('keydown', function (e) { if (!box.querySelector('.task-action-confirm') && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); box.querySelector('#f-save').click(); } });
       if (id) box.querySelector('#f-del').onclick = function () {
         T.confirmTaskGardenDelete(T.store.data, id, function () {
-          M.deleteTask(T.store.data, id); T.touch(); dirty = false; close(true); T.redraw(); if (T.renderBoard) T.renderBoard(); if (after) after();
+          M.deleteTask(T.store.data, id); T.touch(); dirty = false; close(true); T.redraw(); if (after) after();
         });
       };
     });

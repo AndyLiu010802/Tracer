@@ -2,7 +2,40 @@
   'use strict';
   var M = window.TracerModel, T = window.Tracer, A = window.TracerInsights, H = window.TaskHistory, L = window.TracerLocale.t;
   var sec = document.getElementById('sec-insights'), period = '30', dates = A.range(30, M.todayISO()), query = '', project = '', page = 0, data;
+  var focusSignature = '';
+  function text(zh, en) { return window.TracerLocale.language() === 'zh' ? zh : en; }
   function esc(v) { return M.esc(v); }
+  function number(value) { return Number(value).toLocaleString(window.TracerLocale.language() === 'zh' ? 'zh-CN' : 'en', { maximumFractionDigits: 2 }); }
+  function metric(key, label, value, detail) { return '<div class="review-metric"><dt>' + label + '</dt><dd data-review-metric="' + key + '">' + value + '</dd><p>' + detail + '</p></div>'; }
+  function reviewHtml(ws, focus) {
+    if (!project) return '<p id="project-review-empty" class="ins-footnote">' + text('选择一个项目，查看估时、手填工时和专注记录的复盘。', 'Choose a project to review its estimates, manual time and focus records.') + '</p>';
+    var review = A.projectReview(ws, project, focus), owner = M.findProject(ws, project);
+    var history = H.completed(ws).find(function (row) { return row.projectId === project; });
+    var name = owner ? owner.name : history ? history.projectName : project;
+    var notes = [], count = review.current.total;
+    if (review.completions.clearedCount) notes.push(text(review.completions.clearedCount + ' 项历史完成任务已无任务卡，其估时与手填工时无法还原。', 'Previously completed tasks without cards: ' + review.completions.clearedCount + '. Their estimates and manual time are unavailable.'));
+    if (review.focus.inferredCount) notes.push(text(review.focus.inferredCount + ' 轮旧专注未保存项目信息，依据现存任务或完成历史推断归属。', 'Older sessions with project assignments inferred from current tasks or completion history: ' + review.focus.inferredCount + '.'));
+    if (review.focus.unassignedCount) notes.push(text('全空间另有 ' + review.focus.unassignedCount + ' 轮无法归属到项目，未计入本卡。', 'Sessions across this space that cannot be assigned to a project: ' + review.focus.unassignedCount + '. These are excluded here.'));
+    if (review.focus.limited) notes.push(text('专注明细已达保留上限，或累计记录超过现存明细；更早记录可能未包含。', 'Focus details have reached the retention limit, or lifetime totals exceed the retained details. Earlier sessions may be missing.'));
+    if (review.warnings.indexOf('focus-invalid-records') >= 0) notes.push(text('存在无效或互相冲突的专注记录，已从统计中排除。', 'Invalid or conflicting focus records have been excluded.'));
+    var comparison = review.comparison, comparisonHtml;
+    if (comparison) {
+      var delta = (comparison.deltaMinutes > 0 ? '+' : '') + number(comparison.deltaMinutes) + ' min';
+      comparisonHtml = '<strong>' + delta + '</strong><p>' + text('仅比较同时有估时和专注记录的 ' + comparison.matchedTaskCount + ' 个当前任务：估时 ' + number(comparison.estimateMinutes) + ' 分钟，已记录专注 ' + number(comparison.focusMinutes) + ' 分钟。', 'For the same ' + comparison.matchedTaskCount + ' current tasks with both values: ' + number(comparison.estimateMinutes) + ' estimated minutes and ' + number(comparison.focusMinutes) + ' recorded focus minutes.') + '</p>';
+    } else comparisonHtml = '<strong>—</strong><p>' + text('当前没有同时具备估时和专注记录的任务，暂不计算差值。', 'No current tasks have both an estimate and a focus record, so no difference is calculated.') + '</p>';
+    var span = review.focus.firstEndedAt ? text('本项目可用记录：', 'Available project records: ') + dateLabel(A.day(review.focus.firstEndedAt), true) + ' – ' + dateLabel(A.day(review.focus.lastEndedAt), true) : text('本项目暂无可归属的完整专注记录。', 'No complete focus sessions can currently be assigned to this project.');
+    return '<article id="project-review" class="ins-panel project-review" aria-labelledby="project-review-heading"><header class="ins-panel-head"><div><div class="ins-eyebrow">' + text('项目复盘', 'PROJECT REVIEW') + '</div><h2 id="project-review-heading" tabindex="-1">' + esc(name) + '</h2><p>' + text('依据全部保留记录 · 不受本页日期与历史搜索筛选影响', 'All retained records · independent of date and history search filters') + '</p></div>' + (owner && owner.status === 'completed' ? '<span class="ins-badge">' + text('已归档', 'Archived') + '</span>' : '') + '</header>'
+      + '<dl class="review-metrics">'
+      + metric('completed', text('历史完成过的任务', 'Tasks completed in history'), String(review.completions.uniqueCount), text('当前任务卡：' + review.current.done + ' 项完成 / ' + count + ' 项保留', 'Current task cards: ' + review.current.done + ' done / ' + count + ' retained'))
+      + metric('estimate', text('当前任务估时', 'Current task estimates'), review.estimate.filledCount ? number(review.estimate.hours) + ' h' : '—', text(review.estimate.filledCount + ' / ' + count + ' 个任务有数值', review.estimate.filledCount + ' / ' + count + ' tasks have values'))
+      + metric('spent', text('手填工时', 'Manual time'), review.spent.filledCount ? number(review.spent.hours) + ' h' : '—', text(review.spent.filledCount + ' / ' + count + ' 个任务有数值（含默认 0）', review.spent.filledCount + ' / ' + count + ' tasks have values (including default 0)'))
+      + metric('focus', text('已记录专注', 'Recorded focus'), number(review.focus.minutes) + ' min', text(review.focus.sessionCount + ' 个完整轮次', review.focus.sessionCount + ' complete sessions')) + '</dl>'
+      + '<div id="project-review-comparison" class="review-comparison"><h3>' + text('同组任务：已记录专注 − 估时', 'Same tasks: recorded focus − estimate') + '</h3>' + comparisonHtml + '</div>'
+      + '<div id="project-review-notes" class="review-notes"><p>' + esc(span) + '</p>'
+      + notes.map(function (note) { return '<p class="review-caveat">' + esc(note) + '</p>'; }).join('')
+      + '<p>' + text('专注仅统计完整计时轮次，全空间最多保留最近 500 轮；未结束或提前重置的部分时间不计入。记录可能不覆盖全部工作，差值需结合任务判断。手填工时与计时记录分别显示，不相加。', 'Focus includes complete timer sessions, with up to the latest 500 retained across this space. Partial or reset sessions are excluded. Records may not cover all work; interpret differences with that context. Manual time and timer records are shown separately and are not added together.') + '</p></div></article>';
+  }
+  function focusKey(focus) { return JSON.stringify([focus && focus.history, focus && focus.totalMinutes, project, dates, window.TracerLocale.language()]); }
   function dateLabel(date, long) { return new Date(date + 'T12:00:00').toLocaleDateString(window.TracerLocale.language() === 'zh' ? 'zh-CN' : 'en', long ? { year: 'numeric', month: 'short', day: 'numeric' } : { month: 'numeric', day: 'numeric' }); }
   function timeLabel(time) { return new Date(time).toLocaleString(window.TracerLocale.language() === 'zh' ? 'zh-CN' : 'en', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }
   function tile(icon, label, value, sub, color) { return '<article class="ins-tile" style="--ins-tone:' + color + '"><div class="ins-tile-top"><span>' + L(label) + '</span><span class="ins-icon" aria-hidden="true">' + icon + '</span></div><strong class="ins-num">' + value + '</strong><p class="ins-sub">' + esc(sub) + '</p></article>'; }
@@ -27,10 +60,13 @@
     var projects = new Map(); ws.projects.forEach(function (p) { projects.set(p.id, p.name); }); H.completed(ws).forEach(function (h) { if (h.projectId && !projects.has(h.projectId)) projects.set(h.projectId, h.projectName); });
     if (project && !projects.has(project)) project = '';
     if (period !== 'custom') dates = A.range(period === 'all' ? 0 : Number(period), M.todayISO());
-    data = A.analyze(ws, { from: dates.from, to: dates.to, query: query, project: project }, T.focus ? T.focus.read() : null);
+    var focus = T.focus ? T.focus.read() : null;
+    data = A.analyze(ws, { from: dates.from, to: dates.to, query: query, project: project }, focus);
+    focusSignature = focusKey(focus);
     page = Math.min(page, Math.max(0, Math.ceil(data.rows.length / 15) - 1));
     sec.innerHTML = '<header class="ins-header"><div><div class="ins-eyebrow">' + L('insEyebrow') + '</div><h1>' + L('insights') + '</h1><p>' + L('insSubtitle') + '</p></div><div class="ins-periods" aria-label="' + L('insRange') + '">' + ['7', '30', '90', 'all'].map(function (v) { return '<button data-period="' + v + '" aria-pressed="' + (period === v) + '">' + L(v === 'all' ? 'insAll' : 'insDays', { count: v }) + '</button>'; }).join('') + '</div></header>'
       + '<div class="ins-filters"><label>' + L('insFrom') + '<input id="ins-from" type="date" value="' + dates.from + '"></label><span class="ins-date-sep">—</span><label>' + L('insTo') + '<input id="ins-to" type="date" value="' + dates.to + '"></label><label class="ins-project-filter">' + L('projects') + '<select id="ins-project"><option value="">' + L('allProjects') + '</option>' + Array.from(projects).map(function (p) { return '<option value="' + esc(p[0]) + '">' + esc(p[1]) + '</option>'; }).join('') + '</select></label><span class="ins-local-note">' + L('insHistorySafe') + '</span></div>'
+      + '<div id="project-review-slot">' + reviewHtml(ws, focus) + '</div>'
       + '<div class="ins-tiles">' + tile('✓', 'insPeriodCompleted', data.rows.length, L('insEventsHint'), '#85ceb1') + tile('◇', 'insUnique', data.unique, L('insUniqueHint'), '#86b6ec') + tile('◷', 'insFocus', Math.round(data.focusMinutes), L('insFocusCount', { count: data.focusCount }), '#dcc17c') + tile('◌', 'insActive', data.total - data.counts.done, L('insCurrentHint'), '#c4a2eb') + '</div>'
       + '<div class="ins-grid"><article class="ins-panel"><div class="ins-panel-head"><div><h2>' + L('insTrend') + '</h2><p>' + L('insChartHelp') + '</p></div><span class="ins-badge">' + L('insCompletedCount', { count: data.rows.length }) + '</span></div>' + chart() + '</article><article class="ins-panel"><div class="ins-panel-head"><div><h2>' + L('insStatus') + '</h2><p>' + L('insCurrentHint') + '</p></div></div>' + status() + '</article></div>'
       + '<article class="ins-panel ins-activity"><div class="ins-panel-head"><div><h2>' + L('insActivity') + '</h2><p>' + L('insActivityHelp') + '</p></div><span class="ins-legend">' + L('insLess') + '<i></i><i></i><i></i><i></i>' + L('insMore') + '</span></div><div class="ins-heatmap">' + data.heat.map(function (d) { return '<button class="ins-heat" data-date="' + d.date + '" data-level="' + Math.min(4, d.count) + '" title="' + esc(dateLabel(d.date, true) + ' · ' + L('insCompletedCount', { count: d.count })) + '" aria-label="' + esc(dateLabel(d.date, true) + ' · ' + L('insCompletedCount', { count: d.count })) + '"></button>'; }).join('') + '</div><div class="ins-heat-labels"><span>' + dateLabel(data.heat[0].date) + '</span><span>' + dateLabel(data.heat[90].date) + '</span></div></article>'
@@ -40,7 +76,7 @@
     sec.querySelector('#ins-project').value = project;
     sec.querySelectorAll('[data-period]').forEach(function (b) { b.onclick = function () { period = b.dataset.period; page = 0; render(); }; });
     ['from', 'to'].forEach(function (key) { sec.querySelector('#ins-' + key).onchange = function () { var next = Object.assign({}, dates); next[key] = this.value; if (!next.to || (next.from && next.from > next.to)) { T.ui.notice(L('insInvalidDates')); this.value = dates[key]; return; } dates = next; period = 'custom'; page = 0; render(); }; });
-    sec.querySelector('#ins-project').onchange = function () { project = this.value; page = 0; render(); };
+    sec.querySelector('#ins-project').onchange = function () { project = this.value; page = 0; render(); sec.querySelector('#ins-project').focus({ preventScroll: true }); };
     sec.querySelector('#ins-search').oninput = function (e) { if (e.isComposing) return; var pos = this.selectionStart; query = this.value; page = 0; render(); var input = sec.querySelector('#ins-search'); input.focus({ preventScroll: true }); input.setSelectionRange(pos, pos); };
     sec.querySelector('#ins-search').oncompositionend = function (e) { this.oninput(e); };
     sec.querySelectorAll('[data-bucket]').forEach(function (b) { b.onclick = function () { var bucket = data.buckets[Number(b.dataset.bucket)]; dates = { from: bucket.from, to: bucket.to }; period = 'custom'; page = 0; render(); }; });
@@ -52,11 +88,24 @@
     }); }; });
   }
   T.onShow('insights', render);
+  T.openProjectReview = function (id) {
+    project = id; query = ''; page = 0; T.show('insights');
+    var heading = sec.querySelector('#project-review-heading');
+    if (heading) { heading.focus({ preventScroll: true }); heading.scrollIntoView({ block: 'nearest' }); }
+  };
   T.refreshInsightsFocus = function (focus) {
     if (!sec.classList.contains('active') || !sec.querySelector('.ins-tiles')) return;
-    var rows = focus.history.filter(function (h) { var d = A.day(h.endedAt); return (!dates.from || d >= dates.from) && (!dates.to || d <= dates.to); });
+    var signature = focusKey(focus); if (signature === focusSignature) return; focusSignature = signature;
+    var stats = A.analyze(T.store.data, { from: dates.from, to: dates.to, project: project }, focus);
     var tile = sec.querySelectorAll('.ins-tile')[2];
-    tile.querySelector('.ins-num').textContent = Math.round(rows.reduce(function (n, h) { return n + h.minutes; }, 0));
-    tile.querySelector('.ins-sub').textContent = L('insFocusCount', { count: rows.length });
+    tile.querySelector('.ins-num').textContent = Math.round(stats.focusMinutes);
+    tile.querySelector('.ins-sub').textContent = L('insFocusCount', { count: stats.focusCount });
+    sec.querySelector('#project-review-slot').innerHTML = reviewHtml(T.store.data, focus);
   };
+  window.addEventListener('tracer-workspace-saved', function () {
+    // A merged save can change hours or inferred project assignments while
+    // focused filters defer the app's full redraw. Keep those controls intact.
+    focusSignature = '';
+    T.refreshInsightsFocus(T.focus ? T.focus.read() : null);
+  });
 })();

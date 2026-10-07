@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tracer · 风景收藏馆</title>
+  <link rel="stylesheet" href="studio.css">
+</head>
+<body>
+  <header class="studio-header">
+    <a class="brand" href="#"><span class="moon">☾</span> Tracer <span class="brand-divider">/</span><span class="brand-caption">风景收藏馆</span></a>
+    <span class="edition">设计预览 · VOL. 01</span>
+  </header>
+  <main>
+    <div class="intro"><div><p class="eyebrow">GROWN BY YOU. MADE YOURS.</p><h1>把努力，换成喜欢的风景。</h1><p class="intro-copy">30 种工作空间，属于你的每一种心情。</p></div><div class="collection-count"><b>30</b><span>款原创设计<br>静态 · 动态 · 材质</span></div></div>
+    <section class="showcase" aria-label="壁纸实时预览">
+      <div class="preview-wrap">
+        <div class="stage" id="stage" data-material="default">
+          <div class="wallpaper" id="wallpaper"></div><canvas id="motion" aria-label="动态壁纸效果"></canvas><div class="shade" id="shade"></div>
+          <div class="workspace" id="workspace">
+            <header class="app-top"><span class="app-logo">☾</span><strong>Tracer</strong><span class="app-spacer"></span><span class="app-top-note">每一份努力，都在生长</span><span class="avatar">AL</span></header>
+            <div class="app-body"><aside class="app-side"><p class="small-label">我的空间</p><div class="nav-row active">▣ <span>收集箱</span><small>3</small></div><div class="nav-row">▤ <span>看板</span></div><div class="nav-row">▦ <span>计划</span></div><div class="nav-row">◷ <span>专注</span></div><div class="nav-row">♧ <span>伙伴家园</span></div><div class="sidebar-bottom"><span class="small-label">最近的项目</span><p><i></i> 给生活留一点空白</p><p><i class="pink-dot"></i> 新的创作旅程</p></div></aside>
+            <section class="app-content"><div class="today-heading"><div><span class="small-label">A LITTLE BETTER, EVERY DAY</span><h2>今天，慢慢做好。</h2></div><span class="new-task">＋ 新任务</span></div><p class="workspace-subtitle">把注意力留给重要的小事。</p><div class="task-list"><article class="task-card"><span class="task-check"></span><div><strong>为新的一周留出创作时间</strong><p>个人计划 <span>·</span> 今天</p></div><span class="task-tag">进行中</span></article><article class="task-card"><span class="task-check"></span><div><strong>整理项目的灵感与笔记</strong><p>新的创作旅程 <span>·</span> 3 个步骤</p></div><span class="task-tag neutral">待开始</span></article><article class="task-card"><span class="task-check checked">✓</span><div><strong>完成一段不被打扰的专注</strong><p>25 分钟 <span>·</span> 又靠近了一点</p></div><span class="task-tag neutral">已完成</span></article></div><div class="focus-card"><span class="focus-orbit">◷</span><div><span class="small-label">给自己一段安静的时间</span><strong>25:00 <small>专注时光</small></strong></div><span class="focus-start">开始专注 ↗</span></div><div class="workspace-footer"><span>♧ 你的花园，正在悄悄生长。</span><span>本周完成 12 项</span></div></section></div>
+          </div>
+          <span class="scene-badge" id="scene-badge">S01 · 月泊深蓝</span>
+        </div>
+        <div class="preview-controls"><label><input id="show-ui" type="checkbox" checked> 显示任务界面</label><label class="shade-control">背景遮罩 <input id="dimmer" type="range" min="0" max="65" value="12"><output id="dimmer-value">12%</output></label><button id="pause" type="button" disabled>暂停动态</button><button id="fullscreen" type="button">放大预览 ↗</button></div>
+      </div>
+      <aside class="details"><div><p class="eyebrow" id="detail-type">STILL / 静态壁纸</p><h2 id="detail-name">月泊深蓝</h2><p class="english-name" id="detail-en">Midnight Lake</p><p class="description" id="detail-description"></p><div id="swatches" class="swatches" aria-label="配色"></div><dl><div><dt>设计语言</dt><dd id="detail-style"></dd></div><div><dt>变化范围</dt><dd id="detail-scope"></dd></div><div><dt>建议价格</dt><dd><span class="coin">◈</span> <b id="detail-price"></b> 花园金币</dd></div></dl></div><div class="detail-bottom"><button id="favorite" type="button" aria-pressed="false">♡ 加入心愿单</button><a id="download" href="assets/static-01.png" download>下载原图 ↗</a><p id="delivery-note"></p><p class="ownership-note">商店方案：一次购买，永久收藏。<br>正式接入后，已购内容随账户同步。</p></div></aside>
+    </section>
+    <section class="catalog" aria-labelledby="catalog-title"><div class="catalog-heading"><div><p class="eyebrow">CURATED FOR YOUR EVERYDAY</p><h2 id="catalog-title">找到你的那一款。</h2></div><span id="result-count">30 款设计</span></div><div class="filters" aria-label="筛选设计"><button class="filter active" data-filter="all" aria-pressed="true">全部 <span>30</span></button><button class="filter" data-filter="static" aria-pressed="false">静态风景 <span>10</span></button><button class="filter" data-filter="dynamic" aria-pressed="false">会呼吸的风景 <span>10</span></button><button class="filter" data-filter="material" aria-pressed="false">材质与边框 <span>10</span></button><button class="filter wishlist-filter" data-filter="favorites" aria-pressed="false">♡ 心愿单</button></div><div class="catalog-grid" id="catalog-grid"></div><p id="empty-state" hidden>还没有收藏。选一款喜欢的设计，加入心愿单。</p></section>
+    <footer class="studio-footer"><span>TRACER / LANDSCAPE COLLECTION 01</span><span>静态原图 + 可运行动态 + 整体材质主题 · 当前为设计预览，未接入账户或扣款</span></footer>
+  </main><p class="sr-only" id="announcement" role="status"></p>
+  <script src="catalog.js"></script><script src="../../skins/tracer/wallpaper-motion.js"></script><script src="studio.js"></script>
+</body>
+</html>

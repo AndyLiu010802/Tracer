@@ -76,9 +76,9 @@ test('HTTP reload retains cyber task and planet identities and sold memory recei
   assert.equal(G.sell(current, 'crystal_tree', 1, 1000).earned, 40);
   const result = await request('PUT', current); assert.equal(result.status, 200);
   const loaded = (await request('GET')).body, flower = loaded.taskGarden.planets[0].flowers[0];
-  assert.deepEqual([flower.plantKind, flower.farmId, flower.variant], ['crystal_tree', 'cyber', 'shiny']);
+  assert.deepEqual([flower.plantKind, flower.farmId, flower.variant], ['crystal_tree', 'cyber', 'normal']);
   assert.equal(G.inventory(loaded).find(p => p.plantKind === 'crystal_tree').available, 0);
-  assert.equal(G.collection(loaded).find(p => p.plantKind === 'crystal_tree').shiny, 1);
+  assert.equal(G.collection(loaded).find(p => p.plantKind === 'crystal_tree').normal, 1);
   assert.equal(G.economy(loaded).balance, 100);
 });
 

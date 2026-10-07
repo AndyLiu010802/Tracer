@@ -15,8 +15,8 @@ function client(initial, put, options = {}) {
   };
   const el = id => { if (!elements.has(id)) elements.set(id, node()); return elements.get(id); };
   const translations = require('../public/task-i18n');
-  const window = { WorkspaceSync: S, TracerModel: M, TracerCompanionWork: require('../public/companion-work'), TaskHistory: require('../public/task-history'), TracerLocale: { t: key => translations.t('en', key), message: text => translations.message('en', text), language: () => 'en' }, addEventListener(name, fn) { listeners[name] = fn; } };
-  const context = { window, console, TracerLocale: window.TracerLocale, document: { hidden: false, activeElement: {}, documentElement: el('html'), body: el('body'), createElement: node, getElementById: el, querySelectorAll: () => [], addEventListener() {}, removeEventListener() {} },
+  const window = { WorkspaceSync: S, TracerModel: M, TracerCompanionWork: require('../public/companion-work'), TaskHistory: require('../public/task-history'), TracerLocale: { t: key => translations.t('en', key), message: text => translations.message('en', text), language: () => 'en' }, addEventListener(name, fn) { listeners[name] = fn; }, dispatchEvent(event) { listeners[event.type]?.(event); return true; } };
+  const context = { window, console, Event, TracerLocale: window.TracerLocale, document: { hidden: false, activeElement: {}, documentElement: el('html'), body: el('body'), createElement: node, getElementById: el, querySelectorAll: () => [], addEventListener() {}, removeEventListener() {} },
     localStorage: { getItem: k => storage.get(k) || null, setItem: (k, v) => storage.set(k, v), removeItem: k => storage.delete(k) },
     location: { search: '?sec=board' }, navigator: { sendBeacon(url, body) { beacons.push({ url, data: JSON.parse(body) }); return true; } },
     setInterval(fn, delay) { intervals.push(delay); }, setTimeout(fn, delay) { if(options.creationWaits && delay===50) return setTimeout(fn,0); timers.set(++seq, fn); return seq; }, clearTimeout(id) { timers.delete(id); },
@@ -27,6 +27,31 @@ function client(initial, put, options = {}) {
 }
 const settle = () => new Promise(resolve => setImmediate(resolve));
 const creationRequest = {requestId:'f623b4d1-79de-4cad-ae76-d5523a54dacf',proposal:{type:'project',project:{name:'Launch',notes:'Launch notes',start:null,end:null},tasks:[{title:'Write report',notes:'Use the agreed outline',due:null,scheduled:null,priority:'high',estimate:2,checklist:['Draft','Review']}]}};
+
+test('save notifications expose settled acceptance or a retained retry draft, never an in-flight save', async () => {
+  for (const status of [200, 403, 500]) {
+    const initial = S.empty(); M.addTask(initial, { title: 'Before' });
+    let finish;
+    const c = client(initial, () => new Promise(resolve => { finish = resolve; }));
+    await c.T.ready;
+    const observed = [];
+    c.listeners['tracer-workspace-saved'] = event => observed.push({
+      type: event.type, inflight: c.T.store.inflight, dirty: c.T.store.dirty,
+      acceptedTitle: c.T.store.base.tasks[0].title, localTitle: c.T.store.data.tasks[0].title,
+      hasDraft: c.storage.has('tracer.workspaceDraft')
+    });
+    M.updateTask(c.T.store.data, c.T.store.data.tasks[0].id, { title: 'Edited' });
+    c.T.touch(); c.T.saveNow();
+    assert.equal(c.T.store.inflight, true);
+    assert.equal(observed.length, 0, 'listeners must not infer acceptance before the response');
+    finish({ ok: status === 200, status, json: async () => status === 200 ? { ok: true } : { error: status === 403 ? 'readonly' : 'disk-full' } });
+    await settle();
+    assert.deepEqual(observed, [{
+      type: 'tracer-workspace-saved', inflight: false, dirty: status !== 200,
+      acceptedTitle: status === 200 ? 'Edited' : 'Before', localTitle: 'Edited', hasDraft: status !== 200
+    }]);
+  }
+});
 test('a stale save merges newly created companion work before retrying local edits',async()=>{
   const initial=S.empty();M.addTask(initial,{title:'Existing'});
   const remote=require('../public/companion-work').apply(initial,creationRequest.proposal,creationRequest.requestId,M).workspace;

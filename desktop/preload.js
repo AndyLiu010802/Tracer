@@ -26,18 +26,51 @@ if (process.isMainFrame) contextBridge.exposeInMainWorld('TracerBrowser', {
 if (process.isMainFrame && location.protocol === 'http:'
     && ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname)
     && !location.pathname.startsWith('/r/')) {
+  contextBridge.exposeInMainWorld('TracerBackupFiles',{request:value=>ipcRenderer.invoke('tracer-backup-files',value),onProgress:callback=>{if(typeof callback!=='function')return()=>{};const listener=(_event,value)=>callback(value);ipcRenderer.on('tracer-backup-progress',listener);return()=>ipcRenderer.removeListener('tracer-backup-progress',listener);}});
+  // TRACER_LOCAL_VFX_BEGIN
+  contextBridge.exposeInMainWorld('TracerLocalVfx', {
+    request: value => ipcRenderer.invoke('tracer-local-vfx', value),
+    requestMenu: value => ipcRenderer.invoke('tracer-local-vfx-menu', value),
+    onState: callback => {
+      if (typeof callback !== 'function') return () => {};
+      const listener = (_event, value) => callback(value);
+      ipcRenderer.on('tracer-local-vfx-state', listener);
+      return () => ipcRenderer.removeListener('tracer-local-vfx-state', listener);
+    },
+    onOpen: callback => {
+      if (typeof callback !== 'function') return () => {};
+      const listener = () => callback();
+      ipcRenderer.on('tracer-local-vfx-open', listener);
+      return () => ipcRenderer.removeListener('tracer-local-vfx-open', listener);
+    },
+  });
+  // TRACER_LOCAL_VFX_END
   const windowActions = new Set(['state', 'toggle-fullscreen', 'minimize', 'close']);
-  contextBridge.exposeInMainWorld('TracerPet', {
-    send: message => ipcRenderer.send('tracer-pet-command', message),
+  contextBridge.exposeInMainWorld('TracerFishing', {
+    update: snapshot => ipcRenderer.send('tracer-fishing-update', snapshot),
+    show: () => ipcRenderer.send('tracer-fishing-show'),
+    hide: () => ipcRenderer.send('tracer-fishing-hide'),
+    lockAccount: () => ipcRenderer.send('tracer-fishing-command', { type: 'account-lock' }),
+    unlockAccount: () => ipcRenderer.send('tracer-fishing-command', { type: 'account-unlock' }),
     onAction: callback => {
-      if (typeof callback !== 'function') return;
-      ipcRenderer.on('tracer-pet-action', (_event,message) => callback(message));
+      if (typeof callback !== 'function') return () => {};
+      const listener = (_event, message) => callback(message);
+      ipcRenderer.on('tracer-fishing-action', listener);
+      return () => ipcRenderer.removeListener('tracer-fishing-action', listener);
     },
-    onWorkRequest: callback => {
-      if (typeof callback !== 'function') return;
-      ipcRenderer.on('tracer-pet-work-request', (_event, message) => callback(message));
+  });
+  contextBridge.exposeInMainWorld('TracerFishingAquarium', {
+    update: snapshot => ipcRenderer.send('tracer-fishing-aquarium-update', snapshot),
+    show: () => ipcRenderer.send('tracer-fishing-aquarium-show'),
+    hide: () => ipcRenderer.send('tracer-fishing-aquarium-hide'),
+    lockAccount: () => ipcRenderer.send('tracer-fishing-aquarium-command', { type: 'account-lock' }),
+    unlockAccount: () => ipcRenderer.send('tracer-fishing-aquarium-command', { type: 'account-unlock' }),
+    onAction: callback => {
+      if (typeof callback !== 'function') return () => {};
+      const listener = (_event, message) => callback(message);
+      ipcRenderer.on('tracer-fishing-aquarium-action', listener);
+      return () => ipcRenderer.removeListener('tracer-fishing-aquarium-action', listener);
     },
-    workResult: result => ipcRenderer.send('tracer-pet-work-result', result),
   });
   contextBridge.exposeInMainWorld('TracerWindow', {
     send: action => { if (windowActions.has(action)) ipcRenderer.send('tracer-window-action', action); },

@@ -88,13 +88,19 @@ test('garden.css 保护 boss-key 的可见效果（.nav-item[hidden] 覆盖 disp
     'garden.css 必须有 .nav-item[hidden]{display:none} 压过 .nav-item 的 flex');
 });
 
-test('Tracer loads the new garden modules in dependency order without legacy game engines', async () => {
+test('Tracer loads the garden and new fishing modules in dependency order without retired engines', async () => {
   const html = (await get('/')).body;
-  for (const name of ['fishing', 'combat', 'equip', 'mining', 'magic', 'farm', 'farm-data']) {
+  for (const name of ['pet', 'garden-companion', 'garden-wildflower-motion', 'combat', 'equip', 'mining', 'magic', 'farm', 'farm-data']) {
     assert.ok(!html.includes('src="/' + name + '.js"'), 'must not load ' + name);
   }
   assert.ok(!html.includes('href="/farm.css"'), 'must not load legacy game styles');
-  const order = ['task-garden', 'model', 'workspace-sync', 'app', 'task-garden-actions', 'garden-plant-atlas', 'garden-plant-art', 'garden-wildflower-atlas', 'garden-wildflower-motion', 'garden-plant-animation', 'garden-harvest-model', 'pet-model', 'garden-world-view', 'garden-home-view', 'garden-planets-view', 'garden'];
+  const order = ['fishing-model', 'task-garden', 'model', 'workspace-sync', 'app', 'task-garden-actions', 'garden-plant-atlas', 'garden-plant-art', 'garden-plant-animation', 'garden-harvest-model', 'garden-world-view', 'fishing-art', 'fishing-motion', 'fishing-rod-renderer', 'fishing-game', 'fishing-tackle', 'fishing-view', 'garden-home-view', 'garden-planets-view', 'garden', 'fishing'];
+  // Historical backup validation is available before account storage starts.
+  const early = ['pet-animation', 'pet-model', 'backup-preferences', 'account-storage'];
+  for (let i = 0; i < early.length; i++) {
+    const index = html.indexOf('src="/' + early[i] + '.js"');
+    assert.ok(index >= 0 && (i === 0 || index > html.indexOf('src="/' + early[i - 1] + '.js"')), early[i] + ' must follow its early dependencies');
+  }
   let previous = -1;
   for (const name of order) {
     const index = html.indexOf('src="/' + name + '.js"');
@@ -131,7 +137,7 @@ test('编码路径穿越不能通过旧游戏路径取得 db-console 的文件',
 });
 
 test('Tracer no longer serves legacy game scripts or styles through the shared fallback', async () => {
-  for (const p of ['/farm.js', '/farm.css', '/farm-data.js', '/fishing.js', '/combat.js', '/equip.js', '/mining.js', '/magic.js']) {
+  for (const p of ['/farm.js', '/farm.css', '/farm-data.js', '/combat.js', '/equip.js', '/mining.js', '/magic.js']) {
     const r = await get(p);
     assert.strictEqual(r.status, 404, p + ' must not be exposed from Tracer');
   }
@@ -167,11 +173,14 @@ test('Tracer does not expose retired game artwork', async () => {
   }
 });
 
-test('new garden backdrop and plant companion animation art remain available', async () => {
-  for (const file of ['spring-garden-v1.png', 'wildflower-v2.png', 'wildflower-normal-idle-v1.png', 'wildflower-shiny-celebrate-v1.png']) {
+test('garden botanical art remains available and retired fairy animations are absent', async () => {
+  for (const file of ['spring-garden-v1.png', 'wildflower-v2.png']) {
     const r = await get('/garden-art/' + file);
     assert.strictEqual(r.status, 200, file + ' must remain available');
     assert.strictEqual(r.headers['content-type'], 'image/png');
     assert.ok(r.bytes > 10000, file + ' must contain the actual illustration');
+  }
+  for (const file of ['wildflower-normal-idle-v1.png', 'wildflower-shiny-celebrate-v1.png']) {
+    assert.strictEqual((await get('/garden-art/'+file)).status,404);
   }
 });
