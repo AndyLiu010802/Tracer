@@ -26,12 +26,14 @@ if (process.isMainFrame) {
     // Never carry an action across an account, restore, navigation or failed cast.
     if (pendingCast) {
       const pending = pendingCast, nextSession = castSession(value);
-      if (accountKey(value) !== pending.account || value.error || value.disabled
+      if (accountKey(value) !== pending.account
           || nextSession === pending.session && value.nativeSessionId !== pending.native) pendingCast = null;
       else if (nextSession !== pending.session) {
         pendingCast = null;
+        // An accepted cast may arrive while an unrelated workspace save keeps
+        // controls disabled. Its release/cancel still belongs to this gesture.
         if (nextSession && value.session?.phase === 'charging' && pending.terminal) sendAction(pending.terminal);
-      }
+      } else if (value.error || value.disabled) pendingCast = null;
     }
   });
   contextBridge.exposeInMainWorld('FishingDesktop', {

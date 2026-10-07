@@ -202,6 +202,37 @@ test('blur before cast acknowledgement cancels once instead of later throwing th
   assert.deepEqual(f.sent.map(x=>x.type),['cast-start','cancel']);
 });
 
+test('accepted charging acknowledges release or cancellation despite a concurrent background save',()=>{
+  for(const terminal of ['cast-release','cancel'])for(const status of [{disabled:true},{error:'Background save pending'},{disabled:true,error:'Background save pending'}]){
+    const f=preloadGestureFixture();f.bridge.send({type:'cast-start'});f.bridge.send({type:'cast-release'});
+    if(terminal==='cancel'){f.bridge.send({type:'cancel'});f.bridge.send({type:'cast-release'});}
+    const charging={...f.initial,...status,nativeSessionId:'native-cast',session:{id:'new-cast',phase:'charging'}};
+    f.update(charging);assert.deepEqual(f.sent.map(x=>x.type),['cast-start',terminal]);
+    assert.equal(f.sent[1].sessionId,'new-cast');assert.equal(f.sent[1].nativeSessionId,'native-cast');assert.equal(f.sent[1].sequence,1);
+    f.update({...charging,disabled:false,error:''});f.update(charging);assert.equal(f.sent.length,2,'an acknowledgement cannot replay the terminal action');
+  }
+});
+
+test('a held cast retains its eventual physical release through a disabled charging acknowledgement',()=>{
+  const f=preloadGestureFixture();f.bridge.send({type:'cast-start'});
+  f.update({...f.initial,nativeSessionId:'native-cast',session:{id:'new-cast',phase:'charging'},disabled:true});
+  assert.deepEqual(f.sent.map(x=>x.type),['cast-start']);f.bridge.send({type:'cast-release'});
+  assert.deepEqual(f.sent.map(x=>x.type),['cast-start','cast-release']);assert.equal(f.sent[1].sessionId,'new-cast');
+});
+
+test('charging and disabled flags never bypass pending gesture account or restore isolation',()=>{
+  for(const change of [{accountScope:'other'},{accountGeneration:3},{accountRestoreId:'restore-b'}]){
+    const f=preloadGestureFixture();f.bridge.send({type:'cast-start'});f.bridge.send({type:'cast-release'});
+    f.update({...f.initial,...change,nativeSessionId:'other-native',session:{id:'other-cast',phase:'charging'},disabled:true});
+    f.update({...f.initial,nativeSessionId:'later-native',session:{id:'later-cast',phase:'charging'}});
+    assert.deepEqual(f.sent.map(x=>x.type),['cast-start']);
+  }
+  const f=preloadGestureFixture();f.bridge.send({type:'cast-start'});f.bridge.send({type:'cancel'});
+  f.update({...f.initial,nativeSessionId:'native-reload',disabled:true});
+  f.update({...f.initial,nativeSessionId:'later-native',session:{id:'later-cast',phase:'charging'}});
+  assert.deepEqual(f.sent.map(x=>x.type),['cast-start'],'native-only rotation discards the pending cancellation');
+});
+
 test('pending release is never replayed across accounts, restores, navigation or a failed cast',()=>{
   for(const change of [{accountScope:'other'},{accountGeneration:3},{accountRestoreId:'restore-b'},{nativeSessionId:'native-reload'},{error:'No bait'},{disabled:true}]){
     const f=preloadGestureFixture();f.bridge.send({type:'cast-start'});f.bridge.send({type:'cast-release'});

@@ -95,8 +95,11 @@
     const previousPhase=phase;snapshot=value;phase=value.session?.phase||'idle';root.dataset.phase=phase;const english=value.language==='en';document.documentElement.lang=english?'en':'zh-CN';
     if(awaitingCast){
       const changedAccount=accountKey(value)!==awaitingCast.account,newSession=(value.session?.id||'')!==awaitingCast.session;
-      if(changedAccount||!newSession&&value.nativeSessionId!==awaitingCast.native||value.error||value.disabled){awaitingCast=null;pressed=null;keysDown.clear();}
+      if(changedAccount||!newSession&&value.nativeSessionId!==awaitingCast.native){awaitingCast=null;pressed=null;keysDown.clear();}
+      // Charging acknowledges the held gesture even when a background save
+      // temporarily disables new input; its physical key-up must still release.
       else if(newSession||phase==='charging')awaitingCast=null;
+      else if(value.error||value.disabled){awaitingCast=null;pressed=null;keysDown.clear();}
     }
     // Keep the catch animation visible, then put away the complete rod and glow.
     if(['charging','cast','waiting','bite','reeling'].includes(phase))summoned=true;

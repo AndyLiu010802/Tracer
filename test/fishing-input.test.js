@@ -178,3 +178,26 @@ test('desktop discards pending input on account change without cancelling the ne
   const f=fixture('desktop');f.down();f.set('idle',{accountScope:'other-account'});f.up();
   assert.deepEqual(f.actions,['cast-start']);f.destroy();
 });
+
+test('desktop preserves held F through an accepted charging snapshot disabled by a background save',()=>{
+  for(const status of [{disabled:true},{error:'Background save pending'},{disabled:true,error:'Background save pending'}]){
+    const f=fixture('desktop');f.down();f.set('charging',{session:{id:'fresh-cast',phase:'charging'},...status});
+    assert.deepEqual(f.actions,['cast-start']);f.up();f.up();assert.deepEqual(f.actions,['cast-start','cast-release']);f.destroy();
+  }
+});
+
+test('desktop blur cancels a held accepted cast while new input is temporarily disabled',()=>{
+  const f=fixture('desktop');f.down();f.set('charging',{session:{id:'fresh-cast',phase:'charging'},disabled:true});
+  f.win.emit('blur');f.up();assert.deepEqual(f.actions,['cast-start','cancel']);f.destroy();
+});
+
+test('desktop charging acknowledgements cannot carry held F across account, restore or native-only reload changes',()=>{
+  const initial={accountScope:'active',accountGeneration:2,accountRestoreId:'restore-a',nativeSessionId:'native-idle'};
+  for(const change of [{accountScope:'other'},{accountGeneration:3},{accountRestoreId:'restore-b'}]){
+    const f=fixture('desktop');f.set('idle',initial);f.down();
+    f.set('charging',{...initial,...change,nativeSessionId:'other-native',session:{id:'other-cast',phase:'charging'},disabled:true});
+    f.up();assert.deepEqual(f.actions,['cast-start']);f.destroy();
+  }
+  const f=fixture('desktop');f.set('idle',initial);f.down();f.set('idle',{...initial,nativeSessionId:'native-reload',disabled:true});
+  f.set('charging',{...initial,nativeSessionId:'new-native',session:{id:'new-cast',phase:'charging'}});f.up();assert.deepEqual(f.actions,['cast-start']);f.destroy();
+});
