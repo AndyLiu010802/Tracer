@@ -147,10 +147,33 @@ async function main(args = process.argv.slice(2)) {
       }
       return app.evaluate(({}, expected) => { const menu = qaMenus.pop(), item = menu?.template.find(item => item.label === expected); if (!item || item.enabled === false) throw new Error('Missing enabled native menu: ' + expected); item.click(); return menu.template.map(x => x.label || x.type); }, label);
     }
+    // Bamboo's entrance is only 440 ms. Cross-process Playwright round trips
+    // can outlast it on CI, so exercise early F in the native menu notification
+    // turn, immediately after the production listener has started the summon.
+    // The later charge/cast still uses Playwright's actual keyboard input.
+    await pond.evaluate(() => {
+      window.qaEarlySummon = null;
+      const off = FishingDesktop.onMenuAction(value => {
+        if (value.type !== 'summon-rod') return;
+        const started = performance.now(), rod = document.getElementById('fishing-rod');
+        rod.focus({ preventScroll: true });
+        const down = new KeyboardEvent('keydown', { key: 'f', code: 'KeyF', bubbles: true, cancelable: true });
+        const up = new KeyboardEvent('keyup', { key: 'f', code: 'KeyF', bubbles: true, cancelable: true });
+        rod.dispatchEvent(down); rod.dispatchEvent(up);
+        window.qaEarlySummon = { elapsedMs: performance.now() - started, handled: down.defaultPrevented,
+          rodVisible: document.getElementById('desktop-fishing').dataset.rodVisible,
+          powerHidden: document.getElementById('fishing-power').hidden,
+          reelHidden: document.getElementById('fishing-reel').hidden };
+        off();
+      });
+    });
     report.pondMenu = await nativeMenu(pond, 'Summon fishing rod');
-    await pond.waitForFunction(() => document.querySelector('#desktop-fishing').dataset.rodVisible === 'true');
-    await pond.locator('#fishing-rod').focus();
-    await pond.keyboard.press('f');
+    await pond.waitForFunction(() => window.qaEarlySummon);
+    report.earlySummon = await pond.evaluate(() => window.qaEarlySummon);
+    assert.equal(report.earlySummon.handled, true, 'early F reaches the production key handler');
+    assert.equal(report.earlySummon.rodVisible, 'true');
+    assert.equal(report.earlySummon.powerHidden, true);
+    assert.equal(report.earlySummon.reelHidden, true);
     assert.equal(await mainPage.evaluate(() => Tracer.fishing.snapshot().session?.phase || 'idle'), 'idle', 'summon rejects early fishing input');
     assert.equal(await pond.locator('#fishing-power').isVisible(), false, 'summon has no progress bar');
     await pause(700);
