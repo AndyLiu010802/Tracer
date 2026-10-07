@@ -2,25 +2,56 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const actions = new Set(['cast-start', 'cast-release', 'hook', 'reel-start', 'reel-release', 'cancel', 'cast', 'hold', 'release', 'catch', 'open-home', 'open-tackle']);
 const commands = new Set(['ready', 'hide', 'resize', 'context-menu', 'input-regions', 'pointer-pass-through', 'drag-start', 'drag-move', 'drag-end']);
-let snapshot = null, sequence = 0;
+let snapshot = null, sequence = 0, pendingCast = null;
+const castSession = value => value?.fishing?.sessionId || value?.sessionId || value?.session?.id || '';
+const accountKey = value => JSON.stringify([value?.accountScope || 'guest', value?.accountGeneration || 0, value?.accountRestoreId || '']);
 function credentials() {
   if (!snapshot) return null;
   return { accountScope: snapshot.accountScope || 'guest', accountGeneration: snapshot.accountGeneration || 0,
     accountRestoreId: snapshot.accountRestoreId || '', nativeSessionId: snapshot.nativeSessionId,
-    sessionId: snapshot.fishing?.sessionId || snapshot.sessionId || snapshot.session?.id || '' };
+    sessionId: castSession(snapshot) };
+}
+function sendAction(type, extra = {}) {
+  const auth = credentials();
+  if (auth) ipcRenderer.send('tracer-fishing-action', { type, ...auth, sequence: ++sequence, ...extra });
 }
 if (process.isMainFrame) {
   ipcRenderer.on('tracer-fishing-snapshot', (_event, value) => {
     if (!value || typeof value !== 'object' || typeof value.nativeSessionId !== 'string') return;
     if (snapshot?.nativeSessionId !== value.nativeSessionId) sequence = 0;
     snapshot = value;
+    // Starting a cast rotates native credentials. A fast physical key-up can
+    // beat that acknowledgement; retain only this gesture's terminal action
+    // until the authoritative charging snapshot supplies the new credentials.
+    // Never carry an action across an account, restore, navigation or failed cast.
+    if (pendingCast) {
+      const pending = pendingCast, nextSession = castSession(value);
+      if (accountKey(value) !== pending.account || value.error || value.disabled
+          || nextSession === pending.session && value.nativeSessionId !== pending.native) pendingCast = null;
+      else if (nextSession !== pending.session) {
+        pendingCast = null;
+        if (nextSession && value.session?.phase === 'charging' && pending.terminal) sendAction(pending.terminal);
+      }
+    }
   });
   contextBridge.exposeInMainWorld('FishingDesktop', {
     send: message => {
       if (!message || typeof message !== 'object') return;
       if (message.type === 'ready') { ipcRenderer.send('tracer-fishing-command', { type: 'ready' }); return; }
       const auth = credentials(); if (!auth) return;
-      if (actions.has(message.type)) { ipcRenderer.send('tracer-fishing-action', { type: message.type, ...auth, sequence: ++sequence, ...(message.type === 'cast-start' && message.entranceReady === true ? { entranceReady: true } : {}) }); return; }
+      if (actions.has(message.type)) {
+        if (message.type === 'cast-start') {
+          if (pendingCast) return;
+          if (['idle', 'caught', 'escaped'].includes(snapshot.session?.phase || 'idle'))
+            pendingCast = { account: accountKey(snapshot), session: castSession(snapshot), native: snapshot.nativeSessionId, terminal: null };
+        }
+        if (pendingCast && ['cast-release', 'cancel'].includes(message.type)) {
+          if (pendingCast.terminal !== 'cancel') pendingCast.terminal = message.type;
+          return;
+        }
+        sendAction(message.type, message.type === 'cast-start' && message.entranceReady === true ? { entranceReady: true } : {});
+        return;
+      }
       if (!commands.has(message.type)) return;
       let value;
       if (message.type === 'input-regions') {

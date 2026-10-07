@@ -163,3 +163,18 @@ test('desktop left pond press drags without a summon or menu selection and never
   assert.deepEqual(f.commands.filter(m=>m.type.startsWith('drag-')).map(m=>m.type),['drag-start','drag-move','drag-end']);
   assert.deepEqual(f.actions,[]);f.destroy();
 });
+
+test('desktop preserves an F gesture while an old idle snapshot precedes its cast acknowledgement',()=>{
+  const f=fixture('desktop');f.down();f.set('idle');
+  assert.deepEqual(f.actions,['cast-start'],'late idle updates cannot cancel a held cast');
+  f.up();assert.deepEqual(f.actions,['cast-start','cast-release']);
+  f.down();f.up();assert.deepEqual(f.actions,['cast-start','cast-release'],'rapid repeat cannot start a second unacknowledged cast');
+  f.set('charging',{session:{id:'fresh-cast',phase:'charging'}});
+  f.set('escaped',{session:{id:'fresh-cast',phase:'escaped'}});
+  f.down();assert.equal(f.actions.at(-1),'cast-start');f.destroy();
+});
+
+test('desktop discards pending input on account change without cancelling the new account',()=>{
+  const f=fixture('desktop');f.down();f.set('idle',{accountScope:'other-account'});f.up();
+  assert.deepEqual(f.actions,['cast-start']);f.destroy();
+});

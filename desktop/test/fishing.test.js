@@ -175,6 +175,42 @@ test('overlay preload supplies authoritative credentials, counts actions and rej
   bridge.send({type:'resize',value:.1});assert.equal(sent.at(-1)[1].value,.5);
 });
 
+function preloadGestureFixture() {
+  let bridge; const sent=[],ipcRenderer=new EventEmitter();
+  ipcRenderer.send=(channel,value)=>sent.push({channel,...value});
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../fishing-preload.js'),'utf8'),{
+    process:{isMainFrame:true},require:()=>({ipcRenderer,contextBridge:{exposeInMainWorld(_name,value){bridge=value;}}}),
+  });
+  const initial={accountScope:'active',accountGeneration:2,accountRestoreId:'restore-a',nativeSessionId:'native-idle',session:{id:'old-catch',phase:'caught'}};
+  const update=value=>ipcRenderer.emit('tracer-fishing-snapshot',{},value);
+  update(initial);return{bridge,sent,initial,update};
+}
+
+test('fast physical release waits for the new cast credentials and is delivered exactly once',()=>{
+  const f=preloadGestureFixture();f.bridge.send({type:'cast-start',entranceReady:true});f.bridge.send({type:'cast-release'});
+  assert.deepEqual(f.sent.map(x=>x.type),['cast-start']);
+  f.update({...f.initial});f.bridge.send({type:'cast-start'});assert.equal(f.sent.length,1);
+  const charging={...f.initial,nativeSessionId:'native-cast',session:{id:'new-cast',phase:'charging'}};
+  f.update(charging);assert.deepEqual(f.sent.map(x=>x.type),['cast-start','cast-release']);
+  assert.equal(f.sent[1].sessionId,'new-cast');assert.equal(f.sent[1].nativeSessionId,'native-cast');assert.equal(f.sent[1].sequence,1);
+  f.update(charging);assert.equal(f.sent.length,2);
+});
+
+test('blur before cast acknowledgement cancels once instead of later throwing the rod',()=>{
+  const f=preloadGestureFixture();f.bridge.send({type:'cast-start'});f.bridge.send({type:'cast-release'});f.bridge.send({type:'cancel'});f.bridge.send({type:'cast-release'});
+  f.update({...f.initial,nativeSessionId:'native-cast',session:{id:'new-cast',phase:'charging'}});
+  assert.deepEqual(f.sent.map(x=>x.type),['cast-start','cancel']);
+});
+
+test('pending release is never replayed across accounts, restores, navigation or a failed cast',()=>{
+  for(const change of [{accountScope:'other'},{accountGeneration:3},{accountRestoreId:'restore-b'},{nativeSessionId:'native-reload'},{error:'No bait'},{disabled:true}]){
+    const f=preloadGestureFixture();f.bridge.send({type:'cast-start'});f.bridge.send({type:'cast-release'});
+    f.update({...f.initial,...change});
+    f.update({...f.initial,...change,error:'',disabled:false,nativeSessionId:'later-cast',session:{id:'new-cast',phase:'charging'}});
+    assert.deepEqual(f.sent.map(x=>x.type),['cast-start'],JSON.stringify(change));
+  }
+});
+
 test('desktop ponds retain their theme and real residents without sending the collection ledger', t => {
   const f=fixture(t);f.controller.show();
   f.update({desktopPond:{pond:{id:'pond-a',style:'coral',decorations:[]},fish:Array.from({length:6},(_,i)=>({id:'fry-'+i,speciesId:'koi',growth:30}))}});

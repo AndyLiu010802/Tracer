@@ -6,7 +6,9 @@
   const pond=Art.createPond(pondHost,{pond:{style:'meadow'},fish:[],interactive:false,zoom:1.12});
   const flightFish=byId('fishing-flight-fish'),line=byId('fishing-line'),status=byId('fishing-status'),motion=window.TracerFishingMotion?.create({stage:root,summonOnReveal:true,onPreviewEnd:()=>{previewing=false;if(['idle','caught','escaped'].includes(phase)&&!recastPaused())summoned=false;root.dataset.rodVisible=String(['charging','cast','waiting','bite','reeling'].includes(phase)||recastPaused());rod.setAttribute('aria-hidden',String(root.dataset.rodVisible!=='true'));rod.tabIndex=root.dataset.rodVisible==='true'?0:-1;publishRegions();},rod,createRodFlex:host=>window.TracerFishingRodRenderer?.create(host)||Art.createRodFlex?.(host),bobber:float,line,path:line.querySelector('path'),bite:byId('fishing-bite'),flightFish,catchShadow:byId('fishing-catch-shadow'),pond,castTarget:byId('fishing-cast-target'),nibbleCue:byId('fishing-nibble'),stamina:status.querySelector('b'),power:power.querySelector('i'),target:reel.querySelector('.desktop-reel-target'),fish:reel.querySelector('.desktop-reel-fish'),progress:reel.querySelector('.desktop-reel-progress i'),waterPoint:{x:269/380,y:155/260},onFrame:frame=>{if(flightKind==='product'){flightFigure?.setVisible?.(frame.pose.fishAlpha>=.005);flightFigure?.setPose?.({phase:frame.phase,age:frame.age,angle:frame.pose.fishAngle,scale:frame.pose.fishScale,opacity:frame.pose.fishAlpha});}}});
   let snapshot=null,phase='idle',pressed=null,dragging=false,rodKey='',fishKey='',lastPhase='',lastCatch='',toastTimer=null,passThrough=false,lastPointer=null,flightFigure=null,flightKind='';const keysDown=new Set();
-  const send=type=>bridge.send({type,...(type==='cast-start'?{entranceReady:true}:{})}),point=event=>({screenX:event.screenX,screenY:event.screenY}),clamp=value=>Math.max(0,Math.min(1,Number(value)||0));
+  let awaitingCast=null;
+  const accountKey=value=>JSON.stringify([value?.accountScope||'guest',value?.accountGeneration||0,value?.accountRestoreId||'']);
+  const send=type=>{if(type==='cast-start')awaitingCast={account:accountKey(snapshot),native:snapshot?.nativeSessionId,session:snapshot?.session?.id||''};bridge.send({type,...(type==='cast-start'?{entranceReady:true}:{})});},point=event=>({screenX:event.screenX,screenY:event.screenY}),clamp=value=>Math.max(0,Math.min(1,Number(value)||0));
   let pondKey='',previewing=false,moveMode=false,summoned=false;
   let lastRegionsKey = null;
   function publishRegions() {
@@ -30,7 +32,7 @@
     const overPond=px>=0&&px<=1&&py>=0&&py<=1;
     root.classList.toggle('is-near',!!inside||overPond||pressed||dragging);pointerMode(!inside&&!overPond);
   }
-  function prepareCast(){if(!summoned)return false;if(previewing){if(!motion?.engagePreview())return false;previewing=false;}return true;}
+  function prepareCast(){if(!summoned||awaitingCast)return false;if(previewing){if(!motion?.engagePreview())return false;previewing=false;}return true;}
   function start(event){
     if(event.button!==0||!snapshot||snapshot.disabled||recastPaused()||pressed||dragging)return;
     if(moveMode){beginDrag(event);return;}
@@ -91,6 +93,11 @@
   const off=bridge.onSnapshot(value=>{
     if(value.desktopPond){const key=JSON.stringify(value.desktopPond);if(key!==pondKey){pond.update(value.desktopPond);pondKey=key;}}
     const previousPhase=phase;snapshot=value;phase=value.session?.phase||'idle';root.dataset.phase=phase;const english=value.language==='en';document.documentElement.lang=english?'en':'zh-CN';
+    if(awaitingCast){
+      const changedAccount=accountKey(value)!==awaitingCast.account,newSession=(value.session?.id||'')!==awaitingCast.session;
+      if(changedAccount||!newSession&&value.nativeSessionId!==awaitingCast.native||value.error||value.disabled){awaitingCast=null;pressed=null;keysDown.clear();}
+      else if(newSession||phase==='charging')awaitingCast=null;
+    }
     // Keep the catch animation visible, then put away the complete rod and glow.
     if(['charging','cast','waiting','bite','reeling'].includes(phase))summoned=true;
     const rodVisible=summoned||previewing||['charging','cast','waiting','bite','reeling'].includes(phase)||recastPaused();
@@ -132,7 +139,9 @@
     // Keep a held hook key responsive once the main window confirms reeling.
     // Change ownership before sending because a bridge can publish synchronously.
     if(phase==='reeling'&&pressed?.kind==='hook'){pressed.kind='reel';send('reel-start');}
-    if(!floating&&phase!=='charging'&&pressed)release(null,true);
+    // A late idle snapshot can arrive after the physical press but before the
+    // controller acknowledges it. It must not turn that valid gesture into cancel.
+    if(!floating&&phase!=='charging'&&pressed&&!awaitingCast)release(null,true);
   });
   window.addEventListener('beforeunload',()=>{resetInput();off();offMenu?.();window.removeEventListener('keydown',keyDown);window.removeEventListener('keyup',keyUp);window.removeEventListener('blur',resetInput);root.removeEventListener('focusout',focusOut);document.removeEventListener('visibilitychange',visibility);clearTimeout(toastTimer);motion?.destroy();flightFigure?.destroy();pond.destroy();});bridge.send({type:'ready'});
 })();
