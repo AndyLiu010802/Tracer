@@ -35,7 +35,14 @@ test('bundled model atlases contain one complete transparent preview for every c
 });
 
 test('rods, journal fish and fish instances all use the matching model atlas',()=>{
-  for(const rod of F.catalog.rods){const markup=Art.rodMarkup(rod);assert(markup.includes('/fishing-art/rods-model-v1.png'));assert(markup.includes('data-rod-id="'+rod.id+'"'));}
+  for(const [index,rod]of F.catalog.rods.entries()){
+    const markup=Art.rodMarkup(rod),image=markup.match(/<image\b[^>]*>/)[0];assert(markup.includes('/fishing-art/rods-model-v1.png'));assert(markup.includes('data-rod-id="'+rod.id+'"'));
+    // An unknown sprite silently selects bamboo, while retaining the requested
+    // data-rod-id. Check the real crop so new pool entries cannot do that.
+    assert(image.includes(' x="'+(-(index%5)*300)+'"'),rod.id+' has the correct atlas column');
+    assert(image.includes(' y="'+(-Math.floor(index/5)*500)+'"'),rod.id+' has the correct atlas row');
+    assert(image.includes(' height="'+Math.ceil(F.catalog.rods.length/5)*500+'"'),rod.id+' uses the complete atlas');
+  }
   for(const fish of F.catalog.fish){
     const markup=Art.fishMarkup(fish);assert(markup.includes('/fishing-art/fish-model-v1.png'));assert(markup.includes('data-species="'+fish.id+'"'));
     const image=markup.match(/<image\b[^>]*>/)[0];

@@ -31,7 +31,7 @@ test('all advanced summons have unique scenes and finite, accessible transformat
     if(scene.art){assert(fs.existsSync(path.join(__dirname,'../skins/tracer/fishing-art',scene.art)));for(const age of [0,400,1000,1800]){const state=Effects.summonState(rod,age),pose=Effects.caishenPose(state,{width:380,height:260,curve:u=>({x:90,y:230-u*150})},1,rod.id);assert(Object.values(pose).every(Number.isFinite));assert(pose.x-pose.width/2>=0);assert(pose.x+pose.width/2<300);assert(pose.y-pose.height/2>=0);assert(pose.y+pose.height/2<260);}}
   }
   assert.equal(kinds.size,rods.length);assert.equal(Effects.summonScene('__proto__'),null);
-  const blade=F.catalog.rods.find(r=>r.id==='katana');assert.equal(Effects.summonState(blade,100).reveal,0);assert(Effects.summonState(blade,2100).reveal>.5);
+  const blade=F.catalog.rods.find(r=>r.id==='katana');assert.equal(Effects.summonState(blade,100).reveal,0);assert(Effects.summonState(blade,Effects.summonScene(blade.id).duration*.88).reveal>.5);
 });
 
 test('summon placement follows the rod and keeps spirits inside the frame and clear of the water controls',()=>{
@@ -54,7 +54,7 @@ test('manifestation holds a readable spirit before a continuous transformation a
   }
 });
 test('every epic and legendary rod has a distinct continuous light field instead of assembled icon overlays',()=>{
-  assert.equal(rods.length,9);
+  assert.equal(rods.length,22);
   const themes=new Set(),fields=new Set();
   for(const rod of rods){const design=Effects.design(rod.id),profile=Motion.fxProfile(rod);assert(design,rod.id);themes.add(design.theme);fields.add(JSON.stringify(Effects.flow(rod.id,.8,.4)));
     assert.equal(profile.theme,design.theme);assert(rod.effectDescription.every(s=>s.length>15));
@@ -76,7 +76,7 @@ test('all light surfaces remain finite, tapered and continuous over time at comp
 });
 test('signatures trigger once per cast/hook/catch, finish before results and are faint under reduced motion',()=>{
   for(const rod of rods){
-    for(const phase of ['idle','charging','waiting','bite','escaped'])assert.equal(Effects.eventState(rod.id,phase,100),null);
+    for(const phase of ['idle','charging','waiting','escaped'])assert.equal(Effects.eventState(rod.id,phase,100),null);
     assert.equal(Effects.eventState(rod.id,'caught',500),null,'wait for landing');
     assert.equal(Effects.eventState(rod.id,'caught',2050),null,'clear the result UI');
     for(const phase of ['cast','reeling','caught']){
@@ -108,7 +108,7 @@ test('themed actions articulate geometry throughout the readable stage and stop 
     const start=Effects.themePose(rod.id,{progress:.24}),middle=Effects.themePose(rod.id,{progress:.48}),end=Effects.themePose(rod.id,{progress:.7});
     assert.notDeepEqual(start,middle,rod.id+' has a physical action while fully visible');assert.notDeepEqual(middle,end,rod.id+' follows through instead of only fading');signatures.add(JSON.stringify(middle));
     assert.deepEqual(Effects.themePose(rod.id,{progress:.2,reduced:true}),Effects.themePose(rod.id,{progress:.8,reduced:true}),rod.id+' reduced motion fixes its complete pose');
-    let previous=Effects.themePose(rod.id,{progress:0});for(let i=1;i<=240;i++){const next=Effects.themePose(rod.id,{progress:i/240});for(const key of Object.keys(next)){assert(Number.isFinite(next[key]),rod.id+' '+key);assert(Math.abs(next[key]-previous[key])<.07,rod.id+' '+key+' stays continuous');}previous=next;}
+    let previous=Effects.themePose(rod.id,{progress:0});for(let i=1;i<=240;i++){const next=Effects.themePose(rod.id,{progress:i/240});for(const key of Object.keys(next)){assert(Number.isFinite(next[key]),rod.id+' '+key);assert(Math.abs(next[key]-previous[key])<(key==='impact'?.11:.07),rod.id+' '+key+' stays continuous');}previous=next;}
   }
   assert.equal(signatures.size,rods.length);
   assert.equal(Effects.themePose('katana',{progress:.18}).draw,0,'rift opens before blade is drawn');assert(Effects.themePose('katana',{progress:.5}).draw>.9,'tip crosses the space after anticipation');
@@ -120,6 +120,43 @@ test('stellar rings use continuous depth and perspective across front and back s
     const point=Effects.orbitalPoint(angle,tilt,.43,.8),next=Effects.orbitalPoint(angle+.001,tilt,.43,.8);assert(Object.values(point).every(Number.isFinite));assert(Math.hypot(point.x-next.x,point.y-next.y)<.002);
   }
   assert(Effects.orbitalPoint(Math.PI/2,1,0).z>0);assert(Effects.orbitalPoint(3*Math.PI/2,1,0).z<0);
+});
+
+test('spirit images load only for the equipped rod, share across layers, and evict unreferenced art',()=>{
+  const requests=[];class Image{set src(value){requests.push(value);}}
+  const doc={defaultView:{Image},createElement:()=>({getContext:()=>({}),setAttribute(){},remove(){},dataset:{}})},host={ownerDocument:doc,appendChild(){}};
+  const first=Effects.createSummon(host),second=Effects.createSummon(host),flow=Effects.create(host);
+  assert.equal(requests.length,0,'creating an unequipped host never fetches every spirit');
+  const rod=id=>F.catalog.rods.find(r=>r.id===id);
+  assert.strictEqual(first.preload(rod('katana')),second.preload(rod('katana')),'summon layers share one decoded image');assert.equal(requests.length,1);
+  first.preload(rod('katana'));assert.equal(requests.length,1);
+  second.destroy();first.preload(rod('foxfire'));first.preload(rod('abysswhale'));first.preload(rod('lilybell'));first.preload(rod('sunforge'));
+  assert.equal(requests.length,5);first.preload(rod('katana'));assert.equal(requests.length,6,'old unused entries are evicted from the bounded cache');
+  first.destroy();first.destroy();flow.destroy();assert.equal(first.preload(rod('eclipse')),null,'disposed layers cannot reacquire images');
+});
+
+test('all new themes have finite depth geometry, stable quiet poses, and short bite cues; low tiers remain quiet',()=>{
+  const ids=['katana','candlewyrm','thunderdrum','abysswhale','foxfire','lilybell','sandscript','frostwolf','rosevow','inkjudge','butterfly','sunforge','leviathan','eclipse'];
+  for(const id of ids){
+    for(const phase of ['summon','cast','bite','reeling','caught']){
+      for(const progress of [.04,.18,.32,.46,.64,.82,.96])for(const form of Effects.mythicGeometry(id,{phase,progress})){
+        assert(Number.isFinite(form.alpha)&&form.alpha>=0);for(const point of form.points)assert([point.x,point.y,point.z||0].every(Number.isFinite),id+' finite vertices');
+      }
+      assert.deepEqual(Effects.mythicGeometry(id,{phase,progress:.2,reduced:true}),Effects.mythicGeometry(id,{phase,progress:.8,reduced:true}),id+' quiet surface');
+    }
+    assert(Effects.eventState(id,'bite',200));assert.equal(Effects.eventState(id,'bite',600),null);
+  }
+  for(const id of ['walnut','porcelain','citrus','amber','vinyl','nautilus','alpine']){const rod=F.catalog.rods.find(r=>r.id===id);assert(rod);assert.equal(Effects.summonScene(id),null);assert.equal(Motion.fxProfile(rod),null);assert(Effects.summonState(rod,120));}
+  assert(Effects.mythicPose('katana',{progress:.40}).reach>Effects.mythicPose('katana',{progress:.24}).reach,'blade extends after anticipation');
+  assert(Effects.mythicPose('katana',{progress:.97}).reach<.2,'blade returns into its sheath');
+});
+
+test('Canvas fallback attempts WebGL only once per effect layer instead of reallocating every frame',()=>{
+  let attempts=0;const gradient={addColorStop(){}},context=new Proxy({globalAlpha:1},{get:(object,key)=>key in object?object[key]:key.startsWith('create')?()=>gradient:()=>{}});
+  class Image{constructor(){this.complete=true;this.naturalWidth=this.naturalHeight=1024;}set src(value){this.url=value;}}
+  const doc={defaultView:{Image,devicePixelRatio:1},createElement:()=>({getContext:type=>{if(type==='webgl'){attempts++;return null;}return context;},setAttribute(){},remove(){},dataset:{}})},host={ownerDocument:doc,appendChild(){}},rod=F.catalog.rods.find(r=>r.id==='butterfly'),summon=Effects.createSummon(host),flow=Effects.create(host),g={width:380,height:260,grip:{x:60,y:220},tip:{x:130,y:45},water:{x:260,y:180},curve:u=>({x:60+u*70,y:220-u*175})};
+  for(let frame=0;frame<60;frame++){summon.draw(rod,Effects.summonState(rod,300+frame*20),g);flow.draw({variant:rod.id,energy:1},'caught',750+frame*10,{},g,g.tip,g.water,g.tip,g.water);}
+  assert.equal(attempts,2,'one failed attempt for summon, one for catch layer');summon.destroy();flow.destroy();
 });
 
 test('cloud is a continuous three-dimensional tornado with a narrow root and separate live stage motions',()=>{

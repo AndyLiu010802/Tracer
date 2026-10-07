@@ -31,6 +31,13 @@ test('a throttled controller tick spends the full bite deadline and awards no ca
   assert.equal(F.read(f.store.data).catches.length,0);assert.equal(F.read(f.store.data).baits.worm,29);
 });
 
+test('rod collection links target their own pool without changing existing bait shop links',async()=>{
+  const f=await fixture(),visits=[];f.window.Tracer.show=section=>visits.push(['section',section]);f.window.Tracer.garden.department=(...args)=>visits.push(['department',...args]);
+  f.action('open-pool','myriad');assert.deepEqual(JSON.parse(JSON.stringify(visits)),[['section','shop'],['department','fishing',{poolId:'myriad'}]]);
+  visits.length=0;f.action('open-pool','missing');assert.deepEqual(visits,[]);
+  f.action('open-shop','grain');assert.deepEqual(visits,[['section','shop'],['department','fishing','grain']]);
+});
+
 test('a click arriving after the bite deadline cannot hook before the next interval tick',async()=>{
   const f=await fixture();await f.bite();f.skip(1701);f.action('hook');
   assert.equal(f.snapshot().session.phase,'escaped');assert.equal(f.snapshot().session.reason,'missed-bite');

@@ -2,20 +2,20 @@
   "version": 1,
   "sources": {
     "skins/tracer/fishing-lighting.js": "01d5546554057140638a94012b71a1bc796e77ad618548dfaec74cb083b12f45",
-    "skins/tracer/fishing-art.js": "6c23d6019d596606e664b0a9add4e7652519f04db1e234682fbc9ec6d57f1b13",
-    "skins/tracer/fishing-rod-renderer.js": "e0dc20ebbe3090ff67a188e441432e35f57f9b4fefdb40e602b0eb7c0de217e1",
-    "public/fishing-model.js": "d97f5f34d62ce21cb075a4ac51c2b9331894cddeb70afcaaaf6cd470303ea8c8",
+    "skins/tracer/fishing-art.js": "b6bf5a1c67fe345cd7e819a0135af86646a762da40a43d4f78b90f6435e0e525",
+    "skins/tracer/fishing-rod-renderer.js": "cd2bc6b319fa8049ca91943229798eda38d2961293eb807e5f2cfc0286816b5c",
+    "public/fishing-model.js": "7d5932339fa3fcb36c3dbb8a7f2506003e94330e69d3b793e979903ce98ba336",
     "dev/build-fishing-catalog-art.cjs": "8dba2fa5f0b71af06530602da4071ad707fd2807ca360b8e3b7a423b9725d1ce"
   },
   "atlases": [
     {
       "file": "rods-model-v1.png",
       "columns": 5,
-      "rows": 4,
+      "rows": 8,
       "cellWidth": 300,
       "cellHeight": 500,
       "width": 1500,
-      "height": 2000,
+      "height": 4000,
       "renderer": "webgl",
       "ids": [
         "bamboo",
@@ -35,7 +35,27 @@
         "lotus",
         "guandao",
         "katana",
-        "golden"
+        "golden",
+        "walnut",
+        "porcelain",
+        "citrus",
+        "amber",
+        "vinyl",
+        "nautilus",
+        "alpine",
+        "candlewyrm",
+        "thunderdrum",
+        "abysswhale",
+        "foxfire",
+        "lilybell",
+        "sandscript",
+        "frostwolf",
+        "rosevow",
+        "inkjudge",
+        "butterfly",
+        "sunforge",
+        "leviathan",
+        "eclipse"
       ],
       "items": [
         {
@@ -325,9 +345,329 @@
             713,
             1072
           ]
+        },
+        {
+          "id": "walnut",
+          "bounds": [
+            923,
+            1515,
+            1177,
+            1985
+          ],
+          "occupiedPixels": 9905,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "porcelain",
+          "bounds": [
+            1223,
+            1515,
+            1477,
+            1985
+          ],
+          "occupiedPixels": 10025,
+          "sourceBounds": [
+            288,
+            285,
+            713,
+            1071
+          ]
+        },
+        {
+          "id": "citrus",
+          "bounds": [
+            23,
+            2015,
+            277,
+            2485
+          ],
+          "occupiedPixels": 10986,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1071
+          ]
+        },
+        {
+          "id": "amber",
+          "bounds": [
+            323,
+            2015,
+            577,
+            2485
+          ],
+          "occupiedPixels": 11013,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "vinyl",
+          "bounds": [
+            623,
+            2015,
+            877,
+            2485
+          ],
+          "occupiedPixels": 10629,
+          "sourceBounds": [
+            289,
+            285,
+            713,
+            1071
+          ]
+        },
+        {
+          "id": "nautilus",
+          "bounds": [
+            923,
+            2015,
+            1177,
+            2485
+          ],
+          "occupiedPixels": 10945,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1071
+          ]
+        },
+        {
+          "id": "alpine",
+          "bounds": [
+            1223,
+            2015,
+            1477,
+            2485
+          ],
+          "occupiedPixels": 11225,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "candlewyrm",
+          "bounds": [
+            23,
+            2515,
+            277,
+            2985
+          ],
+          "occupiedPixels": 16608,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "thunderdrum",
+          "bounds": [
+            323,
+            2515,
+            577,
+            2985
+          ],
+          "occupiedPixels": 18621,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "abysswhale",
+          "bounds": [
+            623,
+            2515,
+            877,
+            2985
+          ],
+          "occupiedPixels": 19897,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "foxfire",
+          "bounds": [
+            923,
+            2515,
+            1177,
+            2985
+          ],
+          "occupiedPixels": 20052,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "lilybell",
+          "bounds": [
+            1223,
+            2515,
+            1477,
+            2985
+          ],
+          "occupiedPixels": 18312,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "sandscript",
+          "bounds": [
+            23,
+            3015,
+            277,
+            3485
+          ],
+          "occupiedPixels": 16583,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "frostwolf",
+          "bounds": [
+            323,
+            3015,
+            577,
+            3485
+          ],
+          "occupiedPixels": 17627,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "rosevow",
+          "bounds": [
+            623,
+            3015,
+            877,
+            3485
+          ],
+          "occupiedPixels": 17029,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "inkjudge",
+          "bounds": [
+            923,
+            3015,
+            1177,
+            3485
+          ],
+          "occupiedPixels": 17051,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1071
+          ]
+        },
+        {
+          "id": "butterfly",
+          "bounds": [
+            1223,
+            3015,
+            1477,
+            3485
+          ],
+          "occupiedPixels": 17887,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "sunforge",
+          "bounds": [
+            23,
+            3515,
+            277,
+            3985
+          ],
+          "occupiedPixels": 23254,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "leviathan",
+          "bounds": [
+            322,
+            3515,
+            578,
+            3985
+          ],
+          "occupiedPixels": 26537,
+          "sourceBounds": [
+            286,
+            285,
+            713,
+            1072
+          ]
+        },
+        {
+          "id": "eclipse",
+          "bounds": [
+            623,
+            3515,
+            877,
+            3985
+          ],
+          "occupiedPixels": 20577,
+          "sourceBounds": [
+            287,
+            285,
+            713,
+            1071
+          ]
         }
       ],
-      "sha256": "1c84b0620c070e1d7362f9d9a65a05abf6a0beae2627c315effa8214ba89bfa5"
+      "sha256": "c446dc21326ff2ff55de3e5b8bafae6df9af64bcf8c643a4565c07de41deb670"
     },
     {
       "file": "fish-model-v1.png",

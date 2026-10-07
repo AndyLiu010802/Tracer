@@ -34,6 +34,8 @@ function verifyAssets(root){
   sources.add('skins/tracer/fishing-art/golden-caishen-v1.png');
   sources.add('skins/tracer/fishing-art/summon-azure-dragon-v1.png');
   sources.add('skins/tracer/fishing-art/summon-phoenix-v1.png');
+  sources.add('skins/tracer/fishing-art/summon-ashura-v2.png');
+  for(const id of ['candlewyrm','abysswhale','foxfire','frostwolf','inkjudge','leviathan','thunderdrum','sandscript','lilybell','rosevow','butterfly','sunforge'])sources.add('skins/tracer/fishing-art/summon-'+id+'-v1.png');
   assert.ok(sources.size>9,'Garden and fishing assets are available');
   for(const file of sources){assert.equal(omittedRuntime(file),false,'Active garden or fishing asset must remain in the package: '+file);assert.ok(fs.existsSync(path.join(root,file)),'Active garden or fishing asset exists: '+file);}
   return [...sources];

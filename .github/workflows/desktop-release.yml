@@ -91,7 +91,7 @@ jobs:
           TRACER_QA_BROWSER: chromium
         run: |
           failures=0
-          for script in qa-workspace-recovery qa-task-garden-actions qa-accounts qa-wallpaper-shop qa-stickers qa-drag-anchor; do
+          for script in qa-workspace-recovery qa-task-garden-actions qa-accounts qa-wallpaper-shop qa-stickers qa-drag-anchor qa-fishing-myriad-ui; do
             node "dev/$script.cjs" || failures=1
           done
           exit "$failures"
@@ -129,6 +129,8 @@ jobs:
             .cache/task-garden-actions-*/*.png
             .cache/drag-anchor-*/*.png
             .cache/stickers-*/*.png
+            .cache/fishing-myriad-ui-*/*.png
+            .cache/fishing-myriad-ui-*/*.json
 
   publish:
     needs: build

@@ -14,6 +14,8 @@ test('local installer matcher ships fishing and botanical art while retiring all
   for(const file of ['skins/tracer/fishing-aquarium-motion.js','skins/tracer/fishing-aquarium.js','skins/tracer/fishing-aquarium.css'])assert.equal(included(file),true,'Shared aquarium display ships offline: '+file);
   assert(assets.includes('skins/tracer/fishing-lighting.js'),'Shared shadow renderer ships offline');
   assert(assets.includes('skins/tracer/fishing-rod-renderer.js'),'The live 3D rod renderer ships with the offline app');
+  const effects=require('../skins/tracer/fishing-rod-effects'),catalog=require('../public/fishing-model').catalog;
+  for(const rod of catalog.rods){const file=effects.summonScene(rod.id)?.art;if(file)assert(assets.includes('skins/tracer/fishing-art/'+file),'Summon artwork is verified offline: '+rod.id);}
   for(const file of assets)assert(included(file),'Active garden/fishing asset: '+file);
   for(const file of ['desktop/pet.js','desktop/pet-preload.js','desktop/garden-trail.js','skins/tracer/pet.js','skins/tracer/pet.html','skins/tracer/pet.css','skins/tracer/pet-art/brook-crafting-v1.png','skins/tracer/garden-companion-motion.js','skins/tracer/garden-companion-atlas.js','skins/tracer/garden-wildflower-motion.js','skins/tracer/garden-art/apple-normal-idle-v3-p1.png']){
     if(fs.existsSync(path.join(root,file)))assert.equal(included(file),false,'Retired character asset: '+file);

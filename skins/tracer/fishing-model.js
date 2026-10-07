@@ -25,11 +25,35 @@
     ['lotus','太虚莲华','Celestial lotus','legendary','xianxia','#e3b7da','#c1eef0',.38,1.17],
     ['guandao','青龙偃月刀','Azure dragon glaive','legendary','xianxia','#176b59','#d9edb6',.37,1.18],
     ['katana','武士刀·居合','Iaido katana','epic','fantasy','#354670','#d4e9ff',.33,1.12],
-    ['golden','黄金鱼竿·万金之王','Golden sovereign','legendary','fantasy','#eebd42','#fff0ac',.38,1.18]
+    ['golden','黄金鱼竿·万金之王','Golden sovereign','legendary','fantasy','#eebd42','#fff0ac',.38,1.18],
+    ['walnut','栗木行旅','Chestnut wayfarer','common','real','#88603f','#dac7a0',.24,.94],
+    ['porcelain','素瓷青岚','Celadon breeze','common','real','#b6d1cb','#365e65',.25,.95],
+    ['citrus','橘庭晴风','Citrus orchard','common','real','#e6a345','#739363',.24,.97],
+    ['amber','琥珀松脂','Amber heartwood','rare','fantasy','#c18139','#efd59c',.28,1.03],
+    ['vinyl','蓝调唱针','Midnight stylus','rare','fantasy','#35566f','#b2c9d0',.29,1.04],
+    ['nautilus','螺旋潮汐','Nautilus tide','rare','fantasy','#b59384','#b4e4df',.29,1.06],
+    ['alpine','雪线登峰','Alpine ascent','rare','real','#738f9d','#dce6e7',.30,1.05],
+    ['candlewyrm','烛龙照夜','Candlewyrm vigil','epic','xianxia','#843f36','#f0bc71',.33,1.11],
+    ['thunderdrum','雷鼓天工','Stormdrum artisan','epic','xianxia','#46697c','#d2be72',.34,1.10],
+    ['abysswhale','玄鲸潜渊','Abyssal whale','epic','fantasy','#284963','#76d9da',.33,1.12],
+    ['foxfire','枫火狩狐','Maple foxfire','epic','xianxia','#ab5039','#edc780',.34,1.11],
+    ['lilybell','铃兰祈愿','Lilybell blessing','epic','fantasy','#75977a','#f0eed5',.33,1.10],
+    ['sandscript','沙海时轮','Sandscript hourwheel','epic','fantasy','#a8814c','#e1cf97',.34,1.11],
+    ['frostwolf','霜狼逐月','Frostwolf moonchase','epic','fantasy','#7993aa','#d4ecf4',.33,1.12],
+    ['rosevow','蔷薇圣契','Rosebound oath','epic','fantasy','#984e67','#e3cb9f',.34,1.10],
+    ['inkjudge','墨羽判官','Inkfeather arbiter','epic','xianxia','#384349','#b6d2c6',.33,1.11],
+    ['butterfly','琉光蝶梦','Prismatic butterfly','epic','fantasy','#8c79b7','#a6e1e4',.34,1.12],
+    ['sunforge','曜日天铸','Solar crucible','legendary','xianxia','#c28b44','#ffe1a0',.37,1.18],
+    ['leviathan','沧溟海皇','Leviathan sovereign','legendary','fantasy','#286478','#bbe6e3',.38,1.17],
+    ['eclipse','万象归墟','Myriad eclipse','legendary','xianxia','#51476c','#d9cbb3',.38,1.18]
   ].map(function(r){return{id:r[0],name:[r[1],r[2]],rarity:r[3],family:r[4],style:r[0],color:r[5],accent:r[6],barSize:r[7],control:r[8]};});
-  // Every pool explicitly names its ordinary rewards and exactly one secret.
-  var ROD_POOLS=[{id:'basic',name:['基础奖池','Base collection'],rodIds:RODS.filter(function(r){return r.id!=='bamboo'&&r.id!=='golden';}).map(function(r){return r.id;}),hiddenRodId:'golden',odds:{common:.545,hidden:.005,rare:.30,epic:.12,legendary:.03}}];
-  RODS.forEach(function(r){if(r.id==='golden'){r.hidden=true;r.saleMultiplier=2;}});
+  // Pool identities and reward lists are permanent receipt contracts. Never
+  // derive an old pool from the growing catalog or backfill poolId in old saves.
+  var ROD_POOLS=[
+    {id:'basic',name:['基础奖池','Base collection'],volume:1,description:['溪岸手作、月轮火羽与青龙神兵，最初的十七份水边惊喜。','Seventeen original discoveries, from riverside craft to moonlight, phoenix fire and dragon-forged arms.'],rodIds:['willow','carbon','copper','rosewood','tide','clockwork','frost','jade','moon','phoenix','cloud','astral','dragon','lotus','guandao','katana'],hiddenRodId:'golden',odds:{common:.545,hidden:.005,rare:.30,epic:.12,legendary:.03}},
+    {id:'myriad',name:['万象秘藏','Myriad reliquary'],volume:2,description:['栗木与素瓷启程，十件史诗奇珍各藏一段传说；追寻曜日天铸、沧溟海皇与一款尚未揭晓的秘藏。','Begin with chestnut and celadon, discover ten epic wonders, and seek the Solar Crucible, the Leviathan Sovereign and one unrevealed secret.'],rodIds:['walnut','porcelain','citrus','amber','vinyl','nautilus','alpine','candlewyrm','thunderdrum','abysswhale','foxfire','lilybell','sandscript','frostwolf','rosevow','inkjudge','butterfly','sunforge','leviathan'],hiddenRodId:'eclipse',odds:{common:.545,hidden:.005,rare:.30,epic:.12,legendary:.03}}
+  ];
+  RODS.forEach(function(r){if(ROD_POOLS.some(function(pool){return pool.hiddenRodId===r.id;}))r.hidden=true;if(r.id==='golden')r.saleMultiplier=2;});
   var ROD_EFFECT_NOTES={
     golden:['万金加冕 · 镜面纯金与精细刻纹，起鱼升起旋转金币；所钓鱼售价 ×2','Golden coronation · polished gold and fine engraving, a rising spinning coin on catch; caught fish sell for ×2'],
     jade:['青玉流光 · 收鱼玉龙腾空','Jade shimmer · dragon catch flourish'],
@@ -40,7 +64,27 @@
     dragon:['九霄雷龙 · 抛竿雷光，收鱼金龙腾霄','Thunder dragon · lightning cast, ascending golden dragon'],
     lotus:['太虚莲境 · 抛竿飞瓣，收鱼莲华层层绽放','Celestial bloom · petal cast, unfolding lotus mandala'],
     guandao:['青龙偃月 · 挥刀斩波，收鱼龙印伴青龙盘旋','Azure crescent · glaive sweep, dragon seal and jade coils'],
-    katana:['居合樱落 · 拔刀斩击，收鱼一闪樱花散落','Sakura iai · blade arcs, crossing slash and falling petals']
+    katana:['修罗居合 · 锋刃切开虚空，拔刀斩痕沿水面掠过，收鱼以交错刃光断浪','Asura iai · the blade cleaves the void; a drawn cut crosses the water and intersecting blade trails break the wave'],
+    walnut:['栗木温润 · 顺直木纹嵌入黄铜套节，手缝皮革握柄留住旅途的温度','Chestnut warmth · straight grain meets fitted brass ferrules and a hand-stitched leather grip'],
+    porcelain:['素瓷青岚 · 白瓷靛青纹衔接细银包口，细裂釉沿竿身渐隐，像雨后山色','Celadon breeze · indigo underglaze meets fine silver rims, its porcelain crackle fading like mountains after rain'],
+    citrus:['橘庭晴风 · 蜜橘漆面搭配藤编握把，奶白绕线与叶脉护圈点亮晴日','Orchard craft · honey-orange lacquer, a woven rattan grip, cream bindings and leaf-veined fittings catch the afternoon light'],
+    amber:['松脂凝光 · 半透明琥珀封存松针，金棕光晕沿温润木节缓缓流转','Resin light · suspended pine needles rest in translucent amber as honey-colored light follows the wood'],
+    vinyl:['蓝调唱针 · 黑胶螺纹与拉丝金属相扣，唱针拾起水纹，余音化作低回音环','Midnight groove · vinyl channels meet brushed metal; a stylus lifts ripples into lingering sound rings'],
+    nautilus:['螺旋潮汐 · 珍珠母贝顺着海螺曲线包边，虹彩水丝沿壳室回旋','Shell spiral · mother-of-pearl follows a nautilus curve, drawing iridescent currents through its chambers'],
+    alpine:['雪线登峰 · 冰灰轻金属与防滑编绳，冰镐式导环映出雪线上的冷光','Summit gear · ice-gray metal, a woven climbing grip and pick-shaped guides hold the light of the snowline'],
+    candlewyrm:['烛龙照夜 · 黑漆长脊与朱红透晶护住烛芯，龙息点亮夜幕，烛焰引出绕竿收束的龙影','Night vigil · black lacquer and vermilion crystal shelter the wick; candleflame draws a dragon from the dark to coil around the rod'],
+    thunderdrum:['雷鼓天工 · 鼓钉镶入青铜轮毂，雷纹应鼓而起，收鱼时鼓槌击出扩散的电光环','Storm cadence · drum studs seat into bronze hubs; each beat drives branching lightning and a spreading electric ring'],
+    abysswhale:['玄鲸潜渊 · 深蓝鲸骨拱起微光鳍脊，水流蓄成鲸影，再破开水面托起收获','Abyssal rise · dim fins trace a deep-blue whalebone arch; currents gather into a whale that lifts the catch through the surface'],
+    foxfire:['枫火狩狐 · 漆红狐面嵌着象牙耳弧与鎏金枫叶，狐火贴水疾走，尾焰逐条展旋','Maple hunt · a red-lacquer fox mask carries ivory ear arches and gilt leaves; foxfire runs over water as its tails unfurl in turn'],
+    lilybell:['铃兰祈愿 · 白瓷铃花悬于银叶枝梗，摇曳的花铃洒下露光，收鱼时花序逐朵绽开','Lilybell prayer · porcelain bells hang from silver stems, scattering dew-light before opening one flower at a time'],
+    sandscript:['沙海时轮 · 黄铜环尺环抱流沙晶窗，沙粒绕刻度逆行，起鱼时转轮重合定格','Desert hourwheel · brass scales encircle a sand-filled crystal; grains run against the markings until the wheels align on the catch'],
+    frostwolf:['霜狼逐月 · 冰晶鬃脊咬合银白护柄，狼影踏出碎霜，追月一跃留下弧形冰迹','Moonchase · crystalline fur joins a silver grip; a wolf scatters frost and leaps toward the moon, carving an icy arc'],
+    rosevow:['蔷薇圣契 · 黑银荆枝环抱红宝石花心，彩窗翼透出碎光，花瓣旋开后荆棘环逐节扣合','Rosebound oath · black-silver thorns cradle a ruby heart beneath stained-glass wings; petals unfurl and the thorn ring closes joint by joint'],
+    inkjudge:['墨羽判官 · 墨玉判笔衔接金刻羽轴与卷轴线轮，墨线落水成判词，飞羽收拢时朱砂印落定','Inkfeather verdict · an ink-jade brush joins gilt quills and a scroll reel; strokes settle on water as closing wings bring down a cinnabar seal'],
+    butterfly:['琉光蝶梦 · 虹彩翅脉护住紫晶茧核，蝶翼由根部带动轻颤，丝线结茧后散开细碎鳞光','Prismatic dream · iridescent wing-veins shelter an amethyst cocoon; wings ripple from their roots as silk coils and releases luminous scales'],
+    sunforge:['曜日天铸 · 日轮锻锤悬于熔金炉环，锤落迸出细长火星，将收获托进升起的日冕','Solar crucible · a sun-wheel hammer hangs within a molten ring; its strike casts fine sparks and lifts the catch into a rising corona'],
+    leviathan:['沧溟海皇 · 潮汐王冠嵌入深海枪脊，巨鳍掀开水幕，海皇虚影携涡流升起','Ocean sovereign · a tidal crown joins an abyssal spear; immense fins part the water as the sovereign rises through a turning current'],
+    eclipse:['万象归墟 · 暗晶中悬浮一线蚀光，破碎星环向内归流，再于起鱼瞬间翻转成辉耀新生','Myriad eclipse · a sliver of light hangs inside dark crystal; broken star rings fall inward, then turn outward in a brilliant rebirth']
   };
   RODS.forEach(function(rod){if(ROD_EFFECT_NOTES[rod.id])rod.effectDescription=ROD_EFFECT_NOTES[rod.id];});
   var FISH = [

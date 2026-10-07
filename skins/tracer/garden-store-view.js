@@ -108,6 +108,6 @@
     }
     shop.addEventListener('click',click);
     function update(next){if(dead)return;state=next;render();}
-    return{update,department(name,baitId){choose(name);if(name==='fishing'&&baitId)fishingShop.selectBait?.(baitId);},destroy(){dead=true;abort.abort();giftAppearanceObserver.disconnect();disposePreview();if(detail.open)detail.close();collection.destroy();fishingShop.destroy();stickerShop.destroy();postcardShop.destroy();market.destroy();shop.removeEventListener('click',click);shop.remove();}};
+    return{update,department(name,item){choose(name);if(name==='fishing'&&item){if(typeof item==='string')fishingShop.selectBait?.(item);else if(item.poolId)fishingShop.selectPool?.(item.poolId);}},destroy(){dead=true;abort.abort();giftAppearanceObserver.disconnect();disposePreview();if(detail.open)detail.close();collection.destroy();fishingShop.destroy();stickerShop.destroy();postcardShop.destroy();market.destroy();shop.removeEventListener('click',click);shop.remove();}};
   };
 })(typeof window!=='undefined'?window:globalThis);

@@ -6,7 +6,7 @@
   function hash(s){let h=2166136261;for(const c of String(s||'')){h=Math.imul(h^c.charCodeAt(0),16777619);}return h>>>0;}
   function identity(item){return typeof item==='string'?item:String(item&&item.id||'');}
   function name(item){return item&&Array.isArray(item.name)?item.name[0]:item&&item.name||identity(item);}
-  const ROD_SPRITES=['bamboo','willow','carbon','copper','rosewood','tide','clockwork','frost','jade','moon','phoenix','cloud','astral','dragon','lotus','guandao','katana','golden'];
+  const ROD_SPRITES=['bamboo','willow','carbon','copper','rosewood','tide','clockwork','frost','jade','moon','phoenix','cloud','astral','dragon','lotus','guandao','katana','golden','walnut','porcelain','citrus','amber','vinyl','nautilus','alpine','candlewyrm','thunderdrum','abysswhale','foxfire','lilybell','sandscript','frostwolf','rosevow','inkjudge','butterfly','sunforge','leviathan','eclipse'];
   let artSerial=0;
   function atlasMarkup(className,filename,bounds,atlasWidth,atlasHeight,width,height,title,attributes){
     const [left,top,right,bottom]=bounds,w=right-left,h=bottom-top,scale=Math.min(width/w,height/h)*.96,dx=(width-w*scale)/2,dy=(height-h*scale)/2,clip='fishing-art-clip-'+(++artSerial);

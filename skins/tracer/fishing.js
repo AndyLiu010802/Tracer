@@ -224,6 +224,7 @@
     modal.querySelector('[data-close]').onclick=()=>modal.close();modal.addEventListener('close',()=>{aquariumPreviewPlayer?.destroy();aquariumPreviewPlayer=null;aquariumPreview=null;modal.remove();});modal.showModal();
   }
   function openShop(baitId){T.show('shop');T.garden?.department?.('fishing',baitId);}
+  function openPool(poolId){if(!F.catalog.rodPools.some(pool=>pool.id===poolId))return;T.show('shop');T.garden?.department?.('fishing',{poolId});}
   function reveal(result){
     const modal=document.createElement('dialog');modal.className='fishing-modal';modal.setAttribute('aria-label',tr('鱼竿盲盒结果','Rod box result'));
     const rod=result.rod;modal.innerHTML='<div class="fishing-reveal" data-rarity="'+rod.rarity+'"><span class="fishing-eyebrow">'+(rod.hidden?tr('隐藏款揭晓 · 0.5%','SECRET DISCOVERED · 0.5%'):tr('水边来信 / YOUR NEW DISCOVERY','A WATERSIDE DISCOVERY'))+'</span><div class="fishing-reveal-art">'+TracerFishingArt.rodMarkup(rod)+'</div><h2>'+rod.name[TracerLocale.language()==='en'?1:0]+'</h2>'+(rod.hidden?'<p>'+rod.effectDescription[TracerLocale.language()==='en'?1:0]+'</p>':'')+'<p>'+(result.duplicate?tr('重复收藏，已返还 '+result.compensation+' 金币。','Already collected. '+result.compensation+' coins returned.'):tr('新的鱼竿已加入收藏。','A new rod has joined your collection.'))+'</p><button type="button" data-equip>'+tr('装备这根鱼竿','Equip this rod')+'</button> <button type="button" data-close>'+tr('收好','Keep it')+'</button></div>';
@@ -253,7 +254,7 @@
     if(type==='hide-aquarium'){C?.hide();return;}
     if(type==='pin-pond'){desktopPondChoice={id:extra.pondId,scope:JSON.stringify(context())};refresh();B?.show();return;}
     if(['cast-start','cast-release','hook','reel-start','reel-release','cancel'].includes(type))return input(type);
-    if(type==='open-aquarium')return T.show('cabin');if(type==='open-ponds')return T.show('ponds');if(type==='open-game')return openGame();if(type==='open-tackle')return openTackle();if(type==='open-shop')return openShop(value);if(type==='retry-save')return retry();if(type==='pin-aquarium')return pinAquarium();
+    if(type==='open-aquarium')return T.show('cabin');if(type==='open-ponds')return T.show('ponds');if(type==='open-game')return openGame();if(type==='open-tackle')return openTackle();if(type==='open-shop')return openShop(value);if(type==='open-pool')return openPool(value);if(type==='retry-save')return retry();if(type==='pin-aquarium')return pinAquarium();
     if(type==='sell-fish'||type==='sell-all-fish')return sellCatches(type,value);
     if(type==='release-request'){
       const fry=F.read(T.store.data).fry.find(f=>f.id===value);if(!fry)return;
