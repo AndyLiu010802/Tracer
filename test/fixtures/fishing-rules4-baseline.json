@@ -1,0 +1,1372 @@
+{
+  "fish": [
+    "minnow",
+    "crucian",
+    "carp",
+    "perch",
+    "trout",
+    "sardine",
+    "mackerel",
+    "catfish",
+    "koi",
+    "goldfish",
+    "seahorse",
+    "angelfish",
+    "lantern",
+    "lotusfin",
+    "moonfin",
+    "crystal",
+    "phoenixfish",
+    "dreamray",
+    "dragonkoi",
+    "galaxywhale",
+    "gulpuffer",
+    "grumpangler",
+    "flopray",
+    "snagglefin",
+    "clownfish",
+    "bluebetta",
+    "pearljelly",
+    "crownray",
+    "bleak",
+    "roach",
+    "loach",
+    "bluegill",
+    "anchovy",
+    "herring",
+    "mullet",
+    "smelt",
+    "pike",
+    "bass",
+    "discus",
+    "lionfish",
+    "tang",
+    "butterflyfish",
+    "porcupine",
+    "moray",
+    "flyingfish",
+    "icechar",
+    "sailfish",
+    "oarfish",
+    "leafydragon",
+    "glassoctopus",
+    "amberarowana",
+    "ribbonmoon",
+    "stormmanta",
+    "emberdrake",
+    "abysskraken",
+    "aurorawhale",
+    "dace",
+    "barbel",
+    "tench",
+    "gudgeon",
+    "bitterling",
+    "rivercrab",
+    "glassshrimp",
+    "sandgoby",
+    "wrasse",
+    "sandflounder",
+    "rockling",
+    "hermitcrab",
+    "cockle",
+    "mudskipper",
+    "icewhitefish",
+    "arcticcod",
+    "snowcrab",
+    "redshrimp",
+    "seaurchin",
+    "mosscrab",
+    "reedturtle",
+    "starshrimp",
+    "mandarin",
+    "softshell",
+    "crayfish",
+    "boxfish",
+    "triggerfish",
+    "mandarinfish",
+    "bluelobster",
+    "pearloyster",
+    "icekingcrab",
+    "icejelly",
+    "chambernautilus",
+    "cuttlefish",
+    "spidercrab",
+    "axolotl",
+    "jadeturtle",
+    "lotussnail",
+    "moonoctopus",
+    "moonseastar",
+    "mantisshrimp",
+    "crystalcrab",
+    "vampyroteuthis",
+    "ribbonseahare",
+    "dragonsnail",
+    "paperkoi",
+    "celestialturtle",
+    "cometjelly",
+    "jadecrabking",
+    "clocknautilus"
+  ],
+  "samples": [
+    {
+      "seed": 1019,
+      "fishId": "rivercrab",
+      "baitId": "earthworm",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 8938,
+      "fishId": "rivercrab",
+      "baitId": "dough",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 16857,
+      "fishId": "glassshrimp",
+      "baitId": "prawn",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 24776,
+      "fishId": "barbel",
+      "baitId": "cutbait",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 32695,
+      "fishId": "minnow",
+      "baitId": "lotusmeal",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 40614,
+      "fishId": "crucian",
+      "baitId": "earthworm",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 48533,
+      "fishId": "mystery_bundle",
+      "baitId": "dough",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 56452,
+      "fishId": "bluegill",
+      "baitId": "prawn",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 64371,
+      "fishId": "tench",
+      "baitId": "cutbait",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 72290,
+      "fishId": "bitterling",
+      "baitId": "lotusmeal",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 80209,
+      "fishId": "carp",
+      "baitId": "earthworm",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 88128,
+      "fishId": "roach",
+      "baitId": "dough",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 96047,
+      "fishId": "roach",
+      "baitId": "prawn",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 103966,
+      "fishId": "rivercrab",
+      "baitId": "cutbait",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 111885,
+      "fishId": "bluegill",
+      "baitId": "lotusmeal",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 119804,
+      "fishId": "koi",
+      "baitId": "earthworm",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 127723,
+      "fishId": "junk",
+      "baitId": "dough",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 135642,
+      "fishId": "bluegill",
+      "baitId": "prawn",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 143561,
+      "fishId": "bleak",
+      "baitId": "cutbait",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 151480,
+      "fishId": "rivercrab",
+      "baitId": "lotusmeal",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 159399,
+      "fishId": "bitterling",
+      "baitId": "earthworm",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 167318,
+      "fishId": "tench",
+      "baitId": "dough",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 175237,
+      "fishId": "junk",
+      "baitId": "prawn",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 183156,
+      "fishId": "trout",
+      "baitId": "cutbait",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 191075,
+      "fishId": "mystery_bundle",
+      "baitId": "lotusmeal",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 198994,
+      "fishId": "mandarin",
+      "baitId": "earthworm",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 206913,
+      "fishId": "dace",
+      "baitId": "dough",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 214832,
+      "fishId": "glassshrimp",
+      "baitId": "prawn",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 222751,
+      "fishId": "catfish",
+      "baitId": "cutbait",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 230670,
+      "fishId": "tench",
+      "baitId": "lotusmeal",
+      "spotId": "creek",
+      "depthId": "near"
+    },
+    {
+      "seed": 1019,
+      "fishId": "mudskipper",
+      "baitId": "earthworm",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 8938,
+      "fishId": "mudskipper",
+      "baitId": "dough",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 16857,
+      "fishId": "triggerfish",
+      "baitId": "prawn",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 24776,
+      "fishId": "rockling",
+      "baitId": "cutbait",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 32695,
+      "fishId": "sardine",
+      "baitId": "lotusmeal",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 40614,
+      "fishId": "mackerel",
+      "baitId": "earthworm",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 48533,
+      "fishId": "mystery_bundle",
+      "baitId": "dough",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 56452,
+      "fishId": "porcupine",
+      "baitId": "prawn",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 64371,
+      "fishId": "rockling",
+      "baitId": "cutbait",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 72290,
+      "fishId": "cockle",
+      "baitId": "lotusmeal",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 80209,
+      "fishId": "angelfish",
+      "baitId": "earthworm",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 88128,
+      "fishId": "lionfish",
+      "baitId": "dough",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 96047,
+      "fishId": "lionfish",
+      "baitId": "prawn",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 103966,
+      "fishId": "cockle",
+      "baitId": "cutbait",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 111885,
+      "fishId": "wrasse",
+      "baitId": "lotusmeal",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 119804,
+      "fishId": "herring",
+      "baitId": "earthworm",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 127723,
+      "fishId": "junk",
+      "baitId": "dough",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 135642,
+      "fishId": "leafydragon",
+      "baitId": "prawn",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 143561,
+      "fishId": "tang",
+      "baitId": "cutbait",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 151480,
+      "fishId": "mudskipper",
+      "baitId": "lotusmeal",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 159399,
+      "fishId": "cockle",
+      "baitId": "earthworm",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 167318,
+      "fishId": "hermitcrab",
+      "baitId": "dough",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 175237,
+      "fishId": "junk",
+      "baitId": "prawn",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 183156,
+      "fishId": "clownfish",
+      "baitId": "cutbait",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 191075,
+      "fishId": "mystery_bundle",
+      "baitId": "lotusmeal",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 198994,
+      "fishId": "bluelobster",
+      "baitId": "earthworm",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 206913,
+      "fishId": "wrasse",
+      "baitId": "dough",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 214832,
+      "fishId": "mandarinfish",
+      "baitId": "prawn",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 222751,
+      "fishId": "mullet",
+      "baitId": "cutbait",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 230670,
+      "fishId": "hermitcrab",
+      "baitId": "lotusmeal",
+      "spotId": "reef",
+      "depthId": "near"
+    },
+    {
+      "seed": 1019,
+      "fishId": "icekingcrab",
+      "baitId": "earthworm",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 8938,
+      "fishId": "icekingcrab",
+      "baitId": "dough",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 16857,
+      "fishId": "icejelly",
+      "baitId": "prawn",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 24776,
+      "fishId": "arcticcod",
+      "baitId": "cutbait",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 32695,
+      "fishId": "perch",
+      "baitId": "lotusmeal",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 40614,
+      "fishId": "perch",
+      "baitId": "earthworm",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 48533,
+      "fishId": "mystery_bundle",
+      "baitId": "dough",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 56452,
+      "fishId": "arcticcod",
+      "baitId": "prawn",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 64371,
+      "fishId": "arcticcod",
+      "baitId": "cutbait",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 72290,
+      "fishId": "snowcrab",
+      "baitId": "lotusmeal",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 80209,
+      "fishId": "trout",
+      "baitId": "earthworm",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 88128,
+      "fishId": "icewhitefish",
+      "baitId": "dough",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 96047,
+      "fishId": "arcticcod",
+      "baitId": "prawn",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 103966,
+      "fishId": "snowcrab",
+      "baitId": "cutbait",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 111885,
+      "fishId": "icewhitefish",
+      "baitId": "lotusmeal",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 119804,
+      "fishId": "smelt",
+      "baitId": "earthworm",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 127723,
+      "fishId": "junk",
+      "baitId": "dough",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 135642,
+      "fishId": "snowcrab",
+      "baitId": "prawn",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 143561,
+      "fishId": "smelt",
+      "baitId": "cutbait",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 151480,
+      "fishId": "snowcrab",
+      "baitId": "lotusmeal",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 159399,
+      "fishId": "snowcrab",
+      "baitId": "earthworm",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 167318,
+      "fishId": "snowcrab",
+      "baitId": "dough",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 175237,
+      "fishId": "junk",
+      "baitId": "prawn",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 183156,
+      "fishId": "trout",
+      "baitId": "cutbait",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 191075,
+      "fishId": "mystery_bundle",
+      "baitId": "lotusmeal",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 198994,
+      "fishId": "icejelly",
+      "baitId": "earthworm",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 206913,
+      "fishId": "icewhitefish",
+      "baitId": "dough",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 214832,
+      "fishId": "icejelly",
+      "baitId": "prawn",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 222751,
+      "fishId": "trout",
+      "baitId": "cutbait",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 230670,
+      "fishId": "snowcrab",
+      "baitId": "lotusmeal",
+      "spotId": "frost",
+      "depthId": "near"
+    },
+    {
+      "seed": 1019,
+      "fishId": "cuttlefish",
+      "baitId": "earthworm",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 8938,
+      "fishId": "spidercrab",
+      "baitId": "dough",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 16857,
+      "fishId": "spidercrab",
+      "baitId": "prawn",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 24776,
+      "fishId": "seaurchin",
+      "baitId": "cutbait",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 32695,
+      "fishId": "mackerel",
+      "baitId": "lotusmeal",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 40614,
+      "fishId": "mackerel",
+      "baitId": "earthworm",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 48533,
+      "fishId": "mystery_bundle",
+      "baitId": "dough",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 56452,
+      "fishId": "redshrimp",
+      "baitId": "prawn",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 64371,
+      "fishId": "seaurchin",
+      "baitId": "cutbait",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 72290,
+      "fishId": "seaurchin",
+      "baitId": "lotusmeal",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 80209,
+      "fishId": "mackerel",
+      "baitId": "earthworm",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 88128,
+      "fishId": "redshrimp",
+      "baitId": "dough",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 96047,
+      "fishId": "redshrimp",
+      "baitId": "prawn",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 103966,
+      "fishId": "cuttlefish",
+      "baitId": "cutbait",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 111885,
+      "fishId": "redshrimp",
+      "baitId": "lotusmeal",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 119804,
+      "fishId": "pearljelly",
+      "baitId": "earthworm",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 127723,
+      "fishId": "junk",
+      "baitId": "dough",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 135642,
+      "fishId": "redshrimp",
+      "baitId": "prawn",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 143561,
+      "fishId": "moray",
+      "baitId": "cutbait",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 151480,
+      "fishId": "chambernautilus",
+      "baitId": "lotusmeal",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 159399,
+      "fishId": "chambernautilus",
+      "baitId": "earthworm",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 167318,
+      "fishId": "seaurchin",
+      "baitId": "dough",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 175237,
+      "fishId": "junk",
+      "baitId": "prawn",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 183156,
+      "fishId": "mackerel",
+      "baitId": "cutbait",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 191075,
+      "fishId": "mystery_bundle",
+      "baitId": "lotusmeal",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 198994,
+      "fishId": "spidercrab",
+      "baitId": "earthworm",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 206913,
+      "fishId": "redshrimp",
+      "baitId": "dough",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 214832,
+      "fishId": "spidercrab",
+      "baitId": "prawn",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 222751,
+      "fishId": "lantern",
+      "baitId": "cutbait",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 230670,
+      "fishId": "seaurchin",
+      "baitId": "lotusmeal",
+      "spotId": "deep",
+      "depthId": "near"
+    },
+    {
+      "seed": 1019,
+      "fishId": "lotussnail",
+      "baitId": "earthworm",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 8938,
+      "fishId": "jadeturtle",
+      "baitId": "dough",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 16857,
+      "fishId": "lotussnail",
+      "baitId": "prawn",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 24776,
+      "fishId": "reedturtle",
+      "baitId": "cutbait",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 32695,
+      "fishId": "carp",
+      "baitId": "lotusmeal",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 40614,
+      "fishId": "carp",
+      "baitId": "earthworm",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 48533,
+      "fishId": "mystery_bundle",
+      "baitId": "dough",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 56452,
+      "fishId": "mosscrab",
+      "baitId": "prawn",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 64371,
+      "fishId": "reedturtle",
+      "baitId": "cutbait",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 72290,
+      "fishId": "jadeturtle",
+      "baitId": "lotusmeal",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 80209,
+      "fishId": "koi",
+      "baitId": "earthworm",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 88128,
+      "fishId": "lotusfin",
+      "baitId": "dough",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 96047,
+      "fishId": "mosscrab",
+      "baitId": "prawn",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 103966,
+      "fishId": "jadeturtle",
+      "baitId": "cutbait",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 111885,
+      "fishId": "reedturtle",
+      "baitId": "lotusmeal",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 119804,
+      "fishId": "mosscrab",
+      "baitId": "earthworm",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 127723,
+      "fishId": "junk",
+      "baitId": "dough",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 135642,
+      "fishId": "mosscrab",
+      "baitId": "prawn",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 143561,
+      "fishId": "mosscrab",
+      "baitId": "cutbait",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 151480,
+      "fishId": "jadeturtle",
+      "baitId": "lotusmeal",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 159399,
+      "fishId": "axolotl",
+      "baitId": "earthworm",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 167318,
+      "fishId": "reedturtle",
+      "baitId": "dough",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 175237,
+      "fishId": "junk",
+      "baitId": "prawn",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 183156,
+      "fishId": "lotusfin",
+      "baitId": "cutbait",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 191075,
+      "fishId": "mystery_bundle",
+      "baitId": "lotusmeal",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 198994,
+      "fishId": "dragonsnail",
+      "baitId": "earthworm",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 206913,
+      "fishId": "mosscrab",
+      "baitId": "dough",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 214832,
+      "fishId": "lotussnail",
+      "baitId": "prawn",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 222751,
+      "fishId": "mosscrab",
+      "baitId": "cutbait",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 230670,
+      "fishId": "axolotl",
+      "baitId": "lotusmeal",
+      "spotId": "lotus",
+      "depthId": "near"
+    },
+    {
+      "seed": 1019,
+      "fishId": "moonseastar",
+      "baitId": "earthworm",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 8938,
+      "fishId": "moonseastar",
+      "baitId": "dough",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 16857,
+      "fishId": "moonseastar",
+      "baitId": "prawn",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 24776,
+      "fishId": "starshrimp",
+      "baitId": "cutbait",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 32695,
+      "fishId": "trout",
+      "baitId": "lotusmeal",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 40614,
+      "fishId": "trout",
+      "baitId": "earthworm",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 48533,
+      "fishId": "mystery_bundle",
+      "baitId": "dough",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 56452,
+      "fishId": "starshrimp",
+      "baitId": "prawn",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 64371,
+      "fishId": "starshrimp",
+      "baitId": "cutbait",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 72290,
+      "fishId": "moonseastar",
+      "baitId": "lotusmeal",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 80209,
+      "fishId": "trout",
+      "baitId": "earthworm",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 88128,
+      "fishId": "starshrimp",
+      "baitId": "dough",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 96047,
+      "fishId": "starshrimp",
+      "baitId": "prawn",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 103966,
+      "fishId": "moonoctopus",
+      "baitId": "cutbait",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 111885,
+      "fishId": "starshrimp",
+      "baitId": "lotusmeal",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 119804,
+      "fishId": "crownray",
+      "baitId": "earthworm",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 127723,
+      "fishId": "junk",
+      "baitId": "dough",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 135642,
+      "fishId": "starshrimp",
+      "baitId": "prawn",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 143561,
+      "fishId": "trout",
+      "baitId": "cutbait",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 151480,
+      "fishId": "moonseastar",
+      "baitId": "lotusmeal",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 159399,
+      "fishId": "moonoctopus",
+      "baitId": "earthworm",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 167318,
+      "fishId": "moonoctopus",
+      "baitId": "dough",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 175237,
+      "fishId": "junk",
+      "baitId": "prawn",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 183156,
+      "fishId": "trout",
+      "baitId": "cutbait",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 191075,
+      "fishId": "mystery_bundle",
+      "baitId": "lotusmeal",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 198994,
+      "fishId": "celestialturtle",
+      "baitId": "earthworm",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 206913,
+      "fishId": "starshrimp",
+      "baitId": "dough",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 214832,
+      "fishId": "moonseastar",
+      "baitId": "prawn",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 222751,
+      "fishId": "trout",
+      "baitId": "cutbait",
+      "spotId": "moon",
+      "depthId": "near"
+    },
+    {
+      "seed": 230670,
+      "fishId": "moonoctopus",
+      "baitId": "lotusmeal",
+      "spotId": "moon",
+      "depthId": "near"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "id": "redcliff",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-redcliff-scene-v1.bin",
+  "triangles": 34992,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 0,
+      "count": 16812
+    },
+    {
+      "anchor": "back",
+      "color": "#aea68e",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 403488,
+      "count": 1620
+    },
+    {
+      "anchor": "back",
+      "color": "#78624d",
+      "material": 5,
+      "name": "wood",
+      "offset": 442368,
+      "count": 4860
+    },
+    {
+      "anchor": "back",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 559008,
+      "count": 10356
+    },
+    {
+      "anchor": "back",
+      "color": "#3b4759",
+      "material": 7,
+      "name": "slate",
+      "offset": 807552,
+      "count": 3240
+    },
+    {
+      "anchor": "back",
+      "color": "#c3a77c",
+      "material": 10,
+      "name": "trim",
+      "offset": 885312,
+      "count": 6660
+    },
+    {
+      "anchor": "back",
+      "color": "#425e5a",
+      "material": 7,
+      "name": "roof",
+      "offset": 1045152,
+      "count": 6816
+    },
+    {
+      "anchor": "back",
+      "color": "#425e5a",
+      "material": 7,
+      "name": "rooflight",
+      "offset": 1208736,
+      "count": 37536
+    },
+    {
+      "anchor": "back",
+      "color": "#9d4a55",
+      "material": 7,
+      "name": "cloth",
+      "offset": 2109600,
+      "count": 1920
+    },
+    {
+      "anchor": "back",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 2155680,
+      "count": 972
+    },
+    {
+      "anchor": "back",
+      "color": "#d7ad57",
+      "material": 10,
+      "name": "gold",
+      "offset": 2179008,
+      "count": 2880
+    },
+    {
+      "anchor": "left",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 2248128,
+      "count": 4140
+    },
+    {
+      "anchor": "left",
+      "color": "#b4a17b",
+      "material": 5,
+      "name": "rope",
+      "offset": 2347488,
+      "count": 420
+    },
+    {
+      "anchor": "left",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 2357568,
+      "count": 420
+    },
+    {
+      "anchor": "left",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 2367648,
+      "count": 672
+    },
+    {
+      "anchor": "right",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 2383776,
+      "count": 4140
+    },
+    {
+      "anchor": "right",
+      "color": "#b4a17b",
+      "material": 5,
+      "name": "rope",
+      "offset": 2483136,
+      "count": 420
+    },
+    {
+      "anchor": "right",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 2493216,
+      "count": 420
+    },
+    {
+      "anchor": "right",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 2503296,
+      "count": 672
+    }
+  ]
+}

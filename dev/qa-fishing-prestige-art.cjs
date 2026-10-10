@@ -1,0 +1,21 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const {chromium}=require('../.cache/desktop-qa-tools/node_modules/playwright');
+const root=path.resolve(__dirname,'..'),assets=path.join(root,'skins/tracer'),out=path.join(root,'output/fishing-prestige');
+const F=require('../public/fishing-model'),P=require('../skins/tracer/fishing-prestige');
+(async()=>{const browser=await chromium.launch({executablePath:'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',headless:true});try{
+ const page=await browser.newPage({viewport:{width:1200,height:900},deviceScaleFactor:1}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const rows=F.catalog.rods.filter(r=>P.get(r.id));
+ const present=rows.filter(r=>fs.existsSync(path.join(assets,P.get(r.id).src)));
+ if(!process.argv.includes('--partial'))assert.equal(present.length,66);
+ const style='body{background:#151c22;color:#e8e0ce;margin:0;font:13px system-ui}main{padding:20px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}article{height:234px;border:1px solid #546364;border-radius:12px;background:radial-gradient(ellipse at center,#3e504e,#202c2e);padding:12px;box-sizing:border-box}figure{margin:0;height:168px;display:flex;align-items:center;justify-content:center;gap:14px}img.large{height:154px;width:115px;object-fit:contain}.small{width:30px;height:38px;object-fit:contain}h2{font-size:13px;font-weight:500;margin:3px 0;color:#fff3d4}p{font-size:11px;color:#b9cac6;margin:4px 0}';
+ const card=r=>'<article><figure><img class="large" src="'+P.get(r.id).src+'"><img class="small" src="'+P.get(r.id).src+'"></figure><h2>'+r.name[0]+(r.hidden?' · 隐藏':'')+'</h2><p>'+P.get(r.id).label+'</p></article>';
+ await page.route('http://prestige-art.test/**',r=>{const u=new URL(r.request().url()),file=path.resolve(assets,'.'+u.pathname);if(file.startsWith(assets+path.sep)&&fs.existsSync(file))return r.fulfill({path:file});return r.fulfill({contentType:'text/html',body:'<!doctype html><meta charset="utf-8"><style>'+style+'</style><main>'+present.map(card).join('')+'</main><script src="/fishing-orbit-art.js"></script><script src="/fishing-orbit-renderer.js"></script><script src="/fishing-prestige.js"></script>'});});
+ await page.goto('http://prestige-art.test/');await page.evaluate(()=>Promise.all([...document.images].map(i=>i.decode())));
+ const imageMetrics=await page.evaluate(()=>[...document.querySelectorAll('img.large')].map(i=>({src:i.getAttribute('src'),width:i.naturalWidth,height:i.naturalHeight})));assert(imageMetrics.every(i=>i.width&&i.height));
+ for(let start=0;start<present.length;start+=18){await page.evaluate(({start})=>[...document.querySelectorAll('article')].forEach((el,i)=>el.hidden=!(i>=start&&i<start+18)),{start});await page.locator('main').screenshot({path:path.join(out,'float-sheet-'+(1+start/18)+'.png')});}
+ const performance=await page.evaluate(async rods=>{const s=document.createElement('div');document.body.appendChild(s);const p=TracerFishingPrestige.create(s),g={width:720,height:340,curve:u=>({x:70+130*u+14*u*u,y:310-250*u})};const times=[];let time=0;for(const r of rods){await TracerFishingPrestige.preload(r,document);for(let i=0;i<90;i++){const begin=performance.now();p.draw(r,time+=34,g,'waiting',3000,false);times.push(performance.now()-begin);}}p.destroy();times.sort((a,b)=>a-b);return{samples:times.length,medianMs:times[Math.floor(times.length*.5)],p95Ms:times[Math.floor(times.length*.95)],maxMs:times.at(-1),orphanCanvases:s.querySelectorAll('canvas').length};},rows);
+ assert.equal(performance.orphanCanvases,0);assert(performance.p95Ms<33.34);assert.deepEqual(errors,[]);
+ fs.writeFileSync(path.join(out,'art-qa.json'),JSON.stringify({passed:true,count:present.length,imageMetrics,performance,errors},null,2));
+ fs.writeFileSync(path.join(out,'float-gallery.html'),'<!doctype html><html lang="zh"><meta charset="utf-8"><title>鱼漂与环绕主题</title><style>'+style+'</style><main>'+present.map(card).join('').replaceAll('/fishing-art/','../../skins/tracer/fishing-art/')+'</main>');console.log(JSON.stringify({passed:true,count:present.length,performance}));
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

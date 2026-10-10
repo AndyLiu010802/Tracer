@@ -172,6 +172,7 @@ async function main(args = process.argv.slice(2)) {
       mainPreferences: (() => { const w = BrowserWindow.getAllWindows().find(w => new URL(w.webContents.getURL() || 'about:blank').pathname === '/'); const p = w.webContents.getLastWebPreferences(); return { sandbox: p.sandbox, contextIsolation: p.contextIsolation, nodeIntegration: p.nodeIntegration }; })(),
     }));
     assert.equal(report.app.packaged, !source);
+    assert.equal(report.app.version, require('../package.json').version, 'packaged app is the requested new version');
     assert.equal(path.resolve(report.app.userData), path.resolve(isolated.dirs['desktop-profile']));
     assert.equal(path.resolve(report.app.config), path.resolve(isolated.configFile));
     assert.equal(path.resolve(report.app.data), path.resolve(isolated.dirs.data));
@@ -187,6 +188,11 @@ async function main(args = process.argv.slice(2)) {
     await waitFor(mainPage, () => Tracer.fishing.snapshot().language === 'en');
     await mainPage.evaluate(() => Tracer.show('cabin'));
     await mainPage.waitForSelector('.fishing-aquarium-scene[data-count="1"]');
+    assert.equal(await mainPage.evaluate(() => typeof Tracer.fishing.openGame), 'undefined', 'retired inline fishing has no controller entry');
+    assert.equal(await mainPage.locator('[data-fishing-action="open-game"]').count(), 0, 'retired Go fishing button is absent');
+    await mainPage.locator('.fishing-aquarium-scene[data-count="1"]').scrollIntoViewIfNeeded();
+    await waitFor(mainPage, () => !!document.querySelector('[data-fish-art="imagegen"][data-painted-fish="1"]'));
+    assert.equal(await mainPage.evaluate(() => Object.keys(TracerFishingSpeciesPainted.assets).length), 156, 'all species paintings are packaged');
     await mainPage.evaluate(() => {
       window.qaSimulationTrace = [];
       const step = TracerFishingModel.stepSession;
@@ -234,6 +240,7 @@ async function main(args = process.argv.slice(2)) {
     await mainPage.evaluate(() => Tracer.fishing.action('pin-aquarium'));
     const aquarium = await pageAt('/fishing-aquarium-desktop.html');
     const automaticAquarium = await overlayReady(aquarium, 'FishingAquariumDesktop', '.fishing-aquarium-scene[data-renderer="webgl"][data-count="1"]');
+    await waitFor(aquarium, () => !!document.querySelector('[data-fish-art="imagegen"][data-painted-fish="1"]'));
     report.initialOverlays = {
       beforeQaReady: { pond: automaticPond, aquarium: automaticAquarium },
       pond: await pond.evaluate(() => ({ document: qaSnapshotDocument, snapshots: qaSnapshots.length, rodId: qaSnapshots.at(-1).rod?.id, disabled: qaSnapshots.at(-1).disabled, rodAttached: !!document.querySelector('#fishing-rod .fishing-rod-art') })),
@@ -260,10 +267,10 @@ async function main(args = process.argv.slice(2)) {
       }
       return app.evaluate(({}, expected) => { const menu = qaMenus.pop(), item = menu?.template.find(item => item.label === expected); if (!item || item.enabled === false) throw new Error('Missing enabled native menu: ' + expected); item.click(); return menu.template.map(x => x.label || x.type); }, label);
     }
-    // Bamboo's entrance is only 440 ms. Cross-process Playwright round trips
-    // can outlast it on CI, so exercise early F in the native menu notification
-    // turn, immediately after the production listener has started the summon.
-    // The later charge/cast still uses Playwright's actual keyboard input.
+    // Basic rods have an interruptible entrance. Exercise F in the native menu
+    // notification turn: it must start immediately, while an instantaneous tap
+    // ends as a short cast without spending bait. The later full cast uses
+    // Playwright's actual trusted keyboard input.
     await pond.evaluate(() => {
       window.qaEarlySummon = null; window.qaSummonCount = 0; window.qaKeys = []; window.qaFocusEvents = [];
       for (const type of ['keydown', 'keyup']) window.addEventListener(type, event => {
@@ -289,6 +296,7 @@ async function main(args = process.argv.slice(2)) {
           reelHidden: document.getElementById('fishing-reel').hidden };
       });
     });
+    const baitBeforeEarlyTap = await mainPage.evaluate(() => Tracer.fishing.snapshot().state.baits.worm);
     report.pondMenu = await nativeMenu(pond, 'Summon fishing rod');
     await waitFor(pond, () => !!window.qaEarlySummon);
     report.earlySummon = await pond.evaluate(() => window.qaEarlySummon);
@@ -296,8 +304,10 @@ async function main(args = process.argv.slice(2)) {
     assert.equal(report.earlySummon.rodVisible, 'true');
     assert.equal(report.earlySummon.powerHidden, true);
     assert.equal(report.earlySummon.reelHidden, true);
-    assert.equal(await mainPage.evaluate(() => Tracer.fishing.snapshot().session?.phase || 'idle'), 'idle', 'summon rejects early fishing input');
-    assert.equal(await pond.locator('#fishing-power').isVisible(), false, 'summon has no progress bar');
+    await waitFor(mainPage, () => Tracer.fishing.snapshot().session?.phase === 'escaped' && Tracer.fishing.snapshot().session.reason === 'short-cast');
+    assert.equal(await mainPage.evaluate(() => Tracer.fishing.snapshot().state.baits.worm), baitBeforeEarlyTap, 'an immediate early tap does not spend bait');
+    report.earlySummon.interruptible = true;
+    await waitFor(pond, () => document.getElementById('desktop-fishing').dataset.phase === 'escaped');
     // The preceding cross-process assertions can use up the five-second idle
     // window. Start a separate real summon for the successful-input scenario,
     // then wait for its rendered completion instead of assuming 700 ms passed.
@@ -322,7 +332,7 @@ async function main(args = process.argv.slice(2)) {
     assert(report.keyboardInput.some(event => event.type === 'keydown' && event.trusted && event.handled), 'successful cast uses actual trusted keyboard input');
     await shot(pond, '04-packaged-cast.png');
     await mainPage.evaluate(() => Tracer.fishing.cancel('packaged-smoke'));
-    stage('native pond menu summons, blocks early F and accepts a real F cast');
+    stage('native pond menu summons, accepts early F without a forced delay, and completes a real F cast');
     await mainPage.evaluate(() => {
       Tracer.show('ponds');
       window.qaMainPondCanvas = document.querySelector('.fishing-page-ponds #fishing-pond-canvas canvas');

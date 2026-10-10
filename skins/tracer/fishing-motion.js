@@ -1,5 +1,7 @@
 (function(root,factory){const common=typeof module==='object'&&module.exports,api=factory(common?require('./fishing-rod-effects'):root.TracerFishingRodEffects);if(common)module.exports=api;else root.TracerFishingMotion=api;})(typeof globalThis!=='undefined'?globalThis:this,function(RodEffects){
   'use strict';
+  const Prestige=typeof module==='object'&&module.exports?require('./fishing-prestige'):globalThis.TracerFishingPrestige;
+  const Anime=typeof module==='object'&&module.exports?require('./fishing-anime-effects'):globalThis.TracerFishingAnime;
   const clamp=(value,low=0,high=1)=>Math.max(low,Math.min(high,Number(value)||0));
   const mix=(a,b,t)=>a+(b-a)*t,ease=t=>{t=clamp(t);return t*t*(3-2*t);};
   function castWorld(distance){const d=clamp(distance);return{x:mix(-1.25,1.05,d),z:mix(.9,-.6,d)};}
@@ -37,7 +39,7 @@
       angle=base+(phase==='charging'?-(reduced?8:11)-power*(reduced?8:22):Math.sin(time*.9)*.45*quiet);lineAlpha=0;floatAlpha=0;
     }else if(phase==='cast'){
       const progress=clamp(t/(reduced?450:650)),swing=clamp(t/205),rebound=Math.exp(-Math.max(0,t-190)/190)*Math.sin(Math.max(0,t-190)/85);
-      angle=base+23*Math.sin(swing*Math.PI/2)-18*ease((t-190)/460)-5*rebound*quiet;
+      angle=base+mix(-(reduced?8:11)-power*(reduced?8:22),23,Math.sin(swing*Math.PI/2))-18*ease((t-190)/460)-5*rebound*quiet;
       const launch=g.launch||water,flight=ease(progress);point={x:mix(launch.x,water.x,flight),y:mix(launch.y,water.y,flight)-Math.sin(progress*Math.PI)*g.height*.25*quiet};sag=g.height*(.03+.07*progress);floatAlpha=ease(t/65);
     }else if(phase==='waiting'){
       const nibble=clamp(v.nibble);angle=base+5+Math.sin(time*1.15)*.6*quiet+nibble*.45;point.y+=Math.sin(time*2.3)*1.4*quiet+nibble*2.4;point.x+=Math.sin(time*18)*nibble*.8*quiet;
@@ -56,7 +58,13 @@
     }else{
       angle=base+5*(1-ease(t/550));point.y+=ease(t/350)*6;floatAlpha=1-ease(t/420);lineAlpha=1-ease(t/620);sag=g.height*(.08+ease(t/620)*.1);
     }
-    return {angle,x:point.x,y:point.y,lineAlpha,floatAlpha,sag,fishAlpha,fishAngle,fishScale,fishSquash};
+    const out={angle,x:point.x,y:point.y,lineAlpha,floatAlpha,sag,fishAlpha,fishAngle,fishScale,fishSquash};
+    if(phase==='caught'&&!['junk','mystery'].includes(v.catchKind)){const special=Anime?.catchPose(v.rodId,t,g,reduced);if(special)return {...out,...special};}
+    return out;
+  }
+  function haulPose(index,count,age,values,g,reduced=false){
+    const delay=reduced?0:index*65,localAge=Math.max(0,age-delay),lane=index-(count-1)/2,water={x:g.water.x+lane*Math.min(5,g.width*.012),y:g.water.y+(index%2)*2},ground={x:g.width*(.43+lane*.115),y:g.height*(.86+(index%2)*.035)};
+    const p=pose('caught',localAge,{...values,rodId:undefined},{...g,water,ground},reduced);p.fishAlpha=age<delay?0:p.fishAlpha;p.fishScale*=count>3?.76:.88;p.fishAngle+=lane*4*(1-ease(localAge/760));return{...p,delay,localAge,ground};
   }
   function rodGeometry(box){
     const scale=Math.min(box.width/250.8,box.height/418),w=250.8*scale,h=418*scale,padX=(box.width-w)/2,padY=(box.height-h)/2;
@@ -78,10 +86,10 @@
   };
   function effectShape(profile){return RodEffects?.design(profile?.variant)?.mote||FX_SHAPES[typeof profile==='string'?profile:profile?.theme]||FX_SHAPES.stars;}
   function fxProfile(rod){
-    if(!rod||rod.rarity==='common'||!Object.prototype.hasOwnProperty.call(FX_THEMES,rod.id)&&!RodEffects?.design(rod.id))return null;
+    if(!rod||rod.rarity==='common'&&!Anime?.has(rod.id)&&!RodEffects?.hasPainted(rod.id)||!Object.prototype.hasOwnProperty.call(FX_THEMES,rod.id)&&!RodEffects?.design(rod.id)&&!RodEffects?.hasPainted(rod.id))return null;
     const color=value=>/^#[0-9a-f]{3,8}$/i.test(String(value))?value:'#c7e8d4';
     const material=RodEffects?.design(rod.id);
-    return{theme:material?.theme||FX_THEMES[rod.id],variant:rod.id,action:['katana','guandao','jade','dragon'].includes(rod.id)?rod.id:'',color:material?.colors[1]||(rod.id==='cloud'?'#b7e4ee':color(rod.accent)),accent:material?.colors[0]||(rod.id==='cloud'?'#f1ffff':color(rod.color)),energy:rod.rarity==='legendary'?1:rod.rarity==='epic'?.85:.68};
+    return{theme:material?.theme||FX_THEMES[rod.id]||'painted',variant:rod.id,action:['katana','guandao','jade','dragon'].includes(rod.id)?rod.id:'',color:material?.colors[1]||(rod.id==='cloud'?'#b7e4ee':color(rod.accent)),accent:material?.colors[0]||(rod.id==='cloud'?'#f1ffff':color(rod.color)),energy:rod.rarity==='legendary'?1:rod.collection==='onepiece'?(rod.rarity==='epic'?.96:rod.rarity==='rare'?.88:.76):rod.rarity==='epic'?.85:.68};
   }
   // A continuous tapered funnel also serves the SVG fallback when the richer
   // procedural renderer is unavailable. Each wind band has a projected depth,
@@ -100,7 +108,7 @@
   }
   let catalogEffectSerial=0;
   function catalogEffectsMarkup(rod){
-    const profile=fxProfile(rod);if(!profile)return '';
+    const profile=fxProfile(rod);if(!profile||RodEffects?.hasPainted(rod.id)&&!RodEffects.design(rod.id))return '';
     if(RodEffects?.design(rod.id))return RodEffects.catalogMarkup(rod,'fishing-catalog-glow-'+(++catalogEffectSerial),along=>rodCurvePoint(along,0));
     if(profile.theme==='tornado'){
       const id='fishing-catalog-glow-'+(++catalogEffectSerial),center=rodCurvePoint(.51,0),project=p=>({x:center.x+p.x*58,y:center.y-12+p.y*60,width:p.width*49}),ribbons=tornadoGeometry(0).map((points,i)=>'<path class="fishing-catalog-vortex-band" d="'+tornadoRibbon(points,project)+'" style="--vortex-delay:'+(-i*.8)+'s;fill:'+(i===1?profile.accent:profile.color)+';fill-opacity:'+[.27,.2,.4][i]+'"/>').join('');
@@ -165,8 +173,8 @@
       else{parts['dragon-halo'].setAttribute('d',shape.line);parts['dragon-body'].setAttribute('d',shape.body);parts['dragon-scales'].setAttribute('d',shape.line);parts['dragon-spines'].setAttribute('d',shape.spikes);parts['dragon-head'].setAttribute('transform',shape.headTransform);}
     }
     function draw(profile,phase,age,values,g,tip,point,control1,control2,reduced){
-      if(!profile){layer.hidden=true;tipHistory=[];return;}layer.hidden=false;layer.dataset.theme=profile.theme;layer.dataset.variant=profile.variant;svg.setAttribute('viewBox','0 0 '+g.width+' '+g.height);layer.style.setProperty('--rod-glow',profile.color);layer.style.setProperty('--rod-accent',profile.accent);
-      const organic=fluid&&RodEffects?.design(profile.variant);svg.style.display=organic?'none':'';fluid?.draw(profile,phase,age,values,g,tip,point,control1,control2,reduced);if(organic){tipHistory=[];return;}
+      if(!profile||(RodEffects?.effectVisible&&!RodEffects.effectVisible(phase,age,profile.variant))){layer.hidden=true;tipHistory=[];return;}layer.hidden=false;layer.dataset.theme=profile.theme;layer.dataset.variant=profile.variant;svg.setAttribute('viewBox','0 0 '+g.width+' '+g.height);layer.style.setProperty('--rod-glow',profile.color);layer.style.setProperty('--rod-accent',profile.accent);
+      const organic=fluid&&(RodEffects?.design(profile.variant)||RodEffects?.hasPainted(profile.variant));svg.style.display=organic?'none':'';fluid?.draw(profile,phase,age,values,g,tip,point,control1,control2,reduced);if(organic){tipHistory=[];return;}
       if(profile.variant!==lastTheme){for(const particle of particles)particle.setAttribute('d',effectShape(profile));lastTheme=profile.variant;tipHistory=[];}
       const state=effectState(phase,age,values,reduced),seconds=reduced?0:age/1000,grip=g.grip,dx=tip.x-grip.x,dy=tip.y-grip.y,amplitude=(reduced?2:5)+(phase==='charging'?values.castPower*4:0),points=[],counterpoints=[];
       const spine=along=>g.curve?g.curve(along):{x:grip.x+dx*along,y:grip.y+dy*along},around=along=>{const p=spine(along),a=spine(clamp(along-.01)),b=spine(clamp(along+.01)),length=Math.hypot(b.x-a.x,b.y-a.y)||1;return{...p,nx:-(b.y-a.y)/length,ny:(b.x-a.x)/length};};
@@ -206,7 +214,9 @@
   function create(nodes){
     const stage=nodes.stage,doc=stage.ownerDocument,win=doc.defaultView||globalThis,clock=()=>win.performance.now(),media=win.matchMedia?.('(prefers-reduced-motion: reduce)');
     let snapshot={},session={},phase='idle',sessionId='',phaseAt=clock(),lastFrame=phaseAt,frame=null,disposed=false,visible=true,previous=null,current=null,launch=null,landingSent=false,from=null,transitionAt=phaseAt,lastBehavior='cruise',rodFlex=null,flexNode=null,angularVelocity=0;
-    const spring={bend:0,velocity:0},values={castPower:0,castDistance:.5,nibble:0,stamina:1,holding:0,surgeAmount:0,restAmount:0,barPosition:.5,fishPosition:.5,barSize:.25,progress:0,tension:0},target={...values},waterPoint=nodes.waterPoint||{x:.7,y:.6},effects=createEffects(stage);
+    let chargeAt=0,inputPreview=null,lastPaint=-Infinity,flightChild=null,flightSprites=[],flightShadows=[],lastFishLaunch=-1;
+    const inputAccount=value=>JSON.stringify([value?.accountScope||'guest',value?.accountGeneration||0,value?.accountRestoreId||'']);
+    const spring={bend:0,velocity:0},values={castPower:0,castDistance:.5,nibble:0,stamina:1,holding:0,surgeAmount:0,restAmount:0,barPosition:.5,fishPosition:.5,barSize:.25,progress:0,tension:0},target={...values},waterPoint=nodes.waterPoint||{x:.7,y:.6},effects=createEffects(stage),prestige=Prestige?.create(stage);
     stage.classList.add('has-fishing-motion');
     const summon=nodes.summonOnReveal?RodEffects?.createSummon(stage):null;let summonAt=-Infinity,previewState=null,skipNextEntrance=false;
     function endPreview(){if(!previewState)return;previewState=null;nodes.onPreviewEnd?.();}
@@ -214,7 +224,7 @@
       if(!previewState)return null;
       const state=previewState,age=now-state.started;
       if(now<state.holdUntil)return age<state.duration?RodEffects.summonState(state.rod,age,media?.matches):null;
-      const progress=(now-state.holdUntil)/(media?.matches?260:1200);
+      const progress=(now-state.holdUntil)/state.exitDuration;
       if(progress>=1){endPreview();return null;}
       const reverse=RodEffects.summonState(state.rod,Math.max(0,state.duration*(state.exitFrom??1)*(1-ease(progress))-.01),media?.matches);
       return reverse&&{...reverse,departing:true};
@@ -228,38 +238,73 @@
     function set(node,name,value){if(node)node.style[name]=value;}
     function ensureRodFlex(){if(!nodes.createRodFlex)return;const svg=nodes.rod.querySelector?.('.fishing-rod-art');if(svg!==flexNode){rodFlex?.destroy();rodFlex=svg?nodes.createRodFlex(nodes.rod):null;flexNode=svg;}}
     function render(now){
+      if(disposed)return;
+      // Keep controls at 60 Hz on 120/144 Hz desktops, with elapsed-time
+      // physics and a carried remainder so uneven RAFs never drift to 40 Hz.
+      const elapsed=now-lastPaint,interval=1000/60;
+      if(elapsed<interval-.5){frame=win.requestAnimationFrame(render);return;}
+      lastPaint=Number.isFinite(elapsed)?now-Math.max(0,elapsed-interval)%interval:now;
+      if(stage.dataset?.rodVisible==='false'&&!previewState&&!inputPreview&&(phase==='idle'||['caught','escaped'].includes(phase)&&now-phaseAt>2600)){frame=null;return;}
       if(disposed)return;const dt=Math.min(64,Math.max(0,now-lastFrame));lastFrame=now;
-      for(const key of Object.keys(values))values[key]=mix(values[key],target[key],1-Math.exp(-dt/65));
-      ensureRodFlex();const behavior=['cruise','surge','rest'].includes(session.fishBehavior)?session.fishBehavior:'cruise',visualValues={...values,fishBehavior:behavior,catchKind:snapshot.fish?.kind||nodes.flightFish?.dataset?.catchKind||'fish',fishLoad:clamp((snapshot.fish?.baseLength||32)/55,.45,1.6)*(.85+.35*clamp(snapshot.fish?.difficulty))},g=geometry(),age=Math.max(0,now-phaseAt),next=pose(phase,age,visualValues,g,media?.matches);current={...next};
+      for(const key of Object.keys(values))if(key!=='castPower')values[key]=mix(values[key],target[key],1-Math.exp(-dt/65));
+      values.castPower=phase==='charging'?clamp((now-chargeAt)/1100):target.castPower;
+      ensureRodFlex();const behavior=['cruise','surge','rest'].includes(session.fishBehavior)?session.fishBehavior:'cruise',visualValues={...values,rodId:snapshot.rod?.id,effectTime:now,effectSeed:session.seed||0,phaseTime:session.phaseTime,waitDuration:session.waitDuration,catchCount:session.haulCount||snapshot.lastCatch?.count||1,fishBehavior:behavior,catchKind:snapshot.fish?.kind||nodes.flightFish?.dataset?.catchKind||'fish',fishLoad:clamp((snapshot.fish?.baseLength||32)/55,.45,1.6)*(.85+.35*clamp(snapshot.fish?.difficulty))},g=geometry(),age=Math.max(0,now-phaseAt),next=pose(phase,age,visualValues,g,media?.matches);current={...next};const spike=snapshot.rod?.id==='valorant_spike';
       if(from){const blend=ease((now-transitionAt)/(phase==='cast'?95:phase==='reeling'?95:190));for(const key of ['angle','x','y','lineAlpha','floatAlpha','sag'])current[key]=mix(from[key],current[key],blend);if(blend>=1)from=null;}
+      if(spike){g.grip={...g.grip,x:Math.max(g.grip.x,Math.max(26,Math.min(66,g.width*.145,g.height*.23))*1.65+10)};current.lineAlpha=0;current.floatAlpha=0;if(phase!=='caught'){current.x=g.water.x;current.y=g.water.y;}}
       const speed=previous&&dt>0?(current.angle-previous.angle)*Math.PI/180/(dt/1000):0,acceleration=dt>0?(speed-angularVelocity)/(dt/1000):0;angularVelocity=speed;
       const bendTarget=rodLoad(phase,age,visualValues,g,{x:current.x,y:current.y},current.angle,snapshot.rod,acceleration);stepRodSpring(spring,bendTarget,dt,rodStiffness(snapshot.rod),media?.matches);const bend=rodFlex?spring.bend:0;
       rodFlex?.update({bend});g.curve=along=>rotatedRodPoint(g.box,g.anchor,rodCurvePoint(along,bend,g.anchor),current.angle);const tip=g.curve(1);current.bend=bend;current.bendTarget=bendTarget;previous={...current,tip};
       if(nodes.rod.dataset){nodes.rod.dataset.rodBend=bend.toFixed(5);nodes.rod.dataset.rodTipX=tip.x.toFixed(3);nodes.rod.dataset.rodTipY=tip.y.toFixed(3);}
       set(nodes.rod,'transformOrigin',g.anchor.grip.x+'px '+g.anchor.grip.y+'px');set(nodes.rod,'transform','rotate('+current.angle.toFixed(3)+'deg)');
       const entrance=previewState?previewEntrance(now):summon?RodEffects.summonState(snapshot.rod,now-summonAt,media?.matches):null;
-      if(summon){set(nodes.rod,'opacity',String(entrance?Math.pow(entrance.reveal,.55):1));set(nodes.rod,'clipPath',entrance&&!entrance.reduced?(entrance.kind==='void-cleave'?'inset(0 '+((1-entrance.reveal)*49).toFixed(2)+'%)':'inset('+((1-entrance.reveal)*100).toFixed(2)+'% 0 0 0)'):'');summon.draw(snapshot.rod,entrance,{...g,tip});}
+      if(summon){set(nodes.rod,'opacity',String(entrance?Math.pow(entrance.reveal,.55):1));set(nodes.rod,'clipPath',entrance&&!entrance.reduced?(entrance.kind==='void-cleave'?'inset(0 '+((1-entrance.reveal)*49).toFixed(2)+'%)':'inset('+((1-entrance.reveal)*100).toFixed(2)+'% 0 0 0)'):'');summon.draw(snapshot.rod,spike?null:entrance,{...g,tip});}
+      const effectPhase=spike&&previewState?'idle':phase,effectAge=spike&&previewState?Math.max(0,now-previewState.started):age;
+      prestige?.draw(snapshot.rod,now,g,effectPhase,effectAge,media?.matches,entrance?Math.pow(entrance.reveal,.55):1,visualValues);
+      if(spike)set(nodes.rod,'opacity','0');else if(!summon)set(nodes.rod,'opacity','1');
       set(nodes.bobber,'left',current.x+'px');set(nodes.bobber,'top',current.y+'px');set(nodes.bobber,'transform','translate(-50%,-50%)');set(nodes.bobber,'opacity',String(current.floatAlpha));
       set(nodes.bite,'left',current.x+'px');set(nodes.bite,'top',(current.y-42)+'px');
       const deltaX=current.x-tip.x,deltaY=current.y-tip.y,tightness=phase==='reeling'?ease(age/120):0,control1={x:tip.x+deltaX*.3,y:mix(tip.y+current.sag,tip.y+deltaY*.3,tightness)},control2={x:current.x-deltaX*.25,y:mix(current.y+current.sag*.4,tip.y+deltaY*.75,tightness)};
       const productCatch=phase==='caught'&&['junk','mystery'].includes(visualValues.catchKind),suppressGoldenBonus=snapshot.rod?.id==='golden'&&productCatch;
-      effects?.draw(entrance||suppressGoldenBonus?null:fxProfile(snapshot.rod),phase,age,visualValues,g,tip,{x:current.x,y:current.y},control1,control2,media?.matches);
+      effects?.draw(!spike&&entrance||suppressGoldenBonus?null:fxProfile(snapshot.rod),effectPhase,effectAge,{...visualValues,spikeReveal:spike&&previewState?(entrance?.reveal??1):1},g,tip,{x:current.x,y:current.y},control1,control2,media?.matches);
       nodes.line?.setAttribute('viewBox','0 0 '+g.width+' '+g.height);nodes.path?.setAttribute('d',`M${tip.x.toFixed(2)} ${tip.y.toFixed(2)} C${control1.x.toFixed(2)} ${control1.y.toFixed(2)},${control2.x.toFixed(2)} ${control2.y.toFixed(2)},${current.x.toFixed(2)} ${current.y.toFixed(2)}`);set(nodes.line,'opacity',String(current.lineAlpha));
-      if(nodes.flightFish){nodes.flightFish.hidden=current.fishAlpha<.005;set(nodes.flightFish,'left',current.x+'px');set(nodes.flightFish,'top',current.y+'px');set(nodes.flightFish,'opacity',String(current.fishAlpha));set(nodes.flightFish,'transform',`translate(-50%,-50%) rotate(${current.fishAngle}deg) scale(${current.fishScale},${current.fishScale*current.fishSquash})`);}
-      if(nodes.catchShadow){const landed=ease((age-(media?.matches?260:470))/260),alpha=phase==='caught'?landed*(1-ease((age-(media?.matches?1600:1910))/320)):0;set(nodes.catchShadow,'left',g.width*.43+'px');set(nodes.catchShadow,'top',g.height*.897+'px');set(nodes.catchShadow,'opacity',String(alpha));set(nodes.catchShadow,'transform','translate(-50%,-50%) scale('+(1.55-.55*landed)+')');}
+      if(nodes.flightFish){
+        const host=nodes.flightFish,multi=Number(host.dataset?.haul)>1;
+        host.classList?.toggle('fishing-flight-haul',multi);
+        if(multi){
+          if(flightChild!==host.firstElementChild){flightChild=host.firstElementChild;flightSprites=Array.from(host.querySelectorAll('.fishing-flight-catch'));flightShadows=Array.from(host.querySelectorAll('.fishing-flight-shadow'));}
+          host.hidden=phase!=='caught'||age>2600;set(host,'left','0px');set(host,'top','0px');set(host,'opacity','1');set(host,'transform','none');
+          for(let i=0;i<flightSprites.length;i++){const p=haulPose(i,flightSprites.length,age,visualValues,g,media?.matches),fish=flightSprites[i],shadow=flightShadows[i];set(fish,'left',p.x+'px');set(fish,'top',p.y+'px');set(fish,'opacity',phase==='caught'?String(p.fishAlpha):'0');set(fish,'transform','translate(-50%,-50%) rotate('+p.fishAngle+'deg) scale('+p.fishScale+','+p.fishScale*p.fishSquash+')');fish.dataset.airborne=String(phase==='caught'&&p.localAge<760&&p.fishAlpha>.01);set(shadow,'left',p.ground.x+'px');set(shadow,'top',(p.ground.y+5)+'px');set(shadow,'opacity',phase==='caught'?String(ease((p.localAge-430)/330)*p.fishAlpha*.3):'0');if(phase==='caught'&&age>=p.delay&&i>lastFishLaunch){lastFishLaunch=i;if(i)waterEvent('catch',.45);}}
+        }else{host.hidden=current.fishAlpha<.005;set(host,'left',current.x+'px');set(host,'top',current.y+'px');set(host,'opacity',String(current.fishAlpha));set(host,'transform','translate(-50%,-50%) rotate('+current.fishAngle+'deg) scale('+current.fishScale+','+current.fishScale*current.fishSquash+')');}
+      }
+      if(nodes.catchShadow){const multi=Number(nodes.flightFish?.dataset?.haul)>1;nodes.catchShadow.hidden=multi;const landed=ease((age-(media?.matches?260:470))/260),alpha=phase==='caught'?landed*(1-ease((age-(media?.matches?1600:1910))/320)):0;set(nodes.catchShadow,'left',g.width*.43+'px');set(nodes.catchShadow,'top',g.height*.897+'px');set(nodes.catchShadow,'opacity',String(alpha));set(nodes.catchShadow,'transform','translate(-50%,-50%) scale('+(1.55-.55*landed)+')');}
       if(nodes.result)set(nodes.result,'opacity',phase==='caught'?String(ease((age-2050)/250)):'0');
       if(nodes.power)set(nodes.power,'width',values.castPower*100+'%');if(nodes.progress)set(nodes.progress,'height',values.progress*100+'%');
       if(nodes.stamina)set(nodes.stamina,'width',values.stamina*100+'%');if(nodes.castTarget){nodes.castTarget.hidden=phase!=='charging';set(nodes.castTarget,'left',g.water.x+'px');set(nodes.castTarget,'top',g.water.y+'px');}
       if(nodes.nibbleCue){nodes.nibbleCue.hidden=phase!=='waiting'||values.nibble<.08;set(nodes.nibbleCue,'left',g.water.x+'px');set(nodes.nibbleCue,'top',(g.water.y+21)+'px');}
       nodes.bite?.style.setProperty?.('--bite-time',String(clamp(session.biteRemaining/(session.biteWindow||1700))));
-      if(stage.dataset){stage.dataset.fishBehavior=behavior;stage.dataset.nibbling=phase==='waiting'&&values.nibble>.08?'true':'false';}
+      if(stage.dataset){stage.dataset.phase=phase;stage.dataset.castPower=values.castPower.toFixed(5);stage.dataset.castDistance=(phase==='charging'?.15+.85*values.castPower:values.castDistance).toFixed(5);stage.dataset.fishBehavior=behavior;stage.dataset.nibbling=phase==='waiting'&&values.nibble>.08?'true':'false';}
       const size=clamp(values.barSize,.06,.8),position=clamp(values.barPosition,size/2,1-size/2);set(nodes.target,'height',size*100+'%');set(nodes.target,'bottom',(position-size/2)*100+'%');set(nodes.fish,'bottom',clamp(values.fishPosition)*100+'%');
       if(!landingSent&&phase==='cast'&&age>=600){landingSent=true;waterEvent('cast',.7+values.castPower*.3);}
       nodes.onFrame?.({phase,age,pose:current,tip,values:visualValues});
       if(visible&&!doc.hidden)frame=win.requestAnimationFrame(render);else frame=null;
     }
     function resume(){if(disposed)return;if(doc.hidden)endPreview();if(!visible||doc.hidden){if(frame!==null)win.cancelAnimationFrame(frame);frame=null;return;}if(frame===null){lastFrame=clock();frame=win.requestAnimationFrame(render);}}
-    function update(next){
+    function update(next,local=false){
+      if(inputPreview&&!local){
+        const pending=inputPreview,s=next?.session||{},incoming=s.phase||'idle',id=s.id||'',newSession=id!==pending.beforeId;
+        const invalid=inputAccount(next)!==pending.account||next?.error||(!newSession&&next?.nativeSessionId!==pending.native)||(next?.disabled&&!newSession&&incoming!=='charging');
+        if(invalid)inputPreview=null;
+        else if(incoming==='charging'||!newSession&&['idle','caught','escaped'].includes(incoming)){
+          const elapsed=pending.released?pending.heldMs:clock()-pending.started,power=clamp(elapsed/1100);
+          next={...next,session:{...s,id:sessionId,phase:pending.released?(elapsed<132?'escaped':'cast'):'charging',phaseTime:pending.released?0:elapsed,castPower:power,castDistance:.15+.85*power,inputPreview:true}};
+        }else{
+          // A delayed acknowledgement must not restart an already flying float.
+          if(pending.released&&phase===incoming)sessionId=id;
+          inputPreview=null;
+        }
+      }
+      if(!disposed&&next?.rod?.id!==snapshot.rod?.id){Prestige?.preload?.(next?.rod,doc);if(next?.rod?.id==='valorant_spike')win.TracerFishingValorantVFX?.load?.(doc,'valorant_spike');}
+      RodEffects?.decorateBobber?.(nodes.bobber,next?.rod);
       if(disposed)return;const oldNibble=target.nibble,oldBehavior=lastBehavior;snapshot=next||{};session=snapshot.session||{};lastBehavior=session.fishBehavior||'cruise';const nextPhase=session.phase||'idle',nextId=session.id||snapshot.sessionId||'',now=clock();
       summon?.preload?.(snapshot.rod);
       if(previewState&&(snapshot.rod?.id!==previewState.rod.id||!['idle','caught','escaped'].includes(nextPhase)))endPreview();
@@ -267,21 +312,37 @@
       target.surgeAmount=session.fishBehavior==='surge'?1:0;target.restAmount=session.fishBehavior==='rest'?1:0;
       if(nextId!==sessionId){target.nibble=clamp(session.nibble);target.stamina=session.stamina===undefined?1:clamp(session.stamina);}
       if(session.castDistance!==undefined&&nextPhase!=='charging')values.castDistance=target.castDistance;
-      if(stage.dataset){stage.dataset.rodId=snapshot.rod?.id||'bamboo';stage.dataset.rodTier=snapshot.rod?.rarity||'common';}
+      if(stage.dataset){stage.dataset.rodId=snapshot.rod?.id||'bamboo';stage.dataset.rodTier=snapshot.rod?.rarity||'common';stage.dataset.rodCollection=snapshot.rod?.collection||'';}
       if(nextPhase!==phase||nextId!==sessionId){
-        if(summon&&nextPhase==='charging'&&['idle','caught','escaped'].includes(phase)){summonAt=skipNextEntrance?-Infinity:now;skipNextEntrance=false;}
+        lastPaint=-Infinity;lastFishLaunch=-1;
+        if(nextPhase==='charging'){summonAt=-Infinity;skipNextEntrance=false;chargeAt=now-(Number.isFinite(session.phaseTime)?session.phaseTime:clamp(session.castPower)*1100);}
         else if(['idle','caught','escaped'].includes(nextPhase))summonAt=-Infinity;
-        const oldPhase=phase;from=previous&&{...previous};transitionAt=now;phaseAt=now;phase=nextPhase;sessionId=nextId;
+        const oldPhase=phase;from=['charging','cast'].includes(nextPhase)?null:previous&&{...previous};transitionAt=now;phaseAt=now;phase=nextPhase;sessionId=nextId;
         if(phase==='cast'){const g=geometry();launch=previous?.tip||rotatedTip(g.box,g.anchor,g.baseAngle);landingSent=false;}
         else if(phase==='waiting'&&oldPhase==='cast'&&!landingSent){landingSent=true;waterEvent('cast',.8);}
-        else if(phase==='bite')waterEvent('bite',.45);else if(phase==='reeling')waterEvent('hook',.7);else if(phase==='caught')waterEvent('catch',1);else if(phase==='escaped')waterEvent('escape',.35);
+        else if(phase==='detonating')waterEvent('catch',1.5);else if(phase==='bite')waterEvent('bite',.45);else if(phase==='reeling')waterEvent('hook',.7);else if(phase==='caught')waterEvent('catch',1);else if(phase==='escaped')waterEvent('escape',.35);
       }
       if(nextPhase==='waiting'&&target.nibble>.15&&oldNibble<=.15)waterEvent('nibble',.16);
       if(nextPhase==='reeling'&&session.fishBehavior==='surge'&&oldBehavior!=='surge')waterEvent('surge',.32);
       resume();
     }
+    function startCastInput(){
+      if(!['idle','caught','escaped'].includes(phase))return;
+      const now=clock();inputPreview={started:now,beforeId:sessionId,native:snapshot.nativeSessionId,account:inputAccount(snapshot),released:false};
+      update({...snapshot,session:{...session,id:'input-cast-'+now,phase:'charging',phaseTime:0,castPower:0,castDistance:.15,inputPreview:true}},true);
+    }
+    function releaseCastInput(heldMs){
+      if(!inputPreview)return;
+      const elapsed=Number.isFinite(heldMs)?Math.max(0,heldMs):clock()-inputPreview.started,power=clamp(elapsed/1100);
+      inputPreview.released=true;inputPreview.heldMs=elapsed;
+      update({...snapshot,session:{...session,phase:elapsed<132?'escaped':'cast',phaseTime:0,castPower:power,castDistance:.15+.85*power,inputPreview:true}},true);
+    }
+    function cancelCastInput(){
+      if(!inputPreview)return;inputPreview=null;
+      update({...snapshot,session:{...session,phase:'escaped',phaseTime:0}},true);
+    }
     const observer=typeof win.IntersectionObserver==='function'?new win.IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting!==false;resume();}):null;observer?.observe(stage);doc.addEventListener('visibilitychange',resume);media?.addEventListener?.('change',resume);resume();
-    return{update,engagePreview(){if(!previewState||clock()<previewState.started+previewState.duration||clock()>=previewState.holdUntil)return false;previewState=null;skipNextEntrance=true;return true;},preview(skipEntrance=false){if(!summon||!snapshot.rod||!['idle','caught','escaped'].includes(phase))return false;const now=clock(),state=RodEffects.summonState(snapshot.rod,0,media?.matches),scene=RodEffects.summonScene(snapshot.rod.id),duration=media?.matches?260:scene?.duration||({common:440,rare:680,epic:940,legendary:1200}[state.tier]);previewState={rod:snapshot.rod,started:skipEntrance?now-duration:now,duration,holdUntil:now+(skipEntrance?0:duration)+5000};summonAt=-Infinity;resume();return true;},touchPreview(){if(previewState&&clock()<previewState.holdUntil)previewState.holdUntil=Math.max(previewState.started+previewState.duration,clock())+5000;},dismissPreview(){if(previewState&&clock()<previewState.holdUntil){previewState.exitFrom=Math.min(1,(clock()-previewState.started)/previewState.duration);previewState.holdUntil=clock();}},destroy(){if(disposed)return;disposed=true;previewState=null;if(frame!==null)win.cancelAnimationFrame(frame);rodFlex?.destroy();rodFlex=null;effects?.destroy();summon?.destroy();if(summon){set(nodes.rod,'opacity','');set(nodes.rod,'clipPath','');}observer?.disconnect();doc.removeEventListener('visibilitychange',resume);media?.removeEventListener?.('change',resume);stage.classList.remove('has-fishing-motion');}};
+    return{update,startCastInput,releaseCastInput,cancelCastInput,engagePreview(){if(!previewState||(!previewState.interruptible&&clock()<previewState.started+previewState.duration)||clock()>=previewState.holdUntil)return false;previewState=null;skipNextEntrance=true;lastPaint=-Infinity;set(nodes.rod,'opacity',1);set(nodes.rod,'clipPath','none');resume();return true;},preview(skipEntrance=false){if(!summon||!snapshot.rod||!['idle','caught','escaped'].includes(phase))return false;const now=clock(),timing=RodEffects.entranceTiming(snapshot.rod,media?.matches),duration=timing.duration;previewState={rod:snapshot.rod,started:skipEntrance?now-duration:now,...timing,holdUntil:now+(skipEntrance?0:duration)+5000};summonAt=-Infinity;resume();return true;},touchPreview(){if(previewState&&clock()<previewState.holdUntil)previewState.holdUntil=Math.max(previewState.started+previewState.duration,clock())+5000;},dismissPreview(){if(previewState&&clock()<previewState.holdUntil){previewState.exitFrom=Math.min(1,(clock()-previewState.started)/previewState.duration);previewState.holdUntil=clock();}},destroy(){if(disposed)return;disposed=true;previewState=null;if(frame!==null)win.cancelAnimationFrame(frame);rodFlex?.destroy();rodFlex=null;effects?.destroy();prestige?.destroy();summon?.destroy();if(summon){set(nodes.rod,'opacity','');set(nodes.rod,'clipPath','');}observer?.disconnect();doc.removeEventListener('visibilitychange',resume);media?.removeEventListener?.('change',resume);stage.classList.remove('has-fishing-motion');}};
   }
-  return Object.freeze({create,pose,castWorld,castLanding,rodGeometry,rodCurvePoint,rodStiffness,rodLoad,stepRodSpring,rotatedRodPoint,rotatedTip,fxProfile,effectShape,effectState,actionEffectState,actionEffectGeometry,catalogEffectsMarkup,tornadoGeometry});
+  return Object.freeze({create,pose,haulPose,castWorld,castLanding,rodGeometry,rodCurvePoint,rodStiffness,rodLoad,stepRodSpring,rotatedRodPoint,rotatedTip,fxProfile,effectShape,effectState,actionEffectState,actionEffectGeometry,catalogEffectsMarkup,tornadoGeometry});
 });

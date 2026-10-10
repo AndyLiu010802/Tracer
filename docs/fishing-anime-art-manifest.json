@@ -1,0 +1,2848 @@
+{
+  "date": "2026-10-09",
+  "fish": [
+    {
+      "id": "rudd",
+      "name": [
+        "赤鳍红眼鱼",
+        "Rudd"
+      ],
+      "rarity": "common",
+      "price": 18,
+      "baseLength": 23,
+      "color": "#b6ad7f",
+      "accent": "#c56245",
+      "body": "round",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "rounded",
+      "marking": "scales",
+      "artVariant": 50,
+      "diet": "dough",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "rudd",
+        "name": [
+          "赤鳍红眼鱼觅食",
+          "Rudd feeding"
+        ],
+        "description": [
+          "先用赤色胸鳍刹住，向水面的碎屑轻啄。",
+          "Rudd: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "先用赤色胸鳍刹住，向水面的碎屑轻啄。",
+        "Rudd: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "chub",
+      "name": [
+        "银颊圆腹雅罗",
+        "Chub"
+      ],
+      "rarity": "common",
+      "price": 23,
+      "baseLength": 32,
+      "color": "#87968b",
+      "accent": "#ddd8b6",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "stream",
+      "marking": "scales",
+      "artVariant": 51,
+      "diet": "dough",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "chub",
+        "name": [
+          "银颊圆腹雅罗觅食",
+          "Chub feeding"
+        ],
+        "description": [
+          "沿浅流成群穿梭，银颊侧转时闪光。",
+          "Chub: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "沿浅流成群穿梭，银颊侧转时闪光。",
+        "Chub: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "bream",
+      "name": [
+        "铜盘欧鳊",
+        "Bronze bream"
+      ],
+      "rarity": "common",
+      "price": 28,
+      "baseLength": 34,
+      "color": "#a89b70",
+      "accent": "#e3cfa1",
+      "body": "discus",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "disk",
+      "marking": "scales",
+      "artVariant": 52,
+      "diet": "dough",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "bream",
+        "name": [
+          "铜盘欧鳊觅食",
+          "Bronze bream feeding"
+        ],
+        "description": [
+          "扁高身体慢慢侧转，用小口吸入团饵。",
+          "Bronze bream: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "bob"
+      },
+      "feedingHabit": [
+        "扁高身体慢慢侧转，用小口吸入团饵。",
+        "Bronze bream: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "grasscarp",
+      "name": [
+        "青背草鱼",
+        "Grass carp"
+      ],
+      "rarity": "common",
+      "price": 33,
+      "baseLength": 48,
+      "color": "#728a70",
+      "accent": "#c7cfaa",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "stream",
+      "marking": "scales",
+      "artVariant": 53,
+      "diet": "dough",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "grasscarp",
+        "name": [
+          "青背草鱼觅食",
+          "Grass carp feeding"
+        ],
+        "description": [
+          "短促摆尾接近嫩叶，胸鳍展开后悬停取食。",
+          "Grass carp: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "短促摆尾接近嫩叶，胸鳍展开后悬停取食。",
+        "Grass carp: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "zebradanio",
+      "name": [
+        "斑马鱼",
+        "Zebra danio"
+      ],
+      "rarity": "common",
+      "price": 38,
+      "baseLength": 6,
+      "color": "#6795a0",
+      "accent": "#ecdfab",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "stream",
+      "marking": "stripe",
+      "artVariant": 54,
+      "diet": "prawn",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "zebradanio",
+        "name": [
+          "斑马鱼觅食",
+          "Zebra danio feeding"
+        ],
+        "description": [
+          "保持小群队形，条纹随快速转向掠过。",
+          "Zebra danio: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "保持小群队形，条纹随快速转向掠过。",
+        "Zebra danio: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "guppy",
+      "name": [
+        "孔雀花尾鱼",
+        "Guppy"
+      ],
+      "rarity": "common",
+      "price": 43,
+      "baseLength": 7,
+      "color": "#7a92a6",
+      "accent": "#eeac67",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "guppy",
+      "marking": "spots",
+      "artVariant": 55,
+      "diet": "prawn",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "guppy",
+        "name": [
+          "孔雀花尾鱼觅食",
+          "Guppy feeding"
+        ],
+        "description": [
+          "扇形花尾缓慢张开，以胸鳍细调进食方向。",
+          "Guppy: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "扇形花尾缓慢张开，以胸鳍细调进食方向。",
+        "Guppy: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "platy",
+      "name": [
+        "日落月光鱼",
+        "Sunset platy"
+      ],
+      "rarity": "common",
+      "price": 48,
+      "baseLength": 8,
+      "color": "#e19655",
+      "accent": "#f8db98",
+      "body": "round",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "rounded",
+      "marking": "none",
+      "artVariant": 56,
+      "diet": "dough",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "platy",
+        "name": [
+          "日落月光鱼觅食",
+          "Sunset platy feeding"
+        ],
+        "description": [
+          "圆腹轻轻升沉，短尾维持小幅度巡游。",
+          "Sunset platy: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "bob"
+      },
+      "feedingHabit": [
+        "圆腹轻轻升沉，短尾维持小幅度巡游。",
+        "Sunset platy: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "rainbowfish",
+      "name": [
+        "虹带彩虹鱼",
+        "Rainbowfish"
+      ],
+      "rarity": "common",
+      "price": 18,
+      "baseLength": 12,
+      "color": "#63a19a",
+      "accent": "#e3b465",
+      "body": "discus",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "rainbow",
+      "marking": "stripe",
+      "artVariant": 57,
+      "diet": "prawn",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "rainbowfish",
+        "name": [
+          "虹带彩虹鱼觅食",
+          "Rainbowfish feeding"
+        ],
+        "description": [
+          "双背鳍同步竖起，虹色侧线随转身变亮。",
+          "Rainbowfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "双背鳍同步竖起，虹色侧线随转身变亮。",
+        "Rainbowfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "mosquitofish",
+      "name": [
+        "溪口食蚊鱼",
+        "Mosquitofish"
+      ],
+      "rarity": "common",
+      "price": 23,
+      "baseLength": 6,
+      "color": "#b8b8a0",
+      "accent": "#dcdac5",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "stream",
+      "marking": "spots",
+      "artVariant": 58,
+      "diet": "prawn",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "mosquitofish",
+        "name": [
+          "溪口食蚊鱼觅食",
+          "Mosquitofish feeding"
+        ],
+        "description": [
+          "贴着水面短距离突进，迅速啄取微小食物。",
+          "Mosquitofish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "贴着水面短距离突进，迅速啄取微小食物。",
+        "Mosquitofish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "corydoras",
+      "name": [
+        "花甲鼠鱼",
+        "Peppered corydoras"
+      ],
+      "rarity": "common",
+      "price": 28,
+      "baseLength": 9,
+      "color": "#8b9690",
+      "accent": "#d6cbb0",
+      "body": "round",
+      "habitat": "river",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "barbel",
+      "marking": "saddles",
+      "artVariant": 59,
+      "diet": "prawn",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "corydoras",
+        "name": [
+          "花甲鼠鱼觅食",
+          "Peppered corydoras feeding"
+        ],
+        "description": [
+          "腹部贴近底床，以短须探查沙粒间的食物。",
+          "Peppered corydoras: Settles near the bed and steadies with paired fins before feeding."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "腹部贴近底床，以短须探查沙粒间的食物。",
+        "Peppered corydoras: Settles near the bed and steadies with paired fins before feeding."
+      ]
+    },
+    {
+      "id": "sprat",
+      "name": [
+        "碎银西鲱",
+        "Sprat"
+      ],
+      "rarity": "common",
+      "price": 33,
+      "baseLength": 13,
+      "color": "#8ca9ab",
+      "accent": "#e2e5cd",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "stream",
+      "marking": "scales",
+      "artVariant": 60,
+      "diet": "prawn",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "sprat",
+        "name": [
+          "碎银西鲱觅食",
+          "Sprat feeding"
+        ],
+        "description": [
+          "细密银鳞成群闪动，尾鳍以短行程推进。",
+          "Sprat: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "细密银鳞成群闪动，尾鳍以短行程推进。",
+        "Sprat: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "sandeel",
+      "name": [
+        "沙穴玉筋鱼",
+        "Sand lance"
+      ],
+      "rarity": "common",
+      "price": 38,
+      "baseLength": 20,
+      "color": "#a3b8ae",
+      "accent": "#e8dfb2",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "needle",
+      "marking": "stripe",
+      "artVariant": 61,
+      "diet": "prawn",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "sandeel",
+        "name": [
+          "沙穴玉筋鱼觅食",
+          "Sand lance feeding"
+        ],
+        "description": [
+          "从沙面上方掠过，细长身体随尾部形成小波。",
+          "Sand lance: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "从沙面上方掠过，细长身体随尾部形成小波。",
+        "Sand lance: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "sergeantmajor",
+      "name": [
+        "五线雀鲷",
+        "Sergeant major"
+      ],
+      "rarity": "common",
+      "price": 43,
+      "baseLength": 17,
+      "color": "#a9b685",
+      "accent": "#e7ca72",
+      "body": "discus",
+      "habitat": "sea",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "reef",
+      "marking": "stripe",
+      "artVariant": 62,
+      "diet": "prawn",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "sergeantmajor",
+        "name": [
+          "五线雀鲷觅食",
+          "Sergeant major feeding"
+        ],
+        "description": [
+          "五条深纹随扁身侧转，胸鳍连续扇动。",
+          "Sergeant major: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "五条深纹随扁身侧转，胸鳍连续扇动。",
+        "Sergeant major: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "damselfish",
+      "name": [
+        "钴蓝雀鲷",
+        "Blue damselfish"
+      ],
+      "rarity": "common",
+      "price": 48,
+      "baseLength": 9,
+      "color": "#3e89ba",
+      "accent": "#84d2d9",
+      "body": "round",
+      "habitat": "sea",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "reef",
+      "marking": "none",
+      "artVariant": 63,
+      "diet": "prawn",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "damselfish",
+        "name": [
+          "钴蓝雀鲷觅食",
+          "Blue damselfish feeding"
+        ],
+        "description": [
+          "在礁穴附近短距离游弋，遇食后迅速折回。",
+          "Blue damselfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "在礁穴附近短距离游弋，遇食后迅速折回。",
+        "Blue damselfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "blenny",
+      "name": [
+        "岩穴鳚鱼",
+        "Rock blenny"
+      ],
+      "rarity": "common",
+      "price": 18,
+      "baseLength": 16,
+      "color": "#ad9270",
+      "accent": "#d5c9a1",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "goby",
+      "marking": "saddles",
+      "artVariant": 64,
+      "diet": "prawn",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "blenny",
+        "name": [
+          "岩穴鳚鱼觅食",
+          "Rock blenny feeding"
+        ],
+        "description": [
+          "停驻岩沿，用胸鳍支撑身体再探头取食。",
+          "Rock blenny: Settles near the bed and steadies with paired fins before feeding."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "停驻岩沿，用胸鳍支撑身体再探头取食。",
+        "Rock blenny: Settles near the bed and steadies with paired fins before feeding."
+      ]
+    },
+    {
+      "id": "capelin",
+      "name": [
+        "冰海毛鳞鱼",
+        "Capelin"
+      ],
+      "rarity": "common",
+      "price": 23,
+      "baseLength": 19,
+      "color": "#98b6b7",
+      "accent": "#d6e4db",
+      "body": "slender",
+      "habitat": "ice",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "salmon",
+      "marking": "scales",
+      "artVariant": 65,
+      "diet": "prawn",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "capelin",
+        "name": [
+          "冰海毛鳞鱼觅食",
+          "Capelin feeding"
+        ],
+        "description": [
+          "冰水中保持细长的群游队列，脂鳍随水流轻摆。",
+          "Capelin: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "冰水中保持细长的群游队列，脂鳍随水流轻摆。",
+        "Capelin: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "saffroncod",
+      "name": [
+        "浅金黄线鳕",
+        "Saffron cod"
+      ],
+      "rarity": "common",
+      "price": 28,
+      "baseLength": 27,
+      "color": "#b2a57d",
+      "accent": "#e1d8b2",
+      "body": "slender",
+      "habitat": "ice",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "cod",
+      "marking": "freckles",
+      "artVariant": 66,
+      "diet": "cutbait",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "saffroncod",
+        "name": [
+          "浅金黄线鳕觅食",
+          "Saffron cod feeding"
+        ],
+        "description": [
+          "三段背鳍稳定姿态，下颏须先触及食物。",
+          "Saffron cod: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "三段背鳍稳定姿态，下颏须先触及食物。",
+        "Saffron cod: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "copepod",
+      "name": [
+        "琥珀桡足虾",
+        "Amber copepod"
+      ],
+      "rarity": "common",
+      "price": 33,
+      "baseLength": 4,
+      "color": "#c9a389",
+      "accent": "#f2d6b5",
+      "body": "shrimp",
+      "habitat": "deep",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "shrimp",
+      "marking": "segments",
+      "artVariant": 67,
+      "diet": "prawn",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "copepod",
+        "name": [
+          "琥珀桡足虾觅食",
+          "Amber copepod feeding"
+        ],
+        "description": [
+          "分节腹部蜷曲一次后弹开，细肢继续划水。",
+          "Amber copepod: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "分节腹部蜷曲一次后弹开，细肢继续划水。",
+        "Amber copepod: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "reedmedaka",
+      "name": [
+        "苇光青鳉",
+        "Reedlight medaka"
+      ],
+      "rarity": "common",
+      "price": 38,
+      "baseLength": 6,
+      "color": "#a5c7b2",
+      "accent": "#eddeb0",
+      "body": "slender",
+      "habitat": "spirit",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "stream",
+      "marking": "stripe",
+      "artVariant": 68,
+      "diet": "lotusmeal",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "reedmedaka",
+        "name": [
+          "苇光青鳉觅食",
+          "Reedlight medaka feeding"
+        ],
+        "description": [
+          "穿过芦根的光斑，尾鳍轻扫后停在水中。",
+          "Reedlight medaka: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "穿过芦根的光斑，尾鳍轻扫后停在水中。",
+        "Reedlight medaka: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "moongoby",
+      "name": [
+        "银沙月虾虎",
+        "Moon-sand goby"
+      ],
+      "rarity": "common",
+      "price": 43,
+      "baseLength": 10,
+      "color": "#aab8cf",
+      "accent": "#dfdce9",
+      "body": "round",
+      "habitat": "moon",
+      "difficulty": 0.2,
+      "fry": false,
+      "expansion": 3,
+      "anatomy": "goby",
+      "marking": "spots",
+      "artVariant": 69,
+      "diet": "lotusmeal",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "moongoby",
+        "name": [
+          "银沙月虾虎觅食",
+          "Moon-sand goby feeding"
+        ],
+        "description": [
+          "伏在银沙边缘，用扇形胸鳍缓缓调整朝向。",
+          "Moon-sand goby: Settles near the bed and steadies with paired fins before feeding."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "伏在银沙边缘，用扇形胸鳍缓缓调整朝向。",
+        "Moon-sand goby: Settles near the bed and steadies with paired fins before feeding."
+      ]
+    },
+    {
+      "id": "peacockbass",
+      "name": [
+        "金斑孔雀鲈",
+        "Peacock bass"
+      ],
+      "rarity": "rare",
+      "price": 102,
+      "baseLength": 46,
+      "color": "#92a967",
+      "accent": "#eac36a",
+      "body": "predator",
+      "habitat": "river",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "perch",
+      "marking": "saddles",
+      "artVariant": 70,
+      "diet": "cutbait",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "peacockbass",
+        "name": [
+          "金斑孔雀鲈觅食",
+          "Peacock bass feeding"
+        ],
+        "description": [
+          "背鳍硬棘先立起，骤然摆尾扑向目标。",
+          "Peacock bass: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "leap"
+      },
+      "feedingHabit": [
+        "背鳍硬棘先立起，骤然摆尾扑向目标。",
+        "Peacock bass: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "arapaima",
+      "name": [
+        "赤鳞巨骨舌鱼",
+        "Arapaima"
+      ],
+      "rarity": "rare",
+      "price": 72,
+      "baseLength": 110,
+      "color": "#718d7d",
+      "accent": "#d4755d",
+      "body": "predator",
+      "habitat": "river",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "arapaima",
+      "marking": "scales",
+      "artVariant": 71,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "arapaima",
+        "name": [
+          "赤鳞巨骨舌鱼觅食",
+          "Arapaima feeding"
+        ],
+        "description": [
+          "厚鳞躯干保持平稳，后置背鳍和臀鳍共同推进。",
+          "Arapaima: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "厚鳞躯干保持平稳，后置背鳍和臀鳍共同推进。",
+        "Arapaima: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "knifefish",
+      "name": [
+        "银背七星刀",
+        "Clown knifefish"
+      ],
+      "rarity": "rare",
+      "price": 77,
+      "baseLength": 48,
+      "color": "#8eaaa9",
+      "accent": "#dce6dc",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "knife",
+      "marking": "spots",
+      "artVariant": 72,
+      "diet": "cutbait",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "knifefish",
+        "name": [
+          "银背七星刀觅食",
+          "Clown knifefish feeding"
+        ],
+        "description": [
+          "长臀鳍从前向后传递波浪，身体几乎不摆动。",
+          "Clown knifefish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "长臀鳍从前向后传递波浪，身体几乎不摆动。",
+        "Clown knifefish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "electriccatfish",
+      "name": [
+        "金纹电鲶",
+        "Electric catfish"
+      ],
+      "rarity": "rare",
+      "price": 82,
+      "baseLength": 38,
+      "color": "#a9996c",
+      "accent": "#ebd793",
+      "body": "round",
+      "habitat": "river",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "barbel",
+      "marking": "freckles",
+      "artVariant": 73,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "electriccatfish",
+        "name": [
+          "金纹电鲶觅食",
+          "Electric catfish feeding"
+        ],
+        "description": [
+          "圆钝头部贴底搜寻，触须随转头扫过沙面。",
+          "Electric catfish: Settles near the bed and steadies with paired fins before feeding."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "圆钝头部贴底搜寻，触须随转头扫过沙面。",
+        "Electric catfish: Settles near the bed and steadies with paired fins before feeding."
+      ]
+    },
+    {
+      "id": "garfish",
+      "name": [
+        "翠吻颌针鱼",
+        "Needlefish"
+      ],
+      "rarity": "rare",
+      "price": 87,
+      "baseLength": 55,
+      "color": "#6caaa4",
+      "accent": "#d2ded1",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "needle",
+      "marking": "stripe",
+      "artVariant": 74,
+      "diet": "cutbait",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "garfish",
+        "name": [
+          "翠吻颌针鱼觅食",
+          "Needlefish feeding"
+        ],
+        "description": [
+          "上下长颌对准猎物，以纤长身体快速突进。",
+          "Needlefish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "上下长颌对准猎物，以纤长身体快速突进。",
+        "Needlefish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "goatfish",
+      "name": [
+        "红须羊鱼",
+        "Red mullet"
+      ],
+      "rarity": "rare",
+      "price": 92,
+      "baseLength": 25,
+      "color": "#c97e78",
+      "accent": "#edc194",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "barbel",
+      "marking": "stripe",
+      "artVariant": 75,
+      "diet": "prawn",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "goatfish",
+        "name": [
+          "红须羊鱼觅食",
+          "Red mullet feeding"
+        ],
+        "description": [
+          "两根下颏须探入沙层，胸鳍托住身体。",
+          "Red mullet: Settles near the bed and steadies with paired fins before feeding."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "两根下颏须探入沙层，胸鳍托住身体。",
+        "Red mullet: Settles near the bed and steadies with paired fins before feeding."
+      ]
+    },
+    {
+      "id": "parrotfish",
+      "name": [
+        "青玉鹦嘴鱼",
+        "Parrotfish"
+      ],
+      "rarity": "rare",
+      "price": 97,
+      "baseLength": 36,
+      "color": "#53aba1",
+      "accent": "#dbad96",
+      "body": "predator",
+      "habitat": "sea",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "parrot",
+      "marking": "scales",
+      "artVariant": 76,
+      "diet": "dough",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "parrotfish",
+        "name": [
+          "青玉鹦嘴鱼觅食",
+          "Parrotfish feeding"
+        ],
+        "description": [
+          "厚唇与喙状齿靠近礁面，缓慢刮取食物。",
+          "Parrotfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "orbit"
+      },
+      "feedingHabit": [
+        "厚唇与喙状齿靠近礁面，缓慢刮取食物。",
+        "Parrotfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "moorishidol",
+      "name": [
+        "镰旗镰鱼",
+        "Moorish idol"
+      ],
+      "rarity": "rare",
+      "price": 102,
+      "baseLength": 24,
+      "color": "#ded4a2",
+      "accent": "#313e51",
+      "body": "discus",
+      "habitat": "sea",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "banner",
+      "marking": "stripe",
+      "artVariant": 77,
+      "diet": "prawn",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "moorishidol",
+        "name": [
+          "镰旗镰鱼觅食",
+          "Moorish idol feeding"
+        ],
+        "description": [
+          "长背鳍飘带落后于转身，胸鳍维持悬停。",
+          "Moorish idol: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "长背鳍飘带落后于转身，胸鳍维持悬停。",
+        "Moorish idol: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "ribbonwrasse",
+      "name": [
+        "蓝带清洁鱼",
+        "Cleaner wrasse"
+      ],
+      "rarity": "rare",
+      "price": 72,
+      "baseLength": 14,
+      "color": "#699bc3",
+      "accent": "#e4e5dc",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "stream",
+      "marking": "stripe",
+      "artVariant": 78,
+      "diet": "prawn",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "ribbonwrasse",
+        "name": [
+          "蓝带清洁鱼觅食",
+          "Cleaner wrasse feeding"
+        ],
+        "description": [
+          "沿礁边来回穿行，中央深色条带随身形起伏。",
+          "Cleaner wrasse: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "沿礁边来回穿行，中央深色条带随身形起伏。",
+        "Cleaner wrasse: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "dragonetred",
+      "name": [
+        "赤锦红龙鱼",
+        "Ruby dragonet"
+      ],
+      "rarity": "rare",
+      "price": 77,
+      "baseLength": 12,
+      "color": "#b95345",
+      "accent": "#9dced1",
+      "body": "round",
+      "habitat": "sea",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "dragonet",
+      "marking": "maze",
+      "artVariant": 79,
+      "diet": "prawn",
+      "depth": "near",
+      "feedingReaction": {
+        "id": "dragonetred",
+        "name": [
+          "赤锦红龙鱼觅食",
+          "Ruby dragonet feeding"
+        ],
+        "description": [
+          "宽大胸鳍像小扇一样撑开，再小步挪向食物。",
+          "Ruby dragonet: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "宽大胸鳍像小扇一样撑开，再小步挪向食物。",
+        "Ruby dragonet: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "lumpfish",
+      "name": [
+        "冰蓝圆鳍鱼",
+        "Lumpfish"
+      ],
+      "rarity": "rare",
+      "price": 82,
+      "baseLength": 32,
+      "color": "#7398ab",
+      "accent": "#c3d5d1",
+      "body": "round",
+      "habitat": "ice",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "lump",
+      "marking": "scutes",
+      "artVariant": 80,
+      "diet": "prawn",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "lumpfish",
+        "name": [
+          "冰蓝圆鳍鱼觅食",
+          "Lumpfish feeding"
+        ],
+        "description": [
+          "宽圆腹部靠近岩壁，细小胸鳍连续扇动。",
+          "Lumpfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "bob"
+      },
+      "feedingHabit": [
+        "宽圆腹部靠近岩壁，细小胸鳍连续扇动。",
+        "Lumpfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "wolffish",
+      "name": [
+        "灰纹狼鳚",
+        "Atlantic wolffish"
+      ],
+      "rarity": "rare",
+      "price": 87,
+      "baseLength": 66,
+      "color": "#8899a7",
+      "accent": "#ccced0",
+      "body": "predator",
+      "habitat": "ice",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "wolf",
+      "marking": "saddles",
+      "artVariant": 81,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "wolffish",
+        "name": [
+          "灰纹狼鳚觅食",
+          "Atlantic wolffish feeding"
+        ],
+        "description": [
+          "粗壮头部保持稳定，身体后半段轻柔摆动。",
+          "Atlantic wolffish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "粗壮头部保持稳定，身体后半段轻柔摆动。",
+        "Atlantic wolffish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "hatchetfish",
+      "name": [
+        "银刃斧头鱼",
+        "Silver hatchetfish"
+      ],
+      "rarity": "rare",
+      "price": 92,
+      "baseLength": 14,
+      "color": "#8cacc0",
+      "accent": "#d5eeee",
+      "body": "discus",
+      "habitat": "deep",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "hatchet",
+      "marking": "stars",
+      "artVariant": 82,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "hatchetfish",
+        "name": [
+          "银刃斧头鱼觅食",
+          "Silver hatchetfish feeding"
+        ],
+        "description": [
+          "银色腹刃缓缓倾斜，扁薄胸鳍控制深水悬停。",
+          "Silver hatchetfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "银色腹刃缓缓倾斜，扁薄胸鳍控制深水悬停。",
+        "Silver hatchetfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "fangtooth",
+      "name": [
+        "玄齿深渊鱼",
+        "Fangtooth"
+      ],
+      "rarity": "rare",
+      "price": 97,
+      "baseLength": 20,
+      "color": "#675d65",
+      "accent": "#bcbaad",
+      "body": "predator",
+      "habitat": "deep",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "fang",
+      "marking": "scutes",
+      "artVariant": 83,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "fangtooth",
+        "name": [
+          "玄齿深渊鱼觅食",
+          "Fangtooth feeding"
+        ],
+        "description": [
+          "小型厚头先朝向食物，显露细长牙齿后闭口。",
+          "Fangtooth: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "小型厚头先朝向食物，显露细长牙齿后闭口。",
+        "Fangtooth: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "lotusloach",
+      "name": [
+        "青莲花泥鳅",
+        "Lotus loach"
+      ],
+      "rarity": "rare",
+      "price": 102,
+      "baseLength": 24,
+      "color": "#759e86",
+      "accent": "#e4bfd0",
+      "body": "slender",
+      "habitat": "spirit",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "barbel",
+      "marking": "flowers",
+      "artVariant": 84,
+      "diet": "lotusmeal",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "lotusloach",
+        "name": [
+          "青莲花泥鳅觅食",
+          "Lotus loach feeding"
+        ],
+        "description": [
+          "绕着莲根缓行，短须先触碰下沉的饵粒。",
+          "Lotus loach: Settles near the bed and steadies with paired fins before feeding."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "绕着莲根缓行，短须先触碰下沉的饵粒。",
+        "Lotus loach: Settles near the bed and steadies with paired fins before feeding."
+      ]
+    },
+    {
+      "id": "stargourami",
+      "name": [
+        "星点丝足鱼",
+        "Star gourami"
+      ],
+      "rarity": "rare",
+      "price": 72,
+      "baseLength": 24,
+      "color": "#758ead",
+      "accent": "#d7cde4",
+      "body": "discus",
+      "habitat": "moon",
+      "difficulty": 0.4,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "gourami",
+      "marking": "stars",
+      "artVariant": 85,
+      "diet": "lotusmeal",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "stargourami",
+        "name": [
+          "星点丝足鱼觅食",
+          "Star gourami feeding"
+        ],
+        "description": [
+          "丝状腹鳍缓缓探路，扁高身体保持平稳。",
+          "Star gourami: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "丝状腹鳍缓缓探路，扁高身体保持平稳。",
+        "Star gourami: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "paddlefish",
+      "name": [
+        "青铲鲟",
+        "Paddlefish"
+      ],
+      "rarity": "epic",
+      "price": 205,
+      "baseLength": 95,
+      "color": "#7b959e",
+      "accent": "#cfdad3",
+      "body": "predator",
+      "habitat": "river",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "paddle",
+      "marking": "scutes",
+      "artVariant": 86,
+      "diet": "prawn",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "paddlefish",
+        "name": [
+          "青铲鲟觅食",
+          "Paddlefish feeding"
+        ],
+        "description": [
+          "扁平长吻水平伸出，胸鳍微调滑行角度。",
+          "Paddlefish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "扁平长吻水平伸出，胸鳍微调滑行角度。",
+        "Paddlefish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "bichir",
+      "name": [
+        "古甲多鳍鱼",
+        "Armored bichir"
+      ],
+      "rarity": "epic",
+      "price": 210,
+      "baseLength": 54,
+      "color": "#929d72",
+      "accent": "#d8ca98",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "bichir",
+      "marking": "scutes",
+      "artVariant": 87,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "bichir",
+        "name": [
+          "古甲多鳍鱼觅食",
+          "Armored bichir feeding"
+        ],
+        "description": [
+          "一列独立背鳍逐个竖起，厚实胸鳍交替推进。",
+          "Armored bichir: Settles near the bed and steadies with paired fins before feeding."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "一列独立背鳍逐个竖起，厚实胸鳍交替推进。",
+        "Armored bichir: Settles near the bed and steadies with paired fins before feeding."
+      ]
+    },
+    {
+      "id": "weedyseadragon",
+      "name": [
+        "赤枝草海龙",
+        "Weedy seadragon"
+      ],
+      "rarity": "epic",
+      "price": 215,
+      "baseLength": 42,
+      "color": "#ae8958",
+      "accent": "#deaa75",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "seadragon",
+      "marking": "saddles",
+      "artVariant": 88,
+      "diet": "prawn",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "weedyseadragon",
+        "name": [
+          "赤枝草海龙觅食",
+          "Weedy seadragon feeding"
+        ],
+        "description": [
+          "管状吻对准微小食物，叶状附肢随水流后摆。",
+          "Weedy seadragon: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "管状吻对准微小食物，叶状附肢随水流后摆。",
+        "Weedy seadragon: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "batfish",
+      "name": [
+        "绯唇蝙蝠鱼",
+        "Red-lipped batfish"
+      ],
+      "rarity": "epic",
+      "price": 220,
+      "baseLength": 30,
+      "color": "#a2937a",
+      "accent": "#c54d4e",
+      "body": "flatfish",
+      "habitat": "sea",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "batfish",
+      "marking": "freckles",
+      "artVariant": 89,
+      "diet": "prawn",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "batfish",
+        "name": [
+          "绯唇蝙蝠鱼觅食",
+          "Red-lipped batfish feeding"
+        ],
+        "description": [
+          "用胸鳍末端支在沙上行走，红唇轻啄底部食物。",
+          "Red-lipped batfish: Settles near the bed and steadies with paired fins before feeding."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "用胸鳍末端支在沙上行走，红唇轻啄底部食物。",
+        "Red-lipped batfish: Settles near the bed and steadies with paired fins before feeding."
+      ]
+    },
+    {
+      "id": "sunfish",
+      "name": [
+        "银盘翻车鱼",
+        "Ocean sunfish"
+      ],
+      "rarity": "epic",
+      "price": 225,
+      "baseLength": 115,
+      "color": "#8fa4ac",
+      "accent": "#cbd8d6",
+      "body": "discus",
+      "habitat": "sea",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "sunfish",
+      "marking": "scutes",
+      "artVariant": 90,
+      "diet": "prawn",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "sunfish",
+        "name": [
+          "银盘翻车鱼觅食",
+          "Ocean sunfish feeding"
+        ],
+        "description": [
+          "高背鳍与臀鳍同步摆动，短尾缘轻轻调整方向。",
+          "Ocean sunfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "高背鳍与臀鳍同步摆动，短尾缘轻轻调整方向。",
+        "Ocean sunfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "ribbonice",
+      "name": [
+        "冰绡长鳍鱼",
+        "Ice-silk ribbonfish"
+      ],
+      "rarity": "epic",
+      "price": 230,
+      "baseLength": 68,
+      "color": "#a2cbdb",
+      "accent": "#ecf7ec",
+      "body": "slender",
+      "habitat": "ice",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "knife",
+      "marking": "crystals",
+      "artVariant": 91,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "ribbonice",
+        "name": [
+          "冰绡长鳍鱼觅食",
+          "Ice-silk ribbonfish feeding"
+        ],
+        "description": [
+          "长臀鳍形成连续水波，半透明鳍缘在冰水里舒展。",
+          "Ice-silk ribbonfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "长臀鳍形成连续水波，半透明鳍缘在冰水里舒展。",
+        "Ice-silk ribbonfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "dragonfish",
+      "name": [
+        "赤须黑龙鱼",
+        "Black dragonfish"
+      ],
+      "rarity": "epic",
+      "price": 200,
+      "baseLength": 62,
+      "color": "#424e62",
+      "accent": "#d38686",
+      "body": "slender",
+      "habitat": "deep",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "dragonfish",
+      "marking": "stars",
+      "artVariant": 92,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "dragonfish",
+        "name": [
+          "赤须黑龙鱼觅食",
+          "Black dragonfish feeding"
+        ],
+        "description": [
+          "颏下灯须先摆向食物，细长身体缓慢盘转。",
+          "Black dragonfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "颏下灯须先摆向食物，细长身体缓慢盘转。",
+        "Black dragonfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "barreleye",
+      "name": [
+        "琉璃管眼鱼",
+        "Barreleye"
+      ],
+      "rarity": "epic",
+      "price": 205,
+      "baseLength": 20,
+      "color": "#749a9b",
+      "accent": "#c0e9a8",
+      "body": "round",
+      "habitat": "deep",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "barreleye",
+      "marking": "none",
+      "artVariant": 93,
+      "diet": "prawn",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "barreleye",
+        "name": [
+          "琉璃管眼鱼觅食",
+          "Barreleye feeding"
+        ],
+        "description": [
+          "透明头罩中的管状眼朝上，胸鳍维持深水悬停。",
+          "Barreleye: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "bob"
+      },
+      "feedingHabit": [
+        "透明头罩中的管状眼朝上，胸鳍维持深水悬停。",
+        "Barreleye: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "pearlgourami",
+      "name": [
+        "莲露珍珠丝足",
+        "Lotus pearl gourami"
+      ],
+      "rarity": "epic",
+      "price": 210,
+      "baseLength": 35,
+      "color": "#d1bbd2",
+      "accent": "#e5dac0",
+      "body": "discus",
+      "habitat": "spirit",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "gourami",
+      "marking": "beads",
+      "artVariant": 94,
+      "diet": "lotusmeal",
+      "depth": "mid",
+      "feedingReaction": {
+        "id": "pearlgourami",
+        "name": [
+          "莲露珍珠丝足觅食",
+          "Lotus pearl gourami feeding"
+        ],
+        "description": [
+          "珍珠斑点随转身渐亮，两条丝足缓慢垂下探食。",
+          "Lotus pearl gourami: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "珍珠斑点随转身渐亮，两条丝足缓慢垂下探食。",
+        "Lotus pearl gourami: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "eclipserayfish",
+      "name": [
+        "月蚀燕鱼",
+        "Eclipse batfish"
+      ],
+      "rarity": "epic",
+      "price": 215,
+      "baseLength": 58,
+      "color": "#766b94",
+      "accent": "#e6d0ac",
+      "body": "discus",
+      "habitat": "moon",
+      "difficulty": 0.66,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "banner",
+      "marking": "rings",
+      "artVariant": 95,
+      "diet": "lotusmeal",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "eclipserayfish",
+        "name": [
+          "月蚀燕鱼觅食",
+          "Eclipse batfish feeding"
+        ],
+        "description": [
+          "镰状背鳍向后弯出长弧，环纹身体轻柔侧转。",
+          "Eclipse batfish: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "orbit"
+      },
+      "feedingHabit": [
+        "镰状背鳍向后弯出长弧，环纹身体轻柔侧转。",
+        "Eclipse batfish: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "celestialsturgeon",
+      "name": [
+        "天枢七星鲟",
+        "Celestial sturgeon"
+      ],
+      "rarity": "legendary",
+      "price": 480,
+      "baseLength": 136,
+      "color": "#647e9e",
+      "accent": "#e7cb82",
+      "body": "predator",
+      "habitat": "moon",
+      "difficulty": 0.85,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "sturgeon",
+      "marking": "stars",
+      "artVariant": 96,
+      "diet": "lotusmeal",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "celestialsturgeon",
+        "name": [
+          "天枢七星鲟觅食",
+          "Celestial sturgeon feeding"
+        ],
+        "description": [
+          "五列骨板沿身体排列，长吻下方的短须探向水底。",
+          "Celestial sturgeon: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "五列骨板沿身体排列，长吻下方的短须探向水底。",
+        "Celestial sturgeon: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "vermillionarowana",
+      "name": [
+        "朱砂赤鳞龙",
+        "Vermilion arowana"
+      ],
+      "rarity": "legendary",
+      "price": 485,
+      "baseLength": 128,
+      "color": "#bb655a",
+      "accent": "#f1cc8e",
+      "body": "predator",
+      "habitat": "spirit",
+      "difficulty": 0.85,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "arapaima",
+      "marking": "scales",
+      "artVariant": 97,
+      "diet": "lotusmeal",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "vermillionarowana",
+        "name": [
+          "朱砂赤鳞龙觅食",
+          "Vermilion arowana feeding"
+        ],
+        "description": [
+          "后置双鳍推动赤鳞身躯，抬头接住水面的食物。",
+          "Vermilion arowana: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "leap"
+      },
+      "feedingHabit": [
+        "后置双鳍推动赤鳞身躯，抬头接住水面的食物。",
+        "Vermilion arowana: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "glaciercoelacanth",
+      "name": [
+        "万年冰腔棘鱼",
+        "Glacier coelacanth"
+      ],
+      "rarity": "legendary",
+      "price": 490,
+      "baseLength": 148,
+      "color": "#7295b1",
+      "accent": "#dcf1e8",
+      "body": "predator",
+      "habitat": "ice",
+      "difficulty": 0.85,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "coelacanth",
+      "marking": "crystals",
+      "artVariant": 98,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "glaciercoelacanth",
+        "name": [
+          "万年冰腔棘鱼觅食",
+          "Glacier coelacanth feeding"
+        ],
+        "description": [
+          "肉质胸鳍和腹鳍成对交替摆动，三叶尾保持慢速巡游。",
+          "Glacier coelacanth: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "肉质胸鳍和腹鳍成对交替摆动，三叶尾保持慢速巡游。",
+        "Glacier coelacanth: Fin strokes steer a continuous body wave toward the food."
+      ]
+    },
+    {
+      "id": "abyssgulper",
+      "name": [
+        "幽渊囊颚鳗",
+        "Abyss gulper eel"
+      ],
+      "rarity": "legendary",
+      "price": 460,
+      "baseLength": 155,
+      "color": "#52547b",
+      "accent": "#c6a6d3",
+      "body": "slender",
+      "habitat": "deep",
+      "difficulty": 0.85,
+      "fry": true,
+      "expansion": 3,
+      "anatomy": "gulper",
+      "marking": "stars",
+      "artVariant": 99,
+      "diet": "cutbait",
+      "depth": "deep",
+      "feedingReaction": {
+        "id": "abyssgulper",
+        "name": [
+          "幽渊囊颚鳗觅食",
+          "Abyss gulper eel feeding"
+        ],
+        "description": [
+          "囊状下颚缓慢张开，细长尾段连续摆动维持位置。",
+          "Abyss gulper eel: Fin strokes steer a continuous body wave toward the food."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "囊状下颚缓慢张开，细长尾段连续摆动维持位置。",
+        "Abyss gulper eel: Fin strokes steer a continuous body wave toward the food."
+      ]
+    }
+  ],
+  "rods": [
+    {
+      "id": "anime_iruka",
+      "name": "伊鲁卡·忍具",
+      "rarity": "common",
+      "collection": "naruto",
+      "action": "kunai",
+      "adaptation": "苦无带两道短残影掠向落点，钢刃命中后迅速收势。",
+      "source": "https://naruto-official.com/anime/naruto1/list/01_368",
+      "sourceScope": "角色及登场设定参考；页面未详述完整术式，钓鱼动作是本项目改编。"
+    },
+    {
+      "id": "anime_tenten",
+      "name": "天天·双升龙",
+      "rarity": "common",
+      "collection": "naruto",
+      "action": "scroll",
+      "adaptation": "三枚小型忍具错时齐射，刃光在落点汇合后消退。",
+      "source": "https://naruto-official.com/news/01_1794",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_shikamaru",
+      "name": "鹿丸·影缚",
+      "rarity": "common",
+      "collection": "naruto",
+      "action": "shadow",
+      "adaptation": "细长黑影贴着水面前伸，短暂缚住落点后收回。",
+      "source": "https://naruto-official.com/en/news/01_1910",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_kiba",
+      "name": "牙·牙通牙",
+      "rarity": "common",
+      "collection": "naruto",
+      "action": "fang",
+      "adaptation": "两道灰白螺旋错位突进，牙通牙的风轨在命中后散开。",
+      "source": "https://naruto-official.com/anime/naruto1/list/01_344",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_shino",
+      "name": "志乃·寄坏虫",
+      "rarity": "common",
+      "collection": "naruto",
+      "action": "swarm",
+      "adaptation": "少量寄坏虫沿弧线聚拢，命中后立即散去。",
+      "source": "https://naruto-official.com/anime/naruto2/list/01_537",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_asuma",
+      "name": "阿斯玛·飞燕",
+      "rarity": "common",
+      "collection": "naruto",
+      "action": "chakrablade",
+      "adaptation": "两记青蓝查克拉刃交错划过，刀口保留锐亮的短斩痕。",
+      "source": "https://naruto-official.com/en/news/01_1798",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_sai",
+      "name": "佐井·超兽伪画",
+      "rarity": "common",
+      "collection": "naruto",
+      "action": "inkbird",
+      "adaptation": "两道墨鸟剪影前冲，墨翼翻折后化成少量墨点。",
+      "source": "https://naruto-official.com/anime/boruto/list/01_977",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_ino",
+      "name": "井野·心转身",
+      "rarity": "common",
+      "collection": "naruto",
+      "action": "mindthread",
+      "adaptation": "淡紫精神束直达落点，定位光环短暂收束。",
+      "source": "https://naruto-official.com/anime/boruto/list/01_1084",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_sakura",
+      "name": "小樱·樱花冲",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "impact",
+      "adaptation": "一记有力的拳影前冲，命中时绽开短促冲击环。",
+      "source": "https://naruto-official.com/news/01_1743",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_hinata",
+      "name": "雏田·双狮拳",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "lion",
+      "adaptation": "两道蓝色狮形查克拉拳错位前冲，鬃形边缘随拳势收束。",
+      "source": "https://naruto-official.com/en/news/01_2199",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_neji",
+      "name": "宁次·回天",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "rotation",
+      "adaptation": "三层蓝白查克拉弧高速回旋，半球形气流迅速收回。",
+      "source": "https://naruto-official.com/en/news/01_1817",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_lee",
+      "name": "小李·表莲华",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "lotuskick",
+      "adaptation": "绷带脚踢出一道短弧，绿衣残影与气流随收势散去。",
+      "source": "https://naruto-official.com/news/01_1652",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_temari",
+      "name": "手鞠·镰鼬",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "fan",
+      "adaptation": "三道薄而锐利的风刃错时横扫，命中后立即消散。",
+      "source": "https://naruto-official.com/en/news/01_1364",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_kankuro",
+      "name": "勘九郎·傀儡",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "puppet",
+      "adaptation": "三根查克拉丝牵引一次短斩击，收线后刃光消失。",
+      "source": "https://naruto-official.com/anime/naruto2/list/01_763",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_choji",
+      "name": "丁次·倍化之手",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "giantpalm",
+      "adaptation": "倍化拳影完成一次沉重直击，冲击环迅速消退。",
+      "source": "https://naruto-official.com/anime/boruto/list/01_1053",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_yamato",
+      "name": "大和·木牢",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "woodcage",
+      "adaptation": "三道有木纹的短木刺前冲，命中后迅速收势。",
+      "source": "https://naruto-official.com/en/news/01_1310",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_suigetsu",
+      "name": "水月·水化",
+      "rarity": "rare",
+      "collection": "naruto",
+      "action": "waterbody",
+      "adaptation": "一道银蓝斩击拖出液态尾迹，少量水珠随刃光散开。",
+      "source": "https://naruto-official.com/en/anime/naruto2/list/01_559",
+      "sourceScope": "角色及登场设定参考；页面未详述完整术式，钓鱼动作是本项目改编。"
+    },
+    {
+      "id": "anime_gaara",
+      "name": "我爱罗·砂之手",
+      "rarity": "epic",
+      "collection": "naruto",
+      "action": "sand",
+      "adaptation": "砂流贴近落点卷合，颗粒与短冲击环随收势散去。",
+      "source": "https://naruto-official.com/en/news/01_1688",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_kakashi",
+      "name": "卡卡西·雷切",
+      "rarity": "epic",
+      "collection": "naruto",
+      "action": "lightning",
+      "adaptation": "集中的青白电刃向前突刺，分叉电流在命中后消退。",
+      "source": "https://naruto-official.com/en/news/01_1794",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_itachi",
+      "name": "鼬·鸦分身",
+      "rarity": "epic",
+      "collection": "naruto",
+      "action": "raven",
+      "adaptation": "三道暗色鸦影错位掠过，羽影与红色眼光一闪即逝。",
+      "source": "https://naruto-official.com/en/news/01_1794",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_jiraiya",
+      "name": "自来也·蛤蟆油炎",
+      "rarity": "epic",
+      "collection": "naruto",
+      "action": "toad",
+      "adaptation": "橙金油炎沿短距离喷出，亮芯在命中后收束。",
+      "source": "https://naruto-official.com/news/01_2604",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_minato",
+      "name": "水门·飞雷神",
+      "rarity": "epic",
+      "collection": "naruto",
+      "action": "teleport",
+      "adaptation": "三叉苦无先行，金色瞬身闪光在落点短暂交汇。",
+      "source": "https://naruto-official.com/en/news/01_1709",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_deidara",
+      "name": "迪达拉·黏土飞鸟",
+      "rarity": "epic",
+      "collection": "naruto",
+      "action": "claybird",
+      "adaptation": "小型白色黏土鸟俯冲，命中后化成紧凑爆光。",
+      "source": "https://naruto-official.com/en/news/01_1781",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_konan",
+      "name": "小南·式纸之舞",
+      "rarity": "epic",
+      "collection": "naruto",
+      "action": "paper",
+      "adaptation": "五枚带折面的纸刃错位滑行，锐利纸边向落点收拢。",
+      "source": "https://naruto-official.com/news/01_2338",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_obito",
+      "name": "带土·神威",
+      "rarity": "epic",
+      "collection": "naruto",
+      "action": "kamui",
+      "adaptation": "灰紫空间纹向中心旋缩，暗色涡心短暂显现后消失。",
+      "source": "https://naruto-official.com/en/news/01_1342",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_naruto",
+      "name": "鸣人·螺旋丸",
+      "rarity": "legendary",
+      "collection": "naruto",
+      "action": "rasengan",
+      "adaptation": "蓝色螺旋丸以三层旋转查克拉前冲，球面高光随转动变化。",
+      "source": "https://naruto-official.com/en/news/01_1802",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_sasuke",
+      "name": "佐助·须佐之矢",
+      "rarity": "legendary",
+      "collection": "naruto",
+      "action": "susanoo",
+      "adaptation": "紫色须佐之矢沿直线射出，箭锋命中后留下短促紫白冲击。",
+      "source": "https://naruto-official.com/en/news/01_1794",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_hashirama",
+      "name": "柱间·木龙",
+      "rarity": "legendary",
+      "collection": "naruto",
+      "action": "wooddragon",
+      "adaptation": "带木纹的短木龙沿弧线前冲，龙首与木质尾迹随收势消退。",
+      "source": "https://naruto-official.com/en/news/01_1695",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_madara",
+      "name": "斑·天碍震星",
+      "rarity": "legendary",
+      "collection": "naruto",
+      "action": "meteor",
+      "adaptation": "一枚棱面陨石短距离斜落，命中时释放集中的沉重冲击。",
+      "source": "https://naruto-official.com/news/01_1333",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_sixpaths",
+      "name": "鸣人·六道仙人",
+      "rarity": "hidden",
+      "collection": "naruto",
+      "action": "sixpaths",
+      "adaptation": "六道协力 · 每竿首次进度耗尽恢复至 35%，张力增长减少 20%；金色螺旋丸配合短暂求道玉残影。",
+      "source": "https://naruto-official.com/en/news/01_1359",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_usopp",
+      "name": "乌索普·黑兜",
+      "rarity": "common",
+      "collection": "onepiece",
+      "action": "slingshot",
+      "adaptation": "种子弹带短尾迹飞向落点，命中散出少量碎光。",
+      "source": "https://one-piece.com/greg/o20201118_1185/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_chopper",
+      "name": "乔巴·刻蹄",
+      "rarity": "common",
+      "collection": "onepiece",
+      "action": "hoof",
+      "adaptation": "短促蹄影前冲，命中时出现小范围冲击环。",
+      "source": "https://one-piece.com/character/chopper/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_brook",
+      "name": "布鲁克·灵魂剑",
+      "rarity": "common",
+      "collection": "onepiece",
+      "action": "soul",
+      "adaptation": "一道冰白斩击掠过落点，剑气迅速散去。",
+      "source": "https://one-piece.com/character/brook/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_franky",
+      "name": "弗兰奇·风来炮",
+      "rarity": "common",
+      "collection": "onepiece",
+      "action": "cannon",
+      "adaptation": "短光束直击落点，炮击亮芯迅速收束。",
+      "source": "https://one-piece.com/character/franky/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_buggy",
+      "name": "巴基·四分五裂",
+      "rarity": "common",
+      "collection": "onepiece",
+      "action": "split",
+      "adaptation": "白色拳影快速前冲，两道残影随即淡出。",
+      "source": "https://one-piece.com/character/Buggy/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_perona",
+      "name": "佩罗娜·幽灵",
+      "rarity": "common",
+      "collection": "onepiece",
+      "action": "ghost",
+      "adaptation": "两道淡白气流掠过落点后散去。",
+      "source": "https://one-piece.com/character/Perona/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_crocodile",
+      "name": "克洛克达尔·沙漠金钩",
+      "rarity": "common",
+      "collection": "onepiece",
+      "action": "sandhook",
+      "adaptation": "短砂流卷过落点，命中散出少量砂点。",
+      "source": "https://one-piece.com/character/Crocodile/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_kuma",
+      "name": "熊·肉球冲击",
+      "rarity": "common",
+      "collection": "onepiece",
+      "action": "paw",
+      "adaptation": "带肉球纹的拳影前冲，收成紧凑冲击环。",
+      "source": "https://one-piece.com/character/Bartholomew_Kuma/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_nami",
+      "name": "娜美·天候棒",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "weather",
+      "adaptation": "一记短雷击落在咬钩处，电光迅速消退。",
+      "source": "https://one-piece.com/character/nami/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_sanji",
+      "name": "山治·恶魔风脚",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "firekick",
+      "adaptation": "火焰轨迹配合一记弧形踢击，命中后收势。",
+      "source": "https://one-piece.com/character/sanji/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_robin",
+      "name": "罗宾·百花缭乱",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "bloom",
+      "adaptation": "三道小拳影错时连击，命中后迅速淡出。",
+      "source": "https://one-piece.com/character/robin/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_jinbe",
+      "name": "甚平·海流过肩摔",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "current",
+      "adaptation": "两道短水弧汇向落点，留下轻薄水环。",
+      "source": "https://one-piece.com/anime/63111/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_smoker",
+      "name": "斯摩格·白蔓",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "smoke",
+      "adaptation": "短白色气流掠过落点，随后自然散去。",
+      "source": "https://one-piece.com/character/smoker/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_vivi",
+      "name": "薇薇·孔雀锁链",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "peacock",
+      "adaptation": "两道交错斩击短暂展开，随后收束。",
+      "source": "https://one-piece.com/character/Nefeltari_Vivi/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_aokiji",
+      "name": "库赞·冰块暴雉嘴",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "icebird",
+      "adaptation": "三道细窄冰锋前冲，命中散出冷白碎光。",
+      "source": "https://one-piece.com/figure/o5249/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_kizaru",
+      "name": "黄猿·八尺琼勾玉",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "lightbeads",
+      "adaptation": "金色短光束直击落点，亮芯迅速淡出。",
+      "source": "https://one-piece.com/character/Borsalino/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_doflamingo",
+      "name": "多弗朗明哥·五色线",
+      "rarity": "rare",
+      "collection": "onepiece",
+      "action": "strings",
+      "adaptation": "一道细窄线斩划过落点，留下短促刃光。",
+      "source": "https://one-piece.com/story/dressrosa/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_zoro",
+      "name": "索隆·三刀流",
+      "rarity": "epic",
+      "collection": "onepiece",
+      "action": "threesword",
+      "adaptation": "三道窄斩击错时交叉，刃光随后收束。",
+      "source": "https://one-piece.com/news/o20201111_11715/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_ace",
+      "name": "艾斯·炎戒",
+      "rarity": "epic",
+      "collection": "onepiece",
+      "action": "flame",
+      "adaptation": "橙金火焰带短尾迹前冲，命中散出少量火光。",
+      "source": "https://one-piece.com/usop/o20141126_0307/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_sabo",
+      "name": "萨博·龙爪拳",
+      "rarity": "epic",
+      "collection": "onepiece",
+      "action": "dragonclaw",
+      "adaptation": "三道短爪击交错划过落点，随后淡出。",
+      "source": "https://one-piece.com/anime/o2867/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_law",
+      "name": "罗·ROOM",
+      "rarity": "epic",
+      "collection": "onepiece",
+      "action": "room",
+      "adaptation": "小范围 ROOM 光环在落点展开后迅速缩回。",
+      "source": "https://one-piece.com/news/o20201006_11603/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_hancock",
+      "name": "汉库克·芳香脚",
+      "rarity": "epic",
+      "collection": "onepiece",
+      "action": "stone",
+      "adaptation": "粉白斩击短促命中，收成轻薄冲击环。",
+      "source": "https://one-piece.com/news/o20200519_10947/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_enel",
+      "name": "艾尼路·雷龙",
+      "rarity": "epic",
+      "collection": "onepiece",
+      "action": "thunderdragon",
+      "adaptation": "集中的青白雷击直落水面，电光快速消散。",
+      "source": "https://one-piece.com/character/Eneru/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_katakuri",
+      "name": "卡塔库栗·糯团拳",
+      "rarity": "epic",
+      "collection": "onepiece",
+      "action": "mochi",
+      "adaptation": "厚实糯团拳影前冲，残影与冲击环随即散去。",
+      "source": "https://one-piece.com/figure/o4945/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_marco",
+      "name": "马尔科·不死鸟",
+      "rarity": "epic",
+      "collection": "onepiece",
+      "action": "phoenixbird",
+      "adaptation": "青蓝火焰轨迹前冲，命中留下短促火光。",
+      "source": "https://one-piece.com/character/marco/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_luffy",
+      "name": "路飞·橡胶手",
+      "rarity": "legendary",
+      "collection": "onepiece",
+      "action": "rubber",
+      "adaptation": "橡胶拳影前冲，命中时收成短促冲击环。",
+      "source": "https://one-piece.com/character/luffy/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_shanks",
+      "name": "香克斯·神避",
+      "rarity": "legendary",
+      "collection": "onepiece",
+      "action": "haki",
+      "adaptation": "红黑斩击配合短促霸气裂光，命中后收势。",
+      "source": "https://one-piece.com/figure/77920/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_whitebeard",
+      "name": "白胡子·震震",
+      "rarity": "legendary",
+      "collection": "onepiece",
+      "action": "quake",
+      "adaptation": "一道沉重斩击命中，短裂纹随冲击消退。",
+      "source": "https://one-piece.com/character/edward_newgate/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_mihawk",
+      "name": "米霍克·黑刀夜",
+      "rarity": "legendary",
+      "collection": "onepiece",
+      "action": "blackblade",
+      "adaptation": "一记青白色斩击掠过落点，刃光收束消散。",
+      "source": "https://one-piece.com/character/Dracule_Mihawk/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    },
+    {
+      "id": "anime_nika",
+      "name": "路飞·太阳神尼卡",
+      "rarity": "hidden",
+      "collection": "onepiece",
+      "action": "nika",
+      "adaptation": "解放之鼓 · 20% 概率直接上鱼；正常遛鱼首次断线回弹救回。白色拳影短促连击。",
+      "source": "https://one-piece.com/character/luffy/index.html",
+      "sourceScope": "角色能力、招式或官方造型参考；钓鱼动作、时间和数值是本项目改编。"
+    }
+  ],
+  "pools": [
+    {
+      "id": "naruto",
+      "name": [
+        "火影忍者鱼竿礼包",
+        "NARUTO Rod Collection"
+      ],
+      "volume": 5,
+      "description": [
+        "忍具、血继与忍术鱼竿，含隐藏款六道仙人。",
+        "Ninja tools and techniques, with a secret Six Paths rod."
+      ],
+      "price": 100,
+      "rodIds": [
+        "anime_iruka",
+        "anime_tenten",
+        "anime_shikamaru",
+        "anime_kiba",
+        "anime_shino",
+        "anime_asuma",
+        "anime_sai",
+        "anime_ino",
+        "anime_sakura",
+        "anime_hinata",
+        "anime_neji",
+        "anime_lee",
+        "anime_temari",
+        "anime_kankuro",
+        "anime_choji",
+        "anime_yamato",
+        "anime_suigetsu",
+        "anime_gaara",
+        "anime_kakashi",
+        "anime_itachi",
+        "anime_jiraiya",
+        "anime_minato",
+        "anime_deidara",
+        "anime_konan",
+        "anime_obito",
+        "anime_naruto",
+        "anime_sasuke",
+        "anime_hashirama",
+        "anime_madara"
+      ],
+      "hiddenRodId": "anime_sixpaths",
+      "odds": {
+        "common": 0.545,
+        "hidden": 0.005,
+        "rare": 0.3,
+        "epic": 0.12,
+        "legendary": 0.03
+      }
+    },
+    {
+      "id": "onepiece",
+      "name": [
+        "海贼王鱼竿礼包",
+        "ONE PIECE Rod Collection"
+      ],
+      "volume": 6,
+      "description": [
+        "航海角色招式与机关鱼竿，含隐藏款太阳神尼卡。",
+        "Character techniques and crafted rods, with a secret Nika rod."
+      ],
+      "price": 100,
+      "rodIds": [
+        "anime_usopp",
+        "anime_chopper",
+        "anime_brook",
+        "anime_franky",
+        "anime_buggy",
+        "anime_perona",
+        "anime_crocodile",
+        "anime_kuma",
+        "anime_nami",
+        "anime_sanji",
+        "anime_robin",
+        "anime_jinbe",
+        "anime_smoker",
+        "anime_vivi",
+        "anime_aokiji",
+        "anime_kizaru",
+        "anime_doflamingo",
+        "anime_zoro",
+        "anime_ace",
+        "anime_sabo",
+        "anime_law",
+        "anime_hancock",
+        "anime_enel",
+        "anime_katakuri",
+        "anime_marco",
+        "anime_luffy",
+        "anime_shanks",
+        "anime_whitebeard",
+        "anime_mihawk"
+      ],
+      "hiddenRodId": "anime_nika",
+      "odds": {
+        "common": 0.545,
+        "hidden": 0.005,
+        "rare": 0.3,
+        "epic": 0.12,
+        "legendary": 0.03
+      }
+    }
+  ],
+  "onePieceOriginalArt": {
+    "generator": "built-in image_gen",
+    "files": [
+      {
+        "id": "anime_usopp",
+        "file": "skins/tracer/fishing-art/rod-onepiece-usopp-v2.png",
+        "revision": "c1f0a575dc57",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_chopper",
+        "file": "skins/tracer/fishing-art/rod-onepiece-chopper-v2.png",
+        "revision": "dd2dcdacb69a",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_brook",
+        "file": "skins/tracer/fishing-art/rod-onepiece-brook-v2.png",
+        "revision": "6654dfc69d36",
+        "rig": "weapon"
+      },
+      {
+        "id": "anime_franky",
+        "file": "skins/tracer/fishing-art/rod-onepiece-franky-v2.png",
+        "revision": "f9a845ce0db6",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_buggy",
+        "file": "skins/tracer/fishing-art/rod-onepiece-buggy-v2.png",
+        "revision": "f41a53293def",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_perona",
+        "file": "skins/tracer/fishing-art/rod-onepiece-perona-v2.png",
+        "revision": "a98be20fc429",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_crocodile",
+        "file": "skins/tracer/fishing-art/rod-onepiece-crocodile-v2.png",
+        "revision": "93cfb66e7b80",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_kuma",
+        "file": "skins/tracer/fishing-art/rod-onepiece-kuma-v2.png",
+        "revision": "19e03660bcb7",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_nami",
+        "file": "skins/tracer/fishing-art/rod-onepiece-nami-v2.png",
+        "revision": "f1c3c2da7d66",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_sanji",
+        "file": "skins/tracer/fishing-art/rod-onepiece-sanji-v2.png",
+        "revision": "cad8413c3fb8",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_robin",
+        "file": "skins/tracer/fishing-art/rod-onepiece-robin-v2.png",
+        "revision": "9f5251d962af",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_jinbe",
+        "file": "skins/tracer/fishing-art/rod-onepiece-jinbe-v2.png",
+        "revision": "b5536ebd448f",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_smoker",
+        "file": "skins/tracer/fishing-art/rod-onepiece-smoker-v2.png",
+        "revision": "e3cd61722a96",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_vivi",
+        "file": "skins/tracer/fishing-art/rod-onepiece-vivi-v2.png",
+        "revision": "cd940c98311e",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_aokiji",
+        "file": "skins/tracer/fishing-art/rod-onepiece-aokiji-v2.png",
+        "revision": "05e6bc1d5151",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_kizaru",
+        "file": "skins/tracer/fishing-art/rod-onepiece-kizaru-v2.png",
+        "revision": "8e81a897b79d",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_doflamingo",
+        "file": "skins/tracer/fishing-art/rod-onepiece-doflamingo-v2.png",
+        "revision": "9746158a3e00",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_zoro",
+        "file": "skins/tracer/fishing-art/rod-onepiece-zoro-v2.png",
+        "revision": "99026f0e4e86",
+        "rig": "weapon"
+      },
+      {
+        "id": "anime_ace",
+        "file": "skins/tracer/fishing-art/rod-onepiece-ace-v2.png",
+        "revision": "7ff4e7041016",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_sabo",
+        "file": "skins/tracer/fishing-art/rod-onepiece-sabo-v2.png",
+        "revision": "a7fe106670c3",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_law",
+        "file": "skins/tracer/fishing-art/rod-onepiece-law-v2.png",
+        "revision": "d431d7d716dd",
+        "rig": "weapon"
+      },
+      {
+        "id": "anime_hancock",
+        "file": "skins/tracer/fishing-art/rod-onepiece-hancock-v2.png",
+        "revision": "70a57c7467a6",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_enel",
+        "file": "skins/tracer/fishing-art/rod-onepiece-enel-v2.png",
+        "revision": "eeac85735b5a",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_katakuri",
+        "file": "skins/tracer/fishing-art/rod-onepiece-katakuri-v2.png",
+        "revision": "1708443b72e2",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_marco",
+        "file": "skins/tracer/fishing-art/rod-onepiece-marco-v2.png",
+        "revision": "f7eb6c4c91f8",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_luffy",
+        "file": "skins/tracer/fishing-art/rod-onepiece-luffy-v2.png",
+        "revision": "a654f7d0cc52",
+        "rig": "flex"
+      },
+      {
+        "id": "anime_shanks",
+        "file": "skins/tracer/fishing-art/rod-onepiece-shanks-v2.png",
+        "revision": "7d089d7342d1",
+        "rig": "weapon"
+      },
+      {
+        "id": "anime_whitebeard",
+        "file": "skins/tracer/fishing-art/rod-onepiece-whitebeard-v2.png",
+        "revision": "4aacd14ccf80",
+        "rig": "weapon"
+      },
+      {
+        "id": "anime_mihawk",
+        "file": "skins/tracer/fishing-art/rod-onepiece-mihawk-v2.png",
+        "revision": "bbb4f36c029c",
+        "rig": "weapon"
+      },
+      {
+        "id": "anime_nika",
+        "file": "skins/tracer/fishing-art/rod-onepiece-nika-v2.png",
+        "revision": "20935c222c7e",
+        "rig": "flex"
+      }
+    ],
+    "prompts": "docs/fishing-onepiece-paint-prompts.json",
+    "zoro": "Three complete straight parallel blades; no fishing rod extension.",
+    "mihawk": "Complete Yoru sword; no fishing rod extension."
+  },
+  "onePieceEffects": {
+    "cast": 620,
+    "bite": 280,
+    "caught": 760,
+    "style": "Compact punch afterimages, tapered slashes and short elemental strikes. No stretched arm or floating prop animation."
+  },
+  "narutoEffects": {
+    "renderer": "short character techniques",
+    "durationMs": {
+      "cast": 620,
+      "bite": 280,
+      "caught": 760,
+      "entrance": 700
+    },
+    "quietPhases": [
+      "idle",
+      "charging",
+      "waiting",
+      "reeling",
+      "escaped"
+    ],
+    "geometry": "Existing rod, line and fish physics retained; effects follow the actual fish or water position.",
+    "hiddenAbility": "One progress rescue to 35% per cast; 20% less tension gain."
+  },
+  "animeFloats": {
+    "count": 26,
+    "tiers": [
+      "epic",
+      "legendary"
+    ],
+    "rendering": "Layered SVG miniature, unique gradients per instance; body shading, edge highlights, character materials and weighted stem.",
+    "sizePx": [
+      28,
+      37.8
+    ],
+    "waterline": [
+      20,
+      41
+    ],
+    "viewBox": [
+      0,
+      0,
+      40,
+      54
+    ],
+    "motion": "Fishing float rig only; no idle ornamental animation."
+  }
+}

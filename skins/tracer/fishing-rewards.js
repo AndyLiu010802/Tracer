@@ -14,6 +14,7 @@
   }
   function giftMarkup(gift){
     if(!gift)return '';
+    if(gift.slot==='equipment')return '<div class="fishing-gift-equipment"><img src="'+escape(gift.asset)+'" alt="" loading="lazy"></div>';
     if(gift.slot==='background')return '<div class="fishing-gift-scene"><img src="'+escape(gift.asset)+'" alt="" loading="lazy"></div>';
     const avatar=root.document?.querySelector('.account-trigger>img')?.getAttribute('src');
     return '<div class="fishing-gift-portrait"><span class="fishing-gift-portrait-center">'+(avatar?'<img src="'+escape(avatar)+'" alt="">':'✦')+'</span><img class="fishing-gift-frame" src="'+escape(gift.asset)+'" alt="" loading="lazy"></div>';
@@ -35,12 +36,12 @@
     return !!result?.ok&&!activeGifts[slot];
   }
   function reveal(result){
-    const gift=result?.gift,doc=root.document;if(!gift||!doc)return;
+    const gift=result?.gift,doc=root.document;if(!gift||!doc)return;const motor=gift.id==='auto_fishing_motor';
     if(activeDialog){activeDialog.close();activeDialog.remove();}
     const english=language().startsWith('en'),tr=(zh,en)=>english?en:zh,modal=doc.createElement('dialog');activeDialog=modal;
-    modal.className='fishing-gift-reveal';modal.setAttribute('aria-label',tr('神秘礼包揭晓','Mystery gift revealed'));
-    modal.innerHTML='<button type="button" class="fishing-gift-close" data-close aria-label="'+tr('关闭','Close')+'">×</button><div class="fishing-gift-unwrapping" aria-hidden="true">'+markup({kind:'mystery'})+'</div><div class="fishing-gift-reveal-content"><span class="fishing-eyebrow">'+tr('水下的秘密 · 钓鱼限定','A SECRET FROM THE WATER · FISHING EXCLUSIVE')+'</span><div class="fishing-gift-reveal-art">'+giftMarkup(gift)+'</div><span class="fishing-gift-kind">'+(gift.slot==='avatarFrame'?tr('典藏头像框','Collectible avatar frame'):tr('典藏背景板','Collectible background'))+'</span><h2>'+escape(name(gift))+'</h2><p>'+escape(name({name:gift.description}))+'</p><p class="fishing-gift-receipt" role="status">'+(result.duplicate?tr('已经收藏 · 获得 '+result.earned+' 金币','Already collected · Received '+result.earned+' coins'):tr('已加入你的礼物收藏','Added to your gift collection'))+'</p><div class="fishing-gift-reveal-actions"><button type="button" class="fishing-button" data-close>'+tr('收进收藏','Keep in collection')+'</button><button type="button" class="fishing-button primary" data-equip>'+tr('立即使用','Use now')+'</button></div></div>';
-    modal.addEventListener('click',event=>{if(event.target.closest('[data-close]'))modal.close();if(event.target.closest('[data-equip]')){modal.close();void root.Tracer?.fishing?.action?.('equip-gift',gift.id,{slot:gift.slot});}});
+    modal.className='fishing-gift-reveal'+(motor?' fishing-motor-reveal':'');modal.setAttribute('aria-label',tr('神秘礼包揭晓','Mystery gift revealed'));
+    modal.innerHTML='<button type="button" class="fishing-gift-close" data-close aria-label="'+tr('关闭','Close')+'">×</button><div class="fishing-gift-unwrapping" aria-hidden="true">'+markup({kind:'mystery'})+'</div><div class="fishing-gift-reveal-content"><span class="fishing-eyebrow">'+tr('钓鱼限定奖励','FISHING EXCLUSIVE REWARD')+'</span><div class="fishing-gift-reveal-art">'+giftMarkup(gift)+'</div><span class="fishing-gift-kind">'+(motor?tr('极稀有装备 · 0.001%','ULTRA-RARE EQUIPMENT · 0.001%'):gift.slot==='avatarFrame'?tr('典藏头像框','Collectible avatar frame'):tr('典藏背景板','Collectible background'))+'</span><h2>'+(motor?tr('什么！？躺着也能赚钱了！！','What!? I can earn while lying down!!'):escape(name(gift)))+'</h2>'+(motor?'<h3>'+escape(name(gift))+'</h3><div class="fishing-motor-achievement"><b>'+tr('获得成就 · 气运之子','Achievement unlocked · Child of Fortune')+'</b><span>'+tr('抽到概率0.001%的自动钓鱼马达','Obtain the automatic fishing motor with a 0.001% drop chance')+'</span></div>':'')+'<p>'+escape(name({name:gift.description}))+'</p><p class="fishing-gift-receipt" role="status">'+(result.duplicate?tr('已经收藏 · 获得 '+result.earned+' 金币','Already collected · Received '+result.earned+' coins'):tr('已加入你的礼物收藏','Added to your gift collection'))+'</p><div class="fishing-gift-reveal-actions"><button type="button" class="fishing-button" data-close>'+tr('收进收藏','Keep in collection')+'</button><button type="button" class="fishing-button primary" data-equip>'+(motor?tr('安装并自动钓鱼','Install and start fishing'):tr('立即使用','Use now'))+'</button></div></div>';
+    modal.addEventListener('click',event=>{if(event.target.closest('[data-close]'))modal.close();if(event.target.closest('[data-equip]')){modal.close();void root.Tracer?.fishing?.action?.(motor?'install-motor':'equip-gift',gift.id,{slot:gift.slot});}});
     modal.addEventListener('close',()=>{modal.remove();if(activeDialog===modal)activeDialog=null;},{once:true});doc.body.append(modal);modal.showModal();modal.querySelector('[data-close]').focus();
   }
   root.TracerFishingRewards={products,asset,markup,createFigure,giftMarkup,apply,clear,reveal,setOpacity,clearSlotForSelection,activeGift:slot=>activeGifts[slot]||null};

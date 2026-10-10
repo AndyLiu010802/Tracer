@@ -62,7 +62,11 @@ async function previewCaught(main,overlay,app,rodId='astral'){
   const env={...process.env,TRACER_USER_DATA_DIR:profile,TRACER_DISABLE_INPUT_HOOK:'1',DOCS_PORTAL_PORT:String(port),DOCS_PORTAL_HOST:'127.0.0.1'};delete env.ELECTRON_RUN_AS_NODE;
   console.log('Launching isolated fishing QA');
   const qaGpuArgs=process.argv.includes('--qa-in-process-gpu')?['--in-process-gpu']:[];
-  const app=await _electron.launch({executablePath:require('electron'),args:[...qaGpuArgs,root],env,timeout:45000});
+  const app=await _electron.launch({executablePath:require('electron'),args:[...qaGpuArgs,root],env,timeout:45000}).catch(error=>{
+    const launched=error.log?.map(line=>line.match(/<launched> pid=(\d+)/)).find(Boolean);
+    if(launched&&process.platform==='win32')try{require('node:child_process').execFileSync('taskkill',['/PID',launched[1],'/T','/F'],{windowsHide:true,timeout:5000,stdio:'ignore'});}catch{}
+    throw error;
+  });
   console.log('Electron inspector connected');
   const errors=[],checks=[];
   try{
@@ -79,6 +83,37 @@ async function previewCaught(main,overlay,app,rodId='astral'){
     await overlay.waitForFunction(()=>window.desktopSnapshots?.at(-1)?.nativeSessionId);
     assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().some(window=>window.webContents.getURL().endsWith('/pet.html'))),false);checks.push('no retired character window');
     const initial=await overlay.evaluate(()=>window.desktopSnapshots.at(-1));assert.equal(initial.accountScope,'guest');
+    if(process.argv.includes('--smoothness')){
+      await app.evaluate(({BrowserWindow})=>{const w=BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/fishing-desktop.html'));globalThis.smoothness={shows:0,moves:0,bounds:w.getBounds()};for(const [method,key]of [['showInactive','shows'],['setBounds','moves'],['setPosition','moves']]){const original=w[method];w[method]=function(...args){smoothness[key]++;return original.apply(this,args);};}});
+      await overlay.evaluate(()=>{window.qaFrames=0;const tick=()=>{qaFrames++;requestAnimationFrame(tick);};requestAnimationFrame(tick);});
+      for(let i=0;i<20;i++){await main.evaluate(()=>Tracer.fishing.refresh());await pause(50);}
+      const stable=await app.evaluate(({BrowserWindow})=>({...smoothness,current:BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/fishing-desktop.html')).getBounds()}));
+      assert.equal(stable.shows,0);assert.equal(stable.moves,0);assert.deepEqual(stable.bounds,stable.current);
+      await main.evaluate(()=>TracerFishing.hide());await pause(300);const hiddenBefore=await overlay.evaluate(()=>({hidden:document.hidden,frames:qaFrames}));await pause(700);const hiddenAfter=await overlay.evaluate(()=>({hidden:document.hidden,frames:qaFrames}));
+      assert(hiddenAfter.hidden);assert.equal(hiddenAfter.frames,hiddenBefore.frames,'hidden native overlay does not run RAF');
+      await main.evaluate(()=>Tracer.fishing.open());await pause(500);const resumed=await overlay.evaluate(()=>({hidden:document.hidden,frames:qaFrames}));assert(!resumed.hidden);assert(resumed.frames>hiddenAfter.frames);
+      const captured=await capture(app,'smoothness-desktop.png'),report={passed:true,stable,hiddenBefore,hiddenAfter,resumed,captured,errors,profile};assert.deepEqual(errors,[]);fs.writeFileSync(path.join(root,'output/fishing-smoothness/native.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));return;
+    }
+    if(process.argv.includes('--bait')){
+      await main.evaluate(()=>{Tracer.store.data.taskGarden.market.testCredit={id:'qa_credit',amount:200,updatedAt:Date.now()};Tracer.touch();Tracer.saveNow();Tracer.fishing.refresh();});
+      await main.waitForFunction(()=>!Tracer.store.inflight&&!Tracer.store.dirty);
+      await app.evaluate(({BrowserWindow,Menu})=>{BrowserWindow.getAllWindows().find(w=>new URL(w.webContents.getURL()||'about:blank').pathname==='/').hide();globalThis.baitMenus=[];const build=Menu.buildFromTemplate;Menu.buildFromTemplate=function(rows){const menu=build.call(this,rows);baitMenus.push(menu);return menu;};});
+      await overlay.locator('#fishing-tools').click();let box;
+      for(let i=0;i<100;i++){box=app.context().pages().find(p=>p.url().endsWith('/fishing-bait-desktop.html'));if(box)break;await pause(100);}assert(box,'native bait window opens');box.on('pageerror',e=>errors.push(e.message));
+      await box.waitForFunction(()=>document.querySelectorAll('.bait-name')[4]?.textContent);assert.equal(await box.locator('.bait-slot').count(),5);
+      await box.locator('[data-bait="prawn"]').click({button:'right'});await pause(100);
+      const labels=await app.evaluate(()=>baitMenus.at(-1).items.map(i=>({label:i.label,enabled:i.enabled})));assert(labels.some(i=>/购买并装备|Buy & equip/.test(i.label)&&i.enabled));
+      await app.evaluate(()=>{const m=baitMenus.at(-1);m.items.find(i=>/购买并装备|Buy & equip/.test(i.label)).click();m.closePopup();});
+      await main.waitForFunction(()=>Tracer.fishing.snapshot().state.baits.prawn===10&&!Tracer.store.inflight&&!Tracer.store.dirty);
+      assert.equal(await main.evaluate(()=>Tracer.fishing.snapshot().economy.balance),170);assert.equal(await box.locator('[data-bait="prawn"]').getAttribute('aria-pressed'),'true');
+      assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(w=>new URL(w.webContents.getURL()||'about:blank').pathname==='/').isVisible()),false,'buying keeps the main window hidden');
+      await box.screenshot({path:path.join(profile,'native-bait-box.png'),omitBackground:true});
+      await box.keyboard.press('Escape');await pause(150);assert(!app.context().pages().some(p=>p.url().endsWith('/fishing-bait-desktop.html')));
+      await overlay.locator('#fishing-tools').click();await pause(200);
+      box=app.context().pages().find(p=>p.url().endsWith('/fishing-bait-desktop.html'));assert(box);await box.waitForFunction(()=>document.querySelector('[data-bait="prawn"]')?.getAttribute('aria-pressed')==='true');
+      await main.evaluate(()=>TracerFishing.lockAccount());await pause(100);assert(!app.context().pages().some(p=>p.url().endsWith('/fishing-bait-desktop.html')),'account lock closes native box');
+      assert.deepEqual(errors,[]);const report={ok:true,bait:true,checks:['native sandbox preload','five sprites','native right-click menu','purchase and equip','saved shared wallet','main remains hidden','Escape and reopen','account lock cleanup'],profile};fs.writeFileSync(path.join(profile,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));return;
+    }
     if(process.argv.includes('--keyboard')){
       const focusWindow=desktop=>app.evaluate(({BrowserWindow},desktop)=>BrowserWindow.getAllWindows().find(window=>desktop?window.webContents.getURL().endsWith('/fishing-desktop.html'):new URL(window.webContents.getURL()||'about:blank').pathname==='/').focus(),desktop);
       const phase=expected=>overlay.waitForFunction(value=>document.getElementById('desktop-fishing').dataset.phase===value,expected,{timeout:20000});

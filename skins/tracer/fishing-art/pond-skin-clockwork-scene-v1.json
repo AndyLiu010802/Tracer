@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "id": "clockwork",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-clockwork-scene-v1.bin",
+  "triangles": 31212,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 0,
+      "count": 3732
+    },
+    {
+      "anchor": "back",
+      "color": "#c6ba95",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 89568,
+      "count": 4212
+    },
+    {
+      "anchor": "back",
+      "color": "#a25d40",
+      "material": 5,
+      "name": "wood",
+      "offset": 190656,
+      "count": 13932
+    },
+    {
+      "anchor": "back",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 525024,
+      "count": 1944
+    },
+    {
+      "anchor": "back",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 571680,
+      "count": 15876
+    },
+    {
+      "anchor": "back",
+      "color": "#496f69",
+      "material": 7,
+      "name": "roof",
+      "offset": 952704,
+      "count": 3408
+    },
+    {
+      "anchor": "back",
+      "color": "#496f69",
+      "material": 7,
+      "name": "rooflight",
+      "offset": 1034496,
+      "count": 18768
+    },
+    {
+      "anchor": "back",
+      "color": "#d4ae70",
+      "material": 10,
+      "name": "trim",
+      "offset": 1484928,
+      "count": 15204
+    },
+    {
+      "anchor": "back",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 1849824,
+      "count": 648
+    },
+    {
+      "anchor": "back",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 1865376,
+      "count": 1872
+    },
+    {
+      "anchor": "back",
+      "color": "#63d4d4",
+      "material": 11,
+      "name": "cyan",
+      "offset": 1910304,
+      "count": 1344
+    },
+    {
+      "anchor": "back",
+      "color": "#b77b56",
+      "material": 10,
+      "name": "copper",
+      "offset": 1942560,
+      "count": 1236
+    },
+    {
+      "anchor": "left",
+      "color": "#a25d40",
+      "material": 5,
+      "name": "wood",
+      "offset": 1972224,
+      "count": 564
+    },
+    {
+      "anchor": "left",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 1985760,
+      "count": 4320
+    },
+    {
+      "anchor": "right",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 2089440,
+      "count": 420
+    },
+    {
+      "anchor": "right",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 2099520,
+      "count": 2724
+    },
+    {
+      "anchor": "right",
+      "color": "#e5ce93",
+      "material": 11,
+      "name": "glow",
+      "offset": 2164896,
+      "count": 864
+    },
+    {
+      "anchor": "right",
+      "color": "#d4ae70",
+      "material": 10,
+      "name": "trim",
+      "offset": 2185632,
+      "count": 2568
+    }
+  ]
+}

@@ -52,3 +52,23 @@
 @keyframes fishingTackleSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(-2deg) translateY(1px)}}
 @keyframes fishingTackleFish{0%,100%{transform:translateX(-1px)}50%{transform:translateX(1px)}}
 @media(prefers-reduced-motion:reduce){.fishing-tackle *{animation:none!important;transition:none!important}}
+
+/* Five purposeful baits, one consistent material treatment. */
+.fishing-tackle-tray,.fishing-tackle.is-compact .fishing-tackle-tray{grid-template-columns:repeat(3,minmax(0,1fr))}
+.fishing-tackle-slot{min-height:190px;padding-bottom:16px}
+.fishing-tackle-slot-art img,.fishing-tackle-hero-art img,.fishing-tackle-loaded img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 5px 5px #061c184d)}
+.fishing-tackle-slot-art{padding:10px 5px 0}
+.fishing-tackle-slot-role{display:block;font-size:10px;line-height:1.45;color:#a9bdad;margin:4px 5px 0;font-weight:400}
+.fishing-tackle-slot-no{display:none}
+.fishing-tackle-bait-stats{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 8px}
+.fishing-tackle-bait-stats span{padding:4px 7px;border:1px solid #8d9c7955;border-radius:5px;font-size:11px;color:#d7ceaa;background:#21372b}
+.fishing-tackle-ground-match{font-size:12px!important;line-height:1.55!important}
+@media(max-width:650px){.fishing-tackle-tray,.fishing-tackle.is-compact .fishing-tackle-tray{grid-template-columns:repeat(2,minmax(0,1fr))}.fishing-tackle-slot{min-height:160px}}
+
+.fishing-tackle-slot-label{bottom:27px}
+.fishing-tackle-slot-role{position:absolute;left:5px;right:5px;bottom:8px;z-index:1;margin:0;pointer-events:none}
+.fishing-tackle-slot-art{inset:9px 5px 52px}
+@media(max-width:650px){.fishing-tackle-slot-role{font-size:9px;line-height:1.35}.fishing-tackle-slot-art{inset:9px 3px 50px}.fishing-tackle-slot-label{bottom:27px}}
+.fishing-tackle[data-pond-skin]:not([data-pond-skin=""]) .fishing-tackle-header{background:linear-gradient(90deg,#15251fee,#15251fdd),var(--pond-skin-bank) center/cover;border-color:var(--pond-skin-accent)}
+.fishing-tackle[data-pond-skin]:not([data-pond-skin=""]) .fishing-tackle-plaque{padding-left:70px;position:relative}
+.fishing-tackle[data-pond-skin]:not([data-pond-skin=""]) .fishing-tackle-plaque:before{content:"";position:absolute;left:0;top:0;width:60px;height:100%;background:var(--pond-skin-box) center/contain no-repeat}

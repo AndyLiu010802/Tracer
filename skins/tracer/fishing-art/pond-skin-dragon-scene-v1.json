@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "id": "dragon",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-dragon-scene-v1.bin",
+  "triangles": 38508,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 0,
+      "count": 7092
+    },
+    {
+      "anchor": "back",
+      "color": "#cbe0c9",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 170208,
+      "count": 17172
+    },
+    {
+      "anchor": "back",
+      "color": "#527a75",
+      "material": 5,
+      "name": "wood",
+      "offset": 582336,
+      "count": 4212
+    },
+    {
+      "anchor": "back",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 683424,
+      "count": 9840
+    },
+    {
+      "anchor": "back",
+      "color": "#9bcec0",
+      "material": 23,
+      "name": "jade",
+      "offset": 919584,
+      "count": 5136
+    },
+    {
+      "anchor": "back",
+      "color": "#dec890",
+      "material": 10,
+      "name": "trim",
+      "offset": 1042848,
+      "count": 12264
+    },
+    {
+      "anchor": "back",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 1337184,
+      "count": 1944
+    },
+    {
+      "anchor": "back",
+      "color": "#256d6d",
+      "material": 7,
+      "name": "roof",
+      "offset": 1383840,
+      "count": 6816
+    },
+    {
+      "anchor": "back",
+      "color": "#256d6d",
+      "material": 7,
+      "name": "rooflight",
+      "offset": 1547424,
+      "count": 34656
+    },
+    {
+      "anchor": "back",
+      "color": "#d7ad57",
+      "material": 10,
+      "name": "gold",
+      "offset": 2379168,
+      "count": 6096
+    },
+    {
+      "anchor": "back",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 2525472,
+      "count": 1344
+    },
+    {
+      "anchor": "left",
+      "color": "#9bcec0",
+      "material": 23,
+      "name": "jade",
+      "offset": 2557728,
+      "count": 564
+    },
+    {
+      "anchor": "left",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 2571264,
+      "count": 3240
+    },
+    {
+      "anchor": "left",
+      "color": "#e5ce93",
+      "material": 11,
+      "name": "glow",
+      "offset": 2649024,
+      "count": 672
+    },
+    {
+      "anchor": "right",
+      "color": "#9bcec0",
+      "material": 23,
+      "name": "jade",
+      "offset": 2665152,
+      "count": 564
+    },
+    {
+      "anchor": "right",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 2678688,
+      "count": 3240
+    },
+    {
+      "anchor": "right",
+      "color": "#e5ce93",
+      "material": 11,
+      "name": "glow",
+      "offset": 2756448,
+      "count": 672
+    }
+  ]
+}

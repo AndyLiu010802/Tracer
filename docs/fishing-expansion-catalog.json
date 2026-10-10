@@ -1,0 +1,4109 @@
+{
+  "version": 2,
+  "fish": [
+    {
+      "id": "dace",
+      "name": [
+        "柳叶溪哥",
+        "Willow dace"
+      ],
+      "rarity": "common",
+      "price": 12,
+      "baseLength": 19,
+      "color": "#8eaaa1",
+      "accent": "#e0d5ad",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "stream",
+      "marking": "stripe",
+      "artVariant": 0,
+      "feedingReaction": {
+        "id": "dace",
+        "name": [
+          "柳叶溪哥觅食",
+          "Willow dace feeding"
+        ],
+        "description": [
+          "贴着水草折返，侧面的柳叶银纹一闪而过。",
+          "Darts through the reeds, flashing a silver stripe along its side."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "贴着水草折返，侧面的柳叶银纹一闪而过。",
+        "Darts through the reeds, flashing a silver stripe along its side."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "barbel",
+      "name": [
+        "铜须鲃鱼",
+        "Copper barbel"
+      ],
+      "rarity": "common",
+      "price": 21,
+      "baseLength": 34,
+      "color": "#a8946f",
+      "accent": "#deb984",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "barbel",
+      "marking": "scales",
+      "artVariant": 1,
+      "feedingReaction": {
+        "id": "barbel",
+        "name": [
+          "铜须鲃鱼觅食",
+          "Copper barbel feeding"
+        ],
+        "description": [
+          "四根短须扫过砂砾，低头吸取沉底食粒。",
+          "Four barbels sweep the gravel before the mouth picks up sunken food."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "四根短须扫过砂砾，低头吸取沉底食粒。",
+        "Four barbels sweep the gravel before the mouth picks up sunken food."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "tench",
+      "name": [
+        "苔绿丁鱥",
+        "Moss tench"
+      ],
+      "rarity": "common",
+      "price": 22,
+      "baseLength": 31,
+      "color": "#617c55",
+      "accent": "#c9ac60",
+      "body": "round",
+      "habitat": "river",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "rounded",
+      "marking": "freckles",
+      "artVariant": 2,
+      "feedingReaction": {
+        "id": "tench",
+        "name": [
+          "苔绿丁鱥觅食",
+          "Moss tench feeding"
+        ],
+        "description": [
+          "圆尾轻摆，停在食物下方慢慢啄食。",
+          "Gently fans its rounded tail while taking small bites below the food."
+        ],
+        "motion": "bob"
+      },
+      "feedingHabit": [
+        "圆尾轻摆，停在食物下方慢慢啄食。",
+        "Gently fans its rounded tail while taking small bites below the food."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "gudgeon",
+      "name": [
+        "石斑鮈鱼",
+        "Pebble gudgeon"
+      ],
+      "rarity": "common",
+      "price": 13,
+      "baseLength": 16,
+      "color": "#a4987c",
+      "accent": "#ded6b7",
+      "body": "slender",
+      "habitat": "river",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "barbel",
+      "marking": "saddles",
+      "artVariant": 3,
+      "feedingReaction": {
+        "id": "gudgeon",
+        "name": [
+          "石斑鮈鱼觅食",
+          "Pebble gudgeon feeding"
+        ],
+        "description": [
+          "沿石缝贴底前进，短须探到食粒后停下。",
+          "Pauses at stone crevices when its short barbels find food."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "沿石缝贴底前进，短须探到食粒后停下。",
+        "Pauses at stone crevices when its short barbels find food."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "bitterling",
+      "name": [
+        "胭脂鳑鲏",
+        "Rose bitterling"
+      ],
+      "rarity": "common",
+      "price": 14,
+      "baseLength": 12,
+      "color": "#b88988",
+      "accent": "#d8be86",
+      "body": "discus",
+      "habitat": "river",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "disk",
+      "marking": "stripe",
+      "artVariant": 4,
+      "feedingReaction": {
+        "id": "bitterling",
+        "name": [
+          "胭脂鳑鲏觅食",
+          "Rose bitterling feeding"
+        ],
+        "description": [
+          "立起短背鳍，转身时露出胭脂色腹部。",
+          "Raises its short dorsal fin and turns to reveal a rose-colored belly."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "立起短背鳍，转身时露出胭脂色腹部。",
+        "Raises its short dorsal fin and turns to reveal a rose-colored belly."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "rivercrab",
+      "name": [
+        "青壳河蟹",
+        "River crab"
+      ],
+      "rarity": "common",
+      "price": 18,
+      "baseLength": 14,
+      "color": "#617b67",
+      "accent": "#c7b48b",
+      "body": "crab",
+      "habitat": "river",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "crab",
+      "marking": "scutes",
+      "artVariant": 5,
+      "feedingReaction": {
+        "id": "rivercrab",
+        "name": [
+          "青壳河蟹觅食",
+          "River crab feeding"
+        ],
+        "description": [
+          "八条步足交错横移，小螯轮流把食物送到嘴边。",
+          "Eight walking legs step sideways while the claws alternate at the mouth."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "八条步足交错横移，小螯轮流把食物送到嘴边。",
+        "Eight walking legs step sideways while the claws alternate at the mouth."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "glassshrimp",
+      "name": [
+        "透甲河虾",
+        "Glass shrimp"
+      ],
+      "rarity": "common",
+      "price": 12,
+      "baseLength": 10,
+      "color": "#b6cec5",
+      "accent": "#e1dbc0",
+      "body": "shrimp",
+      "habitat": "river",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "shrimp",
+      "marking": "segments",
+      "artVariant": 6,
+      "feedingReaction": {
+        "id": "glassshrimp",
+        "name": [
+          "透甲河虾觅食",
+          "Glass shrimp feeding"
+        ],
+        "description": [
+          "触须先探向食物，腹节一收，倒退半步再靠近。",
+          "Antennae reach ahead; the abdomen flexes into a short backward tail flick."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "触须先探向食物，腹节一收，倒退半步再靠近。",
+        "Antennae reach ahead; the abdomen flexes into a short backward tail flick."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "sandgoby",
+      "name": [
+        "沙纹虾虎",
+        "Sand goby"
+      ],
+      "rarity": "common",
+      "price": 13,
+      "baseLength": 13,
+      "color": "#b59e7c",
+      "accent": "#e6d4ac",
+      "body": "round",
+      "habitat": "sea",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "goby",
+      "marking": "saddles",
+      "artVariant": 7,
+      "feedingReaction": {
+        "id": "sandgoby",
+        "name": [
+          "沙纹虾虎觅食",
+          "Sand goby feeding"
+        ],
+        "description": [
+          "用腹鳍停在沙面，张开扇形胸鳍拾取食物。",
+          "Rests on the sand and spreads broad pectoral fins to reach food."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "用腹鳍停在沙面，张开扇形胸鳍拾取食物。",
+        "Rests on the sand and spreads broad pectoral fins to reach food."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "wrasse",
+      "name": [
+        "青带隆头鱼",
+        "Greenband wrasse"
+      ],
+      "rarity": "common",
+      "price": 23,
+      "baseLength": 25,
+      "color": "#669d88",
+      "accent": "#c7b867",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "reef",
+      "marking": "stripe",
+      "artVariant": 8,
+      "feedingReaction": {
+        "id": "wrasse",
+        "name": [
+          "青带隆头鱼觅食",
+          "Greenband wrasse feeding"
+        ],
+        "description": [
+          "侧身穿过礁石，青绿长背鳍微微起伏。",
+          "Turns between rocks with its continuous dorsal fin gently undulating."
+        ],
+        "motion": "orbit"
+      },
+      "feedingHabit": [
+        "侧身穿过礁石，青绿长背鳍微微起伏。",
+        "Turns between rocks with its continuous dorsal fin gently undulating."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "sandflounder",
+      "name": [
+        "沙地比目鱼",
+        "Sand flounder"
+      ],
+      "rarity": "common",
+      "price": 25,
+      "baseLength": 28,
+      "color": "#b29d79",
+      "accent": "#dcd1ab",
+      "body": "flatfish",
+      "habitat": "sea",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "flatfish",
+      "marking": "freckles",
+      "artVariant": 9,
+      "feedingReaction": {
+        "id": "sandflounder",
+        "name": [
+          "沙地比目鱼觅食",
+          "Sand flounder feeding"
+        ],
+        "description": [
+          "扁平身体贴底滑行，两眼一同转向落下的食物。",
+          "Glides flat along the bottom while both upward-facing eyes track the food."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "扁平身体贴底滑行，两眼一同转向落下的食物。",
+        "Glides flat along the bottom while both upward-facing eyes track the food."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "rockling",
+      "name": [
+        "岩须鳕鱼",
+        "Rockling"
+      ],
+      "rarity": "common",
+      "price": 24,
+      "baseLength": 29,
+      "color": "#8a8174",
+      "accent": "#d0bc97",
+      "body": "slender",
+      "habitat": "sea",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "barbel",
+      "marking": "freckles",
+      "artVariant": 10,
+      "feedingReaction": {
+        "id": "rockling",
+        "name": [
+          "岩须鳕鱼觅食",
+          "Rockling feeding"
+        ],
+        "description": [
+          "伸出颏须试探岩角，再摆动连续的长背鳍。",
+          "Tests the rock with its chin barbels and fans its long dorsal fin."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "伸出颏须试探岩角，再摆动连续的长背鳍。",
+        "Tests the rock with its chin barbels and fans its long dorsal fin."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "hermitcrab",
+      "name": [
+        "橘螺寄居蟹",
+        "Amber hermit crab"
+      ],
+      "rarity": "common",
+      "price": 20,
+      "baseLength": 14,
+      "color": "#bb825b",
+      "accent": "#e4c090",
+      "body": "hermit",
+      "habitat": "sea",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "hermit",
+      "marking": "spiral",
+      "artVariant": 11,
+      "feedingReaction": {
+        "id": "hermitcrab",
+        "name": [
+          "橘螺寄居蟹觅食",
+          "Amber hermit crab feeding"
+        ],
+        "description": [
+          "先伸出双眼和小螯，拖着旋纹螺壳挪向食物。",
+          "Eyes and claws emerge first; walking legs then carry the shell toward food."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "先伸出双眼和小螯，拖着旋纹螺壳挪向食物。",
+        "Eyes and claws emerge first; walking legs then carry the shell toward food."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "cockle",
+      "name": [
+        "蜜纹鸟蛤",
+        "Honey cockle"
+      ],
+      "rarity": "common",
+      "price": 15,
+      "baseLength": 10,
+      "color": "#c8a16e",
+      "accent": "#f1ddae",
+      "body": "shell",
+      "habitat": "sea",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "cockle",
+      "marking": "ribs",
+      "artVariant": 12,
+      "feedingReaction": {
+        "id": "cockle",
+        "name": [
+          "蜜纹鸟蛤觅食",
+          "Honey cockle feeding"
+        ],
+        "description": [
+          "两片放射纹贝壳轻轻张合，滤入漂浮的食粒。",
+          "Radial valves open and close gently to filter suspended food."
+        ],
+        "motion": "pulse"
+      },
+      "feedingHabit": [
+        "两片放射纹贝壳轻轻张合，滤入漂浮的食粒。",
+        "Radial valves open and close gently to filter suspended food."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "mudskipper",
+      "name": [
+        "跳跳弹涂鱼",
+        "Mudskipper"
+      ],
+      "rarity": "common",
+      "price": 19,
+      "baseLength": 20,
+      "color": "#8b9b8b",
+      "accent": "#d3bb88",
+      "body": "round",
+      "habitat": "sea",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "goby",
+      "marking": "spots",
+      "artVariant": 13,
+      "feedingReaction": {
+        "id": "mudskipper",
+        "name": [
+          "跳跳弹涂鱼觅食",
+          "Mudskipper feeding"
+        ],
+        "description": [
+          "凸起的双眼先抬高，胸鳍撑地向前跳一小步。",
+          "Pushes from its pectoral fins into a short hop along the bottom."
+        ],
+        "motion": "leap"
+      },
+      "feedingHabit": [
+        "凸起的双眼先抬高，胸鳍撑地向前跳一小步。",
+        "Pushes from its pectoral fins into a short hop along the bottom."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "icewhitefish",
+      "name": [
+        "雪鳞白鲑",
+        "Snow whitefish"
+      ],
+      "rarity": "common",
+      "price": 24,
+      "baseLength": 33,
+      "color": "#aebfbe",
+      "accent": "#e1e2d5",
+      "body": "slender",
+      "habitat": "ice",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "salmon",
+      "marking": "scales",
+      "artVariant": 14,
+      "feedingReaction": {
+        "id": "icewhitefish",
+        "name": [
+          "雪鳞白鲑觅食",
+          "Snow whitefish feeding"
+        ],
+        "description": [
+          "银白鱼群齐齐转向，尾柄带起细小水纹。",
+          "Cruises in steady turns with synchronized tail strokes."
+        ],
+        "motion": "school"
+      },
+      "feedingHabit": [
+        "银白鱼群齐齐转向，尾柄带起细小水纹。",
+        "Cruises in steady turns with synchronized tail strokes."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "arcticcod",
+      "name": [
+        "霜背极鳕",
+        "Arctic cod"
+      ],
+      "rarity": "common",
+      "price": 25,
+      "baseLength": 30,
+      "color": "#8fadb8",
+      "accent": "#d3d7c1",
+      "body": "slender",
+      "habitat": "ice",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "cod",
+      "marking": "spots",
+      "artVariant": 15,
+      "feedingReaction": {
+        "id": "arcticcod",
+        "name": [
+          "霜背极鳕觅食",
+          "Arctic cod feeding"
+        ],
+        "description": [
+          "三段背鳍依次摆动，沿冷水层缓缓取食。",
+          "Its chin barbel probes ahead while three dorsal fins steady its course."
+        ],
+        "motion": "glide"
+      },
+      "feedingHabit": [
+        "三段背鳍依次摆动，沿冷水层缓缓取食。",
+        "Its chin barbel probes ahead while three dorsal fins steady its course."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "snowcrab",
+      "name": [
+        "雪足小蟹",
+        "Snow crab"
+      ],
+      "rarity": "common",
+      "price": 27,
+      "baseLength": 24,
+      "color": "#bcada1",
+      "accent": "#efe0cd",
+      "body": "crab",
+      "habitat": "ice",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "longcrab",
+      "marking": "scutes",
+      "artVariant": 16,
+      "feedingReaction": {
+        "id": "snowcrab",
+        "name": [
+          "雪足小蟹觅食",
+          "Snow crab feeding"
+        ],
+        "description": [
+          "细长步足撑开，浅色螯尖捡起沉底的碎食。",
+          "Long jointed walking legs carry the carapace sideways."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "细长步足撑开，浅色螯尖捡起沉底的碎食。",
+        "Long jointed walking legs carry the carapace sideways."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "redshrimp",
+      "name": [
+        "深海赤虾",
+        "Deep red shrimp"
+      ],
+      "rarity": "common",
+      "price": 25,
+      "baseLength": 17,
+      "color": "#bd6d64",
+      "accent": "#eab797",
+      "body": "shrimp",
+      "habitat": "deep",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "shrimp",
+      "marking": "segments",
+      "artVariant": 17,
+      "feedingReaction": {
+        "id": "redshrimp",
+        "name": [
+          "深海赤虾觅食",
+          "Deep red shrimp feeding"
+        ],
+        "description": [
+          "长触须探过黑暗，红色腹节一弓便跃向食物。",
+          "Swimmerets paddle beneath the abdomen before the tail fan folds."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "长触须探过黑暗，红色腹节一弓便跃向食物。",
+        "Swimmerets paddle beneath the abdomen before the tail fan folds."
+      ],
+      "depth": "deep"
+    },
+    {
+      "id": "seaurchin",
+      "name": [
+        "紫棘海胆",
+        "Violet urchin"
+      ],
+      "rarity": "common",
+      "price": 23,
+      "baseLength": 12,
+      "color": "#6e597f",
+      "accent": "#ba9bb2",
+      "body": "urchin",
+      "habitat": "deep",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "urchin",
+      "marking": "spines",
+      "artVariant": 18,
+      "feedingReaction": {
+        "id": "seaurchin",
+        "name": [
+          "紫棘海胆觅食",
+          "Violet urchin feeding"
+        ],
+        "description": [
+          "管足缓慢挪动，长短相间的紫棘随水轻摇。",
+          "Radial spines protect the test while tube feet creep toward food."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "管足缓慢挪动，长短相间的紫棘随水轻摇。",
+        "Radial spines protect the test while tube feet creep toward food."
+      ],
+      "depth": "deep"
+    },
+    {
+      "id": "mosscrab",
+      "name": [
+        "苔衣小蟹",
+        "Mosscoat crab"
+      ],
+      "rarity": "common",
+      "price": 26,
+      "baseLength": 15,
+      "color": "#66885c",
+      "accent": "#c9cf8b",
+      "body": "crab",
+      "habitat": "spirit",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "mosscrab",
+      "marking": "scutes",
+      "artVariant": 19,
+      "feedingReaction": {
+        "id": "mosscrab",
+        "name": [
+          "苔衣小蟹觅食",
+          "Mosscoat crab feeding"
+        ],
+        "description": [
+          "背上的小叶随步足摇晃，双螯把食粒拢成一堆。",
+          "Walking legs carry the mossy shell slowly across the bottom."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "背上的小叶随步足摇晃，双螯把食粒拢成一堆。",
+        "Walking legs carry the mossy shell slowly across the bottom."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "reedturtle",
+      "name": [
+        "芦纹小龟",
+        "Reed turtle"
+      ],
+      "rarity": "common",
+      "price": 28,
+      "baseLength": 18,
+      "color": "#78835a",
+      "accent": "#cbb979",
+      "body": "turtle",
+      "habitat": "spirit",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "turtle",
+      "marking": "scutes",
+      "artVariant": 20,
+      "feedingReaction": {
+        "id": "reedturtle",
+        "name": [
+          "芦纹小龟觅食",
+          "Reed turtle feeding"
+        ],
+        "description": [
+          "划动四只短足，伸出带芦纹的小脑袋接住食物。",
+          "Four webbed feet paddle in alternating strokes beneath the scuted shell."
+        ],
+        "motion": "glide"
+      },
+      "feedingHabit": [
+        "划动四只短足，伸出带芦纹的小脑袋接住食物。",
+        "Four webbed feet paddle in alternating strokes beneath the scuted shell."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "starshrimp",
+      "name": [
+        "星点小虾",
+        "Star-speck shrimp"
+      ],
+      "rarity": "common",
+      "price": 29,
+      "baseLength": 13,
+      "color": "#9699bc",
+      "accent": "#ead9ad",
+      "body": "shrimp",
+      "habitat": "moon",
+      "difficulty": 0.25,
+      "fry": false,
+      "expansion": 2,
+      "anatomy": "shrimp",
+      "marking": "stars",
+      "artVariant": 21,
+      "feedingReaction": {
+        "id": "starshrimp",
+        "name": [
+          "星点小虾觅食",
+          "Star-speck shrimp feeding"
+        ],
+        "description": [
+          "背甲的细点泛光，尾扇一合便倒退着接住食物。",
+          "Star-marked abdominal plates curl into a quick tail flick."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "背甲的细点泛光，尾扇一合便倒退着接住食物。",
+        "Star-marked abdominal plates curl into a quick tail flick."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "mandarin",
+      "name": [
+        "桂花鳜鱼",
+        "Osmanthus mandarin perch"
+      ],
+      "rarity": "rare",
+      "price": 85,
+      "baseLength": 42,
+      "color": "#8c965e",
+      "accent": "#debf77",
+      "body": "predator",
+      "habitat": "river",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "perch",
+      "marking": "saddles",
+      "artVariant": 22,
+      "feedingReaction": {
+        "id": "mandarin",
+        "name": [
+          "桂花鳜鱼觅食",
+          "Osmanthus mandarin perch feeding"
+        ],
+        "description": [
+          "斑驳身体停在水草间，忽然张嘴吞下食粒。",
+          "Spiny dorsal rays rise before a short, deliberate strike at food."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "斑驳身体停在水草间，忽然张嘴吞下食粒。",
+        "Spiny dorsal rays rise before a short, deliberate strike at food."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "softshell",
+      "name": [
+        "青背小鳖",
+        "Softshell turtle"
+      ],
+      "rarity": "rare",
+      "price": 88,
+      "baseLength": 28,
+      "color": "#7d8f6e",
+      "accent": "#d0bc83",
+      "body": "turtle",
+      "habitat": "river",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "softshell",
+      "marking": "freckles",
+      "artVariant": 23,
+      "feedingReaction": {
+        "id": "softshell",
+        "name": [
+          "青背小鳖觅食",
+          "Softshell turtle feeding"
+        ],
+        "description": [
+          "扁平软甲轻轻起伏，长鼻先探出水面再潜回取食。",
+          "Its leathery shell stays low as webbed feet sweep and the long snout probes."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "扁平软甲轻轻起伏，长鼻先探出水面再潜回取食。",
+        "Its leathery shell stays low as webbed feet sweep and the long snout probes."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "crayfish",
+      "name": [
+        "赤钳螯虾",
+        "Crimson crayfish"
+      ],
+      "rarity": "rare",
+      "price": 76,
+      "baseLength": 19,
+      "color": "#a45848",
+      "accent": "#e0aa78",
+      "body": "lobster",
+      "habitat": "river",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "crayfish",
+      "marking": "segments",
+      "artVariant": 24,
+      "feedingReaction": {
+        "id": "crayfish",
+        "name": [
+          "赤钳螯虾觅食",
+          "Crimson crayfish feeding"
+        ],
+        "description": [
+          "双钳张合后抬起，尾扇把身体稳稳撑在食粒旁。",
+          "Four pairs of walking legs advance while the large claws pick up food."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "双钳张合后抬起，尾扇把身体稳稳撑在食粒旁。",
+        "Four pairs of walking legs advance while the large claws pick up food."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "boxfish",
+      "name": [
+        "柠黄箱鲀",
+        "Lemon boxfish"
+      ],
+      "rarity": "rare",
+      "price": 78,
+      "baseLength": 24,
+      "color": "#d8bd59",
+      "accent": "#645c46",
+      "body": "boxfish",
+      "habitat": "sea",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "boxfish",
+      "marking": "spots",
+      "artVariant": 25,
+      "feedingReaction": {
+        "id": "boxfish",
+        "name": [
+          "柠黄箱鲀觅食",
+          "Lemon boxfish feeding"
+        ],
+        "description": [
+          "方方的骨甲几乎不动，小胸鳍像螺旋桨一样拨水。",
+          "Tiny pectoral fins hold the armored body level while its mouth pecks."
+        ],
+        "motion": "bob"
+      },
+      "feedingHabit": [
+        "方方的骨甲几乎不动，小胸鳍像螺旋桨一样拨水。",
+        "Tiny pectoral fins hold the armored body level while its mouth pecks."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "triggerfish",
+      "name": [
+        "彩鞍扳机鲀",
+        "Saddle triggerfish"
+      ],
+      "rarity": "rare",
+      "price": 82,
+      "baseLength": 31,
+      "color": "#708d95",
+      "accent": "#e4be63",
+      "body": "discus",
+      "habitat": "sea",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "trigger",
+      "marking": "saddles",
+      "artVariant": 26,
+      "feedingReaction": {
+        "id": "triggerfish",
+        "name": [
+          "彩鞍扳机鲀觅食",
+          "Saddle triggerfish feeding"
+        ],
+        "description": [
+          "收起背棘，靠上下两片鳍稳稳悬在食物旁。",
+          "The dorsal trigger rises as the body turns and the tail fans."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "收起背棘，靠上下两片鳍稳稳悬在食物旁。",
+        "The dorsal trigger rises as the body turns and the tail fans."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "mandarinfish",
+      "name": [
+        "锦缎麒麟鱼",
+        "Brocade dragonet"
+      ],
+      "rarity": "rare",
+      "price": 87,
+      "baseLength": 16,
+      "color": "#518ca3",
+      "accent": "#e99b56",
+      "body": "round",
+      "habitat": "sea",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "dragonet",
+      "marking": "maze",
+      "artVariant": 27,
+      "feedingReaction": {
+        "id": "mandarinfish",
+        "name": [
+          "锦缎麒麟鱼觅食",
+          "Brocade dragonet feeding"
+        ],
+        "description": [
+          "蓝橙纹路沿侧鳍舒展，腹鳍踩着礁面一点点前移。",
+          "Broad patterned pectoral fins flutter in short hovering movements."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "蓝橙纹路沿侧鳍舒展，腹鳍踩着礁面一点点前移。",
+        "Broad patterned pectoral fins flutter in short hovering movements."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "bluelobster",
+      "name": [
+        "钴蓝龙虾",
+        "Cobalt lobster"
+      ],
+      "rarity": "rare",
+      "price": 96,
+      "baseLength": 38,
+      "color": "#447d9e",
+      "accent": "#b8d4cf",
+      "body": "lobster",
+      "habitat": "sea",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "lobster",
+      "marking": "segments",
+      "artVariant": 28,
+      "feedingReaction": {
+        "id": "bluelobster",
+        "name": [
+          "钴蓝龙虾觅食",
+          "Cobalt lobster feeding"
+        ],
+        "description": [
+          "长触须左右巡视，粗壮双螯分开再慢慢收拢。",
+          "Heavy claws open independently as swimmerets and walking legs alternate."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "长触须左右巡视，粗壮双螯分开再慢慢收拢。",
+        "Heavy claws open independently as swimmerets and walking legs alternate."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "pearloyster",
+      "name": [
+        "霞光珠母贝",
+        "Dawn pearl oyster"
+      ],
+      "rarity": "rare",
+      "price": 90,
+      "baseLength": 25,
+      "color": "#b593ad",
+      "accent": "#f3e3c3",
+      "body": "shell",
+      "habitat": "sea",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "oyster",
+      "marking": "ribs",
+      "artVariant": 29,
+      "feedingReaction": {
+        "id": "pearloyster",
+        "name": [
+          "霞光珠母贝觅食",
+          "Dawn pearl oyster feeding"
+        ],
+        "description": [
+          "厚壳缓缓张开，内侧珍珠母折射出温暖光泽。",
+          "The two nacre-lined valves pivot at the hinge around the soft body."
+        ],
+        "motion": "pulse"
+      },
+      "feedingHabit": [
+        "厚壳缓缓张开，内侧珍珠母折射出温暖光泽。",
+        "The two nacre-lined valves pivot at the hinge around the soft body."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "icekingcrab",
+      "name": [
+        "霜钳帝王蟹",
+        "Frost king crab"
+      ],
+      "rarity": "rare",
+      "price": 108,
+      "baseLength": 46,
+      "color": "#aa989d",
+      "accent": "#dbe5df",
+      "body": "crab",
+      "habitat": "ice",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "kingcrab",
+      "marking": "spines",
+      "artVariant": 30,
+      "feedingReaction": {
+        "id": "icekingcrab",
+        "name": [
+          "霜钳帝王蟹觅食",
+          "Frost king crab feeding"
+        ],
+        "description": [
+          "棘状背甲下长足依次抬起，粗螯把食物举到身前。",
+          "Three visible pairs of walking legs carry the spiny shell beside uneven claws."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "棘状背甲下长足依次抬起，粗螯把食物举到身前。",
+        "Three visible pairs of walking legs carry the spiny shell beside uneven claws."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "icejelly",
+      "name": [
+        "冰蓝海月",
+        "Ice moon jelly"
+      ],
+      "rarity": "rare",
+      "price": 97,
+      "baseLength": 30,
+      "color": "#a8d2df",
+      "accent": "#ebedf1",
+      "body": "jelly",
+      "habitat": "ice",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "jelly",
+      "marking": "rings",
+      "artVariant": 31,
+      "feedingReaction": {
+        "id": "icejelly",
+        "name": [
+          "冰蓝海月觅食",
+          "Ice moon jelly feeding"
+        ],
+        "description": [
+          "透明伞缘轻收轻放，四瓣内脏透出淡蓝光。",
+          "The bell contracts and relaxes while trailing tentacles follow the current."
+        ],
+        "motion": "pulse"
+      },
+      "feedingHabit": [
+        "透明伞缘轻收轻放，四瓣内脏透出淡蓝光。",
+        "The bell contracts and relaxes while trailing tentacles follow the current."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "chambernautilus",
+      "name": [
+        "铜纹鹦鹉螺",
+        "Copper nautilus"
+      ],
+      "rarity": "rare",
+      "price": 99,
+      "baseLength": 27,
+      "color": "#c19370",
+      "accent": "#efe0b9",
+      "body": "nautilus",
+      "habitat": "deep",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "nautilus",
+      "marking": "spiral",
+      "artVariant": 32,
+      "feedingReaction": {
+        "id": "chambernautilus",
+        "name": [
+          "铜纹鹦鹉螺觅食",
+          "Copper nautilus feeding"
+        ],
+        "description": [
+          "带隔室的螺壳微微转动，细密触腕一齐伸向食物。",
+          "Fine sucker-free cirri spread in front of the shell as the siphon pulses."
+        ],
+        "motion": "pulse"
+      },
+      "feedingHabit": [
+        "带隔室的螺壳微微转动，细密触腕一齐伸向食物。",
+        "Fine sucker-free cirri spread in front of the shell as the siphon pulses."
+      ],
+      "depth": "deep"
+    },
+    {
+      "id": "cuttlefish",
+      "name": [
+        "墨羽乌贼",
+        "Inkfin cuttlefish"
+      ],
+      "rarity": "rare",
+      "price": 102,
+      "baseLength": 35,
+      "color": "#8e828b",
+      "accent": "#d4bca8",
+      "body": "squid",
+      "habitat": "deep",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "cuttlefish",
+      "marking": "maze",
+      "artVariant": 33,
+      "feedingReaction": {
+        "id": "cuttlefish",
+        "name": [
+          "墨羽乌贼觅食",
+          "Inkfin cuttlefish feeding"
+        ],
+        "description": [
+          "两侧波浪裙边向前传动，腕足抱住食物后收回。",
+          "The lateral fin skirt ripples around a horizontal mantle; two feeding tentacles extend."
+        ],
+        "motion": "glide"
+      },
+      "feedingHabit": [
+        "两侧波浪裙边向前传动，腕足抱住食物后收回。",
+        "The lateral fin skirt ripples around a horizontal mantle; two feeding tentacles extend."
+      ],
+      "depth": "deep"
+    },
+    {
+      "id": "spidercrab",
+      "name": [
+        "长脚蛛蟹",
+        "Longleg spider crab"
+      ],
+      "rarity": "rare",
+      "price": 110,
+      "baseLength": 60,
+      "color": "#bc846c",
+      "accent": "#e9c8a5",
+      "body": "crab",
+      "habitat": "deep",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "spidercrab",
+      "marking": "scutes",
+      "artVariant": 34,
+      "feedingReaction": {
+        "id": "spidercrab",
+        "name": [
+          "长脚蛛蟹觅食",
+          "Longleg spider crab feeding"
+        ],
+        "description": [
+          "细长步足抬成高拱，双螯在身体下方小心取食。",
+          "Long walking legs fold at their joints and step over bottom obstacles."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "细长步足抬成高拱，双螯在身体下方小心取食。",
+        "Long walking legs fold at their joints and step over bottom obstacles."
+      ],
+      "depth": "deep"
+    },
+    {
+      "id": "axolotl",
+      "name": [
+        "桃腮六角螈",
+        "Peach-gill axolotl"
+      ],
+      "rarity": "rare",
+      "price": 104,
+      "baseLength": 25,
+      "color": "#dbaeb4",
+      "accent": "#b57498",
+      "body": "axolotl",
+      "habitat": "spirit",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "axolotl",
+      "marking": "freckles",
+      "artVariant": 35,
+      "feedingReaction": {
+        "id": "axolotl",
+        "name": [
+          "桃腮六角螈觅食",
+          "Peach-gill axolotl feeding"
+        ],
+        "description": [
+          "六簇外鳃轻轻舒展，四只小脚划动着靠近食物。",
+          "Three pairs of feathery external gills spread as the limbs and tail paddle."
+        ],
+        "motion": "bob"
+      },
+      "feedingHabit": [
+        "六簇外鳃轻轻舒展，四只小脚划动着靠近食物。",
+        "Three pairs of feathery external gills spread as the limbs and tail paddle."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "jadeturtle",
+      "name": [
+        "翡翠灵龟",
+        "Jade turtle"
+      ],
+      "rarity": "rare",
+      "price": 106,
+      "baseLength": 32,
+      "color": "#75a48b",
+      "accent": "#e2d099",
+      "body": "turtle",
+      "habitat": "spirit",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "turtle",
+      "marking": "scutes",
+      "artVariant": 36,
+      "feedingReaction": {
+        "id": "jadeturtle",
+        "name": [
+          "翡翠灵龟觅食",
+          "Jade turtle feeding"
+        ],
+        "description": [
+          "玉色甲片逐块映光，四足慢划，低头接住食粒。",
+          "The jade-colored shell remains steady above alternating webbed-foot strokes."
+        ],
+        "motion": "glide"
+      },
+      "feedingHabit": [
+        "玉色甲片逐块映光，四足慢划，低头接住食粒。",
+        "The jade-colored shell remains steady above alternating webbed-foot strokes."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "lotussnail",
+      "name": [
+        "莲纹田螺",
+        "Lotus spiral snail"
+      ],
+      "rarity": "rare",
+      "price": 93,
+      "baseLength": 18,
+      "color": "#b493b8",
+      "accent": "#d4ddab",
+      "body": "snail",
+      "habitat": "spirit",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "snail",
+      "marking": "spiral",
+      "artVariant": 37,
+      "feedingReaction": {
+        "id": "lotussnail",
+        "name": [
+          "莲纹田螺觅食",
+          "Lotus spiral snail feeding"
+        ],
+        "description": [
+          "双触角前探，柔软腹足带着莲纹螺壳缓缓滑行。",
+          "A muscular foot glides beneath the spiral shell as two pairs of feelers reach ahead."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "双触角前探，柔软腹足带着莲纹螺壳缓缓滑行。",
+        "A muscular foot glides beneath the spiral shell as two pairs of feelers reach ahead."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "moonoctopus",
+      "name": [
+        "月斑小章",
+        "Moonspot octopus"
+      ],
+      "rarity": "rare",
+      "price": 111,
+      "baseLength": 29,
+      "color": "#8e93bb",
+      "accent": "#ecdab5",
+      "body": "octopus",
+      "habitat": "moon",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "octopus",
+      "marking": "rings",
+      "artVariant": 38,
+      "feedingReaction": {
+        "id": "moonoctopus",
+        "name": [
+          "月斑小章觅食",
+          "Moonspot octopus feeding"
+        ],
+        "description": [
+          "八条短腕依次伸出，腕面的月斑随着吸盘张开。",
+          "Eight soft arms bend independently with their suckers following each curve."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "八条短腕依次伸出，腕面的月斑随着吸盘张开。",
+        "Eight soft arms bend independently with their suckers following each curve."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "moonseastar",
+      "name": [
+        "银月海星",
+        "Silvermoon sea star"
+      ],
+      "rarity": "rare",
+      "price": 98,
+      "baseLength": 24,
+      "color": "#b2a5c8",
+      "accent": "#e8dec3",
+      "body": "starfish",
+      "habitat": "moon",
+      "difficulty": 0.43,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "starfish",
+      "marking": "beads",
+      "artVariant": 39,
+      "feedingReaction": {
+        "id": "moonseastar",
+        "name": [
+          "银月海星觅食",
+          "Silvermoon sea star feeding"
+        ],
+        "description": [
+          "五条腕缓缓伸展，细小管足把食物送到身体下方。",
+          "Five arm tips lift in turn while small tube feet move underneath."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "五条腕缓缓伸展，细小管足把食物送到身体下方。",
+        "Five arm tips lift in turn while small tube feet move underneath."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "mantisshrimp",
+      "name": [
+        "虹甲螳螂虾",
+        "Prismatic mantis shrimp"
+      ],
+      "rarity": "epic",
+      "price": 205,
+      "baseLength": 34,
+      "color": "#57a294",
+      "accent": "#dfb567",
+      "body": "mantis",
+      "habitat": "sea",
+      "difficulty": 0.64,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "mantis",
+      "marking": "segments",
+      "artVariant": 40,
+      "feedingReaction": {
+        "id": "mantisshrimp",
+        "name": [
+          "虹甲螳螂虾觅食",
+          "Prismatic mantis shrimp feeding"
+        ],
+        "description": [
+          "复眼左右独立转动，彩色击肢展开后迅速收回。",
+          "Stalked eyes watch independently as the folded raptorial limbs spring forward."
+        ],
+        "motion": "dart"
+      },
+      "feedingHabit": [
+        "复眼左右独立转动，彩色击肢展开后迅速收回。",
+        "Stalked eyes watch independently as the folded raptorial limbs spring forward."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "crystalcrab",
+      "name": [
+        "晶簇雪蟹",
+        "Crystal cluster crab"
+      ],
+      "rarity": "epic",
+      "price": 210,
+      "baseLength": 41,
+      "color": "#9dcbd5",
+      "accent": "#f0ecff",
+      "body": "crab",
+      "habitat": "ice",
+      "difficulty": 0.64,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "crystalcrab",
+      "marking": "crystals",
+      "artVariant": 41,
+      "feedingReaction": {
+        "id": "crystalcrab",
+        "name": [
+          "晶簇雪蟹觅食",
+          "Crystal cluster crab feeding"
+        ],
+        "description": [
+          "晶簇甲片映出冷光，双螯托起食物时洒下细小冰辉。",
+          "Jointed legs carry crystal outcrops across the bottom with alternating steps."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "晶簇甲片映出冷光，双螯托起食物时洒下细小冰辉。",
+        "Jointed legs carry crystal outcrops across the bottom with alternating steps."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "vampyroteuthis",
+      "name": [
+        "绯幕幽灵蛸",
+        "Crimson veil squid"
+      ],
+      "rarity": "epic",
+      "price": 218,
+      "baseLength": 46,
+      "color": "#8a597c",
+      "accent": "#e6b49a",
+      "body": "squid",
+      "habitat": "deep",
+      "difficulty": 0.64,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "vampire",
+      "marking": "rings",
+      "artVariant": 42,
+      "feedingReaction": {
+        "id": "vampyroteuthis",
+        "name": [
+          "绯幕幽灵蛸觅食",
+          "Crimson veil squid feeding"
+        ],
+        "description": [
+          "八腕间的暗红薄膜展开成伞，再温柔地包住食物。",
+          "Eight webbed arms open beneath a pulsing mantle and a pair of small fins."
+        ],
+        "motion": "flutter"
+      },
+      "feedingHabit": [
+        "八腕间的暗红薄膜展开成伞，再温柔地包住食物。",
+        "Eight webbed arms open beneath a pulsing mantle and a pair of small fins."
+      ],
+      "depth": "deep"
+    },
+    {
+      "id": "ribbonseahare",
+      "name": [
+        "星纱海兔",
+        "Starlace sea hare"
+      ],
+      "rarity": "epic",
+      "price": 198,
+      "baseLength": 32,
+      "color": "#9f87be",
+      "accent": "#dfd7f1",
+      "body": "slug",
+      "habitat": "deep",
+      "difficulty": 0.64,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "seahare",
+      "marking": "stars",
+      "artVariant": 43,
+      "feedingReaction": {
+        "id": "ribbonseahare",
+        "name": [
+          "星纱海兔觅食",
+          "Starlace sea hare feeding"
+        ],
+        "description": [
+          "两片宽大的裙边上下翻动，像柔软星纱一样滑过水底。",
+          "Soft side flaps undulate above a slowly gliding muscular foot."
+        ],
+        "motion": "sway"
+      },
+      "feedingHabit": [
+        "两片宽大的裙边上下翻动，像柔软星纱一样滑过水底。",
+        "Soft side flaps undulate above a slowly gliding muscular foot."
+      ],
+      "depth": "deep"
+    },
+    {
+      "id": "dragonsnail",
+      "name": [
+        "盘龙玉螺",
+        "Dragon jade snail"
+      ],
+      "rarity": "epic",
+      "price": 225,
+      "baseLength": 38,
+      "color": "#619b89",
+      "accent": "#e7ca83",
+      "body": "snail",
+      "habitat": "spirit",
+      "difficulty": 0.64,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "dragonsnail",
+      "marking": "spiral",
+      "artVariant": 44,
+      "feedingReaction": {
+        "id": "dragonsnail",
+        "name": [
+          "盘龙玉螺觅食",
+          "Dragon jade snail feeding"
+        ],
+        "description": [
+          "金纹螺壳缓缓转向，长须沿着食物画出半圆。",
+          "A ridged shell follows the gliding foot while long feelers inspect the route."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "金纹螺壳缓缓转向，长须沿着食物画出半圆。",
+        "A ridged shell follows the gliding foot while long feelers inspect the route."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "paperkoi",
+      "name": [
+        "折纸游鲤",
+        "Paperfold koi"
+      ],
+      "rarity": "epic",
+      "price": 215,
+      "baseLength": 39,
+      "color": "#ded9c6",
+      "accent": "#c76c63",
+      "body": "koi",
+      "habitat": "spirit",
+      "difficulty": 0.64,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "paper",
+      "marking": "folds",
+      "artVariant": 45,
+      "feedingReaction": {
+        "id": "paperkoi",
+        "name": [
+          "折纸游鲤觅食",
+          "Paperfold koi feeding"
+        ],
+        "description": [
+          "纸折般的尾鳍层层张开，转身露出朱砂色折痕。",
+          "Fold-like fin seams catch the light as the tail rolls through a gentle turn."
+        ],
+        "motion": "twirl"
+      },
+      "feedingHabit": [
+        "纸折般的尾鳍层层张开，转身露出朱砂色折痕。",
+        "Fold-like fin seams catch the light as the tail rolls through a gentle turn."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "celestialturtle",
+      "name": [
+        "宿星玄龟",
+        "Constellation turtle"
+      ],
+      "rarity": "epic",
+      "price": 230,
+      "baseLength": 49,
+      "color": "#626f9e",
+      "accent": "#e9d19c",
+      "body": "turtle",
+      "habitat": "moon",
+      "difficulty": 0.64,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "starturtle",
+      "marking": "stars",
+      "artVariant": 46,
+      "feedingReaction": {
+        "id": "celestialturtle",
+        "name": [
+          "宿星玄龟觅食",
+          "Constellation turtle feeding"
+        ],
+        "description": [
+          "星图甲片逐一点亮，绕着食物游完一个缓慢的圆。",
+          "Star-marked scutes remain level as four webbed feet sweep through the water."
+        ],
+        "motion": "orbit"
+      },
+      "feedingHabit": [
+        "星图甲片逐一点亮，绕着食物游完一个缓慢的圆。",
+        "Star-marked scutes remain level as four webbed feet sweep through the water."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "cometjelly",
+      "name": [
+        "彗尾水母",
+        "Comet-tail jellyfish"
+      ],
+      "rarity": "epic",
+      "price": 228,
+      "baseLength": 44,
+      "color": "#b5aedf",
+      "accent": "#e4d5a9",
+      "body": "jelly",
+      "habitat": "moon",
+      "difficulty": 0.64,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "cometjelly",
+      "marking": "stars",
+      "artVariant": 47,
+      "feedingReaction": {
+        "id": "cometjelly",
+        "name": [
+          "彗尾水母觅食",
+          "Comet-tail jellyfish feeding"
+        ],
+        "description": [
+          "伞体收缩后，长触腕像彗尾一样顺着水流展开。",
+          "The bell pulses and its long trailing filaments ripple behind it."
+        ],
+        "motion": "pulse"
+      },
+      "feedingHabit": [
+        "伞体收缩后，长触腕像彗尾一样顺着水流展开。",
+        "The bell pulses and its long trailing filaments ripple behind it."
+      ],
+      "depth": "mid"
+    },
+    {
+      "id": "jadecrabking",
+      "name": [
+        "镇潭负岳蟹",
+        "Mountain-bearing jade crab"
+      ],
+      "rarity": "legendary",
+      "price": 455,
+      "baseLength": 92,
+      "color": "#567e70",
+      "accent": "#e2c789",
+      "body": "crab",
+      "habitat": "spirit",
+      "difficulty": 0.83,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "mountaincrab",
+      "marking": "mountains",
+      "artVariant": 48,
+      "feedingReaction": {
+        "id": "jadecrabking",
+        "name": [
+          "镇潭负岳蟹觅食",
+          "Mountain-bearing jade crab feeding"
+        ],
+        "description": [
+          "背甲的小山间浮出薄雾，八足站稳，金玉巨螯托起整团食物。",
+          "Broad claws rise in turn while jointed legs move the mountain-like shell sideways."
+        ],
+        "motion": "bottom"
+      },
+      "feedingHabit": [
+        "背甲的小山间浮出薄雾，八足站稳，金玉巨螯托起整团食物。",
+        "Broad claws rise in turn while jointed legs move the mountain-like shell sideways."
+      ],
+      "depth": "near"
+    },
+    {
+      "id": "clocknautilus",
+      "name": [
+        "星轮时计螺",
+        "Astral clock nautilus"
+      ],
+      "rarity": "legendary",
+      "price": 465,
+      "baseLength": 78,
+      "color": "#7673a8",
+      "accent": "#ecd19b",
+      "body": "nautilus",
+      "habitat": "moon",
+      "difficulty": 0.83,
+      "fry": true,
+      "expansion": 2,
+      "anatomy": "clocknautilus",
+      "marking": "clock",
+      "artVariant": 49,
+      "feedingReaction": {
+        "id": "clocknautilus",
+        "name": [
+          "星轮时计螺觅食",
+          "Astral clock nautilus feeding"
+        ],
+        "description": [
+          "螺壳的金色刻环缓缓转动，触腕张开，星点沿隔室依次亮起。",
+          "Fine cirri spread before a siphon pulse; the shell dial moves with the rigid shell."
+        ],
+        "motion": "pulse"
+      },
+      "feedingHabit": [
+        "螺壳的金色刻环缓缓转动，触腕张开，星点沿隔室依次亮起。",
+        "Fine cirri spread before a siphon pulse; the shell dial moves with the rigid shell."
+      ],
+      "depth": "deep"
+    }
+  ],
+  "rods": [
+    {
+      "id": "beech",
+      "name": [
+        "榉木溪桥",
+        "Beech bridge"
+      ],
+      "rarity": "common",
+      "family": "real",
+      "style": "beech",
+      "color": "#9b7050",
+      "accent": "#ddbc83",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "wood",
+        "detail": "arch",
+        "variant": 0,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 7
+      },
+      "spell": "leaf",
+      "effectDescription": [
+        "榉木端纹、榫卯桥形轮座与交叉麻线握把。叶片沿竿身聚起，落水后散成细纹。",
+        "Leaves gather along the blank and scatter into ripples on landing."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "rainbamboo",
+      "name": [
+        "青篾雨竹",
+        "Rain bamboo"
+      ],
+      "rarity": "common",
+      "family": "real",
+      "style": "rainbamboo",
+      "color": "#628669",
+      "accent": "#d9c69a",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "bamboo",
+        "detail": "woven",
+        "variant": 1,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 7
+      },
+      "spell": "dew",
+      "effectDescription": [
+        "六道青竹节、细篾编握与叶尖导环。水珠沿导环滑落，在落点溅开。",
+        "Dew runs past the guides and breaks into droplets at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "harborbell",
+      "name": [
+        "铜铃泊岸",
+        "Harbor bell"
+      ],
+      "rarity": "common",
+      "family": "real",
+      "style": "harborbell",
+      "color": "#ac7949",
+      "accent": "#d9c8a1",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "bell",
+        "detail": "rope",
+        "variant": 2,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "resonance",
+      "effectDescription": [
+        "双耳铜铃、船绳护圈和铆钉轮座。声纹由轮座传至落点，逐圈消散。",
+        "Resonant rings travel from the reel seat to the water and fade outward."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "kingfisher",
+      "name": [
+        "翠羽点水",
+        "Kingfisher dive"
+      ],
+      "rarity": "rare",
+      "family": "fantasy",
+      "style": "kingfisher",
+      "color": "#318a94",
+      "accent": "#eeaf74",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "feather",
+        "detail": "beak",
+        "variant": 3,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "feather",
+      "effectDescription": [
+        "长喙护尖、分层翠羽与橙金缠线。羽翎依次展开，曳出交错的羽光。",
+        "Feathers open in sequence and trail intersecting feather wakes."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "reedflute",
+      "name": [
+        "芦笛晚汀",
+        "Reed flute"
+      ],
+      "rarity": "rare",
+      "family": "fantasy",
+      "style": "reedflute",
+      "color": "#9e9165",
+      "accent": "#d7e3b0",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "flute",
+        "detail": "holes",
+        "variant": 4,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "music",
+      "effectDescription": [
+        "七孔芦笛、银包笛膜与芦穗穗结。七道弦光依次拨动，水面泛起琴音波纹。",
+        "Seven luminous strings are plucked in sequence, sending music ripples across the water."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "azulejo",
+      "name": [
+        "青花逐浪",
+        "Porcelain waves"
+      ],
+      "rarity": "rare",
+      "family": "fantasy",
+      "style": "azulejo",
+      "color": "#dfded1",
+      "accent": "#48799d",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "porcelain",
+        "detail": "waves",
+        "variant": 5,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "tide",
+      "effectDescription": [
+        "青花分水纹、白釉开片与花瓣轮面。潮线随甩竿弯转，在落点卷成浪花。",
+        "Tidal lines follow the cast and curl into waves at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "meteor",
+      "name": [
+        "落星陨铁",
+        "Fallen meteor"
+      ],
+      "rarity": "epic",
+      "family": "fantasy",
+      "style": "meteor",
+      "color": "#4d526f",
+      "accent": "#f3bc7b",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "meteor",
+        "detail": "cracks",
+        "variant": 6,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "meteor",
+      "effectDescription": [
+        "陨铁断面、熔金裂脉与悬浮陨核。陨核沿抛物线坠落，击水后碎成流星。",
+        "A meteor core follows the cast, breaking into sparks on impact."
+      ],
+      "apparition": "A jagged iron meteor with a molten amber core, broken mineral facets and three swept fire tails"
+    },
+    {
+      "id": "auroraprism",
+      "name": [
+        "极光棱镜",
+        "Aurora prism"
+      ],
+      "rarity": "epic",
+      "family": "fantasy",
+      "style": "auroraprism",
+      "color": "#77a6ba",
+      "accent": "#d5b9e4",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "prism",
+        "detail": "facets",
+        "variant": 7,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 10
+      },
+      "spell": "prism",
+      "effectDescription": [
+        "六棱水晶、极光内含物与银制棱角座。棱面逐层折光，水上散开六瓣晶芒。",
+        "Prismatic facets refract in layers and scatter six crystal flares."
+      ],
+      "apparition": "An elaborate silver-framed hexagonal crystal prism containing folded cyan violet aurora ribbons"
+    },
+    {
+      "id": "tidetrident",
+      "name": [
+        "潮王三叉",
+        "Tidal trident"
+      ],
+      "rarity": "epic",
+      "family": "fantasy",
+      "style": "tidetrident",
+      "color": "#347d8d",
+      "accent": "#e3d29b",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "trident",
+        "detail": "shell",
+        "variant": 8,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "tide",
+      "effectDescription": [
+        "三叉波刃、螺壳护手与珍珠链坠。潮线随甩竿弯转，在落点卷成浪花。",
+        "Tidal lines follow the cast and curl into waves at the landing point."
+      ],
+      "apparition": "An ornate ocean trident of blue patinated bronze, pearl-inlaid shell guard, sharp swept silver wave blades"
+    },
+    {
+      "id": "qilin",
+      "name": [
+        "麒麟衔瑞",
+        "Auspicious qilin"
+      ],
+      "rarity": "legendary",
+      "family": "fantasy",
+      "style": "qilin",
+      "color": "#678b76",
+      "accent": "#efd28c",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "basic",
+      "expansion": 2,
+      "craft": {
+        "kind": "qilin",
+        "detail": "scales",
+        "variant": 9,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "qilin",
+      "effectDescription": [
+        "鹿角玉麟、层叠鳞甲与含珠龙口。麟首舒展，足下浮起玉色涟漪。",
+        "The qilin raises its head above jade ripples beneath its hooves."
+      ],
+      "apparition": "A majestic jade-and-gold qilin with antlers, carp scales, leonine mane, split hooves and a pearl in its mouth"
+    },
+    {
+      "id": "teaearthen",
+      "name": [
+        "陶茶闲钓",
+        "Earthen tea"
+      ],
+      "rarity": "common",
+      "family": "real",
+      "style": "teaearthen",
+      "color": "#996d53",
+      "accent": "#d7b78b",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "teapot",
+        "detail": "clay",
+        "variant": 10,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "dew",
+      "effectDescription": [
+        "紫砂壶腹轮罩、竹提梁与陶刻茶枝。水珠沿导环滑落，在落点溅开。",
+        "Dew runs past the guides and breaks into droplets at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "maplecraft",
+      "name": [
+        "枫桥木作",
+        "Maple craft"
+      ],
+      "rarity": "common",
+      "family": "real",
+      "style": "maplecraft",
+      "color": "#965a43",
+      "accent": "#d9a36c",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "wood",
+        "detail": "maple",
+        "variant": 11,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 7
+      },
+      "spell": "leaf",
+      "effectDescription": [
+        "枫木拼接、燕尾榫轮座和三裂叶扣。叶片沿竿身聚起，落水后散成细纹。",
+        "Leaves gather along the blank and scatter into ripples on landing."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "lanternkite",
+      "name": [
+        "纸鸢巡风",
+        "Lantern kite"
+      ],
+      "rarity": "rare",
+      "family": "fantasy",
+      "style": "lanternkite",
+      "color": "#a96a68",
+      "accent": "#e2c394",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "kite",
+        "detail": "ribs",
+        "variant": 12,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "wind",
+      "effectDescription": [
+        "燕形纸鸢、可见竹骨与绢尾结。风带缠绕竿身，随抛投拂过水面。",
+        "Wind ribbons wrap the blank and sweep across the water with the cast."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "astrolabe",
+      "name": [
+        "航海星盘",
+        "Mariner astrolabe"
+      ],
+      "rarity": "rare",
+      "family": "fantasy",
+      "style": "astrolabe",
+      "color": "#527f8b",
+      "accent": "#d4b477",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "astrolabe",
+        "detail": "ticks",
+        "variant": 13,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "stars",
+      "effectDescription": [
+        "镂空黄铜星盘、旋转标尺与海图刻线。星点连成轨道，围绕落点缓缓回转。",
+        "Stars join into orbits revolving around the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "obsidian",
+      "name": [
+        "黑曜镜棱",
+        "Obsidian edge"
+      ],
+      "rarity": "rare",
+      "family": "fantasy",
+      "style": "obsidian",
+      "color": "#4e4761",
+      "accent": "#beb4d5",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "prism",
+        "detail": "obsidian",
+        "variant": 14,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 10
+      },
+      "spell": "mirror",
+      "effectDescription": [
+        "黑曜贝壳断口、银包棱和紫晶嵌珠。镜面凝出重影，击水后化作细碎光片。",
+        "The mirror gathers reflections and releases shards of light on impact."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "scarabsun",
+      "name": [
+        "金甲日轮",
+        "Scarab sun"
+      ],
+      "rarity": "epic",
+      "family": "fantasy",
+      "style": "scarabsun",
+      "color": "#367f8a",
+      "accent": "#edc36d",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "scarab",
+        "detail": "wings",
+        "variant": 15,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "sun",
+      "effectDescription": [
+        "金甲虫背翅、青金石太阳与翅脉浮雕。日盘展开光翼，暖金射线照向水面。",
+        "A solar disk opens its wings and sends warm rays toward the water."
+      ],
+      "apparition": "A sacred golden scarab with articulated lapis and turquoise wing covers lifting a carved amber solar disk"
+    },
+    {
+      "id": "peacock",
+      "name": [
+        "孔雀明翎",
+        "Peacock radiance"
+      ],
+      "rarity": "epic",
+      "family": "fantasy",
+      "style": "peacock",
+      "color": "#397f74",
+      "accent": "#b1dca4",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "feather",
+        "detail": "eyes",
+        "variant": 16,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "feather",
+      "effectDescription": [
+        "七重孔雀眼羽、青玉羽轴和珍珠眼斑。羽翎依次展开，曳出交错的羽光。",
+        "Feathers open in sequence and trail intersecting feather wakes."
+      ],
+      "apparition": "A regal emerald peacock displaying layered long eye-spotted tail feathers with tiny gold filigree ribs"
+    },
+    {
+      "id": "worldtree",
+      "name": [
+        "万枝古树",
+        "Ancient world tree"
+      ],
+      "rarity": "epic",
+      "family": "fantasy",
+      "style": "worldtree",
+      "color": "#6c8051",
+      "accent": "#e3c995",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "tree",
+        "detail": "roots",
+        "variant": 17,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "roots",
+      "effectDescription": [
+        "盘根握柄、铜绿枝杈与半透树脂树冠。根须逐枝伸展，在水面交织成纹。",
+        "Roots extend branch by branch and interlace across the water."
+      ],
+      "apparition": "An ancient bonsai-like world tree with intertwined roots, deeply carved bark and translucent golden-green leaves"
+    },
+    {
+      "id": "chronoclock",
+      "name": [
+        "逆砂怀表",
+        "Reverse-sand watch"
+      ],
+      "rarity": "epic",
+      "family": "fantasy",
+      "style": "chronoclock",
+      "color": "#847859",
+      "accent": "#e7ce92",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "clock",
+        "detail": "gears",
+        "variant": 18,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "clock",
+      "effectDescription": [
+        "双层开盖怀表、真实齿轮和逆流沙窗。齿轮错向转动，时针带起刻度光弧。",
+        "Counter-rotating gears move the hands through luminous dial arcs."
+      ],
+      "apparition": "An opened antique brass pocket watch with interlocking exposed gears, a glass sand chamber and engraved astronomical hands"
+    },
+    {
+      "id": "ninephoenix",
+      "name": [
+        "九羽玄凰",
+        "Nine-plume phoenix"
+      ],
+      "rarity": "legendary",
+      "family": "fantasy",
+      "style": "ninephoenix",
+      "color": "#654968",
+      "accent": "#edb876",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "myriad",
+      "expansion": 2,
+      "craft": {
+        "kind": "phoenix",
+        "detail": "nine",
+        "variant": 19,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "phoenix",
+      "effectDescription": [
+        "九条独立长尾、金丝羽骨与玄紫火核。九道尾羽分层展开，掠过落点留下火翎。",
+        "Nine tail plumes open in layers and sweep fiery feathers over the landing point."
+      ],
+      "apparition": "A magnificent dark violet phoenix with exactly nine distinct long golden-edged tail plumes and a blazing amber breast"
+    },
+    {
+      "id": "sutrabundle",
+      "name": [
+        "经卷行囊",
+        "Pilgrim sutras"
+      ],
+      "rarity": "common",
+      "family": "xianxia",
+      "style": "sutrabundle",
+      "color": "#ad9170",
+      "accent": "#dfd3ad",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "scroll",
+        "detail": "straps",
+        "variant": 20,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "seal",
+      "effectDescription": [
+        "卷轴竹简、行囊双带和磨亮木轮。印章蓄势下落，水面铺开山河印纹。",
+        "The seal rises and stamps down, spreading mountain-and-river relief over the water."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "cloudshoe",
+      "name": [
+        "踏云草履",
+        "Cloud sandals"
+      ],
+      "rarity": "common",
+      "family": "xianxia",
+      "style": "cloudshoe",
+      "color": "#929575",
+      "accent": "#d9d0a4",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "bamboo",
+        "detail": "sandal",
+        "variant": 21,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 7
+      },
+      "spell": "wind",
+      "effectDescription": [
+        "草履编纹握柄、白玉云头和结绳轮架。风带缠绕竿身，随抛投拂过水面。",
+        "Wind ribbons wrap the blank and sweep across the water with the cast."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "tigercloak",
+      "name": [
+        "虎皮行者",
+        "Tiger-cloak pilgrim"
+      ],
+      "rarity": "rare",
+      "family": "xianxia",
+      "style": "tigercloak",
+      "color": "#b28a4c",
+      "accent": "#eee0ae",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "banner",
+        "detail": "tiger",
+        "variant": 22,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "tiger",
+      "effectDescription": [
+        "虎斑皮裹、铜环束带与兽牙护圈。虎影蓄力前扑，爪痕划开水光。",
+        "A tiger apparition gathers and lunges, cutting claw marks through the water light."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "skullbeads",
+      "name": [
+        "流沙九骷",
+        "Nine sandriver beads"
+      ],
+      "rarity": "rare",
+      "family": "xianxia",
+      "style": "skullbeads",
+      "color": "#8c7e71",
+      "accent": "#ded9bf",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "beads",
+        "detail": "skulls",
+        "variant": 23,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "resonance",
+      "effectDescription": [
+        "九颗骨珠、铜丝串线与流沙缠纹。声纹由轮座传至落点，逐圈消散。",
+        "Resonant rings travel from the reel seat to the water and fade outward."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "lotusseat",
+      "name": [
+        "莲台渡厄",
+        "Lotus crossing"
+      ],
+      "rarity": "rare",
+      "family": "xianxia",
+      "style": "lotusseat",
+      "color": "#bda0a6",
+      "accent": "#d9e3bd",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "lotus",
+        "detail": "petals",
+        "variant": 24,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "dew",
+      "effectDescription": [
+        "三层莲瓣轮座、金叶脉和露滴坠饰。水珠沿导环滑落，在落点溅开。",
+        "Dew runs past the guides and breaks into droplets at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "scorpion",
+      "name": [
+        "琵琶蝎尾",
+        "Pipa scorpion"
+      ],
+      "rarity": "epic",
+      "family": "xianxia",
+      "style": "scorpion",
+      "color": "#766482",
+      "accent": "#e0bd7d",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "scorpion",
+        "detail": "pipa",
+        "variant": 25,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "sting",
+      "effectDescription": [
+        "琵琶轮匣、六节蝎尾和弯钩毒晶。蝎尾逐节收紧，弯钩顺势刺向落点。",
+        "The scorpion tail coils joint by joint and strikes the landing point."
+      ],
+      "apparition": "An ornate violet-gold scorpion curling its articulated stinger over a carved pear-shaped Chinese pipa lute"
+    },
+    {
+      "id": "spiderweb",
+      "name": [
+        "盘丝月网",
+        "Moon silk web"
+      ],
+      "rarity": "epic",
+      "family": "xianxia",
+      "style": "spiderweb",
+      "color": "#867495",
+      "accent": "#e4c6dd",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "web",
+        "detail": "silk",
+        "variant": 26,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "web",
+      "effectDescription": [
+        "银丝七辐蛛网、紫玉丝囊与螺旋绞线。蛛丝由中心逐层织开，形成七重丝网。",
+        "Silk spreads outward from the center into layered radial webs."
+      ],
+      "apparition": "A lavish silver and amethyst spider-spindle with eight jointed legs and an intricate stretched moonlit silk web"
+    },
+    {
+      "id": "whitebone",
+      "name": [
+        "白骨三相",
+        "Three bone aspects"
+      ],
+      "rarity": "epic",
+      "family": "xianxia",
+      "style": "whitebone",
+      "color": "#c0bfb1",
+      "accent": "#b3c7d7",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "bone",
+        "detail": "three",
+        "variant": 27,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "bone",
+      "effectDescription": [
+        "三相白骨面、骨节护圈与银灰绢带。三相骨面依次显现，回旋后凝回竿身。",
+        "Three bone aspects appear in sequence, turn, and gather into the rod."
+      ],
+      "apparition": "Three elegant ivory masks showing maiden, mature woman and skull aspects around a polished bone scepter with silver-gray silk"
+    },
+    {
+      "id": "dragonpalace",
+      "name": [
+        "龙宫潮令",
+        "Dragon palace decree"
+      ],
+      "rarity": "epic",
+      "family": "xianxia",
+      "style": "dragonpalace",
+      "color": "#528c99",
+      "accent": "#eed1a0",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "pagoda",
+        "detail": "dragon",
+        "variant": 28,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "tide",
+      "effectDescription": [
+        "三重龙宫檐、珊瑚柱与含珠龙印。潮线随甩竿弯转，在落点卷成浪花。",
+        "Tidal lines follow the cast and curl into waves at the landing point."
+      ],
+      "apparition": "An exquisite jade and gilt miniature underwater dragon palace with three sweeping eaves, coral pillars and a pearl dragon seal"
+    },
+    {
+      "id": "bullking",
+      "name": [
+        "平天大圣",
+        "Bull Demon King"
+      ],
+      "rarity": "legendary",
+      "family": "xianxia",
+      "style": "bullking",
+      "color": "#824b43",
+      "accent": "#d7b888",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "journey",
+      "expansion": 2,
+      "craft": {
+        "kind": "bull",
+        "detail": "horns",
+        "variant": 29,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "bull",
+      "effectDescription": [
+        "双弯牛角、混铁棍芯与兽面青铜甲。牛首低头蓄力，重蹄踏出四道震纹。",
+        "The bull lowers its head and stamps four ripples into the water."
+      ],
+      "apparition": "The Bull Demon King, powerful bull-headed warrior with two great curved horns, dark bronze lamellar armor and a black iron staff, waist-up"
+    },
+    {
+      "id": "peachbough",
+      "name": [
+        "桃园旧枝",
+        "Peach garden bough"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "peachbough",
+      "color": "#9e775c",
+      "accent": "#d5ab94",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "branch",
+        "detail": "peach",
+        "variant": 30,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 7
+      },
+      "spell": "leaf",
+      "effectDescription": [
+        "三枝桃木交缠，麻绳束节与铜桃花扣。叶片沿竿身聚起，落水后散成细纹。",
+        "Leaves gather along the blank and scatter into ripples on landing."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "strawsandals",
+      "name": [
+        "涿郡草履",
+        "Zhuo woven sandals"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "strawsandals",
+      "color": "#a19568",
+      "accent": "#d9caa5",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "bamboo",
+        "detail": "sandal",
+        "variant": 31,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 7
+      },
+      "spell": "wind",
+      "effectDescription": [
+        "草履细编握把、麻线缝边与素铜包口。风带缠绕竿身，随抛投拂过水面。",
+        "Wind ribbons wrap the blank and sweep across the water with the cast."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "armoryiron",
+      "name": [
+        "洛阳军工",
+        "Luoyang ironworks"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "armoryiron",
+      "color": "#686d72",
+      "accent": "#c0a579",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "spear",
+        "detail": "rivets",
+        "variant": 32,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "spear",
+      "effectDescription": [
+        "锻铁接缝、三排铆钉与皮革枪缨座。枪芒先收后放，划出连贯的穿水长线。",
+        "The spear draws back and thrusts a continuous line through the water."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "bambooslip",
+      "name": [
+        "颍川竹简",
+        "Yingchuan slips"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "bambooslip",
+      "color": "#9b8b60",
+      "accent": "#c8d3b0",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "scroll",
+        "detail": "slips",
+        "variant": 33,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "ink",
+      "effectDescription": [
+        "六片竹简护柄、编绳与墨绿书卷轮。墨线沿竿锋展开，落水后洇成淡纹。",
+        "Ink unfurls from the rod tip and diffuses into pale water patterns."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "riverreed",
+      "name": [
+        "江夏芦舟",
+        "Jiangxia reed boat"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "riverreed",
+      "color": "#7b9183",
+      "accent": "#ded0a0",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "boat",
+        "detail": "reeds",
+        "variant": 34,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "tide",
+      "effectDescription": [
+        "芦舟龙骨轮架、船板接缝与纤绳导座。潮线随甩竿弯转，在落点卷成浪花。",
+        "Tidal lines follow the cast and curl into waves at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "granaryspear",
+      "name": [
+        "许田穗影",
+        "Xutian harvest"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "granaryspear",
+      "color": "#b09958",
+      "accent": "#dfc896",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "spear",
+        "detail": "grain",
+        "variant": 35,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "leaf",
+      "effectDescription": [
+        "短枪护尖、金穗浮雕和谷绳握纹。叶片沿竿身聚起，落水后散成细纹。",
+        "Leaves gather along the blank and scatter into ripples on landing."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "shuembroider",
+      "name": [
+        "蜀锦云纹",
+        "Shu cloud brocade"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "shuembroider",
+      "color": "#926459",
+      "accent": "#d6bda2",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "silk",
+        "detail": "brocade",
+        "variant": 36,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "silk",
+      "effectDescription": [
+        "蜀锦菱格、细密包边与铜云纹卡扣。绢带前后错层翻转，随竿尖柔和收束。",
+        "Silk ribbons turn in overlapping layers and settle along the tip."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "wuanchor",
+      "name": [
+        "建业铜锚",
+        "Jianye bronze anchor"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "wuanchor",
+      "color": "#4f827e",
+      "accent": "#c6b584",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "anchor",
+        "detail": "chain",
+        "variant": 37,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "tide",
+      "effectDescription": [
+        "双爪锚轮座、船链纹和铜绿止线环。潮线随甩竿弯转，在落点卷成浪花。",
+        "Tidal lines follow the cast and curl into waves at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "weislate",
+      "name": [
+        "邺城青砚",
+        "Ye inkstone"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "weislate",
+      "color": "#576d79",
+      "accent": "#bfcdca",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "inkstone",
+        "detail": "slate",
+        "variant": 38,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "ink",
+      "effectDescription": [
+        "青石砚台轮面、磨砂石纹与银线包口。墨线沿竿锋展开，落水后洇成淡纹。",
+        "Ink unfurls from the rod tip and diffuses into pale water patterns."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "postbanner",
+      "name": [
+        "驿路旌节",
+        "Courier standard"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "postbanner",
+      "color": "#8e5e50",
+      "accent": "#d6b687",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "banner",
+        "detail": "tassels",
+        "variant": 39,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "banner",
+      "effectDescription": [
+        "窄幅旌旗、缝边铜钉和双层缨穗。旌带迎风展开，金线随着布面起伏。",
+        "The standard unfurls with its gold threads following the cloth."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "bronzehalberd",
+      "name": [
+        "汉阙铜戟",
+        "Han bronze halberd"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "bronzehalberd",
+      "color": "#748470",
+      "accent": "#dbbe86",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "halberd",
+        "detail": "bronze",
+        "variant": 40,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "cleave",
+      "effectDescription": [
+        "青铜援刃、饕餮细刻与几何雷纹。刃光顺甩竿轨迹斩落，留下一道清晰弧面。",
+        "The blade follows the cast in one broad cutting arc."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "wineladle",
+      "name": [
+        "煮酒青梅",
+        "Plum wine ladle"
+      ],
+      "rarity": "common",
+      "family": "historical",
+      "style": "wineladle",
+      "color": "#888762",
+      "accent": "#d7ba80",
+      "barSize": 0.25,
+      "control": 0.96,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "vessel",
+        "detail": "plum",
+        "variant": 41,
+        "metal": "#dcc08b",
+        "grip": "#55453c",
+        "pattern": 6
+      },
+      "spell": "dew",
+      "effectDescription": [
+        "三足温酒器轮罩、青梅珠与铜勺导座。水珠沿导环滑落，在落点溅开。",
+        "Dew runs past the guides and breaks into droplets at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "liubei",
+      "name": [
+        "双股仁锋",
+        "Benevolent twin blades"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "liubei",
+      "color": "#67916e",
+      "accent": "#e8cd93",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "twinsword",
+        "detail": "knot",
+        "variant": 42,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "twins",
+      "effectDescription": [
+        "长短双剑护片、连理结与蜀绿皮缠。双刃交错出击，两道轨迹在落点合拢。",
+        "Twin blades cross and merge their trails at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "caocao",
+      "name": [
+        "倚天青釭",
+        "Heaven and blue steel"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "caocao",
+      "color": "#586a94",
+      "accent": "#d7d6c5",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "sword",
+        "detail": "double",
+        "variant": 43,
+        "metal": "#dce8e7",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "cleave",
+      "effectDescription": [
+        "青釭嵌脊、双重剑格与魏蓝金错纹。刃光顺甩竿轨迹斩落，留下一道清晰弧面。",
+        "The blade follows the cast in one broad cutting arc."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "sunquan",
+      "name": [
+        "碧眼紫髯",
+        "Jade-eyed sovereign"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "sunquan",
+      "color": "#806681",
+      "accent": "#d4bf88",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "seal",
+        "detail": "tiger",
+        "variant": 44,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "seal",
+      "effectDescription": [
+        "紫檀虎钮、碧玉双眼和江纹铜章。印章蓄势下落，水面铺开山河印纹。",
+        "The seal rises and stamps down, spreading mountain-and-river relief over the water."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "huangzhong",
+      "name": [
+        "百步穿杨",
+        "Hundred-pace bow"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "huangzhong",
+      "color": "#956946",
+      "accent": "#e9c98c",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "bow",
+        "detail": "arrow",
+        "variant": 45,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "arrows",
+      "effectDescription": [
+        "双曲弓臂、三支镂羽箭与老木弦槽。箭影接续飞出，在水面汇成一束。",
+        "Arrows launch in sequence and converge over the water."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "weiyan",
+      "name": [
+        "子午奇锋",
+        "Ziwu hidden edge"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "weiyan",
+      "color": "#77715a",
+      "accent": "#d8bf90",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "saber",
+        "detail": "ridge",
+        "variant": 46,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "cleave",
+      "effectDescription": [
+        "奇峰折刃、斜脊铜护手与山道刻线。刃光顺甩竿轨迹斩落，留下一道清晰弧面。",
+        "The blade follows the cast in one broad cutting arc."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "jiangwei",
+      "name": [
+        "麒麟姜胆",
+        "Qilin courage"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "jiangwei",
+      "color": "#578a7d",
+      "accent": "#cddcbd",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "spear",
+        "detail": "qilin",
+        "variant": 47,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "spear",
+      "effectDescription": [
+        "麒麟角护座、白银枪尖与青玉鳞节。枪芒先收后放，划出连贯的穿水长线。",
+        "The spear draws back and thrusts a continuous line through the water."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "xuhuang",
+      "name": [
+        "长驱宣斧",
+        "Vanguard axe"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "xuhuang",
+      "color": "#707e8d",
+      "accent": "#dab879",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "axe",
+        "detail": "square",
+        "variant": 48,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "axe",
+      "effectDescription": [
+        "宽面宣斧、方孔镂雕与玄铁横梁。斧影短暂蓄势后劈落，扩散沉重冲击纹。",
+        "The axe pauses in anticipation, then falls into a heavy impact ripple."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "xuchu",
+      "name": [
+        "虎痴重锤",
+        "Tiger guardian hammer"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "xuchu",
+      "color": "#8a6850",
+      "accent": "#d6bd88",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "hammer",
+        "detail": "tiger",
+        "variant": 49,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "hammer",
+      "effectDescription": [
+        "八面虎头锤、重铆钉与厚革锁扣。锤首垂直击水，厚实震环由内向外展开。",
+        "The hammer strikes down and spreads thick concentric shock rings."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "dianwei",
+      "name": [
+        "古之恶来",
+        "Ancient stalwart"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "dianwei",
+      "color": "#646672",
+      "accent": "#d1bc99",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "dualhalberd",
+        "detail": "iron",
+        "variant": 50,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "twins",
+      "effectDescription": [
+        "左右双戟、玄铁兽面和锁链护柄。双刃交错出击，两道轨迹在落点合拢。",
+        "Twin blades cross and merge their trails at the landing point."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "zhoutai",
+      "name": [
+        "江表铁壁",
+        "River iron wall"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "zhoutai",
+      "color": "#537c78",
+      "accent": "#d5b993",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "shield",
+        "detail": "scars",
+        "variant": 51,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "shield",
+      "effectDescription": [
+        "弧形盾甲、交错伤痕与双层铆边。盾纹迎面展开，回收时碎成光点。",
+        "The shield crest opens outward and returns as fading sparks."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "ganning",
+      "name": [
+        "锦帆夜袭",
+        "Brocade night raid"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "ganning",
+      "color": "#478899",
+      "accent": "#e7b56e",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "boat",
+        "detail": "bells",
+        "variant": 52,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "sails",
+      "effectDescription": [
+        "锦帆龙骨、金铃串和钩形护手。帆影逐张鼓起，舟影沿潮线滑行。",
+        "Sails billow in succession as boats glide along tidal lines."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "luxun",
+      "name": [
+        "白衣渡火",
+        "White robe crossing"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "luxun",
+      "color": "#b8bba7",
+      "accent": "#cb8b63",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "fan",
+        "detail": "flames",
+        "variant": 53,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "fire",
+      "effectDescription": [
+        "白绢扇面、赤铜火纹与细羽扇骨。火舌由竿身升起，随抛投拖出焰尾。",
+        "Flames rise along the blank and trail behind the cast."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "lusu",
+      "name": [
+        "鲁缟同盟",
+        "Silk alliance"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "lusu",
+      "color": "#9fae9e",
+      "accent": "#d7c79f",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "scroll",
+        "detail": "silk",
+        "variant": 54,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "silk",
+      "effectDescription": [
+        "双卷白缟、交握铜扣与舟形轮架。绢带前后错层翻转，随竿尖柔和收束。",
+        "Silk ribbons turn in overlapping layers and settle along the tip."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "zhangliao",
+      "name": [
+        "逍遥惊涛",
+        "Xiaoyao tidal charge"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "zhangliao",
+      "color": "#557f94",
+      "accent": "#d9d8bb",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "crescent",
+        "detail": "waves",
+        "variant": 55,
+        "metal": "#dce8e7",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "crescent",
+      "effectDescription": [
+        "双弧长刀、冷银浪纹与马衔轮扣。月牙刃划出银色双弧，随水纹逐渐消隐。",
+        "Crescent blades trace twin silver arcs that dissolve into water ripples."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "wenji",
+      "name": [
+        "胡笳归雁",
+        "Reed song returning geese"
+      ],
+      "rarity": "rare",
+      "family": "historical",
+      "style": "wenji",
+      "color": "#ac9088",
+      "accent": "#d8c8a9",
+      "barSize": 0.29,
+      "control": 1.05,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "flute",
+        "detail": "goose",
+        "variant": 56,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "music",
+      "effectDescription": [
+        "胡笳音孔、雁羽护片与绢丝流苏。七道弦光依次拨动，水面泛起琴音波纹。",
+        "Seven luminous strings are plucked in sequence, sending music ripples across the water."
+      ],
+      "apparition": null
+    },
+    {
+      "id": "guanyuyunchang",
+      "name": [
+        "武圣青龙",
+        "Martial saint dragon"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "guanyuyunchang",
+      "color": "#347862",
+      "accent": "#eed39a",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "glaive",
+        "detail": "dragon",
+        "variant": 57,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "dragon",
+      "effectDescription": [
+        "偃月镂刃、龙首吞口和赤鬃刀缨。青龙随刀势舒展，龙息沿弧线掠水。",
+        "The azure dragon follows the blade, breathing light along its sweep."
+      ],
+      "apparition": "Guan Yu, dignified long-bearded Chinese martial saint in deep green robe and engraved gilt armor, holding an ornate crescent dragon glaive, waist-up"
+    },
+    {
+      "id": "zhangfei",
+      "name": [
+        "长坂怒啸",
+        "Changban roar"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "zhangfei",
+      "color": "#554f62",
+      "accent": "#d8a36e",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "serpentspear",
+        "detail": "serpent",
+        "variant": 58,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "roar",
+      "effectDescription": [
+        "蛇形枪刃、豹面轮座和黑缨盘结。低沉声纹逐层推出，水面扩散虎啸震环。",
+        "Layered sound waves expand into powerful roar rings on the water."
+      ],
+      "apparition": "Zhang Fei, fierce broad-shouldered bearded general in black and bronze armor, holding an elegant undulating serpent spear, waist-up"
+    },
+    {
+      "id": "zhaoyun",
+      "name": [
+        "龙胆照夜",
+        "Dragon courage at night"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "zhaoyun",
+      "color": "#9bbdc5",
+      "accent": "#e3e5da",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "spear",
+        "detail": "dragon",
+        "variant": 59,
+        "metal": "#dce8e7",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "spear",
+      "effectDescription": [
+        "龙胆银枪、白龙鳞甲与冰蓝长缨。枪芒先收后放，划出连贯的穿水长线。",
+        "The spear draws back and thrusts a continuous line through the water."
+      ],
+      "apparition": "Zhao Yun, noble young Chinese warrior in intricately engraved silver armor, white cloak and pale blue plume, holding a silver dragon spear, waist-up"
+    },
+    {
+      "id": "machao",
+      "name": [
+        "锦骑银狮",
+        "Silver lion cavalry"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "machao",
+      "color": "#a0aab5",
+      "accent": "#e0c496",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "lion",
+        "detail": "spear",
+        "variant": 60,
+        "metal": "#dce8e7",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "cavalry",
+      "effectDescription": [
+        "银狮吞口、锦骑马饰与长穗枪尾。银狮昂首，踏水蹄印与枪芒同时掠出。",
+        "The silver lion rises as hoofprints and spear light race across the water."
+      ],
+      "apparition": "Ma Chao, handsome western cavalry general wearing a silver lion helmet and embroidered white cape, carrying a cavalry spear, waist-up"
+    },
+    {
+      "id": "zhouyu",
+      "name": [
+        "赤壁长歌",
+        "Red Cliffs overture"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "zhouyu",
+      "color": "#9b514c",
+      "accent": "#edc27e",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "boat",
+        "detail": "fire",
+        "variant": 61,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "redcliffs",
+      "effectDescription": [
+        "楼船轮座、琴弦护脊与赤铜火帆。三艘火船先后驶入落点，火帆随东风燃起。",
+        "Three fire ships approach the landing point, their sails igniting in the east wind."
+      ],
+      "apparition": "Zhou Yu, elegant Chinese admiral with refined face, crimson brocade cloak and bronze armor, lifting a command sword beside a small burning warship apparition, waist-up"
+    },
+    {
+      "id": "simayi",
+      "name": [
+        "玄冢星谋",
+        "Dark constellation strategist"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "simayi",
+      "color": "#595873",
+      "accent": "#c1c4db",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "astrolabe",
+        "detail": "eclipse",
+        "variant": 62,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "eclipse",
+      "effectDescription": [
+        "玄铁星盘、鹰目玉扣和双圈阴阳尺。暗月遮过星盘，边缘留下一圈银紫光晕。",
+        "A dark moon crosses the star dial, leaving a silver-violet corona."
+      ],
+      "apparition": "Sima Yi, austere older Chinese strategist in layered indigo robes with silver constellations, narrow sharp eyes and a dark feather fan, waist-up"
+    },
+    {
+      "id": "pangtong",
+      "name": [
+        "凤雏连环",
+        "Young phoenix chain"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "pangtong",
+      "color": "#89694e",
+      "accent": "#e0b986",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "chain",
+        "detail": "phoenix",
+        "variant": 63,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "chains",
+      "effectDescription": [
+        "凤雏羽冠、九环连锁与赤铜锁舟扣。连环逐节传力，在落点交扣成弧。",
+        "Interlocking chains transmit motion link by link and curve around the landing point."
+      ],
+      "apparition": "Pang Tong, unconventional bearded Chinese strategist in ochre robes and a small phoenix-feather crown, holding bronze interlocking chain rings, waist-up"
+    },
+    {
+      "id": "huangyueying",
+      "name": [
+        "木牛流马",
+        "Wooden ox mechanism"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "huangyueying",
+      "color": "#96794f",
+      "accent": "#c5d4a8",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "mechanism",
+        "detail": "ox",
+        "variant": 64,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "mechanism",
+      "effectDescription": [
+        "木牛关节、流马齿轮与弩机轮架。木牛关节抬起，齿轮带动弩机光线。",
+        "The wooden ox lifts its articulated limbs as gears drive crossbow light."
+      ],
+      "apparition": "Huang Yueying, ingenious Chinese woman inventor in olive and ochre scholar clothing, with a beautifully detailed small mechanical wooden ox and articulated brass gears, waist-up"
+    },
+    {
+      "id": "daqiao",
+      "name": [
+        "江东春澜",
+        "Jiangdong spring waves"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "daqiao",
+      "color": "#ad91a0",
+      "accent": "#e5d0b0",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "silk",
+        "detail": "flowers",
+        "variant": 65,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "petals",
+      "effectDescription": [
+        "春水绢带、双层玉兰和珍珠花钿。玉兰花瓣依次舒展，落在柔和春水纹上。",
+        "Magnolia petals unfold in sequence and drift onto spring-water ripples."
+      ],
+      "apparition": "Da Qiao, graceful adult Chinese woman in pale rose and celadon Han clothing with magnolia hair ornaments, long sleeves flowing like spring water, waist-up"
+    },
+    {
+      "id": "xiaoqiao",
+      "name": [
+        "铜雀秋弦",
+        "Autumn zither"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "xiaoqiao",
+      "color": "#77999f",
+      "accent": "#e0c791",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "zither",
+        "detail": "swallow",
+        "variant": 66,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "music",
+      "effectDescription": [
+        "七弦玉琴、铜雀弦枕和秋叶琴轸。七道弦光依次拨动，水面泛起琴音波纹。",
+        "Seven luminous strings are plucked in sequence, sending music ripples across the water."
+      ],
+      "apparition": "Xiao Qiao, graceful adult Chinese woman in pale blue silk Han clothing, holding a finely carved seven-string zither with bronze swallow ornaments, waist-up"
+    },
+    {
+      "id": "diaochan",
+      "name": [
+        "闭月连环",
+        "Moon-veiled dancer"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "diaochan",
+      "color": "#9c698f",
+      "accent": "#e7c7b1",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "moon",
+        "detail": "ribbons",
+        "variant": 67,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "moon",
+      "effectDescription": [
+        "弯月双环、细金步摇与紫绢长袖。双月环错向旋转，绢袖随月弧回旋。",
+        "Twin crescent rings turn in opposite directions beneath circling silk sleeves."
+      ],
+      "apparition": "Diao Chan, elegant adult Chinese dancer in layered violet silk, ornate gold hair pins, long trailing dance sleeves and two crescent rings, waist-up"
+    },
+    {
+      "id": "dongzhuo",
+      "name": [
+        "西凉玄鼎",
+        "Western bronze cauldron"
+      ],
+      "rarity": "epic",
+      "family": "historical",
+      "style": "dongzhuo",
+      "color": "#65584d",
+      "accent": "#d5ab70",
+      "barSize": 0.34,
+      "control": 1.12,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "cauldron",
+        "detail": "taotie",
+        "variant": 68,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "cauldron",
+      "effectDescription": [
+        "饕餮三足鼎、兽耳提梁与玄铜火纹。玄鼎抬起后稳稳落下，鼎内火光映向水面。",
+        "The bronze cauldron rises and settles, reflecting its inner fire over the water."
+      ],
+      "apparition": "A massive ancient Chinese bronze ritual tripod cauldron with intricate taotie masks, beast-shaped handles, dark patina and contained amber fire"
+    },
+    {
+      "id": "zhugeliang",
+      "name": [
+        "七星借东风",
+        "Seven stars east wind"
+      ],
+      "rarity": "legendary",
+      "family": "historical",
+      "style": "zhugeliang",
+      "color": "#7d9d9c",
+      "accent": "#ead39b",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "fan",
+        "detail": "seven",
+        "variant": 69,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "eastwind",
+      "effectDescription": [
+        "七星羽扇、八卦轮面与银云扇骨。七星亮起，羽扇挥出的东风分层推过水面。",
+        "Seven stars awaken as the feather fan drives layered east wind over the water."
+      ],
+      "apparition": "Zhuge Liang, wise Chinese strategist with a calm face, black scholar cap, ivory and celadon robes, holding a large individual-feather fan over seven floating stars, waist-up"
+    },
+    {
+      "id": "lubu",
+      "name": [
+        "辕门方天",
+        "Gate halberd"
+      ],
+      "rarity": "legendary",
+      "family": "historical",
+      "style": "lubu",
+      "color": "#92545b",
+      "accent": "#e8c189",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "halberd",
+        "detail": "plumes",
+        "variant": 70,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "halberd",
+      "effectDescription": [
+        "方天双月刃、双雉翎与兽面金甲。双月戟先引后斩，双雉翎随余势回摆。",
+        "The double-crescent halberd draws and cuts while twin plumes follow through."
+      ],
+      "apparition": "Lu Bu, imposing Chinese warrior in ornate black crimson and gold armor with two very long curved pheasant plumes, holding a double-crescent halberd, waist-up"
+    },
+    {
+      "id": "jiangdongtiger",
+      "name": [
+        "江东猛虎",
+        "Tiger of Jiangdong"
+      ],
+      "rarity": "legendary",
+      "family": "historical",
+      "style": "jiangdongtiger",
+      "color": "#a47847",
+      "accent": "#e6d196",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "tiger",
+        "detail": "saber",
+        "variant": 71,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "tiger",
+      "effectDescription": [
+        "古锭铜刀、白额虎首和层叠虎牙护件。虎影蓄力前扑，爪痕划开水光。",
+        "A tiger apparition gathers and lunges, cutting claw marks through the water light."
+      ],
+      "apparition": "Sun Jian, battle-hardened Chinese general in bronze tiger armor with a crimson scarf and curved ancient saber, accompanied by a spectral white-browed tiger head, waist-up"
+    },
+    {
+      "id": "yuanshao",
+      "name": [
+        "四世金旌",
+        "Four generations standard"
+      ],
+      "rarity": "legendary",
+      "family": "historical",
+      "style": "yuanshao",
+      "color": "#947654",
+      "accent": "#ecda9e",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "banner",
+        "detail": "four",
+        "variant": 72,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "banners",
+      "effectDescription": [
+        "四重金旌、玉柄节钺与金线流苏。四重旌旗逐层展开，绶带随风错落飘动。",
+        "Four standards open in layers with ribbons moving at different depths."
+      ],
+      "apparition": "An elaborate Han imperial military standard with four layered ivory and gold banners, carved jade ceremonial axe and individual gilded silk tassels"
+    },
+    {
+      "id": "zuoci",
+      "name": [
+        "遁甲天书",
+        "Celestial hidden arts"
+      ],
+      "rarity": "legendary",
+      "family": "historical",
+      "style": "zuoci",
+      "color": "#768ba5",
+      "accent": "#decfa7",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "scroll",
+        "detail": "talismans",
+        "variant": 73,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "talismans",
+      "effectDescription": [
+        "遁甲金简、符纸折翼与鹤羽云钩。八道符纹从卷轴展开，绕落点回旋收束。",
+        "Eight abstract seals unfold from the scroll and circle the landing point."
+      ],
+      "apparition": "Zuo Ci, aged Chinese Taoist sage with flowing white beard and indigo robes, holding an unfurling celestial scroll with golden abstract diagrams and crane feathers, waist-up"
+    },
+    {
+      "id": "emperorjade",
+      "name": [
+        "传国玉玺·山河一统",
+        "Imperial jade seal"
+      ],
+      "rarity": "legendary",
+      "family": "historical",
+      "style": "emperorjade",
+      "color": "#599a82",
+      "accent": "#eed796",
+      "barSize": 0.38,
+      "control": 1.18,
+      "collection": "threekingdoms",
+      "expansion": 2,
+      "craft": {
+        "kind": "seal",
+        "detail": "dragons",
+        "variant": 74,
+        "metal": "#dcc08b",
+        "grip": "#34313d",
+        "pattern": 6
+      },
+      "spell": "seal",
+      "effectDescription": [
+        "五龙交钮、方正玉印与四角金补纹；控竿时张力增长降低 25%。印章蓄势下落，水面铺开山河印纹。",
+        "The seal rises and stamps down, spreading mountain-and-river relief over the water. Tension builds 25% more slowly while reeling."
+      ],
+      "apparition": "An extraordinary square pale-jade Chinese imperial seal topped with five intricately intertwined golden dragons, repaired gold corner and mountain-and-river relief sides",
+      "hidden": true,
+      "tensionMultiplier": 0.75
+    }
+  ]
+}

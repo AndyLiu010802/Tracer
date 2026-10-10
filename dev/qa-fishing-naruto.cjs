@@ -1,0 +1,40 @@
+'use strict';
+// Isolated visual review: actual effect code and SVGs, no save or account access.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const {chromium}=require('../.cache/desktop-qa-tools/node_modules/playwright');
+const F=require('../public/fishing-model');
+const root=path.resolve(__dirname,'..'),out=path.join(root,'output/fishing-naruto-refinement');
+fs.mkdirSync(out,{recursive:true});
+const rods=F.catalog.rods.filter(r=>r.collection==='naruto');
+const floats=F.catalog.rods.filter(r=>r.animeAction&&['epic','legendary'].includes(r.rarity));
+const source=fs.readFileSync(path.join(root,'skins/tracer/fishing-anime-effects.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'skins/tracer/fishing-scene.css'),'utf8');
+const html=`<!doctype html><html lang="zh"><meta charset="utf-8"><title>火影招式与鱼漂</title><style>${css}
+*{box-sizing:border-box}body{font:14px system-ui;background:#e9e6dc;color:#283c3b;margin:24px auto;max-width:1220px}h1{font-size:24px}h2{font-size:18px;margin:30px 0 14px}p{color:#536867}select,button,input{font:inherit;padding:7px 10px;border-radius:6px;border:1px solid #97aaa5;background:#fffef8}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.card{border:1px solid #becac1;border-radius:9px;overflow:hidden;background:#fcfaf1}.label{padding:10px 8px;border-top:1px solid #d9dfd5;line-height:1.5;font-size:13px}.label small{color:#788781;display:block}.preview{display:flex;align-items:center;justify-content:space-around;height:150px;background:linear-gradient(160deg,#81b6b8,#a8cac4)}.preview.dark{background:linear-gradient(160deg,#1b333e,#346264)}.mount{width:50px;height:90px;position:relative}.large{width:94px;height:115px}.large .fishing-themed-float--anime{width:70px;height:94.5px;top:85%}.mount:not(.large) .fishing-themed-float--anime{top:70%}.caption{font-size:10px;color:#fffbe7;position:absolute;bottom:0;left:0;right:0;text-align:center}canvas{max-width:100%;display:block}.effect-card canvas{background:#2b5055}#live{background:linear-gradient(#27474c,#487f80);border-radius:10px;margin:14px 0;width:760px}.controls{display:flex;gap:10px;align-items:center}#age{width:580px;padding:0}.grid.floats{grid-template-columns:repeat(4,1fr)}
+</style><h1>火影招式与鱼漂</h1><p>抛竿 620 ms · 咬钩 280 ms · 收鱼 760 ms。等待与遛鱼保持安静。</p><div class="controls"><select id="rod"></select><select id="phase"><option value="cast">抛竿</option><option value="caught">收鱼</option><option value="bite">咬钩</option><option value="reeling">遛鱼</option></select><button id="play">播放</button></div><canvas id="live" width="760" height="330"></canvas><div class="controls"><input id="age" type="range" min="0" max="620" value="290"><output id="time"></output></div><h2>30 款火影招式</h2><div class="grid" id="effects"></div><h2>26 款史诗 / 传说鱼漂</h2><p>左侧放大检查材质，右侧为游戏实际尺寸；两种水面用于检查明暗对比。</p><div class="grid floats" id="floats"></div><script>${source}</script><script>
+const A=TracerFishingAnime,rods=${JSON.stringify(rods)},floats=${JSON.stringify(floats)};
+const $=s=>document.querySelector(s),select=$('#rod'),phase=$('#phase'),age=$('#age'),ctx=$('#live').getContext('2d');
+select.innerHTML=rods.map(r=>'<option value="'+r.id+'">'+r.name[0]+'</option>').join('');select.value='anime_naruto';
+const g={width:760,height:330,water:{x:492,y:212}},tip={x:350,y:66};
+function render(){ctx.clearRect(0,0,760,330);ctx.fillStyle='#cbf0e015';ctx.beginPath();ctx.ellipse(g.water.x,g.water.y,80,22,0,0,Math.PI*2);ctx.fill();const q=A.draw(ctx,select.value,phase.value,+age.value,{},g,tip,g.water);$('#time').value=age.value+' ms · '+(q?.stage||'安静');}
+let playing=false,last=0;$('#play').onclick=()=>{playing=!playing;$('#play').textContent=playing?'暂停':'播放'};age.oninput=()=>{playing=false;$('#play').textContent='播放';render()};select.onchange=render;phase.onchange=()=>{age.max=A.cleanDurations[phase.value]||760;age.value=Math.min(+age.value,+age.max);render()};function tick(t){if(playing){age.value=(+age.value+Math.min(35,t-last))%(+age.max);render()}last=t;requestAnimationFrame(tick)}requestAnimationFrame(tick);
+for(const r of rods){const card=document.createElement('div');card.className='card effect-card';card.innerHTML='<canvas width="232" height="155"></canvas><div class="label">'+r.name[0]+'<small>'+r.effectDescription[0]+'</small></div>';$('#effects').append(card);const gg={width:232,height:155,water:{x:140,y:98}};A.draw(card.querySelector('canvas').getContext('2d'),r.id,'cast',300,{},gg,{x:66,y:22},gg.water);}
+for(const r of floats){const card=document.createElement('div');card.className='card';card.dataset.rod=r.id;card.innerHTML=['',' dark'].map(d=>'<div class="preview'+d+'"><div class="mount large">'+A.detailedBobber(r.id)+'</div><div class="mount">'+A.detailedBobber(r.id)+'<span class="caption">28 px</span></div></div>').join('')+'<div class="label">'+r.name[0]+'</div>';$('#floats').append(card)}
+render();window.ready=true;
+</script></html>`;
+fs.writeFileSync(path.join(out,'review.html'),html);
+(async()=>{const browser=await chromium.launch({executablePath:'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',headless:true});try{
+  const page=await browser.newPage({viewport:{width:1280,height:1000},deviceScaleFactor:1}),errors=[];
+  page.on('pageerror',e=>errors.push(e.message));await page.setContent(html,{waitUntil:'load'});await page.waitForFunction(()=>window.ready);
+  const report=await page.evaluate(async()=>{
+    const ids=[...document.querySelectorAll('[id]')].map(n=>n.id);if(ids.length!==new Set(ids).size)throw Error('Duplicate SVG gradient IDs');
+    let references=0;for(const node of document.querySelectorAll('svg [fill]')){const match=node.getAttribute('fill').match(/^url\(#(.+)\)$/);if(match){if(!node.closest('svg').querySelector('[id="'+match[1]+'"]'))throw Error('Broken gradient '+match[1]);references++;}}
+    const raster=[];for(const r of floats){const svg=A.detailedBobber(r.id),im=new Image();im.src='data:image/svg+xml;base64,'+btoa(svg);await im.decode();const c=document.createElement('canvas');c.width=40;c.height=54;const ctx=c.getContext('2d');ctx.drawImage(im,0,0,40,54);const px=ctx.getImageData(0,0,40,54).data;let pixels=0,edge=0;for(let y=0;y<54;y++)for(let x=0;x<40;x++){if(px[(y*40+x)*4+3]>20){pixels++;if(x===0||y===0||x===39||y===53)edge++}}if(pixels<80||edge)throw Error(r.id+' float bounds '+pixels+'/'+edge);raster.push({id:r.id,pixels,edge});}
+    const c=document.createElement('canvas');c.width=360;c.height=250;const cx=c.getContext('2d'),gg={width:360,height:250,water:{x:246,y:161}},tip={x:109,y:39};let active=0,quiet=0,late=0,peak=0;
+    for(const r of rods)for(const reduced of [false,true])for(const phase of ['cast','bite','caught','idle','charging','waiting','reeling','escaped'])for(const age of [130,260,370,540,750,790,1600]){cx.clearRect(0,0,360,250);const t=performance.now(),q=A.draw(cx,r.id,phase,age,{},gg,tip,gg.water,reduced);peak=Math.max(peak,performance.now()-t);const px=cx.getImageData(0,0,360,250).data;let n=0;for(let j=3;j<px.length;j+=4)if(px[j])n++;if(A.visible(phase,age,r.id)){active++;if(q.alpha>.1&&!n)throw Error(r.id+' empty '+phase+'/'+age)}else{if(n||q)throw Error(r.id+' leaked '+phase+'/'+age);A.cleanDurations[phase]?late++:quiet++}}
+    return{floatCount:raster.length,references,raster,active,quiet,late,peakFrameMs:peak};
+  });
+  assert.deepEqual(errors,[]);await page.locator('#effects').screenshot({path:path.join(out,'techniques.png')});await page.locator('#floats').screenshot({path:path.join(out,'floats.png')});
+  for(const id of ['anime_naruto','anime_hinata','anime_kakashi','anime_minato','anime_sasuke','anime_konan','anime_sixpaths']){await page.selectOption('#rod',id);await page.locator('#live').screenshot({path:path.join(out,id+'.png')});}
+  fs.writeFileSync(path.join(out,'qa.json'),JSON.stringify({...report,errors},null,2));console.log(JSON.stringify({passed:true,active:report.active,quiet:report.quiet,late:report.late,floats:report.floatCount,peakFrameMs:report.peakFrameMs,errors}));
+}finally{await browser.close()}})().catch(e=>{console.error(e);process.exitCode=1});

@@ -12,16 +12,16 @@ function collect(ws,poolId,id,now){
   return draw(ws,poolId,rod.hidden?5450:({common:0,rare:5500,epic:8500,legendary:9700})[rod.rarity],now,rod.hidden?0:choices.findIndex(r=>r.id===id));
 }
 
-test('the original collection is permanently closed and the new collection has exactly twenty distinct rewards',()=>{
+test('expanded collections preserve original rewards and add ten designs apiece',()=>{
   const basic=F.catalog.rodPools.find(p=>p.id==='basic'),myriad=F.catalog.rodPools.find(p=>p.id==='myriad');
-  assert.deepEqual(basic.rodIds,BASIC);assert.equal(basic.hiddenRodId,'golden');
-  assert.deepEqual([...myriad.rodIds,myriad.hiddenRodId],MYRIAD);assert.equal(myriad.hiddenRodId,'eclipse');
-  assert.equal(F.catalog.rods.length,38);
+  assert.deepEqual(basic.rodIds.slice(0,BASIC.length),BASIC);assert.equal(basic.rodIds.length,BASIC.length+10);assert.equal(basic.hiddenRodId,'golden');
+  assert.deepEqual([...myriad.rodIds.filter(id=>F.catalog.rods.find(r=>r.id===id).expansion!==2),myriad.hiddenRodId],MYRIAD);assert.equal(myriad.rodIds.length+1,30);assert.equal(myriad.hiddenRodId,'eclipse');
+  assert.equal(F.catalog.rods.length,253);
   const counts={};for(const id of MYRIAD){const r=F.catalog.rods.find(r=>r.id===id);counts[r.rarity]=(counts[r.rarity]||0)+1;assert(r.barSize<=.38&&r.control<=1.18);assert.equal(r.style,id);}
   assert.deepEqual(counts,{common:3,rare:4,epic:10,legendary:3});
-  const membership=F.catalog.rodPools.flatMap(p=>[...p.rodIds,p.hiddenRodId]);assert.equal(new Set(membership).size,37);
+  const membership=F.catalog.rodPools.flatMap(p=>[...p.rodIds,p.hiddenRodId]);assert.equal(new Set(membership).size,252);
   assert.deepEqual([...membership].sort(),F.catalog.rods.filter(r=>r.id!=='bamboo').map(r=>r.id).sort());
-  assert.deepEqual(F.catalog.rods.filter(r=>r.hidden).map(r=>r.id),['golden','eclipse']);
+  assert.deepEqual(F.catalog.rods.filter(r=>r.hidden).map(r=>r.id),['golden','eclipse','wukong','emperorjade','anime_sixpaths','anime_nika','valorant_spike']);
   assert.deepEqual(F.catalog.rods.filter(r=>r.saleMultiplier!==undefined).map(r=>[r.id,r.saleMultiplier]),[['golden',2]]);
   assert.equal(fs.readFileSync(require.resolve('../public/fishing-model'),'utf8'),fs.readFileSync(require.resolve('../skins/tracer/fishing-model'),'utf8'));
 });
@@ -30,9 +30,9 @@ test('each collection keeps exactly fifty secret tickets even on the fortieth gu
   for(const pool of F.catalog.rodPools)for(const [epic,legendary]of [[0,0],[9,9],[9,39],[0,39]]){
     const counts={};for(let ticket=0;ticket<10000;ticket++){const tier=F.poolTier(pool.id,ticket,epic,legendary);counts[tier]=(counts[tier]||0)+1;}
     assert.equal(counts.hidden,50,pool.id+' fixed secret chance');
-    if(!epic&&!legendary)assert.deepEqual(counts,{common:5450,hidden:50,rare:3000,epic:1200,legendary:300});
+    if(!epic&&!legendary)assert.deepEqual(counts,pool.id==='valorant'?{legendary:9950,hidden:50}:{common:5450,hidden:50,rare:3000,epic:1200,legendary:300});
     if(legendary===39)assert.deepEqual(counts,{legendary:9950,hidden:50});
-    for(const ticket of [5450,5499])assert.equal(F.poolTier(pool.id,ticket,epic,legendary),'hidden');
+    for(const ticket of pool.id==='valorant'?[9950,9999]:[5450,5499])assert.equal(F.poolTier(pool.id,ticket,epic,legendary),'hidden');
   }
 });
 
@@ -51,10 +51,10 @@ test('all twenty new rods can be acquired without repetition, restored, equipped
 
 test('same-tier protection is scoped to the chosen collection and compensation reaches the ledger once',()=>{
   const ws=workspace(),first=[];
-  for(let i=0;i<10;i++){const result=draw(ws,'myriad',8500,100+i);assert(!result.duplicate);first.push(result.rod.id);}
-  assert.equal(new Set(first).size,10);assert(first.every(id=>MYRIAD.includes(id)));
-  const basic=draw(ws,'basic',8500,111);assert.equal(basic.duplicate,false);assert(BASIC.includes(basic.rod.id));
-  const before=F.economy(ws).balance,duplicate=draw(ws,'myriad',8500,112);assert(duplicate.duplicate);assert.equal(duplicate.compensation,75);assert.equal(F.economy(ws).balance,before-25);
+  for(let i=0;i<14;i++){const result=draw(ws,'myriad',8500,100+i);assert(!result.duplicate);first.push(result.rod.id);}
+  assert.equal(new Set(first).size,14);assert(first.every(id=>F.catalog.rodPools.find(p=>p.id==='myriad').rodIds.includes(id)));
+  const basic=draw(ws,'basic',8500,120);assert.equal(basic.duplicate,false);assert(BASIC.includes(basic.rod.id));
+  const before=F.economy(ws).balance,duplicate=draw(ws,'myriad',8500,121);assert(duplicate.duplicate);assert.equal(duplicate.compensation,75);assert.equal(F.economy(ws).balance,before-25);
   const stale=copy(ws);F.preserve(ws,stale);F.preserve(ws,stale);assert.equal(F.economy(stale).balance,F.economy(ws).balance);
   assert.equal(stale.fishing.transactions.filter(t=>t.kind==='duplicate').length,1);assert.deepEqual(S.validate(copy(stale)).fishing,stale.fishing);
 });

@@ -1,0 +1,174 @@
+{
+  "provenance": "Rules 2 expedition, original 56-species roster and bait preferences; reconstructed frozen pre-expansion runtime.",
+  "fishing": {
+    "version": 1,
+    "updatedAt": 299000,
+    "equippedRodId": "bamboo",
+    "equippedBaitId": "worm",
+    "equippedCabinId": "wood",
+    "boxes": [],
+    "casts": [
+      {
+        "id": "cast_rs_1_2iu9y",
+        "baitId": "worm",
+        "rodId": "bamboo",
+        "castAt": 1001,
+        "rules": 2,
+        "spotId": "creek",
+        "timeId": "day",
+        "weatherId": "clear",
+        "depthId": "deep",
+        "effectSeed": 13,
+        "haulCount": 1,
+        "instant": false
+      },
+      {
+        "id": "cast_25xk_2_4i7k6",
+        "baitId": "worm",
+        "rodId": "bamboo",
+        "castAt": 101001,
+        "rules": 2,
+        "spotId": "reef",
+        "timeId": "day",
+        "weatherId": "clear",
+        "depthId": "deep",
+        "effectSeed": 16,
+        "haulCount": 1,
+        "instant": false
+      },
+      {
+        "id": "cast_4b3c_3_fyyy",
+        "baitId": "worm",
+        "rodId": "bamboo",
+        "castAt": 201001,
+        "rules": 2,
+        "spotId": "moon",
+        "timeId": "day",
+        "weatherId": "clear",
+        "depthId": "deep",
+        "effectSeed": 19,
+        "haulCount": 1,
+        "instant": false
+      }
+    ],
+    "catches": [
+      {
+        "id": "fish_cast_rs_1_2iu9y_0",
+        "sessionId": "cast_rs_1_2iu9y",
+        "fishId": "trout",
+        "length": 47.5,
+        "quality": "perfect",
+        "caughtAt": 99000,
+        "soldAt": null
+      },
+      {
+        "id": "fish_cast_25xk_2_4i7k6_0",
+        "sessionId": "cast_25xk_2_4i7k6",
+        "fishId": "lionfish",
+        "length": 26.6,
+        "quality": "perfect",
+        "caughtAt": 199000,
+        "soldAt": null
+      },
+      {
+        "id": "fish_cast_4b3c_3_fyyy_0",
+        "sessionId": "cast_4b3c_3_fyyy",
+        "fishId": "trout",
+        "length": 49,
+        "quality": "perfect",
+        "caughtAt": 299000,
+        "soldAt": null
+      }
+    ],
+    "fry": [
+      {
+        "id": "fry_cast_25xk_2_4i7k6_0",
+        "catchId": "fish_cast_25xk_2_4i7k6_0",
+        "fishId": "lionfish",
+        "pondId": null,
+        "createdAt": 199000,
+        "updatedAt": 199000,
+        "growth": 0,
+        "fedAt": null,
+        "releasedAt": null
+      }
+    ],
+    "ponds": [
+      {
+        "id": "pond_starter",
+        "styleId": "meadow",
+        "createdAt": 0,
+        "updatedAt": 0,
+        "archivedAt": null,
+        "sealedFishIds": [],
+        "decorationLayoutAt": 0,
+        "decorations": [
+          {
+            "id": "decoration_default_0",
+            "kind": "tree",
+            "x": -2.18,
+            "z": -1.8,
+            "rotation": 0,
+            "scale": 0.95,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_1",
+            "kind": "bush",
+            "x": -2.24,
+            "z": 0.7,
+            "rotation": 0,
+            "scale": 0.7,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_2",
+            "kind": "flowers",
+            "x": -1.85,
+            "z": 1.94,
+            "rotation": 0,
+            "scale": 0.8,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_3",
+            "kind": "rocks",
+            "x": 2.18,
+            "z": -1.56,
+            "rotation": 1,
+            "scale": 0.9,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_4",
+            "kind": "reeds",
+            "x": 2.23,
+            "z": 0.83,
+            "rotation": 0,
+            "scale": 0.75,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_5",
+            "kind": "dock",
+            "x": 0.24,
+            "z": 2.16,
+            "rotation": 0,
+            "scale": 0.95,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_6",
+            "kind": "basket",
+            "x": 1.1,
+            "z": 2.22,
+            "rotation": 1,
+            "scale": 0.7,
+            "updatedAt": 0
+          }
+        ]
+      }
+    ],
+    "transactions": []
+  }
+}

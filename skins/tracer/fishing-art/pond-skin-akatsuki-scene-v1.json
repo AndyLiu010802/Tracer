@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "id": "akatsuki",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-akatsuki-scene-v1.bin",
+  "triangles": 15052,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 0,
+      "count": 5028
+    },
+    {
+      "anchor": "back",
+      "color": "#515566",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 120672,
+      "count": 1620
+    },
+    {
+      "anchor": "back",
+      "color": "#364050",
+      "material": 5,
+      "name": "wood",
+      "offset": 159552,
+      "count": 4212
+    },
+    {
+      "anchor": "back",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 260640,
+      "count": 648
+    },
+    {
+      "anchor": "back",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 276192,
+      "count": 9072
+    },
+    {
+      "anchor": "back",
+      "color": "#3b4759",
+      "material": 7,
+      "name": "slate",
+      "offset": 493920,
+      "count": 972
+    },
+    {
+      "anchor": "back",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 517248,
+      "count": 6804
+    },
+    {
+      "anchor": "back",
+      "color": "#a7babd",
+      "material": 10,
+      "name": "silver",
+      "offset": 680544,
+      "count": 3168
+    },
+    {
+      "anchor": "back",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 756576,
+      "count": 2688
+    },
+    {
+      "anchor": "back",
+      "color": "#b4a0db",
+      "material": 23,
+      "name": "purple",
+      "offset": 821088,
+      "count": 1440
+    },
+    {
+      "anchor": "back",
+      "color": "#b098a0",
+      "material": 10,
+      "name": "trim",
+      "offset": 855648,
+      "count": 1440
+    },
+    {
+      "anchor": "left",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 890208,
+      "count": 420
+    },
+    {
+      "anchor": "left",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 900288,
+      "count": 2724
+    },
+    {
+      "anchor": "left",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 965664,
+      "count": 864
+    },
+    {
+      "anchor": "left",
+      "color": "#b098a0",
+      "material": 10,
+      "name": "trim",
+      "offset": 986400,
+      "count": 1128
+    },
+    {
+      "anchor": "left",
+      "color": "#a7babd",
+      "material": 10,
+      "name": "silver",
+      "offset": 1013472,
+      "count": 72
+    },
+    {
+      "anchor": "left",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 1015200,
+      "count": 180
+    },
+    {
+      "anchor": "right",
+      "color": "#3b4759",
+      "material": 7,
+      "name": "slate",
+      "offset": 1019520,
+      "count": 564
+    },
+    {
+      "anchor": "right",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 1033056,
+      "count": 1440
+    },
+    {
+      "anchor": "right",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 1067616,
+      "count": 672
+    }
+  ]
+}

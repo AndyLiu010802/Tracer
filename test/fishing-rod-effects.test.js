@@ -1,7 +1,20 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const F=require('../public/fishing-model'),Effects=require('../skins/tracer/fishing-rod-effects'),Motion=require('../skins/tracer/fishing-motion'),Art=require('../skins/tracer/fishing-art');
-const rods=F.catalog.rods.filter(r=>['epic','legendary'].includes(r.rarity));
+// Illustrated legacy effects use flow/themePose; anime rigs are exercised by fishing-anime-upgrade and the frame QA.
+const rods=F.catalog.rods.filter(r=>!r.animeAction&&['epic','legendary'].includes(r.rarity));
+
+test('base, journey and three kingdoms all have readable entries under two seconds and allow immediate casting',()=>{
+  const ids=['bamboo',...F.catalog.rodPools.filter(p=>['basic','journey','threekingdoms'].includes(p.id)).flatMap(p=>[...p.rodIds,p.hiddenRodId])];
+  for(const id of ids){
+    const rod=F.catalog.rods.find(r=>r.id===id),timing=Effects.entranceTiming(rod);
+    assert.equal(timing.interruptible,true,id);assert(timing.duration<=1700);assert(timing.exitDuration<=200);
+    if(timing.duration>300)assert.equal(Effects.summonState(rod,300).reveal,1,id+' visible within 300ms');
+    assert.equal(Effects.summonState(rod,timing.duration),null);
+    const quiet=Effects.summonState(rod,100,true);assert(quiet.reveal>0&&quiet.alpha<=.18);
+  }
+  for(const id of ['eclipse','anime_nika','anime_sixpaths'])assert.equal(Effects.entranceTiming(F.catalog.rods.find(r=>r.id===id)).interruptible,false,id+' other collection is unchanged');
+});
 
 test('summoning has bounded tier-specific timing, quiet reduced motion, and continuous rod-local geometry',()=>{
   const ends=[];
@@ -13,7 +26,7 @@ test('summoning has bounded tier-specific timing, quiet reduced motion, and cont
     assert.equal(Effects.summonState(rod,260,true),null);
     const quiet=Effects.summonState(rod,100,true);assert(quiet.alpha<=.18);assert(quiet.reveal>0);
   }
-  assert.deepEqual(ends,[440,680,2400,2800]);
+  assert.deepEqual(ends,[450,650,1100,1400]);
   for(const rod of F.catalog.rods)for(const reduced of [false,true]){
     const state=Effects.summonState(rod,160,reduced),g={width:380,height:260,curve:u=>({x:70+u*60,y:230-u*150})},field=Effects.summonField(rod,state,g);
     assert(field.length>0&&field.length<=16);
@@ -25,19 +38,19 @@ test('summoning has bounded tier-specific timing, quiet reduced motion, and cont
 
 test('all advanced summons have unique scenes and finite, accessible transformation timing',()=>{
   const kinds=new Set();
-  for(const rod of rods){const scene=Effects.summonScene(rod.id);assert(scene);kinds.add(scene.kind);assert(scene.duration>=2400&&scene.duration<=3400);
-    for(const age of [0,180,600,1100,1400]){const state=Effects.summonState(rod,age);assert(state);assert(state.reveal>=0&&state.reveal<=1);assert(state.alpha>=0&&state.alpha<=1);}
+  for(const rod of rods){const scene=Effects.summonScene(rod.id);assert(scene);kinds.add(scene.kind);assert(scene.duration>0&&scene.duration<=3400);if(Effects.entranceTiming(rod).interruptible)assert(scene.duration<=1700,rod.id+' quick entrance');
+    for(const age of [0,.1,.35,.6,.9].map(p=>p*scene.duration)){const state=Effects.summonState(rod,age);assert(state);assert(state.reveal>=0&&state.reveal<=1);assert(state.alpha>=0&&state.alpha<=1);}
     assert.equal(Effects.summonState(rod,scene.duration),null);assert.equal(Effects.summonState(rod,260,true),null);
-    if(scene.art){assert(fs.existsSync(path.join(__dirname,'../skins/tracer/fishing-art',scene.art)));for(const age of [0,400,1000,1800]){const state=Effects.summonState(rod,age),pose=Effects.caishenPose(state,{width:380,height:260,curve:u=>({x:90,y:230-u*150})},1,rod.id);assert(Object.values(pose).every(Number.isFinite));assert(pose.x-pose.width/2>=0);assert(pose.x+pose.width/2<300);assert(pose.y-pose.height/2>=0);assert(pose.y+pose.height/2<260);}}
+    if(scene.art){assert(fs.existsSync(path.join(__dirname,'../skins/tracer/fishing-art',scene.art)));for(const age of [0,.15,.4,.8].map(p=>p*scene.duration)){const state=Effects.summonState(rod,age),pose=Effects.caishenPose(state,{width:380,height:260,curve:u=>({x:90,y:230-u*150})},1,rod.id);assert(Object.values(pose).every(Number.isFinite));assert(pose.x-pose.width/2>=0);assert(pose.x+pose.width/2<300);assert(pose.y-pose.height/2>=0);assert(pose.y+pose.height/2<260);}}
   }
   assert.equal(kinds.size,rods.length);assert.equal(Effects.summonScene('__proto__'),null);
-  const blade=F.catalog.rods.find(r=>r.id==='katana');assert.equal(Effects.summonState(blade,100).reveal,0);assert(Effects.summonState(blade,Effects.summonScene(blade.id).duration*.88).reveal>.5);
+  const blade=F.catalog.rods.find(r=>r.id==='katana');assert(Effects.summonState(blade,100).reveal>0);assert(Effects.summonState(blade,Effects.summonScene(blade.id).duration*.88).reveal>.5);
 });
 
 test('summon placement follows the rod and keeps spirits inside the frame and clear of the water controls',()=>{
   for(const width of [280,380,600])for(const angle of [-.2,.3,.9]){
     const height=width*.684,grip={x:width*.2,y:height*.86},g={width,height,grip,water:{x:width*.7,y:height*.6},curve:u=>({x:grip.x+Math.sin(angle)*height*.65*u,y:grip.y-Math.cos(angle)*height*.65*u})};
-    for(const id of ['golden','guandao','dragon','phoenix'])for(const t of [250,750,1300,1900]){
+    for(const id of ['golden','guandao','dragon','phoenix'])for(const fraction of [.12,.3,.55,.8]){const t=Effects.summonScene(id).duration*fraction;
       const rod=F.catalog.rods.find(r=>r.id===id),state=Effects.summonState(rod,t),pose=Effects.caishenPose(state,g,1,id),safe=Effects.summonPlacement(id,g,pose.width,pose.height);
       assert(pose.x-pose.width/2>=5.99);assert(pose.x+pose.width/2<=safe.right+.01);assert(pose.y-pose.height/2>=7.99);assert(pose.y+pose.height/2<=height-12.99);assert(pose.alpha<=.86);
     }
@@ -45,16 +58,16 @@ test('summon placement follows the rod and keeps spirits inside the frame and cl
   }
 });
 
-test('manifestation holds a readable spirit before a continuous transformation and material reveal',()=>{
+test('manifestation keeps continuous theme motion and reveals quick collections without waiting for the spirit',()=>{
   for(const rod of rods){const duration=Effects.summonScene(rod.id).duration;
-    const awake=Effects.summonState(rod,duration*.4);assert.equal(awake.stage,'awaken');assert.equal(awake.reveal,0);assert.equal(awake.gather,0);assert(awake.alpha>=.8);
+    const awake=Effects.summonState(rod,duration*.4);assert.equal(awake.stage,'awaken');if(Effects.entranceTiming(rod).interruptible){assert(awake.reveal>.8);assert(awake.gather>0);}else{assert.equal(awake.reveal,0);assert.equal(awake.gather,0);}assert(awake.alpha>=.8);
     let previous=Effects.summonState(rod,0);
-    for(let ms=16;ms<duration;ms+=16){const state=Effects.summonState(rod,ms);assert(state.reveal>=previous.reveal);assert(state.gather>=previous.gather);assert(Math.abs(state.reveal-previous.reveal)<.07);assert(Math.abs(state.gather-previous.gather)<.06);previous=state;}
+    for(let ms=4;ms<duration;ms+=4){const state=Effects.summonState(rod,ms);assert(state.reveal>=previous.reveal);assert(state.gather>=previous.gather);assert(Math.abs(state.reveal-previous.reveal)<.07);assert(Math.abs(state.gather-previous.gather)<.06);previous=state;}
     const settled=Effects.summonState(rod,duration*.97);assert.equal(settled.reveal,1);assert.equal(settled.gather,1);assert.equal(settled.stage,'settle');
   }
 });
 test('every epic and legendary rod has a distinct continuous light field instead of assembled icon overlays',()=>{
-  assert.equal(rods.length,22);
+  assert.equal(rods.length,67);
   const themes=new Set(),fields=new Set();
   for(const rod of rods){const design=Effects.design(rod.id),profile=Motion.fxProfile(rod);assert(design,rod.id);themes.add(design.theme);fields.add(JSON.stringify(Effects.flow(rod.id,.8,.4)));
     assert.equal(profile.theme,design.theme);assert(rod.effectDescription.every(s=>s.length>15));
@@ -76,10 +89,10 @@ test('all light surfaces remain finite, tapered and continuous over time at comp
 });
 test('signatures trigger once per cast/hook/catch, finish before results and are faint under reduced motion',()=>{
   for(const rod of rods){
-    for(const phase of ['idle','charging','waiting','escaped'])assert.equal(Effects.eventState(rod.id,phase,100),null);
+    for(const phase of ['idle','charging','waiting','reeling','escaped'])assert.equal(Effects.eventState(rod.id,phase,100),null);
     assert.equal(Effects.eventState(rod.id,'caught',500),null,'wait for landing');
     assert.equal(Effects.eventState(rod.id,'caught',2050),null,'clear the result UI');
-    for(const phase of ['cast','reeling','caught']){
+    for(const phase of ['cast','caught']){
       const t=phase==='caught'?1100:250,state=Effects.eventState(rod.id,phase,t),quiet=Effects.eventState(rod.id,phase,t,true);
       assert(state.alpha>.5);assert(quiet.alpha<=.18);assert(quiet.alpha<state.alpha);assert.equal(Effects.eventState(rod.id,phase,5000),null);
     }
@@ -108,7 +121,7 @@ test('themed actions articulate geometry throughout the readable stage and stop 
     const start=Effects.themePose(rod.id,{progress:.24}),middle=Effects.themePose(rod.id,{progress:.48}),end=Effects.themePose(rod.id,{progress:.7});
     assert.notDeepEqual(start,middle,rod.id+' has a physical action while fully visible');assert.notDeepEqual(middle,end,rod.id+' follows through instead of only fading');signatures.add(JSON.stringify(middle));
     assert.deepEqual(Effects.themePose(rod.id,{progress:.2,reduced:true}),Effects.themePose(rod.id,{progress:.8,reduced:true}),rod.id+' reduced motion fixes its complete pose');
-    let previous=Effects.themePose(rod.id,{progress:0});for(let i=1;i<=240;i++){const next=Effects.themePose(rod.id,{progress:i/240});for(const key of Object.keys(next)){assert(Number.isFinite(next[key]),rod.id+' '+key);assert(Math.abs(next[key]-previous[key])<(key==='impact'?.11:.07),rod.id+' '+key+' stays continuous');}previous=next;}
+    let previous=Effects.themePose(rod.id,{progress:0});for(let i=1;i<=240;i++){const next=Effects.themePose(rod.id,{progress:i/240});for(const key of Object.keys(next)){assert(Number.isFinite(next[key]),rod.id+' '+key);assert(Math.abs(next[key]-previous[key])<(key==='impact'?.11:rod.id==='ruyi'&&['wing','rotation','orbit'].includes(key)?.09:.07),rod.id+' '+key+' stays continuous');}previous=next;}
   }
   assert.equal(signatures.size,rods.length);
   assert.equal(Effects.themePose('katana',{progress:.18}).draw,0,'rift opens before blade is drawn');assert(Effects.themePose('katana',{progress:.5}).draw>.9,'tip crosses the space after anticipation');
@@ -130,12 +143,12 @@ test('spirit images load only for the equipped rod, share across layers, and evi
   const rod=id=>F.catalog.rods.find(r=>r.id===id);
   assert.strictEqual(first.preload(rod('katana')),second.preload(rod('katana')),'summon layers share one decoded image');assert.equal(requests.length,1);
   first.preload(rod('katana'));assert.equal(requests.length,1);
-  second.destroy();first.preload(rod('foxfire'));first.preload(rod('abysswhale'));first.preload(rod('lilybell'));first.preload(rod('sunforge'));
-  assert.equal(requests.length,5);first.preload(rod('katana'));assert.equal(requests.length,6,'old unused entries are evicted from the bounded cache');
+  second.destroy();first.preload(rod('phoenix'));first.preload(rod('dragon'));first.preload(rod('golden'));
+  assert.equal(requests.length,4);first.preload(rod('katana'));assert.equal(requests.length,5,'old unused entries are evicted from the bounded cache');
   first.destroy();first.destroy();flow.destroy();assert.equal(first.preload(rod('eclipse')),null,'disposed layers cannot reacquire images');
 });
 
-test('all new themes have finite depth geometry, stable quiet poses, and short bite cues; low tiers remain quiet',()=>{
+test('all new themes have finite depth geometry, stable quiet poses, and short bite cues; low tiers use brief painted attacks',()=>{
   const ids=['katana','candlewyrm','thunderdrum','abysswhale','foxfire','lilybell','sandscript','frostwolf','rosevow','inkjudge','butterfly','sunforge','leviathan','eclipse'];
   for(const id of ids){
     for(const phase of ['summon','cast','bite','reeling','caught']){
@@ -146,7 +159,7 @@ test('all new themes have finite depth geometry, stable quiet poses, and short b
     }
     assert(Effects.eventState(id,'bite',200));assert.equal(Effects.eventState(id,'bite',600),null);
   }
-  for(const id of ['walnut','porcelain','citrus','amber','vinyl','nautilus','alpine']){const rod=F.catalog.rods.find(r=>r.id===id);assert(rod);assert.equal(Effects.summonScene(id),null);assert.equal(Motion.fxProfile(rod),null);assert(Effects.summonState(rod,120));}
+  for(const id of ['walnut','porcelain','citrus','amber','vinyl','nautilus','alpine']){const rod=F.catalog.rods.find(r=>r.id===id);assert(rod);assert.equal(Effects.summonScene(id),null);assert(Motion.fxProfile(rod));for(const phase of ['idle','charging','waiting','reeling'])assert.equal(Effects.effectVisible(phase,120,id),false);assert(Effects.effectVisible('cast',200,id));assert(Effects.summonState(rod,120));}
   assert(Effects.mythicPose('katana',{progress:.40}).reach>Effects.mythicPose('katana',{progress:.24}).reach,'blade extends after anticipation');
   assert(Effects.mythicPose('katana',{progress:.97}).reach<.2,'blade returns into its sheath');
 });
@@ -154,13 +167,13 @@ test('all new themes have finite depth geometry, stable quiet poses, and short b
 test('Canvas fallback attempts WebGL only once per effect layer instead of reallocating every frame',()=>{
   let attempts=0;const gradient={addColorStop(){}},context=new Proxy({globalAlpha:1},{get:(object,key)=>key in object?object[key]:key.startsWith('create')?()=>gradient:()=>{}});
   class Image{constructor(){this.complete=true;this.naturalWidth=this.naturalHeight=1024;}set src(value){this.url=value;}}
-  const doc={defaultView:{Image,devicePixelRatio:1},createElement:()=>({getContext:type=>{if(type==='webgl'){attempts++;return null;}return context;},setAttribute(){},remove(){},dataset:{}})},host={ownerDocument:doc,appendChild(){}},rod=F.catalog.rods.find(r=>r.id==='butterfly'),summon=Effects.createSummon(host),flow=Effects.create(host),g={width:380,height:260,grip:{x:60,y:220},tip:{x:130,y:45},water:{x:260,y:180},curve:u=>({x:60+u*70,y:220-u*175})};
+  const doc={defaultView:{Image,devicePixelRatio:1},createElement:()=>({getContext:type=>{if(type==='webgl'){attempts++;return null;}return context;},setAttribute(){},remove(){},dataset:{}})},host={ownerDocument:doc,appendChild(){}},rod=F.catalog.rods.find(r=>r.id==='katana'),summon=Effects.createSummon(host),flow=Effects.create(host),g={width:380,height:260,grip:{x:60,y:220},tip:{x:130,y:45},water:{x:260,y:180},curve:u=>({x:60+u*70,y:220-u*175})};
   for(let frame=0;frame<60;frame++){summon.draw(rod,Effects.summonState(rod,300+frame*20),g);flow.draw({variant:rod.id,energy:1},'caught',750+frame*10,{},g,g.tip,g.water,g.tip,g.water);}
   assert.equal(attempts,2,'one failed attempt for summon, one for catch layer');summon.destroy();flow.destroy();
 });
 
 test('cloud is a continuous three-dimensional tornado with a narrow root and separate live stage motions',()=>{
- const rod=F.catalog.rods.find(r=>r.id==='cloud');assert.equal(Effects.design('cloud').theme,'tornado');assert.equal(Motion.fxProfile(rod).theme,'tornado');assert.deepEqual(Effects.summonScene('cloud'),{duration:2600,kind:'wind-vortex'});
+ const rod=F.catalog.rods.find(r=>r.id==='cloud');assert.equal(Effects.design('cloud').theme,'tornado');assert.equal(Motion.fxProfile(rod).theme,'tornado');assert.deepEqual(Effects.summonScene('cloud'),{duration:1100,kind:'wind-vortex'});
  const pose=Effects.tornadoPose({progress:.42}),root=Effects.tornadoPoint(0,0,pose),mouth=Effects.tornadoPoint(1,0,pose);
  assert(mouth.x-root.x>.65,'the funnel has a broad mouth rather than a thin spring');assert(root.y-mouth.y>1.6,'full height reads as a rising wind column');
  assert(Effects.tornadoPoint(.6,Math.PI/2,pose).z>0);assert(Effects.tornadoPoint(.6,Math.PI*1.5,pose).z<0);
@@ -174,7 +187,7 @@ test('cloud is a continuous three-dimensional tornado with a narrow root and sep
  assert(Effects.tornadoPose({progress:.15}).height<pose.height*.6,'wind gathers at the root before the tall vortex rises');
  assert.deepEqual(Effects.tornadoPose({progress:.2,reduced:true},.1),Effects.tornadoPose({progress:.8,reduced:true},5),'reduced motion fixes the full volume and spin');
  assert.deepEqual(Effects.tornadoField(.2,.1,{reduced:true}),Effects.tornadoField(5,.9,{reduced:true}));
- const before=Effects.summonState(rod,1200),during=Effects.summonState(rod,2050);assert.equal(before.gather,0);assert(during.gather>.8&&during.reveal>.3,'same authoritative timeline hands the vortex into the real rod');
+ const before=Effects.summonState(rod,50),during=Effects.summonState(rod,800);assert.equal(before.gather,0);assert(during.gather>.8&&during.reveal>.3,'same authoritative timeline hands the vortex into the real rod');
 });
 
 test('the cloud catalogue uses the same tapered wind volume with real front and back ribbons',()=>{

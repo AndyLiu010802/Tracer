@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "id": "onsen",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-onsen-scene-v1.bin",
+  "triangles": 28196,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 0,
+      "count": 6252
+    },
+    {
+      "anchor": "back",
+      "color": "#dfd4b8",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 150048,
+      "count": 8424
+    },
+    {
+      "anchor": "back",
+      "color": "#a5916a",
+      "material": 5,
+      "name": "wood",
+      "offset": 352224,
+      "count": 4212
+    },
+    {
+      "anchor": "back",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 453312,
+      "count": 8748
+    },
+    {
+      "anchor": "back",
+      "color": "#c6b38f",
+      "material": 10,
+      "name": "trim",
+      "offset": 663264,
+      "count": 5004
+    },
+    {
+      "anchor": "back",
+      "color": "#6a8080",
+      "material": 7,
+      "name": "roof",
+      "offset": 783360,
+      "count": 3408
+    },
+    {
+      "anchor": "back",
+      "color": "#6a8080",
+      "material": 7,
+      "name": "rooflight",
+      "offset": 865152,
+      "count": 18768
+    },
+    {
+      "anchor": "back",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 1315584,
+      "count": 648
+    },
+    {
+      "anchor": "back",
+      "color": "#e6efeb",
+      "material": 24,
+      "name": "snow",
+      "offset": 1331136,
+      "count": 6720
+    },
+    {
+      "anchor": "back",
+      "color": "#e5ce93",
+      "material": 11,
+      "name": "glow",
+      "offset": 1492416,
+      "count": 1728
+    },
+    {
+      "anchor": "left",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 1533888,
+      "count": 612
+    },
+    {
+      "anchor": "left",
+      "color": "#e6efeb",
+      "material": 24,
+      "name": "snow",
+      "offset": 1548576,
+      "count": 7560
+    },
+    {
+      "anchor": "left",
+      "color": "#d8a1b4",
+      "material": 7,
+      "name": "petal",
+      "offset": 1730016,
+      "count": 5040
+    },
+    {
+      "anchor": "right",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 1850976,
+      "count": 4704
+    },
+    {
+      "anchor": "right",
+      "color": "#e6efeb",
+      "material": 24,
+      "name": "snow",
+      "offset": 1963872,
+      "count": 2688
+    },
+    {
+      "anchor": "right",
+      "color": "#dfd4b8",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 2028384,
+      "count": 72
+    }
+  ]
+}

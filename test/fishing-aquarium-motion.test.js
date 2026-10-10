@@ -1,17 +1,17 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const Motion=require('../skins/tracer/fishing-aquarium-motion');
-const species=['dragonkoi','galaxywhale','gulpuffer','grumpangler','flopray','snagglefin'];
+const species=['dragonkoi','galaxywhale','gulpuffer','grumpangler','flopray','snagglefin','clownfish','bluebetta','pearljelly','crownray'];
 const resident=id=>({id:'resident-'+id,speciesId:id,growth:100});
 const pose=(id,time,options={})=>Motion.sample(resident(id),{time,...options});
 function states(id){const result={};for(let t=0;t<22;t+=.04){const p=pose(id,t);if(p.weights[p.mode]>.995&&!result[p.mode])result[p.mode]={time:t,pose:p};}return result;}
 function numbers(value,prefix=''){for(const [key,field]of Object.entries(value)){if(typeof field==='number')assert(Number.isFinite(field),prefix+key+' is finite');else if(field&&typeof field==='object')numbers(field,prefix+key+'.');}}
 
-test('all six legends reach swimming, hovering and their own play action within twenty seconds',()=>{
+test('original and new fish reach swimming, hovering and their own play action within twenty seconds',()=>{
   const play=new Set();for(const id of species){const phases=states(id);assert.deepEqual(Object.keys(phases).sort(),['idle','play','swim']);assert(phases.play.pose.cycle.duration<20);play.add(phases.play.pose.play);
     for(const phase of Object.values(phases)){const w=phase.pose.weights;assert(Math.abs(w.swim+w.idle+w.play-1)<1e-12);for(const value of Object.values(w))assert(value>=0&&value<=1);}
     assert(phases.idle.pose.articulation.bodyAmplitude<phases.swim.pose.articulation.bodyAmplitude*.4,id+' relaxes its body while hovering');assert(phases.play.pose.articulation.bodyAmplitude>phases.swim.pose.articulation.bodyAmplitude,id+' moves expressively during play');
-  }assert.equal(play.size,6,'play actions are specific to each fish species');
+  }assert.equal(play.size,species.length,'play actions are specific to each fish species');
 });
 
 test('idle fish keep breathing, paddling and moving their eyes without rigidly freezing',()=>{
@@ -62,7 +62,7 @@ test('turning large fish never slides them backwards to compensate for a changin
 
 test('rays gently bank to keep their decorated upper disc readable from the aquarium camera',()=>{
   const camera=[4,2.87,12.5],length=Math.hypot(...camera);let visible=0,samples=0;
-  for(const count of [1,3])for(let t=0;t<100;t+=.04){const p=pose('flopray',t,{count,index:count-1}),c=Math.cos(p.angle),s=Math.sin(p.angle),a=Math.cos(p.pitch),b=Math.sin(p.pitch),d=Math.cos(p.roll),e=Math.sin(p.roll),normal=[-c*e+s*b*d,a*d,s*e+c*b*d];
+  for(const id of ['flopray','crownray'])for(const count of [1,3])for(let t=0;t<100;t+=.04){const p=pose(id,t,{count,index:count-1}),c=Math.cos(p.angle),s=Math.sin(p.angle),a=Math.cos(p.pitch),b=Math.sin(p.pitch),d=Math.cos(p.roll),e=Math.sin(p.roll),normal=[-c*e+s*b*d,a*d,s*e+c*b*d];
     const incidence=normal.reduce((sum,value,i)=>sum+value*camera[i]/length,0);assert(incidence>.3,'ray never becomes an edge-on sliver or shows only its underside');if(incidence>.35)visible++;samples++;
     assert(Math.abs(p.pitch)<=.30&&Math.abs(p.roll)<=.22,'the display bank stays restrained');
   }assert(visible/samples>.95);
@@ -71,7 +71,7 @@ test('rays gently bank to keep their decorated upper disc readable from the aqua
 test('individual resident seeds desynchronise behaviour and fin beats, preserving stable poses after reordering',()=>{
   const f={id:'first',speciesId:'gulpuffer'},g={id:'second',speciesId:'gulpuffer'},a=Motion.sample(f,{time:5}),b=Motion.sample(g,{time:5});assert.notEqual(a.seed,b.seed);assert.notEqual(a.cycle.progress,b.cycle.progress);assert.notEqual(a.articulation.finPhase,b.articulation.finPhase);
   const moved=Motion.sample(f,{time:5,index:1,count:3});assert.equal(moved.seed,a.seed);assert.deepEqual(moved.articulation,a.articulation,'changing lane keeps the same individual rhythm');
-  assert.equal(new Set(species.map(id=>pose(id,2).seed)).size,6);
+  assert.equal(new Set(species.map(id=>pose(id,2).seed)).size,species.length);
 });
 
 test('feeding adds a bounded reaction without resetting phases or displacing residents to the surface',()=>{
@@ -90,4 +90,27 @@ test('sampling is pure and finite for missing fish, strange IDs and invalid timi
 test('the browser module has no renderer or timer dependency and matches the CommonJS API',()=>{
   const context={};vm.runInNewContext(fs.readFileSync(require.resolve('../skins/tracer/fishing-aquarium-motion'),'utf8'),context);assert(context.TracerAquariumMotion);
   assert.equal(JSON.stringify(context.TracerAquariumMotion.sample(resident('flopray'),{time:9})),JSON.stringify(pose('flopray',9)));
+});
+
+
+test('growth reserves adult fitting space and makes every fish visibly larger from fry to maturity',()=>{
+  for(const count of [1,3])for(const id of species)for(const time of [0,5,18]){
+    const size=growth=>Motion.sample({...resident(id),growth},{time,count,index:count-1,scale:.66});
+    const fry=size(0),juvenile=size(40),almost=size(99),adult=size(100);
+    assert(fry.scale<juvenile.scale&&juvenile.scale<almost.scale&&almost.scale<adult.scale,id+' grows through every stage');
+    assert(Math.abs(fry.scale/adult.scale-.64/1.18)<1e-12,id+' retains the full growth range even when adult tank fitting caps its size');
+    assert(Math.abs(almost.scale/adult.scale-(.64+.54*.99)/1.18)<1e-12,id+' size grows continuously before maturity');
+    for(const p of [fry,juvenile,almost,adult]){const b=Motion.tank;assert(p.x-p.extent.x>=-b.x&&p.x+p.extent.x<=b.x);assert(p.z-p.extent.z>=-b.z&&p.z+p.extent.z<=b.z);assert(p.y-p.extent.y>=b.bottom&&p.y+p.extent.y<=b.top);}
+  }
+});
+
+test('reaching 100 percent unlocks the appropriate mature trick and more expressive play',()=>{
+  const expected={dragonkoi:'leap',galaxywhale:'bubble',gulpuffer:'bubble',grumpangler:'glow',flopray:'flutter',snagglefin:'twirl',clownfish:'orbit',bluebetta:'flutter',pearljelly:'bubble',crownray:'flutter'};
+  for(const id of species){const time=states(id).play.time,juvenile=Motion.sample({...resident(id),growth:99},{time}),adult=pose(id,time);
+    assert.equal(juvenile.mature,false);assert.equal(juvenile.extraMotion,null);assert.equal(adult.mature,true);assert.equal(adult.extraMotion,expected[id]);
+    assert(adult.articulation.bodyAmplitude>juvenile.articulation.bodyAmplitude,id+' mature play moves its body more expressively');
+    assert(adult.articulation.finAmplitude>juvenile.articulation.finAmplitude,id+' mature play adds a fin flourish');
+    assert.equal(adult.articulation.bodyPhase,juvenile.articulation.bodyPhase,'maturity preserves individual motor timing');
+    assert.equal(adult.cycle.progress,juvenile.cycle.progress,'maturity preserves individual behaviour timing');
+  }
 });

@@ -1,0 +1,206 @@
+{
+  "mode": "built-in imagegen",
+  "version": 1,
+  "assets": [
+    {
+      "id": "konoha",
+      "kind": "bank",
+      "name": "木叶庭院",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: Naruto Hidden Leaf village: warm cedar decking, terracotta roof-tile edging, engraved Leaf headband metal, intricate ninja scroll clasps, mossy stepping stones and tiny fallen maple leaves. Restrained olive, vermilion and honey amber.",
+      "transparent_background": false,
+      "file": "pond-skin-konoha-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-f2628205-754a-4179-b64e-1c9c1b87dd30.png",
+      "path": "skins/tracer/fishing-art/pond-skin-konoha-bank-v1.png"
+    },
+    {
+      "id": "konoha",
+      "kind": "box",
+      "name": "木叶庭院",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: Naruto Hidden Leaf village: warm cedar decking, terracotta roof-tile edging, engraved Leaf headband metal, intricate ninja scroll clasps, mossy stepping stones and tiny fallen maple leaves. Restrained olive, vermilion and honey amber.",
+      "transparent_background": true,
+      "file": "pond-skin-konoha-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-629077fd-6c60-4c74-aa32-162803d9ece6.png",
+      "path": "skins/tracer/fishing-art/pond-skin-konoha-box-v1.png"
+    },
+    {
+      "id": "akatsuki",
+      "kind": "bank",
+      "name": "晓之雨庭",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: Naruto Akatsuki: rain-dark charcoal stone and black lacquer, unmistakable red cloud inlays outlined in ivory, folded paper details, subtle concentric Rinnegan engraving, crimson rope knot fittings. Sophisticated black, deep plum, vermilion.",
+      "transparent_background": false,
+      "file": "pond-skin-akatsuki-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-34580768-ae56-4213-a005-ea9a2f0479c7.png",
+      "path": "skins/tracer/fishing-art/pond-skin-akatsuki-bank-v1.png"
+    },
+    {
+      "id": "akatsuki",
+      "kind": "box",
+      "name": "晓之雨庭",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: Naruto Akatsuki: rain-dark charcoal stone and black lacquer, unmistakable red cloud inlays outlined in ivory, folded paper details, subtle concentric Rinnegan engraving, crimson rope knot fittings. Sophisticated black, deep plum, vermilion.",
+      "transparent_background": true,
+      "file": "pond-skin-akatsuki-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-e1eb6aac-fb1f-42d9-977b-353bd0c760a2.png",
+      "path": "skins/tracer/fishing-art/pond-skin-akatsuki-box-v1.png"
+    },
+    {
+      "id": "sunny",
+      "kind": "bank",
+      "name": "千阳甲板",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: One Piece Thousand Sunny: golden shipwright teak planks, white caulking, brass nautical fasteners, lion-sun figurehead relief, red-and-white lifebuoy motifs, coiled rope, straw hat with red ribbon and compact tangerine accents. Joyful anime painted craftsmanship.",
+      "transparent_background": false,
+      "file": "pond-skin-sunny-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-7277629c-868c-48f9-9342-d02d22e786c6.png",
+      "path": "skins/tracer/fishing-art/pond-skin-sunny-bank-v1.png"
+    },
+    {
+      "id": "sunny",
+      "kind": "box",
+      "name": "千阳甲板",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: One Piece Thousand Sunny: golden shipwright teak planks, white caulking, brass nautical fasteners, lion-sun figurehead relief, red-and-white lifebuoy motifs, coiled rope, straw hat with red ribbon and compact tangerine accents. Joyful anime painted craftsmanship.",
+      "transparent_background": true,
+      "file": "pond-skin-sunny-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-0b31ff0f-8ab9-44b1-80e1-dc2b549207d5.png",
+      "path": "skins/tracer/fishing-art/pond-skin-sunny-box-v1.png"
+    },
+    {
+      "id": "wano",
+      "kind": "bank",
+      "name": "和之国庭",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: One Piece Wano: refined black tiled roofing fragments, sakura petal mosaics, vermilion bridge lacquer, deep indigo wave-pattern fabrics, gold kozuki crane crest, finely carved samurai ornament, lilac and old gold accents.",
+      "transparent_background": false,
+      "file": "pond-skin-wano-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-d3d98cf9-220f-415a-8359-e13c868eed51.png",
+      "path": "skins/tracer/fishing-art/pond-skin-wano-bank-v1.png"
+    },
+    {
+      "id": "wano",
+      "kind": "box",
+      "name": "和之国庭",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: One Piece Wano: refined black tiled roofing fragments, sakura petal mosaics, vermilion bridge lacquer, deep indigo wave-pattern fabrics, gold kozuki crane crest, finely carved samurai ornament, lilac and old gold accents.",
+      "transparent_background": true,
+      "file": "pond-skin-wano-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-96c4bf7d-34d9-404b-8276-1987c1c44fe4.png",
+      "path": "skins/tracer/fishing-art/pond-skin-wano-box-v1.png"
+    },
+    {
+      "id": "valorant",
+      "kind": "bank",
+      "name": "源晶基地",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: VALORANT tactical site: precision graphite gunmetal panels, beveled angular armor, white ceramic triangles, cyan radianite strips recessed in brassless industrial hardware, hazard-yellow tiny accents, clean engineered panel seams and triangular reactor architecture.",
+      "transparent_background": false,
+      "file": "pond-skin-valorant-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-757d1c1a-2973-4328-9bbd-600079711473.png",
+      "path": "skins/tracer/fishing-art/pond-skin-valorant-bank-v1.png"
+    },
+    {
+      "id": "valorant",
+      "kind": "box",
+      "name": "源晶基地",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: VALORANT tactical site: precision graphite gunmetal panels, beveled angular armor, white ceramic triangles, cyan radianite strips recessed in brassless industrial hardware, hazard-yellow tiny accents, clean engineered panel seams and triangular reactor architecture.",
+      "transparent_background": true,
+      "file": "pond-skin-valorant-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-00fcdc11-d3df-4072-a9d2-9855dd27b157.png",
+      "path": "skins/tracer/fishing-art/pond-skin-valorant-box-v1.png"
+    },
+    {
+      "id": "dragon",
+      "kind": "bank",
+      "name": "琉璃龙宫",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: Chinese mythic underwater dragon palace: translucent celadon jade paving, intricate gilt dragon-scale borders, pearlescent shell inlays, coral-red carved accents, coiled eastern dragon relief, aquamarine cloisonne and ivory cloud designs.",
+      "transparent_background": false,
+      "file": "pond-skin-dragon-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-e0fd913b-a5d3-42a3-a72f-a31e708c578a.png",
+      "path": "skins/tracer/fishing-art/pond-skin-dragon-bank-v1.png"
+    },
+    {
+      "id": "dragon",
+      "kind": "box",
+      "name": "琉璃龙宫",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: Chinese mythic underwater dragon palace: translucent celadon jade paving, intricate gilt dragon-scale borders, pearlescent shell inlays, coral-red carved accents, coiled eastern dragon relief, aquamarine cloisonne and ivory cloud designs.",
+      "transparent_background": true,
+      "file": "pond-skin-dragon-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-4843d91e-48a5-45ef-978b-6bd2fffb3f1b.png",
+      "path": "skins/tracer/fishing-art/pond-skin-dragon-box-v1.png"
+    },
+    {
+      "id": "redcliff",
+      "kind": "bank",
+      "name": "赤壁水寨",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: Three Kingdoms Red Cliffs naval fortress: dark iron-bound weathered timber, bronze tiger-mask hardware, interlocking chain armor borders, finely stitched oxblood command banners, stone battlement edging, ember-copper ornament and grey-green patina.",
+      "transparent_background": false,
+      "file": "pond-skin-redcliff-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-f4956a39-434c-45ae-8757-41f95afe9129.png",
+      "path": "skins/tracer/fishing-art/pond-skin-redcliff-bank-v1.png"
+    },
+    {
+      "id": "redcliff",
+      "kind": "box",
+      "name": "赤壁水寨",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: Three Kingdoms Red Cliffs naval fortress: dark iron-bound weathered timber, bronze tiger-mask hardware, interlocking chain armor borders, finely stitched oxblood command banners, stone battlement edging, ember-copper ornament and grey-green patina.",
+      "transparent_background": true,
+      "file": "pond-skin-redcliff-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-b4487759-77b5-44d4-a6de-5225bcc1acac.png",
+      "path": "skins/tracer/fishing-art/pond-skin-redcliff-box-v1.png"
+    },
+    {
+      "id": "clockwork",
+      "kind": "bank",
+      "name": "黄铜船坞",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: Victorian steampunk fishing dock: richly weathered walnut, polished brass gear teeth, copper pipe joins, teal oxidized rivets, fine engraved gauges, black iron trim, precision watchwork details, warm workshop patina.",
+      "transparent_background": false,
+      "file": "pond-skin-clockwork-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-17ac3112-8f92-416b-85b2-3e502fbc3f0d.png",
+      "path": "skins/tracer/fishing-art/pond-skin-clockwork-bank-v1.png"
+    },
+    {
+      "id": "clockwork",
+      "kind": "box",
+      "name": "黄铜船坞",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: Victorian steampunk fishing dock: richly weathered walnut, polished brass gear teeth, copper pipe joins, teal oxidized rivets, fine engraved gauges, black iron trim, precision watchwork details, warm workshop patina.",
+      "transparent_background": true,
+      "file": "pond-skin-clockwork-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-144dba0a-7c6e-4815-8cc3-1ba68d28531e.png",
+      "path": "skins/tracer/fishing-art/pond-skin-clockwork-box-v1.png"
+    },
+    {
+      "id": "astral",
+      "kind": "bank",
+      "name": "星轨之环",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: Astral observatory: midnight blue enamel, tiny engraved constellations in silver, opal and amethyst inlays, layered orbital astrolabe brass rings, delicate crescent moon relief, luminous pale violet seams. Calm luxurious celestial craftsmanship, no chaotic particles.",
+      "transparent_background": false,
+      "file": "pond-skin-astral-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-e81f804a-ef89-409e-a44f-aefeb86c80b2.png",
+      "path": "skins/tracer/fishing-art/pond-skin-astral-bank-v1.png"
+    },
+    {
+      "id": "astral",
+      "kind": "box",
+      "name": "星轨之环",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: Astral observatory: midnight blue enamel, tiny engraved constellations in silver, opal and amethyst inlays, layered orbital astrolabe brass rings, delicate crescent moon relief, luminous pale violet seams. Calm luxurious celestial craftsmanship, no chaotic particles.",
+      "transparent_background": true,
+      "file": "pond-skin-astral-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-b564eccd-4556-488c-ae7b-0dc89af481e9.png",
+      "path": "skins/tracer/fishing-art/pond-skin-astral-box-v1.png"
+    },
+    {
+      "id": "onsen",
+      "kind": "bank",
+      "name": "霜雪汤庭",
+      "prompt": "Use case: stylized-concept. Production game diffuse texture for a 3D miniature fishing pond embankment. SQUARE image, perfectly orthographic TOP DOWN, absolutely no perspective or horizon. A single circular ornate shore ring occupies the square: outer radius 47% of image width, inner radius 30%, centered exactly. Paint a beautifully crafted wide annular walkway/bank with minute material detail and intentional broad readable forms. Interior circle is flat muted teal water with no fish, no reflections, no objects; outside the ring is solid dark neutral. All ornament lies flat within the annular ring, no tall buildings or trees. Fine hand-painted commercial game art, crisp material boundaries, subtle ambient occlusion, neutral even lighting so actual game lighting can shade it. No labels, no typography, no UI, no watermark. Theme: Japanese snow onsen: warm hinoki cypress slats, rounded volcanic grey stone, thin natural snow patches, tiny plum blossom details, bamboo binding, hand-carved cream ceramic fittings and copper warmth accents. Tactile serene winter miniature.",
+      "transparent_background": false,
+      "file": "pond-skin-onsen-bank-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-cf31686e-86c7-495e-b66f-342f7daf671d.png",
+      "path": "skins/tracer/fishing-art/pond-skin-onsen-bank-v1.png"
+    },
+    {
+      "id": "onsen",
+      "kind": "box",
+      "name": "霜雪汤庭",
+      "prompt": "Use case: stylized-concept. ONE standalone exquisite closed fishing tackle chest for a commercial desktop game, genuine transparent background. Entire object comfortably visible with 10% margin, centered in square canvas, three-quarter front view slightly from above, lid closed, two working brass or thematic latches and carry handle, a compact practical storage chest. Carefully painted dimensional game asset, very refined line work, consistent high-end stylized materials, strong silhouette readable at 90 pixels but elaborate micro detailing at full size. Soft upper-left studio lighting, restrained contact shadow only, no pedestal, no scene, no text, no scattered objects, no montage. Design matching this pond theme: Japanese snow onsen: warm hinoki cypress slats, rounded volcanic grey stone, thin natural snow patches, tiny plum blossom details, bamboo binding, hand-carved cream ceramic fittings and copper warmth accents. Tactile serene winter miniature.",
+      "transparent_background": true,
+      "file": "pond-skin-onsen-box-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-c7242592-9af3-4326-b233-237739099e6d.png",
+      "path": "skins/tracer/fishing-art/pond-skin-onsen-box-v1.png"
+    }
+  ]
+}

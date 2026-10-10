@@ -7,7 +7,8 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 
 test('catalog previews stay current with their shared live models and renderer',()=>{
   const {sources}=manifest();
-  for(const file of ['skins/tracer/fishing-lighting.js','skins/tracer/fishing-art.js','skins/tracer/fishing-rod-renderer.js','public/fishing-model.js','dev/build-fishing-catalog-art.cjs']){
+  for(const a of [...Object.values(require('../skins/tracer/fishing-basic-painted').assets),...Object.values(require('../skins/tracer/fishing-onepiece-painted').assets),...Object.values(require('../skins/tracer/fishing-naruto-painted').assets),...Object.values(require('../skins/tracer/fishing-valorant-painted').assets)]){const file='skins/tracer'+a.src;assert.equal(sources[file],digest(fs.readFileSync(path.join(root,file))),file+' painted art changed: rebuild catalogue');}
+  for(const file of ['skins/tracer/fishing-lighting.js','skins/tracer/fishing-aquatic-renderer.js','skins/tracer/fishing-crafted-rods.js','skins/tracer/fishing-basic-painted.js','skins/tracer/fishing-onepiece-painted.js','skins/tracer/fishing-naruto-painted.js','skins/tracer/fishing-valorant-painted.js','skins/tracer/fishing-onepiece-rods.js','skins/tracer/fishing-anime-rods.js','skins/tracer/fishing-art.js','skins/tracer/fishing-rod-renderer.js','public/fishing-model.js','dev/build-fishing-catalog-art.cjs']){
     assert.equal(sources[file],digest(fs.readFileSync(path.join(root,file),'utf8').replace(/\r\n/g,'\n')),file+' changed: run node dev/build-fishing-catalog-art.cjs');
   }
 });
@@ -34,17 +35,17 @@ test('bundled model atlases contain one complete transparent preview for every c
   }
 });
 
-test('rods, journal fish and fish instances all use the matching model atlas',()=>{
+test('rod previews and illustrated fish instances resolve their matching atlas',()=>{
   for(const [index,rod]of F.catalog.rods.entries()){
     const markup=Art.rodMarkup(rod),image=markup.match(/<image\b[^>]*>/)[0];assert(markup.includes('/fishing-art/rods-model-v1.png'));assert(markup.includes('data-rod-id="'+rod.id+'"'));
     // An unknown sprite silently selects bamboo, while retaining the requested
     // data-rod-id. Check the real crop so new pool entries cannot do that.
-    assert(image.includes(' x="'+(-(index%5)*300)+'"'),rod.id+' has the correct atlas column');
-    assert(image.includes(' y="'+(-Math.floor(index/5)*500)+'"'),rod.id+' has the correct atlas row');
-    assert(image.includes(' height="'+Math.ceil(F.catalog.rods.length/5)*500+'"'),rod.id+' uses the complete atlas');
+    assert(image.includes(' x="'+(-(index%10)*300)+'"'),rod.id+' has the correct atlas column');
+    assert(image.includes(' y="'+(-Math.floor(index/10)*500)+'"'),rod.id+' has the correct atlas row');
+    assert(image.includes(' height="'+Math.ceil(F.catalog.rods.length/10)*500+'"'),rod.id+' uses the complete atlas');
   }
   for(const fish of F.catalog.fish){
-    const markup=Art.fishMarkup(fish);assert(markup.includes('/fishing-art/fish-model-v1.png'));assert(markup.includes('data-species="'+fish.id+'"'));
+    const markup=Art.fishMarkup(fish),paint=require('../skins/tracer/fishing-species-painted').assets[fish.id];assert(paint,fish.id+' has its own illustration');assert(markup.includes(paint.src));assert(markup.includes('data-fish-art="imagegen"'));assert(markup.includes('data-species="'+fish.id+'"'));
     const image=markup.match(/<image\b[^>]*>/)[0];
     for(const field of ['fishId','speciesId']){
       const instance=Art.fishMarkup({id:'fish_instance_42',[field]:fish.id});
@@ -54,18 +55,33 @@ test('rods, journal fish and fish instances all use the matching model atlas',()
   }
 });
 
-test('advanced catalogue rods keep their live effect theme and independent glow definitions',()=>{
-  const Motion=require('../skins/tracer/fishing-motion'),gradients=new Set();
+test('advanced catalogue rods retain their live theme, solid painted legends and independent lower-tier glows',()=>{
+  const Motion=require('../skins/tracer/fishing-motion'),Effects=require('../skins/tracer/fishing-rod-effects'),gradients=new Set();let glowing=0;
   for(const rod of F.catalog.rods){
     const preview=Art.rodMarkup(rod),profile=Motion.fxProfile(rod);
-    assert.equal(/class="[^"]*\bfishing-catalog-fx\b/.test(preview),!!profile,rod.id+' effect availability matches the live rod');
-    if(!profile)continue;
+    const hasAmbient=!!profile&&!(Effects.hasPainted?.(rod.id)&&!Effects.design(rod.id));
+    assert.equal(/class="[^"]*\bfishing-catalog-fx\b/.test(preview),hasAmbient,rod.id+' ambient effect availability matches the live rod');
+    if(!hasAmbient)continue;
     assert(preview.includes('data-fx-theme="'+profile.theme+'"'));
+    if(rod.rarity==='legendary'){
+      assert(preview.includes('data-prestige-art="imagegen"'));
+      assert(preview.includes('/fishing-art/orbit-prestige-'+rod.id+'-v2.png'));
+      assert(!preview.includes('<radialGradient'),'solid legendary subjects do not inherit a translucent aura');
+      assert(preview.includes('fishing-prestige-orbit'));
+      continue;
+    }
+    glowing++;
     assert(preview.includes('--rod-glow:'+profile.color));
     for(const markup of [preview,Art.rodMarkup(rod)]){
       const id=markup.match(/<radialGradient id="([^"]+)"/)[1];
       assert(!gradients.has(id),'separate cards have separate glow gradients');gradients.add(id);
     }
   }
-  assert.equal(gradients.size,F.catalog.rods.filter(r=>Motion.fxProfile(r)).length*2,'all advanced rods retain effects in repeated previews');
+  assert.equal(gradients.size,glowing*2,'all advanced rods retain effects in repeated previews');
+});
+
+test('resident portraits reflect their own growth while journal species keep their catalogue frame',()=>{
+  const species=F.catalog.fish.find(f=>f.id==='bluebetta'),fry=Art.fishMarkup({...species,id:'resident',fishId:species.id,growth:0}),adult=Art.fishMarkup({...species,id:'resident',fishId:species.id,growth:100});
+  assert(fry.includes('data-growth-stage="fry"'));assert(adult.includes('data-growth-stage="adult"'));assert(!fry.includes('fishing-mature-form'));assert(adult.includes('fishing-mature-form'));assert(!Art.fishMarkup(species).includes('data-growth-stage'));
+  for(const markup of [fry,adult])assert.equal((markup.match(/<g[ >]/g)||[]).length,(markup.match(/<\/g>/g)||[]).length,'growth wrappers remain balanced');
 });

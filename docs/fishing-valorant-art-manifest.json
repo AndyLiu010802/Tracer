@@ -1,0 +1,875 @@
+{
+  "generator": "built-in image_gen",
+  "originals": [
+    {
+      "key": "astra",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-astra-v1.png",
+      "sha256": "4f5472c04fc59f2c23ac407a836e70f0011eae5a4a8bed95d11c5117f959b895",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "astra",
+      "kind": "fx",
+      "skill": "gravity",
+      "file": "skins/tracer/fishing-art/fx-valorant-astra-gravity-v1.png",
+      "sha256": "a2e1603016618c4564ff1eac24b83091317ad94c6d31230feadd548b17a268ff",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "astra",
+      "kind": "fx",
+      "skill": "nova",
+      "file": "skins/tracer/fishing-art/fx-valorant-astra-nova-v1.png",
+      "sha256": "4a1f788a463bf2fbf7c0095bb64c1c0454827ab610f225db0309982820459c1a",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "breach",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-breach-v1.png",
+      "sha256": "52a4d32cd5957e380d951a5976a88588140ab512c3c4242a81ae5c8ff073c5d3",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "breach",
+      "kind": "fx",
+      "skill": "faultline",
+      "file": "skins/tracer/fishing-art/fx-valorant-breach-faultline-v1.png",
+      "sha256": "61b7ca62f3cfebf5a7fb81c813c17d883f7dc4dd51c356308565e85a77ab7cc6",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "breach",
+      "kind": "fx",
+      "skill": "aftershock",
+      "file": "skins/tracer/fishing-art/fx-valorant-breach-aftershock-v1.png",
+      "sha256": "294e2ec06b9718f6f184017983fe7de8842e346920345f76829d5b30b8c58db6",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "brimstone",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-brimstone-v1.png",
+      "sha256": "b2ad67ee9fbc994a3fd494973fbeff87857c936af130d9fc097b4fcda83b77d5",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "brimstone",
+      "kind": "fx",
+      "skill": "orbital",
+      "file": "skins/tracer/fishing-art/fx-valorant-brimstone-orbital-v1.png",
+      "sha256": "6ae21047b70b04dbbed1e8700c36f26d96af81218f2a7b13f3f377e0d8189dfe",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "brimstone",
+      "kind": "fx",
+      "skill": "incendiary",
+      "file": "skins/tracer/fishing-art/fx-valorant-brimstone-incendiary-v1.png",
+      "sha256": "e2466de04f16b3a2d7e0a3b9bbac4b484f56188c3d201f14f239b8559f882111",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "chamber",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-chamber-v1.png",
+      "sha256": "6610c982682395ca9040a410047e26ded58214be36fd16594be58a279e41dd22",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "chamber",
+      "kind": "fx",
+      "skill": "tour",
+      "file": "skins/tracer/fishing-art/fx-valorant-chamber-tour-v1.png",
+      "sha256": "980a08709972e634ca145f4faf4f0cd86f4df8ab5345b293dd4cddd3060f7a86",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "chamber",
+      "kind": "fx",
+      "skill": "rendezvous",
+      "file": "skins/tracer/fishing-art/fx-valorant-chamber-rendezvous-v1.png",
+      "sha256": "25ff529a24a232de8fef57f84d7582a43ebc44ba4c6675d93bf6d2b9339d99e9",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "clove",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-clove-v1.png",
+      "sha256": "bccd33d58560972da94fc4dc21978e5e9addf5a349413d8b9dd83b6dd5518a0d",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "clove",
+      "kind": "fx",
+      "skill": "meddle",
+      "file": "skins/tracer/fishing-art/fx-valorant-clove-meddle-v1.png",
+      "sha256": "89147ab69b447c16862162593738cf65bdd1c84655a09ee44900feada3f2f9d2",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "clove",
+      "kind": "fx",
+      "skill": "ruse",
+      "file": "skins/tracer/fishing-art/fx-valorant-clove-ruse-v1.png",
+      "sha256": "cbee71ea1beec8fb762660cce4175480e045911977630b99bfb6f1da377a4dfb",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "cypher",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-cypher-v1.png",
+      "sha256": "6a8237b9705750d59ad46fca8fdb7710b71875ad37f1fdc440c693d9437d1e2b",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "cypher",
+      "kind": "fx",
+      "skill": "cage",
+      "file": "skins/tracer/fishing-art/fx-valorant-cypher-cage-v1.png",
+      "sha256": "f25ff43af73cbf7f681fa9e17e01b0adb455c1e3a8fbee5d0bf54d0081fe19e3",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "cypher",
+      "kind": "fx",
+      "skill": "tripwire",
+      "file": "skins/tracer/fishing-art/fx-valorant-cypher-tripwire-v1.png",
+      "sha256": "ad67c02b7ab2322f85dfb1ac848af821f4240f950f7544d0d4dd5e36337c2988",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "deadlock",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-deadlock-v1.png",
+      "sha256": "31540059e886230c4df830c4dd3397073a912ed5dca2f13565c8a86409f14942",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "deadlock",
+      "kind": "fx",
+      "skill": "annihilation",
+      "file": "skins/tracer/fishing-art/fx-valorant-deadlock-annihilation-v1.png",
+      "sha256": "51708f5b4bba64458017cc1e75d389a02540be6da135a053cd84a2967dafdcad",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "deadlock",
+      "kind": "fx",
+      "skill": "barrier",
+      "file": "skins/tracer/fishing-art/fx-valorant-deadlock-barrier-v1.png",
+      "sha256": "cd84454db5b61a0facc210afb47a6fa018f99d5ee7511a12085f105e77f92b66",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "fade",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-fade-v1.png",
+      "sha256": "f68eb84f97751d51cda320217e20c2ad9f54af81c0873cd103dbd9aa30c87eb8",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "fade",
+      "kind": "fx",
+      "skill": "prowler",
+      "file": "skins/tracer/fishing-art/fx-valorant-fade-prowler-v1.png",
+      "sha256": "1b99eccdfb2a5bf9013ffd3f1fc75ed9ed7048d30984f918282c4a83afd94d93",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "fade",
+      "kind": "fx",
+      "skill": "haunt",
+      "file": "skins/tracer/fishing-art/fx-valorant-fade-haunt-v1.png",
+      "sha256": "b7a9c77bb20be7439f48c3a6fec3cba62c7962d5a21a02503247c5e5b42d6da6",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "gekko",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-gekko-v1.png",
+      "sha256": "34b0c16a08cfa99b686c0e54ece02220f177cacc1d96e98cd7d98f04daec368b",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "gekko",
+      "kind": "fx",
+      "skill": "wingman",
+      "file": "skins/tracer/fishing-art/fx-valorant-gekko-wingman-v1.png",
+      "sha256": "9b832e52717fd6c809e4c345b575e2ce025209786619e0a20c305dc707eee4a2",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "gekko",
+      "kind": "fx",
+      "skill": "dizzy",
+      "file": "skins/tracer/fishing-art/fx-valorant-gekko-dizzy-v1.png",
+      "sha256": "a21443c1a39272da486109156cf35ee00e70809f442865a277d5a52e9a91ad27",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "harbor",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-harbor-v1.png",
+      "sha256": "8957f8e4210739c4685e5b7e671f2e72447a27498f14177be600744c58e3bcad",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "harbor",
+      "kind": "fx",
+      "skill": "hightide",
+      "file": "skins/tracer/fishing-art/fx-valorant-harbor-hightide-v1.png",
+      "sha256": "041752dd6f101f7084002337765fe97a7467d825121be5216ed1811da06bc58b",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "harbor",
+      "kind": "fx",
+      "skill": "cove",
+      "file": "skins/tracer/fishing-art/fx-valorant-harbor-cove-v1.png",
+      "sha256": "d6d4f532cf436d25b995d31e0ef4fe60b3771af5c4fe6deb715bb255e80e7fd0",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "iso",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-iso-v1.png",
+      "sha256": "52386872cf658948835a62a814f0f04124b5ff8becb6c52489b7a2f8a19dd60b",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "iso",
+      "kind": "fx",
+      "skill": "contingency",
+      "file": "skins/tracer/fishing-art/fx-valorant-iso-contingency-v1.png",
+      "sha256": "8cbd24335bd0b15311fa6c7be6047e6aafe4f8be9858fa8e28af14639ba4ed04",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "iso",
+      "kind": "fx",
+      "skill": "undercut",
+      "file": "skins/tracer/fishing-art/fx-valorant-iso-undercut-v1.png",
+      "sha256": "4ee07a6b5a9b2c346d68717e9158c4048744e86b0ded5646414500e2d6b6e0ac",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "jett",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-jett-v1.png",
+      "sha256": "c4b6808db7c150fc32ef4b016b934306147287c2786e9d9e8ad79834530d45e0",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "jett",
+      "kind": "fx",
+      "skill": "blades",
+      "file": "skins/tracer/fishing-art/fx-valorant-jett-blades-v1.png",
+      "sha256": "0e19e6657c04f07deaa029b7a4655579c19b43d42dfe4a5e49d516bcaf27e817",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "jett",
+      "kind": "fx",
+      "skill": "tailwind",
+      "file": "skins/tracer/fishing-art/fx-valorant-jett-tailwind-v1.png",
+      "sha256": "dd2cc3f8767dc0e3b5706e76eefb4934c43cb7ed4f839885f7b3e83cff4ece8b",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "kayo",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-kayo-v1.png",
+      "sha256": "62bdc044449e693db94e95ab75e53d1c31142ae558ed58683e3b9bb2d5234a4e",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "kayo",
+      "kind": "fx",
+      "skill": "zero",
+      "file": "skins/tracer/fishing-art/fx-valorant-kayo-zero-v1.png",
+      "sha256": "a70bd9c9091b726dcc030081a918fae1bd70300d0b5aca16be4dd05694578ab5",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "kayo",
+      "kind": "fx",
+      "skill": "null",
+      "file": "skins/tracer/fishing-art/fx-valorant-kayo-null-v1.png",
+      "sha256": "86164beecc64e9ee74ce7be7c89b901b5feba060f044706c9ba5397d730d1708",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "killjoy",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-killjoy-v1.png",
+      "sha256": "bbc6b5e5ccaf313abe3547bf3cc0abcfff95d92f1cd6cb1a7dd5d3850dccd146",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "killjoy",
+      "kind": "fx",
+      "skill": "turret",
+      "file": "skins/tracer/fishing-art/fx-valorant-killjoy-turret-v1.png",
+      "sha256": "4ec97d320e6d49f7a51fd82370b78dc35a94b31a60c02487633f40e7fc11d8b0",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "killjoy",
+      "kind": "fx",
+      "skill": "nanoswarm",
+      "file": "skins/tracer/fishing-art/fx-valorant-killjoy-nanoswarm-v1.png",
+      "sha256": "91893b8849edbcd89b5235689ffde2cc12da2f171853c309cd050c7bfa23b552",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "miks",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-miks-v1.png",
+      "sha256": "64ee9da5aeebdc0c9a1a46ba1c4f316d79756bbf34b8d71085df1deb10ffe913",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "miks",
+      "kind": "fx",
+      "skill": "mpulse",
+      "file": "skins/tracer/fishing-art/fx-valorant-miks-mpulse-v1.png",
+      "sha256": "94691f99649edbc48227a4e7423cf1b61c56b15d44189faa59417346db323eb5",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "miks",
+      "kind": "fx",
+      "skill": "harmonize",
+      "file": "skins/tracer/fishing-art/fx-valorant-miks-harmonize-v1.png",
+      "sha256": "2d4d65660f902f729872fcb3063a531f0c58a5a87e78061ce8b5332caa3da49e",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "neon",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-neon-v1.png",
+      "sha256": "7cdf914c6e533299a41a17c726d34e31b13acddd2e2f9a651ec99f6f483750b0",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "neon",
+      "kind": "fx",
+      "skill": "overdrive",
+      "file": "skins/tracer/fishing-art/fx-valorant-neon-overdrive-v1.png",
+      "sha256": "2a0d0f83e19a0dd8b19bba44bc07f2b4a8be75e91076b34c40996aa898676f15",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "neon",
+      "kind": "fx",
+      "skill": "relay",
+      "file": "skins/tracer/fishing-art/fx-valorant-neon-relay-v1.png",
+      "sha256": "e2349b64fc4cdc7026423c90b57be571671d9b72ef00d047ded8f7b853a9489d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "omen",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-omen-v1.png",
+      "sha256": "6b97a2ba673efdeef8c765778597a6593dc845b6d5d315f1298dd392cd7235b0",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "omen",
+      "kind": "fx",
+      "skill": "paranoia",
+      "file": "skins/tracer/fishing-art/fx-valorant-omen-paranoia-v1.png",
+      "sha256": "dc1fb7344f32668423029a1f2d49e7c36d1fb8bd926950eb3f140e14d6c2a220",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "omen",
+      "kind": "fx",
+      "skill": "darkcover",
+      "file": "skins/tracer/fishing-art/fx-valorant-omen-darkcover-v1.png",
+      "sha256": "367846611275cfc2919173995dd68623a321f8c988a21be9d19090ef7779c552",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "phoenix",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-phoenix-v1.png",
+      "sha256": "76eff48133e0508118315364684eb0fc8159049aed5272f14b747dc2534b84c7",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "phoenix",
+      "kind": "fx",
+      "skill": "curveball",
+      "file": "skins/tracer/fishing-art/fx-valorant-phoenix-curveball-v1.png",
+      "sha256": "c3d4519f892cb1ed0d76d70572752486dce25bbbd195bd50253602693bb8ac6e",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "phoenix",
+      "kind": "fx",
+      "skill": "hothands",
+      "file": "skins/tracer/fishing-art/fx-valorant-phoenix-hothands-v1.png",
+      "sha256": "934fddaf37c87d46211b011dc239d8a13db01044ae1e39b165f0869ef81d7508",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "raze",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-raze-v1.png",
+      "sha256": "9aa171dc63ecbc4af37e45a6426a54c3a38dcb6dda949b8c0ca4b2a01cc063a0",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "raze",
+      "kind": "fx",
+      "skill": "showstopper",
+      "file": "skins/tracer/fishing-art/fx-valorant-raze-showstopper-v1.png",
+      "sha256": "6b91639e9c778ef492d524360b92e2ced12561b13cd2fae6e38e9185c5188479",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "raze",
+      "kind": "fx",
+      "skill": "boombot",
+      "file": "skins/tracer/fishing-art/fx-valorant-raze-boombot-v1.png",
+      "sha256": "e7fd011c6d8c20f30f9d3524786ff4be61bb3ec115bf7c414343cdbd42aac52f",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "reyna",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-reyna-v1.png",
+      "sha256": "ba7ab92f7d53ca6e2a034a206b9fbad77c308bce3f2d0382de350582ab68981c",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "reyna",
+      "kind": "fx",
+      "skill": "leer",
+      "file": "skins/tracer/fishing-art/fx-valorant-reyna-leer-v1.png",
+      "sha256": "b4379ba389beff624a80203c329f613b0f37b3f2c10bdb8eb6c7ca03b7f547d7",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "reyna",
+      "kind": "fx",
+      "skill": "devour",
+      "file": "skins/tracer/fishing-art/fx-valorant-reyna-devour-v1.png",
+      "sha256": "39803ddb90f49eb2282fa8f5df42b3b4e8bab0e26680650f8abb6ac56293b467",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sage",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-sage-v1.png",
+      "sha256": "d7b28d9d36f7da8793f8084fa849d2f7db5eb67451d8ad5d8aa18943e7de5c1b",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "sage",
+      "kind": "fx",
+      "skill": "slow",
+      "file": "skins/tracer/fishing-art/fx-valorant-sage-slow-v1.png",
+      "sha256": "8362e5b6abb6250f7fa489fc6442391abee7401b559efe4f6f624bf749e35c04",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sage",
+      "kind": "fx",
+      "skill": "barrier",
+      "file": "skins/tracer/fishing-art/fx-valorant-sage-barrier-v1.png",
+      "sha256": "e293a55f2871b836455a1c34af373934b951f5f80b6d856270babb23d54e5455",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "skye",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-skye-v1.png",
+      "sha256": "376518e6dad55bb0d315114223e4499cec02f9b6cf7276fc7a158b2f6b0043ac",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "skye",
+      "kind": "fx",
+      "skill": "hawk",
+      "file": "skins/tracer/fishing-art/fx-valorant-skye-hawk-v1.png",
+      "sha256": "2324a99772dbc579b69148271a7130ae3a16ea5737ba6cfca437fd9d0a52a25d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "skye",
+      "kind": "fx",
+      "skill": "tiger",
+      "file": "skins/tracer/fishing-art/fx-valorant-skye-tiger-v1.png",
+      "sha256": "9bf4a747cd451e2eae2398e0faf80fda1e322f16ee04bb8fe81bc319ca1b275f",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sova",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-sova-v1.png",
+      "sha256": "4ea83adb2f8f33b3af76c16ced36fc78203b3b02210dc72824c0175a1daed0ba",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "sova",
+      "kind": "fx",
+      "skill": "shock",
+      "file": "skins/tracer/fishing-art/fx-valorant-sova-shock-v1.png",
+      "sha256": "d3f8e8399469c3ebe44eb5f4b85ddc5486572022709690c6731cad420bcf1dc1",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sova",
+      "kind": "fx",
+      "skill": "recon",
+      "file": "skins/tracer/fishing-art/fx-valorant-sova-recon-v1.png",
+      "sha256": "9aca7b5599629dba99b2f63f8c9724ff5d93ae811a12d36d8d7eab3d0c934393",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "tejo",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-tejo-v1.png",
+      "sha256": "52e1d1832c7fa043abba21f305d69e9483cfbfbe5f8a2e6317b4e5cac3cfb5f0",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "tejo",
+      "kind": "fx",
+      "skill": "salvo",
+      "file": "skins/tracer/fishing-art/fx-valorant-tejo-salvo-v1.png",
+      "sha256": "fd6224ce31635520ffcea7323854e0bf31e0453b46c138c239e3db1dd06a9f27",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "tejo",
+      "kind": "fx",
+      "skill": "armageddon",
+      "file": "skins/tracer/fishing-art/fx-valorant-tejo-armageddon-v1.png",
+      "sha256": "a391e3784c3ec3de9698bb7ae5a835795265e4002086fe31383462c518f48732",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "veto",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-veto-v1.png",
+      "sha256": "90e82eecbc2c0a782113e88c459b80daaee2a33e3a20131fc4634206e5c055ba",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "veto",
+      "kind": "fx",
+      "skill": "chokehold",
+      "file": "skins/tracer/fishing-art/fx-valorant-veto-chokehold-v1.png",
+      "sha256": "03b1319acf2e7b43f496f1d5f8f87d3c145688aac09447313b2765b93c76f890",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "veto",
+      "kind": "fx",
+      "skill": "interceptor",
+      "file": "skins/tracer/fishing-art/fx-valorant-veto-interceptor-v1.png",
+      "sha256": "ab24f3239a77f1636b1a119bb05904b580bf0f2baeecb854bde710137ea7f4a6",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "viper",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-viper-v1.png",
+      "sha256": "baba90bca55834eb3df199b7935d909ae13c0f2b74ac92d428535bc88643b4e3",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "viper",
+      "kind": "fx",
+      "skill": "poison",
+      "file": "skins/tracer/fishing-art/fx-valorant-viper-poison-v1.png",
+      "sha256": "886c18b20459b669952d65e55a1e358af4577ee122210da1d311b5e12556d97a",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "viper",
+      "kind": "fx",
+      "skill": "snakebite",
+      "file": "skins/tracer/fishing-art/fx-valorant-viper-snakebite-v1.png",
+      "sha256": "be65d5952a5710da547086f1ea93393bf396b9eacd240d8670ea14792cb84765",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "vyse",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-vyse-v1.png",
+      "sha256": "93cac145e6e5feeb3b4af62c3074783485028ca4016351e95bae2419084a1301",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "vyse",
+      "kind": "fx",
+      "skill": "arcrose",
+      "file": "skins/tracer/fishing-art/fx-valorant-vyse-arcrose-v1.png",
+      "sha256": "2b20e4296192c676e5a5bfa9faf67421171b535a9b129522ef1bf6717f08948d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "vyse",
+      "kind": "fx",
+      "skill": "razorvine",
+      "file": "skins/tracer/fishing-art/fx-valorant-vyse-razorvine-v1.png",
+      "sha256": "5bcc62f5a7d2ec88faefa7fabc8103ae2901a3a6b93d95124221efacc7b58b97",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "waylay",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-waylay-v1.png",
+      "sha256": "bd6319a4ee39dfed9fd87707c51bb313208f1544768fba382b702d141a6ec3c4",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "waylay",
+      "kind": "fx",
+      "skill": "saturate",
+      "file": "skins/tracer/fishing-art/fx-valorant-waylay-saturate-v1.png",
+      "sha256": "7406eb0c68f9b0c843a7aca55786a3045cc9bf150d679a8ac31fca3e1f8e160e",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "waylay",
+      "kind": "fx",
+      "skill": "refract",
+      "file": "skins/tracer/fishing-art/fx-valorant-waylay-refract-v1.png",
+      "sha256": "e8aa9991ae1ed20a69cb97f12747302bd5a65c456121b57af7750c3bf0868cd0",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "yoru",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-yoru-v1.png",
+      "sha256": "93ede83d5cc56a4818bbf74d9efe7a47ca7df94f0df9c80a574f9a8c2534acc2",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "yoru",
+      "kind": "fx",
+      "skill": "blindside",
+      "file": "skins/tracer/fishing-art/fx-valorant-yoru-blindside-v1.png",
+      "sha256": "d4494bb908d7d22d66bcfe739d49cb862d6b74dcb6b50b5e5632dde3aa12e4f7",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "yoru",
+      "kind": "fx",
+      "skill": "gatecrash",
+      "file": "skins/tracer/fishing-art/fx-valorant-yoru-gatecrash-v1.png",
+      "sha256": "447950c937aa67c70f88b752b8b7d80af083226a2212afa67d12a507d847585f",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "spike",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-valorant-spike-v2.png",
+      "sha256": "55d52e3e58e3be36c9cffc3c4e5b30dafb2dd1f3ad9b38128793622ea9171aaa",
+      "width": 1254,
+      "height": 1254,
+      "rgba": true
+    },
+    {
+      "key": "spike",
+      "kind": "fx",
+      "skill": "arming",
+      "file": "skins/tracer/fishing-art/fx-valorant-spike-arming-v2.png",
+      "sha256": "b1e238b934caead7ed39b34a4455b19143defe948c4cc4b5afc5cc0a8a490114",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "spike",
+      "kind": "fx",
+      "skill": "detonate",
+      "file": "skins/tracer/fishing-art/fx-valorant-spike-detonate-v1.png",
+      "sha256": "6c7f2c3872faa7199432d3497250451ee4d891324d431ec3f3db5f3d3f32641c",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    }
+  ]
+}

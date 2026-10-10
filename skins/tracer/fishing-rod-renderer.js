@@ -1,5 +1,12 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.TracerFishingRodRenderer=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
+  const Crafted=typeof module==='object'&&module.exports?require('./fishing-crafted-rods'):globalThis.TracerFishingCraftedRods;
+  const OnePiecePainted=typeof module==='object'&&module.exports?require('./fishing-onepiece-painted'):globalThis.TracerFishingOnePiecePainted;
+  const NarutoPainted=typeof module==='object'&&module.exports?require('./fishing-naruto-painted'):globalThis.TracerFishingNarutoPainted;
+  const ValorantPainted=typeof module==='object'&&module.exports?require('./fishing-valorant-painted'):globalThis.TracerFishingValorantPainted;
+  const RelicPainted=typeof module==='object'&&module.exports?require('./fishing-relic-painted'):globalThis.TracerFishingRelicPainted;
+  const BasicPainted=typeof module==='object'&&module.exports?require('./fishing-basic-painted'):globalThis.TracerFishingBasicPainted;
+  const paintedFor=rod=>BasicPainted?.assets[typeof rod==='string'?rod:rod?.id]?BasicPainted:RelicPainted?.assets[typeof rod==='string'?rod:rod?.id]?RelicPainted:ValorantPainted?.assets[typeof rod==='string'?rod:rod?.id]?ValorantPainted:NarutoPainted?.assets[typeof rod==='string'?rod:rod?.id]?NarutoPainted:OnePiecePainted;
   const Lighting=typeof module==='object'&&module.exports?require('./fishing-lighting'):globalThis.TracerFishingLighting;
   const W=250.8,H=418,PAD=128,TAU=Math.PI*2,GRIP={x:W*.11,y:H*.94},TIP={x:W*.9,y:H*.04},L=Math.hypot(TIP.x-GRIP.x,TIP.y-GRIP.y),AXIS=[(TIP.x-GRIP.x)/L,(TIP.y-GRIP.y)/L],NORMAL=[-AXIS[1],AXIS[0]];
   const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,Number(v)||0)),mix=(a,b,t)=>a+(b-a)*t;
@@ -42,10 +49,31 @@
     butterfly:['#77649d','#3a3456','#a5a4c9','#c9c5df','#bddddc',12],
     sunforge:['#eadab4','#b09a66','#e5ebdf','#eac279','#e4a84b',0],
     leviathan:['#27636e','#233f45','#81afad','#d2c4a2','#6bc0be',16],
-    eclipse:['#25283d','#27273d','#696586','#b9a076','#a0a1cf',15]
+    eclipse:['#25283d','#27273d','#696586','#b9a076','#a0a1cf',15],
+    pilgrim:["#ae9569","#534335","#e4d2a8","#d8b36b","#e4d2a8",5],
+    sandalwood:["#86533e","#534335","#c9a169","#d8b36b","#c9a169",7],
+    reedraft:["#9b8955","#534335","#b6c4a3","#d8b36b","#b6c4a3",0],
+    monkeytwig:["#815a43","#352e35","#d9a879","#d8b36b","#d9a879",0],
+    goldenhoop:["#bc8734","#352e35","#e5d293","#d8b36b","#e5d293",6],
+    moonspade:["#547989","#352e35","#d8e1d8","#c5d7df","#d8e1d8",0],
+    ninerake:["#677785","#352e35","#c1d2db","#c5d7df","#c1d2db",0],
+    whitedragon:["#9dbfc1","#352e35","#f0e2b8","#d8b36b","#f0e2b8",0],
+    kasaya:["#a44332","#352e35","#edc96b","#d8b36b","#edc96b",0],
+    windfan:["#52754f","#352e35","#d9bf73","#d8b36b","#d9bf73",0],
+    redboy:["#af382b","#352e35","#ffd480","#d8b36b","#ffd480",0],
+    jadebottle:["#70ab9e","#352e35","#e9e2ba","#d8b36b","#e9e2ba",8],
+    demonmirror:["#506676","#352e35","#edc476","#d8b36b","#edc476",0],
+    goldenbell:["#746386","#352e35","#e6c477","#d8b36b","#e6c477",0],
+    sevenstars:["#385e75","#352e35","#b9d6e2","#d8b36b","#b9d6e2",0],
+    gourd:["#954848","#352e35","#d7b673","#d8b36b","#d7b673",0],
+    lotuswheel:["#be6557","#352e35","#edcf83","#d8b36b","#edcf83",0],
+    ruyi:["#8e2922","#ae782e","#a47135","#dfb35c","#ffe4a3",6],
+    erlang:["#263e51","#23313e","#718da2","#bacfdc","#eff8fc",6],
+    wukong:["#a44d32","#352e35","#f6d17c","#d8b36b","#f6d17c",0]
   };
+  const JOURNEY_IDS=Object.freeze(["pilgrim","sandalwood","reedraft","monkeytwig","goldenhoop","moonspade","ninerake","whitedragon","kasaya","windfan","redboy","jadebottle","demonmirror","goldenbell","sevenstars","gourd","lotuswheel","ruyi","erlang","wukong"]);
   const EXPANSION_IDS=Object.freeze(['walnut','porcelain','citrus','amber','vinyl','nautilus','alpine','candlewyrm','thunderdrum','abysswhale','foxfire','lilybell','sandscript','frostwolf','rosevow','inkjudge','butterfly','sunforge','leviathan','eclipse']);
-  function profile(rod){const id=typeof rod==='string'?rod:rod?.id||'bamboo',p=PALETTES[id]||PALETTES.bamboo;return{id:PALETTES[id]?id:'bamboo',shaft:rgb(p[0]),grip:rgb(p[1]),wrap:rgb(p[2]),metal:rgb(p[3]),trim:rgb(p[4]),pattern:p[5],advanced:EXPANSION_IDS.includes(id)?EXPANSION_IDS.indexOf(id)>=3:Object.keys(PALETTES).indexOf(id)>=5};}
+  function profile(rod){const id=typeof rod==='string'?rod:rod?.id||'bamboo',p=PALETTES[id]||PALETTES.bamboo;const craft=Crafted?.catalog[id];if(craft)return{id,shaft:rgb(craft.color),grip:rgb(craft.craft.grip),wrap:rgb(craft.accent),metal:rgb(craft.craft.metal),trim:rgb(craft.accent),pattern:craft.craft.pattern,advanced:craft.rarity!=='common',craft:craft.craft,rarity:craft.rarity,cel:craft.collection==='onepiece'};return{id:PALETTES[id]?id:'bamboo',shaft:rgb(p[0]),grip:rgb(p[1]),wrap:rgb(p[2]),metal:rgb(p[3]),trim:rgb(p[4]),pattern:p[5],advanced:EXPANSION_IDS.includes(id)?EXPANSION_IDS.indexOf(id)>=3:Object.keys(PALETTES).indexOf(id)>=5};}
   function curvePoint(s,bend){
     const shared=typeof globalThis!=='undefined'&&globalThis.TracerFishingMotion?.rodCurvePoint;
     if(shared&&s>=0&&s<=1)return shared(s,bend);
@@ -144,6 +172,7 @@
   }
   function transparentPattern(pattern){return pattern===10||pattern===14||pattern===17||pattern===19;}
   function finishModel(g,p,details){
+    if(p.cel)for(let i=0;i<g.data.length;i+=14){g.data[i+9]=.85;g.data[i+10]=0;if(g.data[i+11]!==31)g.data[i+11]=30;}
     const opaque=[],glass=[];
     for(let i=0;i<g.data.length;i+=42){const triangle=g.data.slice(i,i+42);if(transparentPattern(g.data[i+11]))glass.push({triangle,z:(g.data[i+2]+g.data[i+16]+g.data[i+30])/3});else opaque.push(...triangle);}
     glass.sort((a,b)=>a.z-b.z);const opaqueVertices=opaque.length/14;
@@ -154,11 +183,12 @@
     const g=mesh(),fine=!lowDetail,steps=fine?52:28,sides=fine?20:12,around=fine?24:14,sections=fine?6:4;
     const mat=(hex,rough=.28,metal=.12,pattern=0)=>material(typeof hex==='string'?rgb(hex):hex,rough,metal,pattern);
     const metal=mat(p.metal,.22,.82,6),trim=mat(p.trim,.25,.5,6),body=mat(p.shaft,.28,.16,p.pattern),grip=mat(p.grip,.55,.04,2),dark=mat('#24343a',.47,.18),ivory=mat('#ebe3ce',.35,.07),silver=mat('#d1e0e4',.2,.8,6);
-    const common=EXPANSION_IDS.indexOf(p.id)<3,rare=EXPANSION_IDS.indexOf(p.id)<7;
+    const journeyIndex=JOURNEY_IDS.indexOf(p.id),collectionIndex=journeyIndex>=0?journeyIndex:EXPANSION_IDS.indexOf(p.id),common=p.craft?p.rarity==='common':collectionIndex<3,rare=p.craft?p.rarity==='rare':collectionIndex<7;
     const silhouette={walnut:'folding-travel-reel',porcelain:'porcelain-cloud-collar',citrus:'leaf-cradle',amber:'resin-pine-bough',vinyl:'phonograph-tonearm',nautilus:'chambered-spiral-shell',alpine:'ice-axe-ridge'}[p.id]||p.id;
     const section={walnut:[6.1,5.5],porcelain:[5.7,5.7],citrus:[5.5,4.8],amber:[6.2,5.4],vinyl:[5.8,3.8],nautilus:[5.3,4.7],alpine:[5.1,3.1]}[p.id]||[5.7,4.6];
     const sw=section[0],sz=section[1],shift={walnut:1.2,porcelain:-1.8,citrus:3.2,amber:-3,vinyl:0,nautilus:3,alpine:-1.2,lilybell:5,abysswhale:-3.5,butterfly:2.8,leviathan:-3,eclipse:2}[p.id]||0;
-    const rodSurface=sculpt(g,[[.01*L,0,0,sw+1,sz+.7],[.2*L,0,0,sw,sz],[.38*L,shift,0,sw*.81,sz*.85],[.64*L,shift*.7,0,sw*.53,sz*.58],[.86*L,shift*.3,0,2.2,1.8],[L,0,0,1.12,1.05]],body,{rows:steps,sides,lobes:p.id==='alpine'?4:6,flute:p.id==='alpine'?.1:p.id==='walnut'?.024:.016});
+    const rodStations=p.id==='ruyi'?[[.01*L,0,0,5.8,5.8],[.2*L,0,0,5.8,5.8],[.4*L,0,0,5.6,5.6],[.65*L,0,0,5.5,5.5],[.84*L,0,0,5.4,5.4],[L,0,0,5.4,5.4]]:[[.01*L,0,0,sw+1,sz+.7],[.2*L,0,0,sw,sz],[.38*L,shift,0,sw*.81,sz*.85],[.64*L,shift*.7,0,sw*.53,sz*.58],[.86*L,shift*.3,0,2.2,1.8],[L,0,0,1.12,1.05]];
+    const rodSurface=sculpt(g,rodStations,body,{rows:steps,sides,lobes:p.id==='alpine'?4:6,flute:p.id==='ruyi'?0:p.id==='alpine'?.1:p.id==='walnut'?.024:.016});
     const blankAt=s=>{let lo=0,hi=1;for(let i=0;i<16;i++){const t=(lo+hi)/2;if(rodSurface.sample(t)[0]<s*L)lo=t;else hi=t;}return rodSurface.sample((lo+hi)/2);};
     const sleeve=(x0,x1,r0,r1,m=metal)=>sculpt(g,[[x0,0,0,r0*.97,r0*.94],[mix(x0,x1,.22),0,0,r0,r0],[mix(x0,x1,.8),0,0,r1,r1],[x1,0,0,r1*.97,r1*.94]],m,{rows:fine?(Math.abs(x1-x0)<4?3:6):3,sides});
     const seam=(from,to,turns,radius,m,thickness=.36,phase=0)=>{const pts=[],n=Math.max(18,Math.ceil(Math.abs(turns)*(fine?16:9)));for(let i=0;i<=n;i++){const t=i/n,a=t*turns*TAU+phase,s=mix(from,to,t),r=typeof radius==='function'?radius(s):radius;pts.push([s*L,Math.cos(a)*r,Math.sin(a)*r]);}tube(g,pts,[thickness],m,fine?6:4);};
@@ -167,15 +197,15 @@
     const sectionBody=(stations,m=body,opts={})=>sculpt(g,stations,m,{...opts,rows:fine?(opts.rows||32):Math.max(5,Math.ceil((opts.rows||32)*.45)),sides:fine?(opts.sides||20):Math.min(10,opts.sides||10)});
     // Ergonomic, subtly oval grips retain a single uninterrupted surface.
     const gripWidth={walnut:8.8,porcelain:8,citrus:8.4,amber:8.6,vinyl:7.4,nautilus:8.2,alpine:8.8,inkjudge:8.1,leviathan:9,eclipse:8.1}[p.id]||8.6;
-    const gm=p.id==='porcelain'?mat('#dce8e4',.19,.05,8):p.id==='citrus'?mat('#b29a62',.53,.02,9):p.id==='sunforge'?mat('#eee7d6',.24,.06,8):grip;
+    const gm=p.id==='ruyi'?metal:p.id==='porcelain'?mat('#dce8e4',.19,.05,8):p.id==='citrus'?mat('#b29a62',.53,.02,9):p.id==='sunforge'?mat('#eee7d6',.24,.06,8):grip;
     sectionBody([[-12,0,0,gripWidth*.5,6],[-8,0,0,gripWidth,7.5],[6,-.6,0,gripWidth*.98,8],[32,-.3,0,gripWidth*.92,7.5],[52,0,0,gripWidth*.78,6.6],[58,0,0,6.4,5.9]],gm,{rows:fine?30:16,sides});
     sleeve(-13,-8,gripWidth*.8,gripWidth,metal);sleeve(53,60,6.9,6.7,metal);
     sleeve(64,73,6.6,7.1,body);sleeve(72,77,7.15,6.5,metal);sleeve(99,107,6.2,6.5,metal);
     for(let i=0;i<(fine?7:4);i++)torus(g,[62+i*1.4,0,0],[0,1,0],[0,0,1],6.7,.28,metal,around,4);
-    if(!['porcelain','citrus','sunforge'].includes(p.id)){
+    if(!['porcelain','citrus','sunforge','ruyi'].includes(p.id)){
       for(const side of [-1,1]){carve([[0,side*gripWidth*.65,5.8],[23,side*gripWidth*.66,5.8],[47,side*gripWidth*.62,5.6]],mat(p.wrap,.54,.02),.3);if(fine)for(let i=0;i<14;i++){const x=2+i*3.25;carve([[x,side*(gripWidth*.65-.55),6.04],[x+1.05,side*(gripWidth*.65+.65),6.14]],ivory,.16);}}
     }
-    const reelStyle={walnut:0,porcelain:1,citrus:2,amber:3,vinyl:4,nautilus:5,alpine:6}[p.id]??(EXPANSION_IDS.indexOf(p.id)%7);
+    const reelStyle={walnut:0,porcelain:1,citrus:2,amber:3,vinyl:4,nautilus:5,alpine:6}[p.id]??(p.craft?p.craft.variant%7:collectionIndex%7);
     const reelCenter=[83,reelStyle===4?23:26,reelStyle===5?10:9],spoolR=reelStyle===4?17.5:reelStyle===5?13:11.8;
     sectionBody([[62,1,1,3.1,2.3],[67,7,4,4.2,3.5],[73,14,5,6.5,5.2],[78,19,5,8.1,6.8],[92,19.6,5,5.6,5.9],[97,17,4,1.3,1.8]],p.id==='porcelain'?gm:body,{rows:fine?32:17,sides});
     // A stepped spool and recessed face. The individual wound line, folded
@@ -198,11 +228,160 @@
     }
     torus(g,[L,0,0],[0,1,0],[.5,0,.866],2,.54,metal,around,sections);
     torus(g,[L,0,0],[0,1,0],[.5,0,.866],1.58,.23,dark,around,4);
-    const leaf=(start,middle,end,width,m=body,rim=metal)=>ribbon(g,[start,middle,end],t=>Math.max(.06,width*Math.pow(Math.sin(t*Math.PI),.75)),m,rim,{rows:fine?28:14,sides:fine?12:8,edgeRows:fine?24:12,depth:1.6});
+    const leaf=(start,middle,end,width,m=body,rim=metal)=>ribbon(g,[start,middle,end],t=>Math.max(.06,width*Math.pow(Math.sin(t*Math.PI),.75)),m,rim,{rows:p.craft?(fine?18:8):(fine?28:14),sides:p.craft?(fine?8:6):(fine?12:8),edgeRows:p.craft?(fine?14:6):(fine?24:12),depth:1.6});
     const veins=(surface,count=4,m=metal)=>{carve(Array.from({length:19},(_,i)=>add(surface.sample(i/18).slice(0,3),[0,0,1.8])),m,.34);if(fine)for(let i=1;i<=count;i++){const t=i/(count+1),a=surface.sample(t).slice(0,3);for(const side of [-1,1])carve([add(a,[0,0,1.5]),add(surface.at(Math.min(.98,t+.09),side>0?0:Math.PI),[0,0,.1])],m,.2);}};
     const curve=(points,r,m=metal,rows=fine?30:16)=>sectionBody(points.map((v,i)=>[...v,Array.isArray(r)?r[i]:r,Array.isArray(r)?r[i]:r]),m,{rows,sides:fine?9:6});
     const spine=(points,width,m=body,rim=metal,depth=1.7)=>ribbon(g,points,t=>Math.max(.06,width*Math.pow(Math.sin(Math.PI*t),.63)),m,rim,{rows:fine?46:18,sides:fine?14:8,edgeRows:fine?24:12,depth});
     const enamelEye=(x,y,z,sign,m=trim)=>{leaf([x-4,y,z],[x,y+sign*1.15,z+.4],[x+5,y+sign*.5,z],1.05,dark,null);curve([[x-4,y+sign*.8,z+.3],[x,y+sign*1.95,z+.8],[x+5,y+sign*.8,z+.2]],.4,m,12);};
+
+    if(p.craft){
+      const crafted=Crafted.build(p,{g,L,fine,metal,trim,body,ivory,silver,dark,leaf,veins,curve,spine,sleeve,sectionBody,torus,ellipsoid,gem,blade,facet,bolt});
+      return finishModel(g,p,crafted);
+    }
+    if(journeyIndex>=0){
+      // Every ornament is model-space geometry attached to the same continuous
+      // flexible blank. The line still leaves the unchanged canonical tip.
+      const at=s=>s*L,ring=(x,y,r,m=metal)=>torus(g,[x,y,5],[1,0,0],[0,1,0],r,.85,m,around,sections);
+      const bead=(x,y,z,r,m=body)=>ellipsoid(g,[x,y,z],[r,r,r],m,fine?12:6,fine?18:10);
+      const curl=(x,y,size,m=metal)=>curve(Array.from({length:19},(_,i)=>{const a=i/18*TAU*1.5,rr=size*(1-i/22);return[x+Math.cos(a)*rr,y+Math.sin(a)*rr,6];}),.65,m);
+      const knot=(x,y)=>{for(const side of[-1,1])curve([[x-6,y,6],[x,y+side*5,8],[x+6,y,6],[x,y-side*5,8],[x-6,y,6]],.9,trim);};
+      const tassel=(x,y,len,m=body)=>{bead(x,y,7,2.2,metal);for(let k=-2;k<=2;k++)curve([[x,y,7],[x-len*.4,y+k*1.6,6],[x-len,y+k*2.1,5]],.65,m);};
+      const flame=(x,y,h,w,m=body)=>spine([[x,y,4],[x+h*.34,y+w,6],[x+h*.68,y-w*.35,5],[x+h,y+w*.3,4]],w*.60,m,trim,1.4);
+      const petal=(x,y,angle,length,width,m=body)=>{const ex=x+Math.cos(angle)*length,ey=y+Math.sin(angle)*length;return leaf([x,y,5],[(x+ex)/2-Math.sin(angle)*width*.35,(y+ey)/2+Math.cos(angle)*width*.35,8],[ex,ey,5],width,m,metal);};
+      const lotus=(x,y,size)=>{for(let j=0;j<7;j++){const a=-Math.PI*.86+j/6*Math.PI*1.72;petal(x,y,a,size, size*.19,j%2?body:ivory);}gem(g,[x,y,7],size*.65,size*.19,trim,8);};
+      const cloud=(x,y,size)=>{curl(x,y,size,ivory);curl(x-size*1.1,y-size*.3,size*.65,trim);curve([[x-size*1.7,y-2,5],[x,y-size*.4,6],[x+size*1.4,y+size*.4,5]],.75,metal);};
+      const sword=(x0,x1,width,m=silver)=>{blade(g,[x0,0,4],[x1,0,4],width,2.4,m,metal,0,fine?28:12);curve([[x0-2,-width*1.7,4],[x0+3,0,5],[x0-2,width*1.7,4]],2,metal);};
+      // Longitudinal etched scrolls are fine relief, with restrained specular rims.
+      if(journeyIndex>=3&&!['ruyi','erlang'].includes(p.id))for(const s of [.38,.52,.67,.82]){const x=at(s);for(const side of[-1,1])curve([[x-9,side*3.8,4],[x-3,side*6.4,4],[x+3,side*4.4,4],[x+8,side*5.4,4]],.35,trim);}
+      switch(p.id){
+        case 'pilgrim':
+          for(const s of [.28,.43,.61,.78,.92]){sleeve(at(s)-2,at(s)+2,5.4-3*s,5.4-3*s,body);curve([[at(s),-4,2],[at(s)+12,-11,4],[at(s)+22,-8,4]],.7,trim);}
+          seam(.015,.13,15,8.7,mat('#c5af7e',.76,.02,9),.48);knot(64,-8);tassel(64,-10,22,grip);break;
+        case 'sandalwood':
+          for(let k=0;k<18;k++){const a=k/18*TAU;bead(105+Math.cos(a)*21,Math.sin(a)*20,4+Math.sin(a)*2,3.2,k%6===0?metal:body);}
+          knot(83,-20);tassel(79,-20,32,trim);for(const s of [.39,.59,.79])sleeve(at(s),at(s)+3,5.5-3*s,5.5-3*s,metal);break;
+        case 'reedraft':
+          for(const side of[-1,1])curve([[30,side*7,1],[96,side*8,2],[141,side*4,2]],1.2,mat('#b5a776',.7,.02,9));
+          for(const s of [.27,.45,.64,.81]){seam(s-.01,s+.01,3,5.5-2*s,ivory,.42);leaf([at(s),-2,3],[at(s)+18,-10,4],[at(s)+32,-5,3],3.7,body,null);}
+          break;
+        case 'monkeytwig':
+          curve([[at(.30),-3,1],[at(.45),-9,2],[at(.61),-16,2],[at(.70),-11,3]],2.3,body);
+          for(let j=0;j<5;j++){const x=at(.39+j*.06);veins(leaf([x,-7,5],[x+9,-23,6],[x+23,-20,5],6.4,mat('#718652',.5,.02),metal),3);}
+          bead(at(.53),-24,7,8,mat('#d99880',.4,.02));curve([[at(.53)-4,-27,14],[at(.53),-29,15],[at(.53)+4,-27,14]],.5,ivory);break;
+        case 'goldenhoop':
+          for(const s of [.34,.58,.81]){ring(at(s),0,15-4*s,metal);curl(at(s),-11,7,trim);curl(at(s),11,7,trim);gem(g,[at(s),0,9],7,3.8,mat('#9e5144',.3,.2),8);}
+          seam(.09,.14,8,8,metal,.45);tassel(at(.35),-18,28,body);break;
+        case 'moonspade':
+          spine([[at(.60),-2,3],[at(.76),-21,5],[at(.89),-28,5],[at(.96),-13,3]],6,silver,metal,2);
+          spine([[at(.60),2,3],[at(.76),21,5],[at(.89),28,5],[at(.96),13,3]],6,silver,metal,2);
+          for(let j=0;j<8;j++)bead(92+Math.cos(j/8*TAU)*17,Math.sin(j/8*TAU)*17,5,3.4,body);knot(at(.56),0);break;
+        case 'ninerake':
+          curve([[at(.62),-37,4],[at(.68),0,4],[at(.62),37,4]],3.5,silver);
+          for(let j=0;j<9;j++){const y=(j-4)*8.7;spine([[at(.64),y,4],[at(.73),y*1.04,6],[at(.80),y*.99,6],[at(.82),y*.88,4]],2.5,silver,metal,1.4);}
+          curve([[at(.52),-5,2],[at(.59),-16,4],[at(.66),-4,4]],2,metal);break;
+        case 'whitedragon':
+          spine([[at(.30),-4,4],[at(.43),-22,4],[at(.59),-12,5],[at(.73),-27,5],[at(.87),-7,4]],8,ivory,silver,4);
+          sectionBody([[at(.78),-14,4,5,4],[at(.84),-22,5,10,7],[at(.89),-17,5,7,5],[at(.92),-10,5,2,2]],ivory,{rows:32});
+          enamelEye(at(.86),-24,12,-1);for(const side of[-1,1]){curve([[at(.83),-22,side*5],[at(.77),-35,side*8],[at(.74),-32,side*9]],1.3,metal);curve([[at(.9),-13,side*6],[at(.92),-27,side*8],[at(.87),-35,side*9]],.55,ivory);}
+          for(let j=0;j<7;j++)petal(at(.35+j*.058),-15,j%2?-2.6:-.8,19,3.5,silver);cloud(at(.37),12,14);break;
+        case 'kasaya':
+          for(const side of[-1,1])spine([[at(.3),side*4,4],[at(.43),side*29,5],[at(.62),side*21,6],[at(.79),side*37,4],[at(.9),side*7,3]],10,body,metal,1.25);
+          for(let j=0;j<5;j++){const x=at(.38+j*.085);ring(x,(j%2?1:-1)*20,3.5);knot(x,0);}
+          lotus(at(.55),0,23);tassel(at(.34),-16,32,trim);break;
+        case 'windfan':
+          for(let j=0;j<11;j++){const a=-1.05+j/10*2.1;const surface=leaf([at(.50),0,3],[at(.65),Math.sin(a)*35,6],[at(.86)-Math.abs(Math.sin(a))*16,Math.sin(a)*55,3],5.7,body,metal);veins(surface,3,trim);}
+          curve([[at(.35),0,4],[at(.48),0,7],[at(.77),0,7]],1.5,trim);cloud(at(.38),-16,11);break;
+        case 'redboy':
+          for(let j=0;j<7;j++)flame(at(.34+j*.045),(j%2?1:-1)*(10+j*2),55+(j%3)*12,9,j%2?body:trim);
+          lotus(at(.38),0,19);gem(g,[at(.67),0,7],31,8,mat('#e47732',.2,.2,18),8);break;
+        case 'jadebottle':
+          sectionBody([[at(.40),0,4,1,1],[at(.43),0,4,19,14],[at(.48),0,4,21,15],[at(.53),0,4,13,10],[at(.56),0,4,5,5],[at(.63),0,4,5,5],[at(.65),0,4,9,7]],mat('#a4d0bb',.22,.06,8),{rows:46});
+          ring(at(.61),0,6);curve([[at(.63),0,5],[at(.76),-14,5],[at(.88),-6,4]],1.2,metal);
+          for(let j=0;j<7;j++)petal(at(.68+j*.025),-6-j, j%2?-.3:-2.2,16,3.3,body);
+          for(let j=0;j<3;j++)gem(g,[at(.34)-j*8,-10-j*6,7],8,2.6,mat('#bfe8e0',.15,.04,19),8);break;
+        case 'demonmirror':
+          revolved(g,[at(.62),0,5],[0,0,1],[[.1,0],[24,0],[28,2],[29,4],[24,5],[.1,5]],metal,fine?48:24);
+          ellipsoid(g,[at(.62),0,10],[23,23,2],mat('#97c3ca',.14,.76,6),fine?18:8,fine?40:18);
+          for(let j=0;j<8;j++){const a=j/8*TAU;gem(g,[at(.62)+Math.cos(a)*26,Math.sin(a)*26,10],6,2.6,j%2?trim:body,6);}
+          for(const s of [.36,.84]){cloud(at(s),0,13);knot(at(s),0);}break;
+        case 'goldenbell':
+          for(let j=0;j<3;j++){const x=at(.40+j*.17),side=j%2?-1:1;curve([[x,0,4],[x+4,side*18,5],[x,side*23,5]],1.8,metal);
+            revolved(g,[x,side*25,5],[1,0,0],[[.1,-13],[4,-12],[6,-7],[7,0],[11,7],[12,9],[9,9],[8,7],[5,0],[.1,-7]],j%2?metal:body,fine?32:16);
+            bead(x+7,side*25,5,2.4,trim);ring(x-11,side*25,4);for(let k=-1;k<=1;k++)curve([[x-4,side*25+k*3,12],[x+4,side*25+k*4,14]],.45,metal);}
+          break;
+        case 'sevenstars':
+          sword(at(.32),at(.96),9);for(let j=0;j<7;j++){const x=at(.39+j*.075),y=Math.sin(j*1.6)*4;emblemStar(g,[x,y,8],2.8,trim,5);if(j)curve([[x-L*.075,Math.sin((j-1)*1.6)*4,8],[x,y,8]],.28,metal);}
+          for(const side of[-1,1])spine([[at(.33),0,4],[at(.36),side*25,4],[at(.44),side*30,4]],4,body,metal,1.6);break;
+        case 'gourd':
+          sectionBody([[at(.38),0,4,1,1],[at(.41),0,4,17,13],[at(.46),0,4,21,16],[at(.51),0,4,9,7],[at(.54),0,4,13,10],[at(.58),0,4,15,11],[at(.62),0,4,5,4],[at(.65),0,4,4,3]],body,{rows:46});
+          seam(.50,.515,4,9,metal,.75);knot(at(.52),-11);tassel(at(.51),-14,47,trim);cloud(at(.76),0,16);break;
+        case 'lotuswheel':
+          for(const s of [.42,.72]){ring(at(s),0,22,metal);ring(at(s),0,16,trim);for(let j=0;j<8;j++){const a=j/8*TAU;petal(at(s)+Math.cos(a)*18,Math.sin(a)*18,a+.5,17,4.5,j%2?body:trim);curve([[at(s),0,4],[at(s)+Math.cos(a)*16,Math.sin(a)*16,5]],.7,metal);}}
+          for(const side of[-1,1])spine([[at(.3),0,4],[at(.44),side*33,4],[at(.58),side*24,5],[at(.83),side*40,4]],4,body,trim);break;
+        case 'ruyi': {
+          // Matching cylindrical gold ends, with relief wrapped ON the metal.
+          // No lateral dragon coils: the long red-iron staff remains readable.
+          const aged=mat('#795025',.38,.67,6),bright=mat('#ffe6a8',.2,.86,6);
+          for(const [from,to,r] of [[-12,58,8.5],[at(.825),at(.997),7.4]]){
+            sleeve(from,to,r,r,metal);
+            for(const x of [from+2,from+6,to-6,to-2])torus(g,[x,0,0],[0,1,0],[0,0,1],r,.43,bright,around,sections);
+            const rows=fine?5:3;
+            for(let row=0;row<rows;row++)for(let face=0;face<4;face++){
+              const cx=mix(from+13,to-13,(row+.5)/rows),angle=face*TAU/4;
+              const count=fine?23:12,pts=Array.from({length:count},(_,j)=>{const t=j/(count-1),a=t*TAU*1.2,rr=4.2*(1-t*.8),theta=angle+Math.sin(a)*rr/r;return[cx+Math.cos(a)*rr,Math.cos(theta)*(r+.07),Math.sin(theta)*(r+.07)];});
+              carve(pts,aged,fine?.27:.32);
+              carve(pts.map(v=>[v[0]+.42,v[1]*1.009,v[2]*1.009]),bright,.13);
+            }
+            for(const phase of [0,Math.PI])seam((from+10)/L,(to-10)/L,1.5,r+.12,aged,.22,phase);
+          }
+          // Narrow inlaid strokes and a flush end medallion reward close viewing.
+          for(const angle of [.8,3.94])carve(Array.from({length:25},(_,j)=>{const s=.28+j/24*.52,r=blankAt(s)[3]+.03;return[at(s),Math.cos(angle)*r,Math.sin(angle)*r];}),mat('#d06440',.3,.4),.12);
+          revolved(g,[-12.5,0,0],[-1,0,0],[[.05,0],[7.4,0],[7.8,.6],[6.6,1],[.05,1.2]],metal,around);
+          break;
+        }
+        case 'erlang': {
+          const edge=mat('#ecf7ff',.17,.91,6),steel=mat('#7f9caf',.24,.84,6),fuller=mat('#344e63',.3,.7,6);
+          // Forged diamond sections give each of the three points a real bevel.
+          // Straight stations keep crisp cutting edges; subdivisions follow flex.
+          const forged=stations=>{
+            const rows=[];
+            for(let k=0;k<stations.length-1;k++){
+              const a=stations[k],b=stations[k+1],n=fine?8:4;
+              for(let j=0;j<n;j++)rows.push(a.map((v,i)=>mix(v,b[i],j/n)));
+            }
+            rows.push(stations[stations.length-1]);
+            const sections=rows.map(([s,y,w,h])=>[[at(s),y-w,2],[at(s),y-w*.66,2+h*.55],[at(s),y,2+h],[at(s),y+w*.66,2+h*.55],[at(s),y+w,2],[at(s),y,2-h*.65]]);
+            for(let j=0;j<sections.length-1;j++)for(let face=0;face<6;face++){
+              const next=(face+1)%6,m=face===0||face===3?edge:face===2?steel:fuller;
+              facet(g,sections[j][face],sections[j+1][face],sections[j+1][next],m);
+              facet(g,sections[j][face],sections[j+1][next],sections[j][next],m);
+            }
+            for(const end of [0,sections.length-1]){const c=rows[end];for(let j=0;j<6;j++)facet(g,[at(c[0]),c[1],2],sections[end][j],sections[end][(j+1)%6],steel);}
+          };
+          forged([[.704,0,4,2],[.75,0,13,4],[.828,0,12,4.2],[.995,0,.07,.08]]);
+          for(const side of [-1,1]){
+            forged([[.721,side*5,3,2],[.764,side*19,9,3.6],[.824,side*28,9.5,3.9],[.942,side*28,.07,.08]]);
+            // A recessed groove ends before each point, leaving clean cutting tips.
+            carve([[at(.75),side*17,5],[at(.8),side*27,5.7],[at(.895),side*28,3.7]],fuller,.45);
+          }
+          sleeve(at(.671),at(.728),5.6,7.1,steel);
+          for(const s of [.675,.689,.716])sleeve(at(s),at(s)+1.3,6.5,6.5,edge);
+          enamelEye(at(.70),0,7.7,1,edge);gem(g,[at(.70),0,8],7,1.8,mat('#83d6ef',.16,.5),6);
+          for(const s of [.29,.47,.62]){sleeve(at(s),at(s)+2.6,5.5-3*s,5.5-3*s,steel);seam(s-.009,s+.009,3,5.5-3*s,fuller,.22);}
+          break;
+        }
+        case 'wukong':
+          for(const s of [.30,.87]){sleeve(at(s)-8,at(s)+9,9,9,metal);curl(at(s),-8,8,trim);curl(at(s),8,8,trim);}
+          sectionBody([[at(.48),0,4,2,2],[at(.53),0,4,19,9],[at(.59),0,4,23,10],[at(.65),0,4,16,8],[at(.69),0,4,3,3]],body,{rows:32});
+          for(const side of[-1,1]){leaf([at(.52),side*5,13],[at(.6),side*17,16],[at(.67),side*6,12],5.5,ivory,metal);enamelEye(at(.6),side*10,17,side);curl(at(.68),side*13,9,metal);
+            const plume=spine([[at(.62),side*16,6],[at(.70),side*46,6],[at(.84),side*52,5],[at(.95),side*27,3]],4.5,mat('#bc8541',.45,.13),metal,1.4);
+            for(let j=1;j<10;j++){const q=plume.sample(j/11);curve([[q[0]-6,q[1]+side*3,7],[q[0],q[1],8],[q[0]+5,q[1]-side*3,7]],.28,ivory);}
+            spine([[at(.44),side*5,4],[at(.39),side*27,5],[at(.31),side*32,4],[at(.22),side*19,3]],4.5,body,metal);}
+          gem(g,[at(.64),0,17],11,4,trim,8);cloud(at(.37),0,13);break;
+      }
+      return finishModel(g,p,{collection:'journey',silhouette:p.id,rarity:journeyIndex<3?'common':journeyIndex<7?'rare':journeyIndex<17?'epic':'legendary',continuousBody:true,reel:reelStyle,materials:'engraved-gilt-lacquer'});
+    }
+
     if(p.id==='walnut'){
       // Joinery, rather than applied foliage, supplies this travel rod's shape.
       sectionBody([[108,0,0,6.7,5.8],[113,-.2,0,8.7,6.2],[124,-.6,0,7.6,5.8],[139,0,0,5.8,5.3]],mat('#886043',.35,.06,7),{rows:26,sides});
@@ -504,7 +683,7 @@
     return finishModel(g,p,{collection:'myriad',silhouette,rarity:common?'common':rare?'rare':EXPANSION_IDS.indexOf(p.id)<17?'epic':'legendary',continuousBody:true,reel:reelStyle,materials:'surface-crafted'});
   }
   function buildMesh(rod,lowDetail=false){
-    const requestedProfile=profile(rod);if(EXPANSION_IDS.includes(requestedProfile.id))return buildExpansionMesh(requestedProfile,lowDetail);
+    const requestedProfile=profile(rod);if((requestedProfile.craft||EXPANSION_IDS.includes(requestedProfile.id)||JOURNEY_IDS.includes(requestedProfile.id)))return buildExpansionMesh(requestedProfile,lowDetail);
     const p=profile(rod),g=mesh(),metal=material(p.metal,.2,.86,6),trim=material(p.trim,.25,.65,6),wrap=material(p.wrap,.52,.04,4),grip=material(p.grip,.62,.03,/carbon|tide|frost|moon|astral/.test(p.id)?4:2),steps=lowDetail?36:p.id==='golden'?48:64,sides=lowDetail?10:p.id==='golden'?12:16,around=lowDetail?12:p.id==='golden'?16:22,sections=lowDetail?4:p.id==='golden'?5:6;
     const radius=s=>p.id==='guandao'&&s<.67?5.3-.5*s:1.38+5.35*Math.pow(1-s,1.18);
     if(p.id==='katana')swordBlank(g,lowDetail);else shaft(g,.015,.997,radius,material(p.shaft,p.pattern===0?.19:.3,p.pattern===6?.42:.12,p.pattern),steps,sides);
@@ -715,6 +894,7 @@
       bool transmission=abs(vMaterial.z-10.)<.1||abs(vMaterial.z-14.)<.1||abs(vMaterial.z-17.)<.1||abs(vMaterial.z-19.)<.1;
       if(uShadowPass>.5){if(transmission&&hash(floor(gl_FragCoord.xy))>.51)discard;gl_FragColor=fishingDepth(gl_FragCoord.z);return;}
       vec3 n=normalize(vNormal),view=normalize(vec3(-.22,.14,1.)),light=normalize(vec3(-.52,-.68,.78));float rough=vMaterial.x,metal=vMaterial.y,pattern=vMaterial.z,texture=1.;
+      if(pattern>29.5){float tone=dot(n,light);float band=tone>.5?1.:tone>-.05?.82:.61;gl_FragColor=vec4(pattern>30.5?vColor:vColor*band,1.);return;}
       if(pattern>.5&&pattern<1.5)texture=.95+.045*sin(vUv.x*.08+sin(vUv.y*7.)*.3)+.02*sin(vUv.y*29.+vUv.x*.04);
       else if(pattern>1.5&&pattern<2.5)texture=.86+.13*hash(floor(vec2(vUv.x*1.1,vUv.y*12.)))+.035*sin(vUv.x*1.7);
       else if(pattern>2.5&&pattern<3.5)texture=.9+.08*sin(vUv.x*1.8+vUv.y*8.)*sin(vUv.x*1.8-vUv.y*8.);
@@ -748,20 +928,31 @@
   function create(host,initial={}){
     if(!host?.ownerDocument)throw new Error('A live rod host is required.');
     const doc=host.ownerDocument,win=doc.defaultView||globalThis,ns='http://www.w3.org/2000/svg',staticSvg=host.querySelector('.fishing-rod-art'),previousVisibility=staticSvg?.style.visibility;
-    let rod=initial.rod||{id:staticSvg?.dataset.rodId||'bamboo'},bend=0,destroyed=false,gl=null,ctx=null,program=null,buffer=null,meshData=null,cpuMesh=null,observer=null,lastSignature='',canvas,shadowMap=null,shadowsEnabled=initial.shadows!==false;
+    let rod=initial.rod||{id:staticSvg?.dataset.rodId||'bamboo'},bend=0,destroyed=false,gl=null,ctx=null,program=null,buffer=null,meshData=null,cpuMesh=null,observer=null,lastSignature='',canvas,shadowMap=null,shadowsEnabled=initial.shadows!==false,paintedEntry=null,paintedGL=null,paintedPromise=Promise.resolve(null);
+    let Painted=paintedFor(rod);
+    const isPainted=()=>!!Painted?.assets[typeof rod==='string'?rod:rod?.id];
+    const paintedSegments=()=>['weapon','device'].includes(Painted?.assets[paintedEntry?.id]?.rig)?1:64;
+    function selectPainted(value){const id=typeof value==='string'?value:value?.id;doc.defaultView?.TracerFishingRelicVFX?.load(doc,id);doc.defaultView?.TracerFishingOnePieceVFX?.load(doc,id);doc.defaultView?.TracerFishingNarutoVFX?.load(doc,id);doc.defaultView?.TracerFishingValorantVFX?.load(doc,id);paintedEntry=Painted?.get(doc,id)||null;if(paintedEntry||!Painted?.assets[id]){paintedPromise=Promise.resolve(paintedEntry);return;}paintedPromise=Painted.load(doc,id).then(entry=>{if(!destroyed&&profile(rod).id===id){paintedEntry=entry;lastSignature='';draw();}return entry;}).catch(()=>{if(!destroyed&&profile(rod).id===id){prepareMesh();lastSignature='';draw();}return null;});}
     function makeCanvas(){const node=doc.createElement('canvas');node.className='fishing-rod-flex-canvas fishing-rod-3d-canvas';node.setAttribute('aria-hidden','true');Object.assign(node.style,{position:'absolute',display:'block',pointerEvents:'none',imageRendering:'auto'});host.appendChild(node);return node;}canvas=makeCanvas();
     const markers=doc.createElementNS(ns,'svg');markers.classList.add('fishing-rod-flex-markers');markers.setAttribute('viewBox','0 0 '+W+' '+H);markers.setAttribute('aria-hidden','true');Object.assign(markers.style,{position:'absolute',left:'0',top:'0',width:'100%',height:'100%',overflow:'visible',pointerEvents:'none'});
     const tipMarker=doc.createElementNS(ns,'circle'),gripMarker=doc.createElementNS(ns,'circle');for(const [node,kind]of [[tipMarker,'tip'],[gripMarker,'grip']]){node.classList.add('fishing-rod-flex-'+kind);node.setAttribute('r','.015');node.setAttribute('opacity','0');markers.appendChild(node);}gripMarker.setAttribute('cx',GRIP.x);gripMarker.setAttribute('cy',GRIP.y);host.appendChild(markers);
     function compile(type,source){const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){const error=gl.getShaderInfoLog(shader);gl.deleteShader(shader);throw Error(error);}return shader;}
-    function releaseGL(lose=true){if(!gl)return;canvas.removeEventListener('webglcontextlost',contextLost);shadowMap?.destroy();shadowMap=null;if(buffer)gl.deleteBuffer(buffer);if(program)gl.deleteProgram(program);if(lose)gl.getExtension('WEBGL_lose_context')?.loseContext();gl=null;buffer=program=null;}
-    function contextLost(event){event.preventDefault();if(!destroyed)fallback();}
-    function fallback(){releaseGL();canvas.remove();canvas=makeCanvas();ctx=canvas.getContext('2d',{alpha:true});meshData=buildMesh(rod,true);cpuMesh=null;lastSignature='';host.dataset.rodFlexRenderer='canvas2d';}
+    function releaseGL(lose=true){if(!gl)return;paintedGL?.destroy();paintedGL=null;canvas.removeEventListener('webglcontextlost',contextLost);shadowMap?.destroy();shadowMap=null;if(buffer)gl.deleteBuffer(buffer);if(program)gl.deleteProgram(program);if(lose)gl.getExtension('WEBGL_lose_context')?.loseContext();gl=null;buffer=program=null;}
+    function contextLost(event){event.preventDefault();if(!destroyed){fallback();draw();}}
+    function fallback(){releaseGL();canvas.remove();canvas=makeCanvas();ctx=canvas.getContext('2d',{alpha:true});meshData=isPainted()&&!meshData?null:buildMesh(rod,true);cpuMesh=null;lastSignature='';host.dataset.rodFlexRenderer='canvas2d';}
+    function prepareMesh(){
+      if(!meshData)meshData=buildMesh(rod,!gl);cpuMesh=null;if(!gl)return;
+      // Painted collections never compile the PBR material shader, construct a
+      // 20K-triangle fallback or allocate a shadow map unless loading fails.
+      if(!program){const vertex=compile(gl.VERTEX_SHADER,VERTEX),fragment=compile(gl.FRAGMENT_SHADER,FRAGMENT);program=gl.createProgram();gl.attachShader(program,vertex);gl.attachShader(program,fragment);gl.linkProgram(program);gl.deleteShader(vertex);gl.deleteShader(fragment);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));buffer=gl.createBuffer();shadowMap=Lighting?.createShadowMap(gl,program,{size:1024,matrix:Lighting.lightView({center:[W/2,H/2,0],direction:[-.52,-.68,.78],extent:255,distance:600,far:1300}),bias:.00048});host.dataset.shadows=shadowMap?'pcf':'unavailable';}
+      gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);for(const [name,size,offset]of [['aLocal',3,0],['aNormal',3,3],['aColor',3,6],['aMaterial',3,9],['aUv',2,12]]){const location=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,56,offset*4);}gl.bufferData(gl.ARRAY_BUFFER,meshData.vertices,gl.STATIC_DRAW);
+    }
     try{
-      gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:true,powerPreference:'low-power'});if(!gl)throw Error('WebGL unavailable');const vertex=compile(gl.VERTEX_SHADER,VERTEX),fragment=compile(gl.FRAGMENT_SHADER,FRAGMENT);program=gl.createProgram();gl.attachShader(program,vertex);gl.attachShader(program,fragment);gl.linkProgram(program);gl.deleteShader(vertex);gl.deleteShader(fragment);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));
-      gl.useProgram(program);buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);for(const [name,size,offset]of [['aLocal',3,0],['aNormal',3,3],['aColor',3,6],['aMaterial',3,9],['aUv',2,12]]){const location=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,56,offset*4);}gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.BLEND);gl.disable(gl.CULL_FACE);canvas.addEventListener('webglcontextlost',contextLost);host.dataset.rodFlexRenderer='webgl';meshData=buildMesh(rod);gl.bufferData(gl.ARRAY_BUFFER,meshData.vertices,gl.STATIC_DRAW);shadowMap=Lighting?.createShadowMap(gl,program,{size:1024,matrix:Lighting.lightView({center:[W/2,H/2,0],direction:[-.52,-.68,.78],extent:255,distance:600,far:1300}),bias:.00048});host.dataset.shadows=shadowMap?'pcf':'unavailable';
+      gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:true,powerPreference:'low-power'});if(!gl)throw Error('WebGL unavailable');
+      gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.BLEND);gl.disable(gl.CULL_FACE);canvas.addEventListener('webglcontextlost',contextLost);host.dataset.rodFlexRenderer='webgl';if(!isPainted())prepareMesh();
     }catch(_){fallback();}
     const light=unit([-.52,-.68,.78]),half=unit(add(light,unit([-.22,.14,1])));
-    function faceColor(face,angle){const c=Math.cos(angle),s=Math.sin(angle),tx=AXIS[0]*c+NORMAL[0]*s,ty=AXIS[1]*c+NORMAL[1]*s,nx=NORMAL[0]*c-AXIS[0]*s,ny=NORMAL[1]*c-AXIS[1]*s,x=tx*face.normal[0]+nx*face.normal[1],y=ty*face.normal[0]+ny*face.normal[1],z=face.normal[2],lit=.25+Math.max(0,x*light[0]+y*light[1]+z*light[2])*.9+Math.max(0,x*.68+y*.26+z*.68)*.15,spec=Math.pow(Math.max(0,x*half[0]+y*half[1]+z*half[2]),mix(130,20,face.rough))*(.18+face.metal*.82),alpha=transparentPattern(face.pattern)?(face.pattern===19?.35:face.pattern===10?.72:.62):1;return 'rgba('+face.color.map((v,i)=>{const value=v*lit+mix(1,v,face.metal*.66)*spec*.9+(face.pattern===18?[.44,.2,.028][i]*(.65+.35*Math.max(z,0)):0);return Math.round(clamp(Math.pow(1.16*value/(1+value*.23),.94))*255);}).join(',')+','+alpha+')';}
+    function faceColor(face,angle){const c=Math.cos(angle),s=Math.sin(angle),tx=AXIS[0]*c+NORMAL[0]*s,ty=AXIS[1]*c+NORMAL[1]*s,nx=NORMAL[0]*c-AXIS[0]*s,ny=NORMAL[1]*c-AXIS[1]*s,x=tx*face.normal[0]+nx*face.normal[1],y=ty*face.normal[0]+ny*face.normal[1],z=face.normal[2],lit=.25+Math.max(0,x*light[0]+y*light[1]+z*light[2])*.9+Math.max(0,x*.68+y*.26+z*.68)*.15,spec=Math.pow(Math.max(0,x*half[0]+y*half[1]+z*half[2]),mix(130,20,face.rough))*(.18+face.metal*.82),alpha=transparentPattern(face.pattern)?(face.pattern===19?.35:face.pattern===10?.72:.62):1;if(face.pattern>=30){const tone=x*light[0]+y*light[1]+z*light[2],band=face.pattern===31?1:tone>.5?1:tone>-.05?.82:.61;return 'rgba('+face.color.map(v=>Math.round(clamp(v*band)*255)).join(',')+',1)';}return 'rgba('+face.color.map((v,i)=>{const value=v*lit+mix(1,v,face.metal*.66)*spec*.9+(face.pattern===18?[.44,.2,.028][i]*(.65+.35*Math.max(z,0)):0);return Math.round(clamp(Math.pow(1.16*value/(1+value*.23),.94))*255);}).join(',')+','+alpha+')';}
     function prepareCpuMesh(){
       const data=meshData.vertices,local=[],vertices=new Map(),faces=[],index=offset=>{const key=data[offset]+':'+data[offset+1]+':'+data[offset+2];let n=vertices.get(key);if(n===undefined){n=local.length;vertices.set(key,n);local.push([data[offset],data[offset+1],data[offset+2]]);}return n;},same=(a,b)=>data[a]===data[b]&&data[a+1]===data[b+1]&&data[a+2]===data[b+2];
       for(let i=0;i<data.length;i+=42){let offsets=[i,i+14,i+28];if(i+83<data.length&&same(i,i+42)&&same(i+28,i+56)){offsets.push(i+70);i+=42;}const first=offsets[0],normal=unit([3,4,5].map(k=>offsets.reduce((v,at)=>v+data[at+k],0))),along=offsets.reduce((v,at)=>v+data[at],0)/offsets.length;
@@ -771,20 +962,23 @@
       faces.sort((a,b)=>a.depth-b.depth);const points=new Float32Array(local.length*2),dynamic=[];for(let i=0;i<local.length;i++){const p=deformed(local[i],0);points[i*2]=p.x;points[i*2+1]=p.y;if(local[i][0]>.3)dynamic.push(i);}cpuMesh={local,points,faces,dynamic};
     }
     function drawCanvas(scale,dpr){
-      if(!ctx)return;if(!cpuMesh)prepareCpuMesh();ctx.setTransform(scale*dpr,0,0,scale*dpr,PAD*scale*dpr,PAD*scale*dpr);ctx.clearRect(-PAD,-PAD,W+2*PAD,H+2*PAD);const basis=new Map(),positions=cpuMesh.points;
+      if(!ctx)return;if(paintedEntry){ctx.setTransform(scale*dpr,0,0,scale*dpr,PAD*scale*dpr,PAD*scale*dpr);ctx.clearRect(-PAD,-PAD,W+2*PAD,H+2*PAD);Painted.draw2D(ctx,paintedEntry,Painted.vertices(paintedEntry,bend,deformed,L,paintedSegments()));return;}if(!cpuMesh)prepareCpuMesh();ctx.setTransform(scale*dpr,0,0,scale*dpr,PAD*scale*dpr,PAD*scale*dpr);ctx.clearRect(-PAD,-PAD,W+2*PAD,H+2*PAD);const basis=new Map(),positions=cpuMesh.points;
       const at=along=>{let value=basis.get(along);if(!value){const p=curvePoint(along,bend),angle=p.angle*Math.PI/180;value={x:p.x,y:p.y,nx:NORMAL[0]*Math.cos(angle)-AXIS[0]*Math.sin(angle),ny:NORMAL[1]*Math.cos(angle)-AXIS[1]*Math.sin(angle),angle};basis.set(along,value);}return value;};
       for(const i of cpuMesh.dynamic){const [s,n,z]=cpuMesh.local[i],p=at(s);positions[i*2]=p.x+p.nx*n+z*.22;positions[i*2+1]=p.y+p.ny*n-z*.14;}
       ctx.lineJoin='round';ctx.lineWidth=.3;for(const face of cpuMesh.faces){const angle=face.along<=.3?0:at(face.along).angle;if(face.along>.3&&face.normal[2]<.27){const c=Math.cos(angle),s=Math.sin(angle),x=(AXIS[0]*c+NORMAL[0]*s)*face.normal[0]+(NORMAL[0]*c-AXIS[0]*s)*face.normal[1],y=(AXIS[1]*c+NORMAL[1]*s)*face.normal[0]+(NORMAL[1]*c-AXIS[1]*s)*face.normal[1];if(-.22*x+.14*y+face.normal[2]<=0)continue;}ctx.beginPath();let first=true;for(const i of face.indices){if(first){ctx.moveTo(positions[i*2],positions[i*2+1]);first=false;}else ctx.lineTo(positions[i*2],positions[i*2+1]);}ctx.closePath();ctx.fillStyle=face.along<=.3?face.baseColor:faceColor(face,angle);ctx.strokeStyle=ctx.fillStyle;ctx.fill();ctx.stroke();}
     }
     function draw(){
       if(destroyed)return;const tip=curvePoint(1,bend);tipMarker.setAttribute('cx',tip.x);tipMarker.setAttribute('cy',tip.y);host.dataset.rodBend=String(bend);
-      if(doc.hidden||!host.isConnected)return;const width=host.clientWidth||W,height=host.clientHeight||H,scale=Math.min(width/W,height/H),dpr=Math.min(2,Math.max(1,win.devicePixelRatio||1)),key=[profile(rod).id,gl?bend:Math.round(bend*800)/800,width,height,dpr,shadowsEnabled].join(':');if(key===lastSignature)return;lastSignature=key;
+      if(doc.hidden||!host.isConnected||!paintedEntry&&!meshData)return;const width=host.clientWidth||W,height=host.clientHeight||H,scale=Math.min(width/W,height/H),dpr=Math.min(2,Math.max(1,win.devicePixelRatio||1)),key=[profile(rod).id,gl||paintedEntry?bend:Math.round(bend*800)/800,width,height,dpr,shadowsEnabled].join(':');if(key===lastSignature)return;lastSignature=key;
       const area=[W+2*PAD,H+2*PAD],cssWidth=area[0]*scale,cssHeight=area[1]*scale;Object.assign(canvas.style,{left:(width-W*scale)/2-PAD*scale+'px',top:(height-H*scale)/2-PAD*scale+'px',width:cssWidth+'px',height:cssHeight+'px'});if(canvas.width!==Math.ceil(cssWidth*dpr)||canvas.height!==Math.ceil(cssHeight*dpr)){canvas.width=Math.ceil(cssWidth*dpr);canvas.height=Math.ceil(cssHeight*dpr);}
-      if(gl){if(gl.isContextLost())return;gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);gl.uniform1f(gl.getUniformLocation(program,'uBend'),bend);gl.uniform2fv(gl.getUniformLocation(program,'uArea'),area);if(shadowMap){shadowMap.begin();gl.drawArrays(gl.TRIANGLES,0,meshData.vertices.length/14);shadowMap.end(canvas.width,canvas.height,shadowsEnabled);}const count=meshData.vertices.length/14,opaque=meshData.opaqueVertices??count;gl.drawArrays(gl.TRIANGLES,0,opaque);if(opaque<count){gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,opaque,count-opaque);gl.depthMask(true);gl.disable(gl.BLEND);}}else drawCanvas(scale,dpr);
-      if(staticSvg)staticSvg.style.visibility='hidden';host.dataset.rodFlex='ready';host.dataset.rodGeometry='mesh3d';host.dataset.rodTriangles=String(meshData.triangles);
+      if(gl){if(gl.isContextLost())return;gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(paintedEntry){if(!paintedGL)paintedGL=Painted.createGL(gl);paintedGL.draw(paintedEntry,Painted.vertices(paintedEntry,bend,deformed,L,paintedSegments()),area,PAD);}else{gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);for(const [name,size,offset]of [['aLocal',3,0],['aNormal',3,3],['aColor',3,6],['aMaterial',3,9],['aUv',2,12]]){const location=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,56,offset*4);}gl.uniform1f(gl.getUniformLocation(program,'uBend'),bend);gl.uniform2fv(gl.getUniformLocation(program,'uArea'),area);if(shadowMap){shadowMap.begin();gl.drawArrays(gl.TRIANGLES,0,meshData.vertices.length/14);shadowMap.end(canvas.width,canvas.height,shadowsEnabled);}const count=meshData.vertices.length/14,opaque=meshData.opaqueVertices??count;gl.drawArrays(gl.TRIANGLES,0,opaque);if(opaque<count){gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,opaque,count-opaque);gl.depthMask(true);gl.disable(gl.BLEND);}}}else drawCanvas(scale,dpr);
+      if(staticSvg)staticSvg.style.visibility='hidden';host.dataset.rodFlex='ready';host.dataset.rodGeometry=paintedEntry?'painted-flex':'mesh3d';host.dataset.rodTriangles=String(paintedEntry?paintedSegments()*2:meshData?.triangles||0);
     }
     function visibility(){if(!doc.hidden){lastSignature='';draw();}}doc.addEventListener('visibilitychange',visibility);if(win.ResizeObserver){observer=new win.ResizeObserver(()=>{lastSignature='';draw();});observer.observe(host);}
-    const api={get kind(){return gl?'webgl':'canvas2d';},update(next={}){if(destroyed)return;if(next.shadows!==undefined)shadowsEnabled=next.shadows!==false;if(next.rod&&profile(next.rod).id!==profile(rod).id){rod=next.rod;meshData=buildMesh(rod,!gl);cpuMesh=null;if(gl){gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,meshData.vertices,gl.STATIC_DRAW);}lastSignature='';}if(next.bend!==undefined)bend=clamp(next.bend,-.24,.24);draw();},getTip(){return{...curvePoint(1,bend)};},getGeometry(){return{width:W,height:H,length:L,bend,grip:{...GRIP},baseTip:{...TIP},tip:curvePoint(1,bend),normal:{x:NORMAL[0],y:NORMAL[1]},triangles:meshData.triangles,rodId:profile(rod).id};},destroy(){if(destroyed)return;destroyed=true;observer?.disconnect();doc.removeEventListener('visibilitychange',visibility);releaseGL();canvas.remove();markers.remove();if(staticSvg&&host.contains(staticSvg))staticSvg.style.visibility=previousVisibility;for(const key of ['rodFlex','rodFlexRenderer','rodGeometry','rodTriangles','rodBend','shadows'])delete host.dataset[key];meshData=cpuMesh=null;}};api.update(initial);return api;
+    const api={get kind(){return gl?'webgl':'canvas2d';},update(next={}){if(destroyed)return;if(next.shadows!==undefined)shadowsEnabled=next.shadows!==false;if(next.rod&&profile(next.rod).id!==profile(rod).id){rod=next.rod;Painted=paintedFor(rod);meshData=null;cpuMesh=null;selectPainted(rod);if(!isPainted())prepareMesh();lastSignature='';}if(next.bend!==undefined)bend=clamp(next.bend,-.24,.24);draw();},whenReady(){return paintedPromise;},getTip(){return{...curvePoint(1,bend)};},getGeometry(){return{width:W,height:H,length:L,bend,grip:{...GRIP},baseTip:{...TIP},tip:curvePoint(1,bend),normal:{x:NORMAL[0],y:NORMAL[1]},triangles:paintedEntry?paintedSegments()*2:meshData?.triangles||0,rodId:profile(rod).id};},destroy(){if(destroyed)return;destroyed=true;observer?.disconnect();doc.removeEventListener('visibilitychange',visibility);releaseGL();canvas.remove();markers.remove();if(staticSvg&&host.contains(staticSvg))staticSvg.style.visibility=previousVisibility;for(const key of ['rodFlex','rodFlexRenderer','rodGeometry','rodTriangles','rodBend','shadows'])delete host.dataset[key];meshData=cpuMesh=null;}};selectPainted(rod);api.update(initial);return api;
   }
-  return Object.freeze({create,profile,curvePoint,deformed,buildMesh});
+  // Live scenes need an identity/geometry anchor, not the catalogue atlas.
+  // The renderer supplies the entire rod in both WebGL and Canvas fallback.
+  function liveMarkup(rod){const id=String(rod?.id||'bamboo').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));return '<svg class="fishing-rod-art" data-rod-id="'+id+'" viewBox="0 0 250.8 418" aria-hidden="true"></svg>';}
+  return Object.freeze({create,profile,curvePoint,deformed,buildMesh,liveMarkup});
 });

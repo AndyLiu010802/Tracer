@@ -24,13 +24,13 @@ function fixture(t, saved, area = { x: 0, y: 0, width: 1200, height: 900 }) {
     setPosition(x, y) { Object.assign(this.bounds, { x, y }); this.emit('moved'); }
     setBounds(bounds) { Object.assign(this.bounds, bounds); this.emit('moved'); }
     setIgnoreMouseEvents(ignore, options) { this.mouseModes.push({ ignore, options }); }
-    showInactive() { this.visible = true; } hide() { this.visible = false; }
+    showInactive() { this.shows = (this.shows || 0) + 1; this.visible = true; } hide() { this.visible = false; }
     loadURL(url) { this.webContents.mainFrame.url = url; }
     destroy() { this.dead = true; this.emit('closed'); }
   }
   const main = new Window({ width: 1000, height: 800, x: 0, y: 0 });
   const screen = { getPrimaryDisplay: () => ({ workArea: area }), getDisplayNearestPoint: () => ({ workArea: area }) };
-  const menus=[];const Menu={buildFromTemplate(items){menus.push(items);return{popup(){}};}};
+  const menus=[],popups=[];const Menu={buildFromTemplate(items){menus.push(items);return{popup(options){popups.push(options);}};}};
   const controller = attachFishing(main, origin, dir, () => opened++, { BrowserWindow: Window, ipcMain, screen, Menu });
   function event(window = main) { return { sender: window.webContents, senderFrame: window.webContents.mainFrame }; }
   function update(value = {}) { ipcMain.emit('tracer-fishing-update', event(), { accountScope: 'guest', accountGeneration: 0, accountRestoreId: '', fishing: { sessionId: 'session-a' }, ...value }); }
@@ -41,7 +41,7 @@ function fixture(t, saved, area = { x: 0, y: 0, width: 1200, height: 900 }) {
   }
   function action(type, sequence = 1, extra = {}, from = event(windows[1])) { ipcMain.emit('tracer-fishing-action', from, { ...credentials(), type, sequence, ...extra }); }
   function command(type, value, extra = {}) { ipcMain.emit('tracer-fishing-command', event(windows[1]), { ...credentials(), type, value, ...extra }); }
-  return { menus, dir, ipcMain, main, windows, event, update, ready, credentials, action, command, controller, opened: () => opened };
+  return { menus, popups, dir, ipcMain, main, windows, event, update, ready, credentials, action, command, controller, opened: () => opened };
 }
 
 test('the fishing window replaces characters with a sandboxed overlay and waits for the active account', t => {
@@ -57,6 +57,33 @@ test('the fishing window replaces characters with a sandboxed overlay and waits 
   let prevented = false; window.webContents.emit('will-navigate', { preventDefault() { prevented = true; } }, 'https://evil.example/'); assert.equal(prevented, true);
   f.main.destroy(); assert.equal(window.dead, true);
   for (const name of ['update', 'show', 'hide', 'action', 'command']) assert.equal(f.ipcMain.listenerCount('tracer-fishing-' + name), 0);
+});
+
+test('motor state reaches the native overlay and pause/resume retain account and session validation', t => {
+  const f=fixture(t);f.controller.show();f.update({busy:true,autoMotor:{owned:true,installed:true,running:true,baitCount:12,saving:true,unbounded:'ignored'}});const window=f.ready();
+  const state=window.messages.filter(([name])=>name==='tracer-fishing-snapshot').at(-1)[1];
+  assert.deepEqual(state.autoMotor,{owned:true,installed:true,running:true,baitCount:12,saving:true});assert.equal(state.busy,true);
+  f.action('pause-motor',1,{accountScope:'stale'});assert.equal(f.main.messages.length,0);
+  f.action('pause-motor',1);assert.equal(f.main.messages.at(-1)[1].type,'pause-motor');
+  f.action('start-motor',2);assert.equal(f.main.messages.at(-1)[1].type,'start-motor');
+  f.action('install-motor',3);assert.equal(f.main.messages.length,2);f.main.destroy();
+});
+
+test('live cast snapshots do not repeatedly show or move the transparent window', t => {
+  const f=fixture(t);f.controller.show();f.update();const window=f.ready(),bounds=window.getBounds(),shows=window.shows;
+  window.emit('ready-to-show');
+  for(let i=0;i<120;i++)f.update({session:{id:'session-a',phase:'reeling',progress:i/120}});
+  assert.equal(window.shows,shows,'show only on a visibility transition, including both native ready events');
+  assert.deepEqual(window.getBounds(),bounds);assert.equal(window.options.webPreferences.backgroundThrottling,true);
+  f.controller.hide(false);const count=window.messages.length;f.update();assert.equal(window.messages.length,count,'no hidden renderer IPC churn');assert.equal(window.isVisible(),false);f.controller.show();assert.equal(window.shows,shows+1);
+  f.main.destroy();
+});
+
+test('first hydration initializes the desktop once while account changes still reload it',t=>{
+  const f=fixture(t);f.controller.show();const window=f.ready();assert.equal(window.isVisible(),false);
+  f.update();assert.equal(window.reloads,0);assert.equal(window.isVisible(),true);
+  f.update({accountScope:'second',accountGeneration:1});assert.equal(window.reloads,1);assert.equal(window.isVisible(),false);
+  f.ready();assert.equal(window.isVisible(),true);f.main.destroy();
 });
 
 test('transparent blank space passes through only current scoped commands and dragging restores input', t => {
@@ -252,6 +279,14 @@ test('desktop ponds retain their theme and real residents without sending the co
   assert.deepEqual(window.messages.at(-1)[1].desktopPond.fish,[]);f.main.destroy();
 });
 
+test('desktop and companion box forward only known cosmetic skin IDs',t=>{
+  const f=fixture(t);f.controller.show();f.update({desktopPond:{pond:{style:'coral',skinId:'sunny',decorations:[]},fish:[]},tackle:{pondSkinId:'sunny',baits:[]}});
+  const w=f.ready(),value=w.messages.at(-1)[1];assert.equal(value.desktopPond.pond.skinId,'sunny');assert.equal(value.tackle.pondSkinId,'sunny');
+  f.command('open-bait-box');const box=f.windows[2];box.webContents.emit('did-finish-load');assert.equal(box.messages.at(-1)[1].tackle.pondSkinId,'sunny');
+  f.update({desktopPond:{pond:{style:'coral',skinId:'not-a-skin',decorations:[]},fish:[]},tackle:{pondSkinId:'not-a-skin',baits:[]}});
+  assert.equal(w.messages.at(-1)[1].desktopPond.pond.skinId,null);assert.equal(w.messages.at(-1)[1].tackle.pondSkinId,null);f.main.destroy();
+});
+
 test('pond resizing is scoped, bounded, preserves aspect and center, and restores saved scale', t => {
   const f=fixture(t);f.controller.show();f.update();const window=f.ready(),before=window.getBounds();
   f.command('resize',2,{nativeSessionId:'stale'});f.command('resize',NaN);assert.deepEqual(window.getBounds(),before);
@@ -273,4 +308,85 @@ test('pond native menu offers rod summoning and ignores stale menu callbacks',t=
   f.update({accountScope:'other'});f.ready();const count=w.messages.length;choose('召唤鱼竿');assert.equal(w.messages.length,count);
   f.update({accountScope:'other',session:{phase:'reeling'}});f.command('context-menu');assert.equal(f.menus.at(-1).find(row=>row.label==='召唤鱼竿').enabled,false);
   f.main.destroy();
+});
+
+
+function baitFixture(t, patch={}, area) {
+  const f=fixture(t,undefined,area);t.after(()=>f.main.destroy());
+  const tackle={coins:100,equippedBaitId:'earthworm',busy:false,locked:false,pendingSave:false,baits:require('../../public/fishing-model').catalog.baits.map(b=>({...b,count:b.id==='earthworm'?30:0})),...patch};
+  f.controller.show();f.update({tackle});f.ready();f.command('open-bait-box');
+  const box=f.windows[2];box.webContents.emit('did-finish-load');
+  const auth=()=>box.messages.filter(([channel])=>channel==='tracer-fishing-bait-snapshot').at(-1)[1];
+  const command=(type,extra={},from=f.event(box))=>f.ipcMain.emit('tracer-fishing-bait-command',from,{...auth(),type,...extra});
+  const menu=(id='prawn')=>{command('context-menu',{baitId:id});return f.menus.at(-1);};
+  return {...f,tackle,box,boxCommand:command,boxAuth:auth,boxMenu:menu};
+}
+
+test('the bait box opens on desktop, stays bounded on negative monitors and receives only five bait rows',t=>{
+  const area={x:-900,y:-600,width:900,height:600},f=baitFixture(t,{},area),b=f.box.getBounds();
+  assert.equal(f.opened(),0);assert.equal(f.box.isVisible(),true);assert.equal(f.box.options.webPreferences.sandbox,true);
+  assert.equal(b.width,320);assert.equal(b.height,208);
+  const pond=f.windows[1].getBounds();assert(b.x+b.width<=pond.x||b.x>=pond.x+pond.width||b.y+b.height<=pond.y,'opened box avoids covering the pond');
+  assert.equal(f.box.options.alwaysOnTop,true);assert.ok(b.x>=area.x&&b.y>=area.y&&b.x+b.width<=area.x+area.width&&b.y+b.height<=area.y+area.height);
+  const state=f.boxAuth();assert.equal(state.tackle.baits.length,5);assert.equal(Object.hasOwn(state,'state'),false);assert.equal(Object.hasOwn(state.tackle.baits[0],'fishIds'),false);
+  f.command('open-bait-box');assert.equal(f.windows.length,3,'opening reuses the current box');
+  f.boxMenu().find(row=>row.label?.startsWith('购买并装备')).click();
+  const action=f.main.messages.at(-1)[1];assert.equal(action.type,'buy-equip-bait');assert.equal(action.value,'prawn');assert.equal(Object.hasOwn(action,'price'),false);assert.equal(f.opened(),0);
+  f.main.destroy();assert.equal(f.box.isDestroyed(),true);assert.equal(f.ipcMain.listenerCount('tracer-fishing-bait-command'),0);
+});
+
+test('bait menu never equips empty stock and disables spending while busy, fishing, unsaved or broke',t=>{
+  for(const patch of [{},{busy:true},{locked:true},{pendingSave:true},{coins:0}]){
+    const f=baitFixture(t,patch),rows=f.boxMenu();
+    assert.equal(rows.find(row=>row.label==='装备').enabled,false);
+    const buy=rows.find(row=>row.label?.startsWith('购买 10'));
+    assert.equal(buy.enabled,!Object.keys(patch).length);
+    if(!buy.enabled){const count=f.main.messages.length;buy.click();assert.equal(f.main.messages.length,count);}
+  }
+});
+
+test('bait menu callbacks are single-use and revalidate balance, locks, cast and account at click time',t=>{
+  for(const change of ['repeat','coins','busy','locked','cast','account','close']){
+    const f=baitFixture(t),buy=f.boxMenu().find(row=>row.label?.startsWith('购买 10')),before=f.main.messages.length;
+    if(change==='repeat'){buy.click();buy.click();assert.equal(f.main.messages.length,before+1);continue;}
+    if(['coins','busy','locked'].includes(change))f.update({tackle:{...f.tackle,[change]:change==='coins'?0:true}});
+    if(change==='cast')f.update({tackle:f.tackle,fishing:{sessionId:'new-cast'}});
+    if(change==='account')f.update({accountScope:'another',tackle:f.tackle});
+    if(change==='close'){f.boxCommand('close');f.command('open-bait-box');f.windows.at(-1).webContents.emit('did-finish-load');}
+    buy.click();assert.equal(f.main.messages.length,before,change);
+  }
+});
+
+test('bait commands reject stale scopes, frames, invented bait and arbitrary purchase messages',t=>{
+  const f=baitFixture(t),before=f.main.messages.length;
+  f.boxCommand('context-menu',{baitId:'prawn',nativeSessionId:'obsolete'});
+  f.boxCommand('context-menu',{baitId:'prawn'},f.event(f.main));
+  f.boxCommand('context-menu',{baitId:'prawn'},{...f.event(f.box),senderFrame:{url:f.box.webContents.mainFrame.url}});
+  f.boxCommand('context-menu',{baitId:'free-gold'});f.boxCommand('buy-bait',{baitId:'prawn',quantity:100,price:0});
+  assert.equal(f.menus.length,0);assert.equal(f.main.messages.length,before);
+  f.ipcMain.emit('tracer-fishing-command',f.event(),{type:'account-lock'});assert.equal(f.box.isDestroyed(),true);
+});
+
+test('a stock-only equipment choice and save retry remain in the desktop window',t=>{
+  const f=baitFixture(t,{baits:require('../../public/fishing-model').catalog.baits.map(b=>({...b,count:10}))});
+  f.boxMenu().find(row=>row.label==='装备').click();assert.equal(f.main.messages.at(-1)[1].type,'equip-bait');
+  f.update({tackle:{...f.tackle,pendingSave:true}});f.boxCommand('retry-save');assert.equal(f.main.messages.at(-1)[1].type,'retry-save');assert.equal(f.opened(),0);
+});
+
+test('bait preload forwards only menu intent with authoritative credentials, never a price or purchase',()=>{
+  let bridge;const events=new EventEmitter(),sent=[];
+  const ipc={on:(...args)=>events.on(...args),removeListener:(...args)=>events.removeListener(...args),send:(...args)=>sent.push(args)};
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../fishing-bait-preload.js'),'utf8'),{require:()=>({ipcRenderer:ipc,contextBridge:{exposeInMainWorld:(_name,value)=>bridge=value}}),process:{isMainFrame:true}});
+  bridge.send({type:'context-menu',baitId:'prawn'});assert.equal(sent.length,0);
+  events.emit('tracer-fishing-bait-snapshot',{}, {accountScope:'guest',accountGeneration:2,accountRestoreId:'restore',sessionId:'cast',nativeSessionId:'native'});
+  bridge.send({type:'context-menu',baitId:'prawn',nativeSessionId:'spoof',price:0,quantity:100});
+  assert.deepEqual(JSON.parse(JSON.stringify(sent.at(-1))),['tracer-fishing-bait-command',{type:'context-menu',accountScope:'guest',accountGeneration:2,accountRestoreId:'restore',sessionId:'cast',nativeSessionId:'native',baitId:'prawn'}]);
+  bridge.send({type:'buy-bait',baitId:'prawn'});bridge.send({type:'context-menu',baitId:'unknown'});assert.equal(sent.length,1);
+});
+
+test('a queued physical release retains hold time across credential acknowledgement',()=>{
+  const f=preloadGestureFixture();f.bridge.send({type:'cast-start'});f.bridge.send({type:'cast-release',heldMs:420});
+  f.update({...f.initial,nativeSessionId:'native-cast',session:{id:'new-cast',phase:'charging'}});
+  assert.equal(f.sent[1].heldMs,420);
+  const g=preloadGestureFixture();g.bridge.send({type:'cast-release',heldMs:Infinity});assert.equal(g.sent[0].heldMs,undefined);
 });

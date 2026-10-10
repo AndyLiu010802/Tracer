@@ -1,0 +1,2839 @@
+{
+  "credit": 100000,
+  "fishing": {
+    "version": 1,
+    "updatedAt": 1119,
+    "equippedRodId": "bamboo",
+    "equippedBaitId": "worm",
+    "equippedCabinId": "wood",
+    "boxes": [
+      {
+        "id": "box_rs_1_3s5on",
+        "rodId": "anime_mihawk",
+        "openedAt": 1000,
+        "duplicate": false,
+        "ticket": 9800,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_rt_2_10zwx",
+        "rodId": "anime_nami",
+        "openedAt": 1001,
+        "duplicate": false,
+        "ticket": 6778,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ru_3_7b5qd",
+        "rodId": "anime_franky",
+        "openedAt": 1002,
+        "duplicate": false,
+        "ticket": 2876,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_rv_4_1i51u",
+        "rodId": "anime_perona",
+        "openedAt": 1003,
+        "duplicate": false,
+        "ticket": 2654,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_rw_5_3i1nj",
+        "rodId": "anime_chopper",
+        "openedAt": 1004,
+        "duplicate": false,
+        "ticket": 2464,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_rx_6_187b8",
+        "rodId": "anime_crocodile",
+        "openedAt": 1005,
+        "duplicate": false,
+        "ticket": 4946,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ry_7_8yqgw",
+        "rodId": "anime_law",
+        "openedAt": 1006,
+        "duplicate": false,
+        "ticket": 9252,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_rz_8_63p4h",
+        "rodId": "anime_aokiji",
+        "openedAt": 1007,
+        "duplicate": false,
+        "ticket": 8358,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s0_9_6h8z6",
+        "rodId": "anime_kuma",
+        "openedAt": 1008,
+        "duplicate": false,
+        "ticket": 4536,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s1_a_72pi6",
+        "rodId": "anime_usopp",
+        "openedAt": 1009,
+        "duplicate": false,
+        "ticket": 2506,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s2_b_6ygdi",
+        "rodId": "anime_buggy",
+        "openedAt": 1010,
+        "duplicate": false,
+        "ticket": 4220,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s3_c_9vj3e",
+        "rodId": "anime_hancock",
+        "openedAt": 1011,
+        "duplicate": false,
+        "ticket": 9486,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s4_d_18b0j",
+        "rodId": "anime_brook",
+        "openedAt": 1012,
+        "duplicate": false,
+        "ticket": 1344,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s5_e_6f6bu",
+        "rodId": "anime_ace",
+        "openedAt": 1013,
+        "duplicate": false,
+        "ticket": 9602,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s6_f_6m3gk",
+        "rodId": "anime_jinbe",
+        "openedAt": 1014,
+        "duplicate": false,
+        "ticket": 7588,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s7_g_9c8h1",
+        "rodId": "anime_robin",
+        "openedAt": 1015,
+        "duplicate": false,
+        "ticket": 6870,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s8_h_117id",
+        "rodId": "anime_kuma",
+        "openedAt": 1016,
+        "duplicate": true,
+        "ticket": 1688,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_s9_j_58rv",
+        "rodId": "anime_chopper",
+        "openedAt": 1017,
+        "duplicate": true,
+        "ticket": 3402,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sa_l_8nojh",
+        "rodId": "anime_smoker",
+        "openedAt": 1018,
+        "duplicate": false,
+        "ticket": 6412,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sb_m_6earl",
+        "rodId": "anime_perona",
+        "openedAt": 1019,
+        "duplicate": true,
+        "ticket": 126,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sc_o_82pkx",
+        "rodId": "anime_kuma",
+        "openedAt": 1020,
+        "duplicate": true,
+        "ticket": 4048,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sd_q_qgb4",
+        "rodId": "anime_marco",
+        "openedAt": 1021,
+        "duplicate": false,
+        "ticket": 8738,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_se_r_3loon",
+        "rodId": "anime_franky",
+        "openedAt": 1022,
+        "duplicate": true,
+        "ticket": 2484,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sf_t_3ma8x",
+        "rodId": "anime_sabo",
+        "openedAt": 1023,
+        "duplicate": false,
+        "ticket": 8694,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sg_u_29myl",
+        "rodId": "anime_doflamingo",
+        "openedAt": 1024,
+        "duplicate": false,
+        "ticket": 6552,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sh_v_ym5a",
+        "rodId": "anime_vivi",
+        "openedAt": 1025,
+        "duplicate": false,
+        "ticket": 6714,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_si_w_5a2q7",
+        "rodId": "anime_franky",
+        "openedAt": 1026,
+        "duplicate": true,
+        "ticket": 1692,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sj_y_6mo0j",
+        "rodId": "anime_kizaru",
+        "openedAt": 1027,
+        "duplicate": false,
+        "ticket": 7326,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sk_z_1fyf3",
+        "rodId": "anime_enel",
+        "openedAt": 1028,
+        "duplicate": false,
+        "ticket": 9376,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sl_10_4v7bl",
+        "rodId": "anime_chopper",
+        "openedAt": 1029,
+        "duplicate": true,
+        "ticket": 5314,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sm_12_kkby",
+        "rodId": "anime_franky",
+        "openedAt": 1030,
+        "duplicate": true,
+        "ticket": 1732,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sn_14_6c3r2",
+        "rodId": "anime_perona",
+        "openedAt": 1031,
+        "duplicate": true,
+        "ticket": 4390,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_so_16_34hi3",
+        "rodId": "anime_sanji",
+        "openedAt": 1032,
+        "duplicate": false,
+        "ticket": 8456,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sp_17_7i3m6",
+        "rodId": "anime_chopper",
+        "openedAt": 1033,
+        "duplicate": true,
+        "ticket": 1754,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sq_19_7t4w2",
+        "rodId": "anime_katakuri",
+        "openedAt": 1034,
+        "duplicate": false,
+        "ticket": 8732,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sr_1a_6p8u4",
+        "rodId": "anime_perona",
+        "openedAt": 1035,
+        "duplicate": true,
+        "ticket": 1102,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ss_1c_5bfui",
+        "rodId": "anime_kuma",
+        "openedAt": 1036,
+        "duplicate": true,
+        "ticket": 5152,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_st_1e_6eaxj",
+        "rodId": "anime_robin",
+        "openedAt": 1037,
+        "duplicate": true,
+        "ticket": 8466,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_su_1g_2rko2",
+        "rodId": "anime_aokiji",
+        "openedAt": 1038,
+        "duplicate": true,
+        "ticket": 6564,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sv_1i_7os96",
+        "rodId": "anime_doflamingo",
+        "openedAt": 1039,
+        "duplicate": true,
+        "ticket": 6022,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sw_1k_4d2it",
+        "rodId": "anime_luffy",
+        "openedAt": 1040,
+        "duplicate": false,
+        "ticket": 744,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sx_1l_8uq47",
+        "rodId": "anime_chopper",
+        "openedAt": 1041,
+        "duplicate": true,
+        "ticket": 2714,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sy_1n_5xho9",
+        "rodId": "anime_robin",
+        "openedAt": 1042,
+        "duplicate": true,
+        "ticket": 6396,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_sz_1p_8fzl9",
+        "rodId": "anime_kizaru",
+        "openedAt": 1043,
+        "duplicate": true,
+        "ticket": 6142,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t0_1r_5xsab",
+        "rodId": "anime_kuma",
+        "openedAt": 1044,
+        "duplicate": true,
+        "ticket": 3616,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t1_1t_3g59f",
+        "rodId": "anime_chopper",
+        "openedAt": 1045,
+        "duplicate": true,
+        "ticket": 4434,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t2_1v_4ik3y",
+        "rodId": "anime_franky",
+        "openedAt": 1046,
+        "duplicate": true,
+        "ticket": 564,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t3_1x_42sua",
+        "rodId": "anime_perona",
+        "openedAt": 1047,
+        "duplicate": true,
+        "ticket": 2422,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t4_1z_6rw38",
+        "rodId": "anime_kuma",
+        "openedAt": 1048,
+        "duplicate": true,
+        "ticket": 5352,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t5_21_1qfmc",
+        "rodId": "anime_aokiji",
+        "openedAt": 1049,
+        "duplicate": true,
+        "ticket": 5818,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t6_23_5tst6",
+        "rodId": "anime_zoro",
+        "openedAt": 1050,
+        "duplicate": false,
+        "ticket": 1020,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t7_24_7htfj",
+        "rodId": "anime_enel",
+        "openedAt": 1051,
+        "duplicate": true,
+        "ticket": 8958,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t8_26_fv0c",
+        "rodId": "anime_whitebeard",
+        "openedAt": 1052,
+        "duplicate": false,
+        "ticket": 9776,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_t9_27_2iu40",
+        "rodId": "anime_sanji",
+        "openedAt": 1053,
+        "duplicate": true,
+        "ticket": 8306,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ta_29_83fk",
+        "rodId": "anime_kizaru",
+        "openedAt": 1054,
+        "duplicate": true,
+        "ticket": 6132,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tb_2b_9vtqs",
+        "rodId": "anime_perona",
+        "openedAt": 1055,
+        "duplicate": true,
+        "ticket": 1190,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tc_2d_8y4ug",
+        "rodId": "anime_vivi",
+        "openedAt": 1056,
+        "duplicate": true,
+        "ticket": 8200,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_td_2f_5mmk2",
+        "rodId": "anime_chopper",
+        "openedAt": 1057,
+        "duplicate": true,
+        "ticket": 2138,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_te_2h_8f702",
+        "rodId": "anime_franky",
+        "openedAt": 1058,
+        "duplicate": true,
+        "ticket": 4508,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tf_2j_630on",
+        "rodId": "anime_perona",
+        "openedAt": 1059,
+        "duplicate": true,
+        "ticket": 1518,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tg_2l_8n132",
+        "rodId": "anime_aokiji",
+        "openedAt": 1060,
+        "duplicate": true,
+        "ticket": 5728,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_th_2n_1r243",
+        "rodId": "anime_chopper",
+        "openedAt": 1061,
+        "duplicate": true,
+        "ticket": 1426,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ti_2p_6lhuf",
+        "rodId": "anime_law",
+        "openedAt": 1062,
+        "duplicate": true,
+        "ticket": 4468,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tj_2r_95nqt",
+        "rodId": "anime_perona",
+        "openedAt": 1063,
+        "duplicate": true,
+        "ticket": 3958,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tk_2t_mg2e",
+        "rodId": "anime_kuma",
+        "openedAt": 1064,
+        "duplicate": true,
+        "ticket": 3768,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tl_2v_1rmfz",
+        "rodId": "anime_ace",
+        "openedAt": 1065,
+        "duplicate": true,
+        "ticket": 9338,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tm_2x_6ukej",
+        "rodId": "anime_franky",
+        "openedAt": 1066,
+        "duplicate": true,
+        "ticket": 1612,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tn_2z_8llvu",
+        "rodId": "anime_enel",
+        "openedAt": 1067,
+        "duplicate": true,
+        "ticket": 8654,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_to_31_9x0yl",
+        "rodId": "anime_robin",
+        "openedAt": 1068,
+        "duplicate": true,
+        "ticket": 6304,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tp_33_t635",
+        "rodId": "anime_ace",
+        "openedAt": 1069,
+        "duplicate": true,
+        "ticket": 8546,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tq_35_6c1sb",
+        "rodId": "anime_robin",
+        "openedAt": 1070,
+        "duplicate": true,
+        "ticket": 8260,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tr_37_3ra6h",
+        "rodId": "anime_jinbe",
+        "openedAt": 1071,
+        "duplicate": true,
+        "ticket": 5686,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ts_39_1teas",
+        "rodId": "anime_nami",
+        "openedAt": 1072,
+        "duplicate": true,
+        "ticket": 6968,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tt_3b_2ogri",
+        "rodId": "anime_chopper",
+        "openedAt": 1073,
+        "duplicate": true,
+        "ticket": 4490,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tu_3d_2enff",
+        "rodId": "anime_franky",
+        "openedAt": 1074,
+        "duplicate": true,
+        "ticket": 3692,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tv_3f_9jtdn",
+        "rodId": "anime_perona",
+        "openedAt": 1075,
+        "duplicate": true,
+        "ticket": 3326,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tw_3h_7n8qs",
+        "rodId": "anime_shanks",
+        "openedAt": 1076,
+        "duplicate": false,
+        "ticket": 9872,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tx_3i_4hmys",
+        "rodId": "anime_robin",
+        "openedAt": 1077,
+        "duplicate": true,
+        "ticket": 6050,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ty_3k_46ubh",
+        "rodId": "anime_smoker",
+        "openedAt": 1078,
+        "duplicate": true,
+        "ticket": 8148,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_tz_3m_92izb",
+        "rodId": "anime_shanks",
+        "openedAt": 1079,
+        "duplicate": true,
+        "ticket": 9926,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u0_3o_75qag",
+        "rodId": "anime_kuma",
+        "openedAt": 1080,
+        "duplicate": true,
+        "ticket": 1240,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u1_3q_6xb5j",
+        "rodId": "anime_chopper",
+        "openedAt": 1081,
+        "duplicate": true,
+        "ticket": 3114,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u2_3s_2xf2u",
+        "rodId": "anime_franky",
+        "openedAt": 1082,
+        "duplicate": true,
+        "ticket": 4924,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u3_3u_11j0t",
+        "rodId": "anime_perona",
+        "openedAt": 1083,
+        "duplicate": true,
+        "ticket": 1326,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u4_3w_3qh0i",
+        "rodId": "anime_kuma",
+        "openedAt": 1084,
+        "duplicate": true,
+        "ticket": 2912,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u5_3y_1fl8b",
+        "rodId": "anime_sanji",
+        "openedAt": 1085,
+        "duplicate": true,
+        "ticket": 5586,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u6_40_qd7e",
+        "rodId": "anime_law",
+        "openedAt": 1086,
+        "duplicate": true,
+        "ticket": 8932,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u7_42_3uud",
+        "rodId": "anime_perona",
+        "openedAt": 1087,
+        "duplicate": true,
+        "ticket": 3526,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u8_44_59u7e",
+        "rodId": "anime_kuma",
+        "openedAt": 1088,
+        "duplicate": true,
+        "ticket": 3128,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_u9_46_5sv1s",
+        "rodId": "anime_sanji",
+        "openedAt": 1089,
+        "duplicate": true,
+        "ticket": 5514,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ua_48_7bjz",
+        "rodId": "anime_franky",
+        "openedAt": 1090,
+        "duplicate": true,
+        "ticket": 1468,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ub_4a_16sfm",
+        "rodId": "anime_jinbe",
+        "openedAt": 1091,
+        "duplicate": true,
+        "ticket": 5726,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uc_4c_4x7uc",
+        "rodId": "anime_kuma",
+        "openedAt": 1092,
+        "duplicate": true,
+        "ticket": 0,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ud_4e_953es",
+        "rodId": "anime_ace",
+        "openedAt": 1093,
+        "duplicate": true,
+        "ticket": 9586,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ue_4g_3ghoa",
+        "rodId": "anime_franky",
+        "openedAt": 1094,
+        "duplicate": true,
+        "ticket": 628,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uf_4i_9j5l7",
+        "rodId": "anime_perona",
+        "openedAt": 1095,
+        "duplicate": true,
+        "ticket": 3782,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ug_4k_6ah0v",
+        "rodId": "anime_marco",
+        "openedAt": 1096,
+        "duplicate": true,
+        "ticket": 9560,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uh_4m_87r9n",
+        "rodId": "anime_chopper",
+        "openedAt": 1097,
+        "duplicate": true,
+        "ticket": 5002,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ui_4o_4g1dm",
+        "rodId": "anime_smoker",
+        "openedAt": 1098,
+        "duplicate": true,
+        "ticket": 6044,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uj_4q_19x83",
+        "rodId": "anime_perona",
+        "openedAt": 1099,
+        "duplicate": true,
+        "ticket": 5102,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uk_4s_6nx5s",
+        "rodId": "anime_robin",
+        "openedAt": 1100,
+        "duplicate": true,
+        "ticket": 8384,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ul_4u_4lr2c",
+        "rodId": "anime_chopper",
+        "openedAt": 1101,
+        "duplicate": true,
+        "ticket": 3826,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_um_4w_3h83q",
+        "rodId": "anime_aokiji",
+        "openedAt": 1102,
+        "duplicate": true,
+        "ticket": 6564,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_un_4y_3a4xi",
+        "rodId": "anime_perona",
+        "openedAt": 1103,
+        "duplicate": true,
+        "ticket": 1254,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uo_50_1gsj7",
+        "rodId": "anime_mihawk",
+        "openedAt": 1104,
+        "duplicate": true,
+        "ticket": 9720,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_up_52_8jzwf",
+        "rodId": "anime_ace",
+        "openedAt": 1105,
+        "duplicate": true,
+        "ticket": 8826,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uq_54_71c01",
+        "rodId": "anime_law",
+        "openedAt": 1106,
+        "duplicate": true,
+        "ticket": 8732,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ur_56_7sv0t",
+        "rodId": "anime_perona",
+        "openedAt": 1107,
+        "duplicate": true,
+        "ticket": 1758,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_us_58_132dl",
+        "rodId": "anime_kuma",
+        "openedAt": 1108,
+        "duplicate": true,
+        "ticket": 5264,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ut_5a_3g6k8",
+        "rodId": "anime_chopper",
+        "openedAt": 1109,
+        "duplicate": true,
+        "ticket": 4018,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uu_5c_1j1bi",
+        "rodId": "anime_franky",
+        "openedAt": 1110,
+        "duplicate": true,
+        "ticket": 5252,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uv_5e_7u7yp",
+        "rodId": "anime_perona",
+        "openedAt": 1111,
+        "duplicate": true,
+        "ticket": 4214,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uw_5g_5riie",
+        "rodId": "anime_vivi",
+        "openedAt": 1112,
+        "duplicate": true,
+        "ticket": 5848,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_ux_5i_157xw",
+        "rodId": "anime_chopper",
+        "openedAt": 1113,
+        "duplicate": true,
+        "ticket": 2618,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uy_5k_2cvs7",
+        "rodId": "anime_robin",
+        "openedAt": 1114,
+        "duplicate": true,
+        "ticket": 8028,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_uz_5m_10ema",
+        "rodId": "anime_enel",
+        "openedAt": 1115,
+        "duplicate": true,
+        "ticket": 8878,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_v0_5o_5ier7",
+        "rodId": "anime_smoker",
+        "openedAt": 1116,
+        "duplicate": true,
+        "ticket": 5888,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_v1_5q_8u7bz",
+        "rodId": "anime_chopper",
+        "openedAt": 1117,
+        "duplicate": true,
+        "ticket": 1074,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_v2_5s_41u3m",
+        "rodId": "anime_vivi",
+        "openedAt": 1118,
+        "duplicate": true,
+        "ticket": 5780,
+        "poolId": "onepiece"
+      },
+      {
+        "id": "box_v3_5u_4jwpe",
+        "rodId": "anime_enel",
+        "openedAt": 1119,
+        "duplicate": true,
+        "ticket": 8758,
+        "poolId": "onepiece"
+      }
+    ],
+    "casts": [],
+    "catches": [],
+    "fry": [],
+    "ponds": [
+      {
+        "id": "pond_starter",
+        "styleId": "meadow",
+        "createdAt": 0,
+        "updatedAt": 0,
+        "archivedAt": null,
+        "sealedFishIds": [],
+        "decorationLayoutAt": 0,
+        "decorations": [
+          {
+            "id": "decoration_default_0",
+            "kind": "tree",
+            "x": -2.18,
+            "z": -1.8,
+            "rotation": 0,
+            "scale": 0.95,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_1",
+            "kind": "bush",
+            "x": -2.24,
+            "z": 0.7,
+            "rotation": 0,
+            "scale": 0.7,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_2",
+            "kind": "flowers",
+            "x": -1.85,
+            "z": 1.94,
+            "rotation": 0,
+            "scale": 0.8,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_3",
+            "kind": "rocks",
+            "x": 2.18,
+            "z": -1.56,
+            "rotation": 1,
+            "scale": 0.9,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_4",
+            "kind": "reeds",
+            "x": 2.23,
+            "z": 0.83,
+            "rotation": 0,
+            "scale": 0.75,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_5",
+            "kind": "dock",
+            "x": 0.24,
+            "z": 2.16,
+            "rotation": 0,
+            "scale": 0.95,
+            "updatedAt": 0
+          },
+          {
+            "id": "decoration_default_6",
+            "kind": "basket",
+            "x": 1.1,
+            "z": 2.22,
+            "rotation": 1,
+            "scale": 0.7,
+            "updatedAt": 0
+          }
+        ]
+      }
+    ],
+    "transactions": [
+      {
+        "id": "box_rs_1_3s5on",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1000
+      },
+      {
+        "id": "box_rt_2_10zwx",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1001
+      },
+      {
+        "id": "box_ru_3_7b5qd",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1002
+      },
+      {
+        "id": "box_rv_4_1i51u",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1003
+      },
+      {
+        "id": "box_rw_5_3i1nj",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1004
+      },
+      {
+        "id": "box_rx_6_187b8",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1005
+      },
+      {
+        "id": "box_ry_7_8yqgw",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1006
+      },
+      {
+        "id": "box_rz_8_63p4h",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1007
+      },
+      {
+        "id": "box_s0_9_6h8z6",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1008
+      },
+      {
+        "id": "box_s1_a_72pi6",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1009
+      },
+      {
+        "id": "box_s2_b_6ygdi",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1010
+      },
+      {
+        "id": "box_s3_c_9vj3e",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1011
+      },
+      {
+        "id": "box_s4_d_18b0j",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1012
+      },
+      {
+        "id": "box_s5_e_6f6bu",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1013
+      },
+      {
+        "id": "box_s6_f_6m3gk",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1014
+      },
+      {
+        "id": "box_s7_g_9c8h1",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1015
+      },
+      {
+        "id": "box_s8_h_117id",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1016
+      },
+      {
+        "id": "ftx_s8_i_2cy4f",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1016,
+        "refId": "box_s8_h_117id"
+      },
+      {
+        "id": "box_s9_j_58rv",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1017
+      },
+      {
+        "id": "ftx_s9_k_7b7l1",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1017,
+        "refId": "box_s9_j_58rv"
+      },
+      {
+        "id": "box_sa_l_8nojh",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1018
+      },
+      {
+        "id": "box_sb_m_6earl",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1019
+      },
+      {
+        "id": "ftx_sb_n_j417",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1019,
+        "refId": "box_sb_m_6earl"
+      },
+      {
+        "id": "box_sc_o_82pkx",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1020
+      },
+      {
+        "id": "ftx_sc_p_6923n",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1020,
+        "refId": "box_sc_o_82pkx"
+      },
+      {
+        "id": "box_sd_q_qgb4",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1021
+      },
+      {
+        "id": "box_se_r_3loon",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1022
+      },
+      {
+        "id": "ftx_se_s_1hhrj",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1022,
+        "refId": "box_se_r_3loon"
+      },
+      {
+        "id": "box_sf_t_3ma8x",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1023
+      },
+      {
+        "id": "box_sg_u_29myl",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1024
+      },
+      {
+        "id": "box_sh_v_ym5a",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1025
+      },
+      {
+        "id": "box_si_w_5a2q7",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1026
+      },
+      {
+        "id": "ftx_si_x_5bs3n",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1026,
+        "refId": "box_si_w_5a2q7"
+      },
+      {
+        "id": "box_sj_y_6mo0j",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1027
+      },
+      {
+        "id": "box_sk_z_1fyf3",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1028
+      },
+      {
+        "id": "box_sl_10_4v7bl",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1029
+      },
+      {
+        "id": "ftx_sl_11_59qui",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1029,
+        "refId": "box_sl_10_4v7bl"
+      },
+      {
+        "id": "box_sm_12_kkby",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1030
+      },
+      {
+        "id": "ftx_sm_13_6h0bl",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1030,
+        "refId": "box_sm_12_kkby"
+      },
+      {
+        "id": "box_sn_14_6c3r2",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1031
+      },
+      {
+        "id": "ftx_sn_15_33a7y",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1031,
+        "refId": "box_sn_14_6c3r2"
+      },
+      {
+        "id": "box_so_16_34hi3",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1032
+      },
+      {
+        "id": "box_sp_17_7i3m6",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1033
+      },
+      {
+        "id": "ftx_sp_18_1e391",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1033,
+        "refId": "box_sp_17_7i3m6"
+      },
+      {
+        "id": "box_sq_19_7t4w2",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1034
+      },
+      {
+        "id": "box_sr_1a_6p8u4",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1035
+      },
+      {
+        "id": "ftx_sr_1b_2v2u3",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1035,
+        "refId": "box_sr_1a_6p8u4"
+      },
+      {
+        "id": "box_ss_1c_5bfui",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1036
+      },
+      {
+        "id": "ftx_ss_1d_2l1dz",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1036,
+        "refId": "box_ss_1c_5bfui"
+      },
+      {
+        "id": "box_st_1e_6eaxj",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1037
+      },
+      {
+        "id": "ftx_st_1f_7adhn",
+        "kind": "duplicate",
+        "itemId": "anime_robin",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1037,
+        "refId": "box_st_1e_6eaxj"
+      },
+      {
+        "id": "box_su_1g_2rko2",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1038
+      },
+      {
+        "id": "ftx_su_1h_283jt",
+        "kind": "duplicate",
+        "itemId": "anime_aokiji",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1038,
+        "refId": "box_su_1g_2rko2"
+      },
+      {
+        "id": "box_sv_1i_7os96",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1039
+      },
+      {
+        "id": "ftx_sv_1j_9nrtp",
+        "kind": "duplicate",
+        "itemId": "anime_doflamingo",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1039,
+        "refId": "box_sv_1i_7os96"
+      },
+      {
+        "id": "box_sw_1k_4d2it",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1040
+      },
+      {
+        "id": "box_sx_1l_8uq47",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1041
+      },
+      {
+        "id": "ftx_sx_1m_47au2",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1041,
+        "refId": "box_sx_1l_8uq47"
+      },
+      {
+        "id": "box_sy_1n_5xho9",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1042
+      },
+      {
+        "id": "ftx_sy_1o_2xw60",
+        "kind": "duplicate",
+        "itemId": "anime_robin",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1042,
+        "refId": "box_sy_1n_5xho9"
+      },
+      {
+        "id": "box_sz_1p_8fzl9",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1043
+      },
+      {
+        "id": "ftx_sz_1q_3bscb",
+        "kind": "duplicate",
+        "itemId": "anime_kizaru",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1043,
+        "refId": "box_sz_1p_8fzl9"
+      },
+      {
+        "id": "box_t0_1r_5xsab",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1044
+      },
+      {
+        "id": "ftx_t0_1s_6tqvv",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1044,
+        "refId": "box_t0_1r_5xsab"
+      },
+      {
+        "id": "box_t1_1t_3g59f",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1045
+      },
+      {
+        "id": "ftx_t1_1u_un9z",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1045,
+        "refId": "box_t1_1t_3g59f"
+      },
+      {
+        "id": "box_t2_1v_4ik3y",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1046
+      },
+      {
+        "id": "ftx_t2_1w_473u8",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1046,
+        "refId": "box_t2_1v_4ik3y"
+      },
+      {
+        "id": "box_t3_1x_42sua",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1047
+      },
+      {
+        "id": "ftx_t3_1y_621vk",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1047,
+        "refId": "box_t3_1x_42sua"
+      },
+      {
+        "id": "box_t4_1z_6rw38",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1048
+      },
+      {
+        "id": "ftx_t4_20_11pxo",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1048,
+        "refId": "box_t4_1z_6rw38"
+      },
+      {
+        "id": "box_t5_21_1qfmc",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1049
+      },
+      {
+        "id": "ftx_t5_22_7o62i",
+        "kind": "duplicate",
+        "itemId": "anime_aokiji",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1049,
+        "refId": "box_t5_21_1qfmc"
+      },
+      {
+        "id": "box_t6_23_5tst6",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1050
+      },
+      {
+        "id": "box_t7_24_7htfj",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1051
+      },
+      {
+        "id": "ftx_t7_25_5os3j",
+        "kind": "duplicate",
+        "itemId": "anime_enel",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1051,
+        "refId": "box_t7_24_7htfj"
+      },
+      {
+        "id": "box_t8_26_fv0c",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1052
+      },
+      {
+        "id": "box_t9_27_2iu40",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1053
+      },
+      {
+        "id": "ftx_t9_28_u4lr",
+        "kind": "duplicate",
+        "itemId": "anime_sanji",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1053,
+        "refId": "box_t9_27_2iu40"
+      },
+      {
+        "id": "box_ta_29_83fk",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1054
+      },
+      {
+        "id": "ftx_ta_2a_7ru7j",
+        "kind": "duplicate",
+        "itemId": "anime_kizaru",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1054,
+        "refId": "box_ta_29_83fk"
+      },
+      {
+        "id": "box_tb_2b_9vtqs",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1055
+      },
+      {
+        "id": "ftx_tb_2c_36xk",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1055,
+        "refId": "box_tb_2b_9vtqs"
+      },
+      {
+        "id": "box_tc_2d_8y4ug",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1056
+      },
+      {
+        "id": "ftx_tc_2e_5c3cs",
+        "kind": "duplicate",
+        "itemId": "anime_vivi",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1056,
+        "refId": "box_tc_2d_8y4ug"
+      },
+      {
+        "id": "box_td_2f_5mmk2",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1057
+      },
+      {
+        "id": "ftx_td_2g_5i97n",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1057,
+        "refId": "box_td_2f_5mmk2"
+      },
+      {
+        "id": "box_te_2h_8f702",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1058
+      },
+      {
+        "id": "ftx_te_2i_7cbqh",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1058,
+        "refId": "box_te_2h_8f702"
+      },
+      {
+        "id": "box_tf_2j_630on",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1059
+      },
+      {
+        "id": "ftx_tf_2k_9jaz0",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1059,
+        "refId": "box_tf_2j_630on"
+      },
+      {
+        "id": "box_tg_2l_8n132",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1060
+      },
+      {
+        "id": "ftx_tg_2m_5852m",
+        "kind": "duplicate",
+        "itemId": "anime_aokiji",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1060,
+        "refId": "box_tg_2l_8n132"
+      },
+      {
+        "id": "box_th_2n_1r243",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1061
+      },
+      {
+        "id": "ftx_th_2o_jzht",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1061,
+        "refId": "box_th_2n_1r243"
+      },
+      {
+        "id": "box_ti_2p_6lhuf",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1062
+      },
+      {
+        "id": "ftx_ti_2q_4vto3",
+        "kind": "duplicate",
+        "itemId": "anime_law",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1062,
+        "refId": "box_ti_2p_6lhuf"
+      },
+      {
+        "id": "box_tj_2r_95nqt",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1063
+      },
+      {
+        "id": "ftx_tj_2s_5ipnz",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1063,
+        "refId": "box_tj_2r_95nqt"
+      },
+      {
+        "id": "box_tk_2t_mg2e",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1064
+      },
+      {
+        "id": "ftx_tk_2u_afn",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1064,
+        "refId": "box_tk_2t_mg2e"
+      },
+      {
+        "id": "box_tl_2v_1rmfz",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1065
+      },
+      {
+        "id": "ftx_tl_2w_8f8qf",
+        "kind": "duplicate",
+        "itemId": "anime_ace",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1065,
+        "refId": "box_tl_2v_1rmfz"
+      },
+      {
+        "id": "box_tm_2x_6ukej",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1066
+      },
+      {
+        "id": "ftx_tm_2y_27ijo",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1066,
+        "refId": "box_tm_2x_6ukej"
+      },
+      {
+        "id": "box_tn_2z_8llvu",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1067
+      },
+      {
+        "id": "ftx_tn_30_6jf5t",
+        "kind": "duplicate",
+        "itemId": "anime_enel",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1067,
+        "refId": "box_tn_2z_8llvu"
+      },
+      {
+        "id": "box_to_31_9x0yl",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1068
+      },
+      {
+        "id": "ftx_to_32_2p8i8",
+        "kind": "duplicate",
+        "itemId": "anime_robin",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1068,
+        "refId": "box_to_31_9x0yl"
+      },
+      {
+        "id": "box_tp_33_t635",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1069
+      },
+      {
+        "id": "ftx_tp_34_5buit",
+        "kind": "duplicate",
+        "itemId": "anime_ace",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1069,
+        "refId": "box_tp_33_t635"
+      },
+      {
+        "id": "box_tq_35_6c1sb",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1070
+      },
+      {
+        "id": "ftx_tq_36_2zzhj",
+        "kind": "duplicate",
+        "itemId": "anime_robin",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1070,
+        "refId": "box_tq_35_6c1sb"
+      },
+      {
+        "id": "box_tr_37_3ra6h",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1071
+      },
+      {
+        "id": "ftx_tr_38_8u7u9",
+        "kind": "duplicate",
+        "itemId": "anime_jinbe",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1071,
+        "refId": "box_tr_37_3ra6h"
+      },
+      {
+        "id": "box_ts_39_1teas",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1072
+      },
+      {
+        "id": "ftx_ts_3a_6sug",
+        "kind": "duplicate",
+        "itemId": "anime_nami",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1072,
+        "refId": "box_ts_39_1teas"
+      },
+      {
+        "id": "box_tt_3b_2ogri",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1073
+      },
+      {
+        "id": "ftx_tt_3c_5fsif",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1073,
+        "refId": "box_tt_3b_2ogri"
+      },
+      {
+        "id": "box_tu_3d_2enff",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1074
+      },
+      {
+        "id": "ftx_tu_3e_7ofk1",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1074,
+        "refId": "box_tu_3d_2enff"
+      },
+      {
+        "id": "box_tv_3f_9jtdn",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1075
+      },
+      {
+        "id": "ftx_tv_3g_7y4ah",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1075,
+        "refId": "box_tv_3f_9jtdn"
+      },
+      {
+        "id": "box_tw_3h_7n8qs",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1076
+      },
+      {
+        "id": "box_tx_3i_4hmys",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1077
+      },
+      {
+        "id": "ftx_tx_3j_4r3zl",
+        "kind": "duplicate",
+        "itemId": "anime_robin",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1077,
+        "refId": "box_tx_3i_4hmys"
+      },
+      {
+        "id": "box_ty_3k_46ubh",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1078
+      },
+      {
+        "id": "ftx_ty_3l_4tjtm",
+        "kind": "duplicate",
+        "itemId": "anime_smoker",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1078,
+        "refId": "box_ty_3k_46ubh"
+      },
+      {
+        "id": "box_tz_3m_92izb",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1079
+      },
+      {
+        "id": "ftx_tz_3n_4rq1n",
+        "kind": "duplicate",
+        "itemId": "anime_shanks",
+        "quantity": 1,
+        "amount": 150,
+        "createdAt": 1079,
+        "refId": "box_tz_3m_92izb"
+      },
+      {
+        "id": "box_u0_3o_75qag",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1080
+      },
+      {
+        "id": "ftx_u0_3p_6d1wb",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1080,
+        "refId": "box_u0_3o_75qag"
+      },
+      {
+        "id": "box_u1_3q_6xb5j",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1081
+      },
+      {
+        "id": "ftx_u1_3r_8lstv",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1081,
+        "refId": "box_u1_3q_6xb5j"
+      },
+      {
+        "id": "box_u2_3s_2xf2u",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1082
+      },
+      {
+        "id": "ftx_u2_3t_3giya",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1082,
+        "refId": "box_u2_3s_2xf2u"
+      },
+      {
+        "id": "box_u3_3u_11j0t",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1083
+      },
+      {
+        "id": "ftx_u3_3v_7drmj",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1083,
+        "refId": "box_u3_3u_11j0t"
+      },
+      {
+        "id": "box_u4_3w_3qh0i",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1084
+      },
+      {
+        "id": "ftx_u4_3x_4shxi",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1084,
+        "refId": "box_u4_3w_3qh0i"
+      },
+      {
+        "id": "box_u5_3y_1fl8b",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1085
+      },
+      {
+        "id": "ftx_u5_3z_1130b",
+        "kind": "duplicate",
+        "itemId": "anime_sanji",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1085,
+        "refId": "box_u5_3y_1fl8b"
+      },
+      {
+        "id": "box_u6_40_qd7e",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1086
+      },
+      {
+        "id": "ftx_u6_41_9klzy",
+        "kind": "duplicate",
+        "itemId": "anime_law",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1086,
+        "refId": "box_u6_40_qd7e"
+      },
+      {
+        "id": "box_u7_42_3uud",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1087
+      },
+      {
+        "id": "ftx_u7_43_6ckkw",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1087,
+        "refId": "box_u7_42_3uud"
+      },
+      {
+        "id": "box_u8_44_59u7e",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1088
+      },
+      {
+        "id": "ftx_u8_45_37vxq",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1088,
+        "refId": "box_u8_44_59u7e"
+      },
+      {
+        "id": "box_u9_46_5sv1s",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1089
+      },
+      {
+        "id": "ftx_u9_47_4ihiw",
+        "kind": "duplicate",
+        "itemId": "anime_sanji",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1089,
+        "refId": "box_u9_46_5sv1s"
+      },
+      {
+        "id": "box_ua_48_7bjz",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1090
+      },
+      {
+        "id": "ftx_ua_49_8ozgv",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1090,
+        "refId": "box_ua_48_7bjz"
+      },
+      {
+        "id": "box_ub_4a_16sfm",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1091
+      },
+      {
+        "id": "ftx_ub_4b_5o8v",
+        "kind": "duplicate",
+        "itemId": "anime_jinbe",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1091,
+        "refId": "box_ub_4a_16sfm"
+      },
+      {
+        "id": "box_uc_4c_4x7uc",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1092
+      },
+      {
+        "id": "ftx_uc_4d_57h9a",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1092,
+        "refId": "box_uc_4c_4x7uc"
+      },
+      {
+        "id": "box_ud_4e_953es",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1093
+      },
+      {
+        "id": "ftx_ud_4f_12pfj",
+        "kind": "duplicate",
+        "itemId": "anime_ace",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1093,
+        "refId": "box_ud_4e_953es"
+      },
+      {
+        "id": "box_ue_4g_3ghoa",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1094
+      },
+      {
+        "id": "ftx_ue_4h_6zaq9",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1094,
+        "refId": "box_ue_4g_3ghoa"
+      },
+      {
+        "id": "box_uf_4i_9j5l7",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1095
+      },
+      {
+        "id": "ftx_uf_4j_4n17k",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1095,
+        "refId": "box_uf_4i_9j5l7"
+      },
+      {
+        "id": "box_ug_4k_6ah0v",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1096
+      },
+      {
+        "id": "ftx_ug_4l_6bu7f",
+        "kind": "duplicate",
+        "itemId": "anime_marco",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1096,
+        "refId": "box_ug_4k_6ah0v"
+      },
+      {
+        "id": "box_uh_4m_87r9n",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1097
+      },
+      {
+        "id": "ftx_uh_4n_76vj6",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1097,
+        "refId": "box_uh_4m_87r9n"
+      },
+      {
+        "id": "box_ui_4o_4g1dm",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1098
+      },
+      {
+        "id": "ftx_ui_4p_4ogxs",
+        "kind": "duplicate",
+        "itemId": "anime_smoker",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1098,
+        "refId": "box_ui_4o_4g1dm"
+      },
+      {
+        "id": "box_uj_4q_19x83",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1099
+      },
+      {
+        "id": "ftx_uj_4r_53t8n",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1099,
+        "refId": "box_uj_4q_19x83"
+      },
+      {
+        "id": "box_uk_4s_6nx5s",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1100
+      },
+      {
+        "id": "ftx_uk_4t_96wfs",
+        "kind": "duplicate",
+        "itemId": "anime_robin",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1100,
+        "refId": "box_uk_4s_6nx5s"
+      },
+      {
+        "id": "box_ul_4u_4lr2c",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1101
+      },
+      {
+        "id": "ftx_ul_4v_81qzm",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1101,
+        "refId": "box_ul_4u_4lr2c"
+      },
+      {
+        "id": "box_um_4w_3h83q",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1102
+      },
+      {
+        "id": "ftx_um_4x_4mvgv",
+        "kind": "duplicate",
+        "itemId": "anime_aokiji",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1102,
+        "refId": "box_um_4w_3h83q"
+      },
+      {
+        "id": "box_un_4y_3a4xi",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1103
+      },
+      {
+        "id": "ftx_un_4z_5cfvv",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1103,
+        "refId": "box_un_4y_3a4xi"
+      },
+      {
+        "id": "box_uo_50_1gsj7",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1104
+      },
+      {
+        "id": "ftx_uo_51_9s2gc",
+        "kind": "duplicate",
+        "itemId": "anime_mihawk",
+        "quantity": 1,
+        "amount": 150,
+        "createdAt": 1104,
+        "refId": "box_uo_50_1gsj7"
+      },
+      {
+        "id": "box_up_52_8jzwf",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1105
+      },
+      {
+        "id": "ftx_up_53_83tte",
+        "kind": "duplicate",
+        "itemId": "anime_ace",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1105,
+        "refId": "box_up_52_8jzwf"
+      },
+      {
+        "id": "box_uq_54_71c01",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1106
+      },
+      {
+        "id": "ftx_uq_55_6yzpq",
+        "kind": "duplicate",
+        "itemId": "anime_law",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1106,
+        "refId": "box_uq_54_71c01"
+      },
+      {
+        "id": "box_ur_56_7sv0t",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1107
+      },
+      {
+        "id": "ftx_ur_57_7ekgb",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1107,
+        "refId": "box_ur_56_7sv0t"
+      },
+      {
+        "id": "box_us_58_132dl",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1108
+      },
+      {
+        "id": "ftx_us_59_4r5py",
+        "kind": "duplicate",
+        "itemId": "anime_kuma",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1108,
+        "refId": "box_us_58_132dl"
+      },
+      {
+        "id": "box_ut_5a_3g6k8",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1109
+      },
+      {
+        "id": "ftx_ut_5b_85ys8",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1109,
+        "refId": "box_ut_5a_3g6k8"
+      },
+      {
+        "id": "box_uu_5c_1j1bi",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1110
+      },
+      {
+        "id": "ftx_uu_5d_4e27h",
+        "kind": "duplicate",
+        "itemId": "anime_franky",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1110,
+        "refId": "box_uu_5c_1j1bi"
+      },
+      {
+        "id": "box_uv_5e_7u7yp",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1111
+      },
+      {
+        "id": "ftx_uv_5f_6b65z",
+        "kind": "duplicate",
+        "itemId": "anime_perona",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1111,
+        "refId": "box_uv_5e_7u7yp"
+      },
+      {
+        "id": "box_uw_5g_5riie",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1112
+      },
+      {
+        "id": "ftx_uw_5h_47ra4",
+        "kind": "duplicate",
+        "itemId": "anime_vivi",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1112,
+        "refId": "box_uw_5g_5riie"
+      },
+      {
+        "id": "box_ux_5i_157xw",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1113
+      },
+      {
+        "id": "ftx_ux_5j_2l58p",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1113,
+        "refId": "box_ux_5i_157xw"
+      },
+      {
+        "id": "box_uy_5k_2cvs7",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1114
+      },
+      {
+        "id": "ftx_uy_5l_40eln",
+        "kind": "duplicate",
+        "itemId": "anime_robin",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1114,
+        "refId": "box_uy_5k_2cvs7"
+      },
+      {
+        "id": "box_uz_5m_10ema",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1115
+      },
+      {
+        "id": "ftx_uz_5n_4u2wb",
+        "kind": "duplicate",
+        "itemId": "anime_enel",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1115,
+        "refId": "box_uz_5m_10ema"
+      },
+      {
+        "id": "box_v0_5o_5ier7",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1116
+      },
+      {
+        "id": "ftx_v0_5p_7g1vr",
+        "kind": "duplicate",
+        "itemId": "anime_smoker",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1116,
+        "refId": "box_v0_5o_5ier7"
+      },
+      {
+        "id": "box_v1_5q_8u7bz",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1117
+      },
+      {
+        "id": "ftx_v1_5r_8dber",
+        "kind": "duplicate",
+        "itemId": "anime_chopper",
+        "quantity": 1,
+        "amount": 20,
+        "createdAt": 1117,
+        "refId": "box_v1_5q_8u7bz"
+      },
+      {
+        "id": "box_v2_5s_41u3m",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1118
+      },
+      {
+        "id": "ftx_v2_5t_4ptrz",
+        "kind": "duplicate",
+        "itemId": "anime_vivi",
+        "quantity": 1,
+        "amount": 40,
+        "createdAt": 1118,
+        "refId": "box_v2_5s_41u3m"
+      },
+      {
+        "id": "box_v3_5u_4jwpe",
+        "kind": "box",
+        "itemId": "rod_box",
+        "quantity": 1,
+        "amount": -100,
+        "createdAt": 1119
+      },
+      {
+        "id": "ftx_v3_5v_gwom",
+        "kind": "duplicate",
+        "itemId": "anime_enel",
+        "quantity": 1,
+        "amount": 75,
+        "createdAt": 1119,
+        "refId": "box_v3_5u_4jwpe"
+      }
+    ]
+  },
+  "pity": {
+    "epic": 0,
+    "legendary": 15,
+    "epicRemaining": 10,
+    "legendaryRemaining": 25
+  },
+  "balance": 91260
+}

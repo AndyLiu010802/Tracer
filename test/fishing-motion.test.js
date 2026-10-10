@@ -52,15 +52,16 @@ test('advanced catalogue rods share live themes and safe continuous material col
   for(const rod of catalog.rods){
     const profile=Motion.fxProfile(rod),markup=Motion.catalogEffectsMarkup(rod);
     if(!profile){assert.equal(markup,'');continue;}
+    if(profile.theme==='painted'){assert.equal(markup,'','subtle painted attacks do not add idle catalogue particles');continue;}
     assert(markup.includes('data-fx-theme="'+profile.theme+'"'),rod.id+' shares its live effect theme');
-    const organic=['epic','legendary'].includes(rod.rarity);
-    if(organic){assert(markup.includes('fishing-catalog-flow'));assert(!markup.includes('fishing-catalog-mote'));}
+    const organic=rod.animeAction||rod.expansion===2||['epic','legendary'].includes(rod.rarity)||catalog.rodPools.find(p=>p.id==='journey').rodIds.includes(rod.id);
+    if(organic){assert(markup.includes(rod.rarity==='legendary'?'fishing-prestige-orbit':'fishing-catalog-flow'));assert(!markup.includes('fishing-catalog-mote'));}
     else{assert(markup.includes(Motion.effectShape(profile)),rod.id+' shares its live particle shape');assert(markup.includes('--rod-glow:'+profile.color)&&markup.includes('--rod-accent:'+profile.accent));assert(markup.includes('fishing-catalog-wisp'));}
-    assert(markup.includes('fishing-catalog-halo'));
+    if(rod.rarity==='legendary'){assert(markup.includes('data-prestige-art="imagegen"'));assert(!markup.includes('fishing-catalog-halo'));assert(!markup.includes('radialGradient'));}else assert(markup.includes('fishing-catalog-halo'));
     assert(!markup.includes('NaN')&&!markup.includes('undefined'));
   }
   const a=Motion.catalogEffectsMarkup(catalog.rods.find(rod=>rod.id==='astral')),b=Motion.catalogEffectsMarkup(catalog.rods.find(rod=>rod.id==='astral'));
-  assert.notEqual(a.match(/radialGradient id="([^"]+)"/)[1],b.match(/radialGradient id="([^"]+)"/)[1],'multiple cards never share gradient ids');
+  assert(!a.includes('<defs>')&&!b.includes('<defs>'),'painted cards need no shared gradient IDs');
   assert(!Motion.catalogEffectsMarkup({id:'astral',rarity:'legendary',accent:'url(https://example.test)',color:'" onload="bad'}).includes('example.test'));
 });
 test('rod effects respond to action, settle after a hook and respect reduced motion',()=>{
@@ -227,4 +228,35 @@ test('renderer emits one landing, leaves authoritative state untouched and relea
   for(let i=2;i<coords.length-2;i+=2){const cross=(coords[i]-start[0])*(end[1]-start[1])-(coords[i+1]-start[1])*(end[0]-start[0]);assert(Math.abs(cross)<3,'every rendered control point lies on the taut line after the hook');}
   doc.hidden=true;listeners.get('visibilitychange')();assert.equal(frames.size,0);doc.hidden=false;listeners.get('visibilitychange')();assert.equal(frames.size,1);
   player.destroy();assert.equal(frames.size,0);assert.equal(listeners.size,0);player.update(snapshot);assert.equal(frames.size,0);
+});
+
+test('cast responds in one frame and keeps its exact aim through 200ms acknowledgements',()=>{
+  let now=0,serial=0;const frames=new Map(),poses=[];
+  const win={performance:{now:()=>now},requestAnimationFrame:cb=>{frames.set(++serial,cb);return serial;},cancelAnimationFrame:id=>frames.delete(id),matchMedia:()=>({matches:false})},doc={defaultView:win,hidden:false,addEventListener(){},removeEventListener(){}};
+  const node=()=>({style:{},setAttribute(){}}),stage={ownerDocument:doc,clientWidth:380,clientHeight:260,classList:{add(){},remove(){}},dataset:{}},rod={...node(),offsetLeft:42,offsetTop:77,offsetWidth:102,offsetHeight:170,dataset:{}},aim=node();
+  const player=Motion.create({stage,rod,bobber:node(),line:node(),path:node(),castTarget:aim,onFrame:p=>poses.push(p)});
+  const step=ms=>{now+=ms;const callbacks=[...frames.values()];frames.clear();callbacks.forEach(cb=>cb(now));};
+  const base={rod:{id:'bamboo'},nativeSessionId:'idle-native',session:{id:'',phase:'idle'}};
+  player.update(base);step(16);player.startCastInput();step(16);
+  assert.equal(poses.at(-1).phase,'charging');assert.equal(aim.hidden,false);assert(Math.abs(poses.at(-1).values.castPower-16/1100)<1e-10);
+  step(384);const aim400={x:aim.style.left,y:aim.style.top};player.releaseCastInput(400);step(16);
+  assert.equal(poses.at(-1).phase,'cast');assert.equal(poses.at(-1).age,16);assert(Math.abs(poses.at(-1).values.castPower-400/1100)<1e-10);
+  player.update({...base,nativeSessionId:'cast-native',sessionId:'new',session:{id:'new',phase:'charging',phaseTime:200,castPower:200/1100}});step(184);
+  assert.equal(poses.at(-1).phase,'cast');assert.equal(poses.at(-1).age,200);
+  const distance=.15+.85*400/1100;player.update({...base,nativeSessionId:'cast-native',disabled:true,session:{id:'new',phase:'cast',phaseTime:0,castPower:400/1100,castDistance:distance}});step(450);
+  const result=poses.at(-1);assert.equal(result.age,650);assert(Math.abs(result.pose.x-parseFloat(aim400.x))<1e-8);assert(Math.abs(result.pose.y-parseFloat(aim400.y))<1e-8);
+  player.destroy();
+});
+
+test('high refresh screens cap visual work without delaying cast input and an unsummoned desktop rod sleeps',()=>{
+  let now=0,id=0,renders=0,last;const frames=new Map(),node=()=>({style:{},setAttribute(){}});
+  const win={performance:{now:()=>now},requestAnimationFrame:fn=>{frames.set(++id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),matchMedia:()=>({matches:false})};
+  const doc={defaultView:win,hidden:false,addEventListener(){},removeEventListener(){}},stage={ownerDocument:doc,clientWidth:380,clientHeight:260,classList:{add(){},remove(){}},dataset:{rodVisible:'true'}};
+  const player=Motion.create({stage,rod:{...node(),offsetLeft:4,offsetTop:23,offsetWidth:136,offsetHeight:226},onFrame:p=>{renders++;last=p;}});
+  const step=ms=>{now+=ms;const callbacks=[...frames.values()];frames.clear();for(const fn of callbacks)fn(now);};
+  player.update({session:{id:'one',phase:'waiting'}});for(let i=0;i<144;i++)step(1000/144);
+  assert(renders>=59&&renders<=62,'render near 60 Hz instead of 144 Hz: '+renders);
+  player.update({session:{id:'',phase:'idle'}});stage.dataset.rodVisible='false';step(20);assert.equal(frames.size,0,'no hidden rod animation loop');
+  player.startCastInput();step(1000/144);assert.equal(last.phase,'charging');assert(last.values.castPower>0,'local input wakes before the native acknowledgement');
+  player.destroy();assert.equal(frames.size,0);
 });

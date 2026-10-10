@@ -1,7 +1,19 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.TracerFishingRodEffects=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
+  // Lightweight collection membership: desktop rendering does not load the rules model.
+  // Coverage against all three model pools is checked in fishing-rod-effects.test.js.
+  const quickGroups={"common":["bamboo","willow","carbon","copper","rosewood","pilgrim","sandalwood","reedraft","beech","rainbamboo","harborbell","sutrabundle","cloudshoe","peachbough","strawsandals","armoryiron","bambooslip","riverreed","granaryspear","shuembroider","wuanchor","weislate","postbanner","bronzehalberd","wineladle"],"rare":["tide","clockwork","frost","jade","monkeytwig","goldenhoop","moonspade","ninerake","kingfisher","reedflute","azulejo","tigercloak","skullbeads","lotusseat","liubei","caocao","sunquan","huangzhong","weiyan","jiangwei","xuhuang","xuchu","dianwei","zhoutai","ganning","luxun","lusu","zhangliao","wenji"],"epic":["moon","phoenix","cloud","katana","whitedragon","kasaya","windfan","redboy","jadebottle","demonmirror","goldenbell","sevenstars","gourd","lotuswheel","meteor","auroraprism","tidetrident","scorpion","spiderweb","whitebone","dragonpalace","guanyuyunchang","zhangfei","zhaoyun","machao","zhouyu","simayi","pangtong","huangyueying","daqiao","xiaoqiao","diaochan","dongzhuo"],"legendary":["astral","dragon","lotus","guandao","ruyi","erlang","qilin","bullking","zhugeliang","lubu","jiangdongtiger","yuanshao","zuoci"],"hidden":["golden","wukong","emperorjade"]};
+  const quickRods=new Map(Object.entries(quickGroups).flatMap(([tier,ids])=>ids.map(id=>[id,{id,rarity:tier==='hidden'?'legendary':tier,hidden:tier==='hidden'}])));
+  const quickIds=new Set(quickRods.keys());
+  const QUICK_DURATIONS=Object.freeze({common:450,rare:650,epic:1100,legendary:1400});
+  const Prestige=typeof module==='object'&&module.exports?require('./fishing-prestige'):globalThis.TracerFishingPrestige;
+  const Anime=typeof module==='object'&&module.exports?require('./fishing-anime-effects'):globalThis.TracerFishingAnime;
+  const Expansion=typeof module==='object'&&module.exports?require('./fishing-expansion-effects'):globalThis.TracerFishingExpansionEffects;
+  const RelicVFX=typeof module==='object'&&module.exports?require('./fishing-relic-vfx'):globalThis.TracerFishingRelicVFX;
+  const Journey=typeof module==='object'&&module.exports?require('./fishing-journey-effects'):globalThis.TracerFishingJourney;
+  const Spells=typeof module==='object'&&module.exports?require('./fishing-spell-effects'):globalThis.TracerFishingSpells;
   const TAU=Math.PI*2,clamp=n=>Math.max(0,Math.min(1,Number(n)||0)),mix=(a,b,t)=>a+(b-a)*t,ease=n=>{n=clamp(n);return n*n*(3-2*n);},f=n=>Number(n).toFixed(3);
-  const designs=Object.freeze({
+  const designs=Object.freeze(Object.assign({},Anime?.designs,Expansion?.designs,Journey?.designs,{
     golden:{theme:'sovereign',frequency:.65,speed:.3,spread:.16,colors:['#be7918','#ffd45e','#fff4c5']},
     moon:{theme:'lunar',frequency:2.4,speed:.48,spread:1.2,colors:['#8c73d4','#cfbeff','#fff5e8']},
     phoenix:{theme:'phoenix',frequency:4.5,speed:1.6,spread:1,colors:['#d94324','#ffae43','#fff2b8']},
@@ -24,16 +36,17 @@
     sunforge:{theme:'sunforge',frequency:4.3,speed:.85,spread:.7,colors:['#af602d','#ffd36a','#fffbd8']},
     leviathan:{theme:'leviathan',frequency:2.4,speed:.8,spread:1.5,colors:['#22526e','#54c4cf','#e0fff0']},
     eclipse:{theme:'eclipse',frequency:3.5,speed:.48,spread:1.55,colors:['#51427c','#b2a2ec','#fff2cd']}
-  });
+  }));
   const design=id=>Object.prototype.hasOwnProperty.call(designs,id)?designs[id]:null;
   function sample(fn,width=.02,alpha=1,color=0,count=72){
     return {alpha,color,points:Array.from({length:count+1},(_,i)=>{const u=i/count,p=fn(u);return{...p,x:p.x,y:p.y,w:typeof width==='function'?width(u):width*Math.sin(Math.PI*u)**.8};})};
   }
   const MYTHIC_IDS=Object.freeze(['katana','candlewyrm','thunderdrum','abysswhale','foxfire','lilybell','sandscript','frostwolf','rosevow','inkjudge','butterfly','sunforge','leviathan','eclipse']);
-  const SPIRIT_KINDS=Object.freeze({golden:0,phoenix:1,guandao:2,dragon:3,katana:4,candlewyrm:5,abysswhale:6,foxfire:7,frostwolf:8,inkjudge:9,leviathan:10,thunderdrum:11,lilybell:12,sandscript:13,rosevow:14,butterfly:15,sunforge:16});
+  const SPIRIT_KINDS=Object.freeze(Object.assign({},Expansion?.kinds,{golden:0,phoenix:1,guandao:2,dragon:3,katana:4,candlewyrm:5,abysswhale:6,foxfire:7,frostwolf:8,inkjudge:9,leviathan:10,thunderdrum:11,lilybell:12,sandscript:13,rosevow:14,butterfly:15,sunforge:16,whitedragon:17,kasaya:18,windfan:19,redboy:20,jadebottle:21,demonmirror:22,goldenbell:23,sevenstars:24,gourd:25,lotuswheel:26,ruyi:27,erlang:28,wukong:29}));
   const creature=id=>['candlewyrm','abysswhale','foxfire','frostwolf','inkjudge','leviathan'].includes(id);
   const artifact=id=>['thunderdrum','lilybell','sandscript','rosevow','butterfly','sunforge'].includes(id);
-  const illustrated=id=>creature(id)||artifact(id);
+  const advancedArt=id=>!!Journey?.scenes[id]||!!Expansion?.scenes[id];
+  const illustrated=id=>creature(id)||artifact(id)||advancedArt(id);
   const mythic=id=>MYTHIC_IDS.includes(id);
   // Animation is evaluated from one reversible phase clock. No detached image
   // pieces, setTimeout choreography, or independent opacity-only entrances.
@@ -218,6 +231,8 @@
   // Continuous fields, not articulated icons. Every ribbon uses the local normal
   // of one moving centreline, with feathered widths and no separate body pieces.
   function flow(id,seconds=0,progress=.4){
+    if(Journey?.has(id))return Journey.geometry(id,{progress,phase:'cast'}).slice(0,13).map(form=>sample(u=>{const at=u*(form.points.length-1),i=Math.floor(at),a=form.points[i],b=form.points[Math.min(i+1,form.points.length-1)];return{x:mix(a.x,b.x,at-i),y:mix(a.y,b.y,at-i)};},form.width,form.alpha,form.color,72));
+    if(Expansion?.has(id))return Expansion.geometry(id,{progress,phase:'cast'}).map(form=>sample(u=>{const at=u*(form.points.length-1),i=Math.floor(at),a=form.points[i],b=form.points[Math.min(i+1,form.points.length-1)];return{x:mix(a.x,b.x,at-i),y:mix(a.y,b.y,at-i)};},form.width,form.alpha,form.color,72));
     if(!design(id))return[];
     const t=Number(seconds)||0,p=clamp(progress),strands=[];
     if(mythic(id)){
@@ -257,8 +272,18 @@
     }
     return strands;
   }
+  function effectVisible(phase,age,id){
+    if(RelicVFX?.has(id))return id==='ruyi'&&phase==='idle'||RelicVFX.visible(phase,age,id);
+    if(Anime?.has(id))return Anime.visible(phase,age,id);
+    if(!Number.isFinite(age)||age<0)return false;
+    if(phase==='idle'||phase==='charging')return true;
+    if(phase==='cast')return age<700;
+    if(phase==='bite')return age<560;
+    return phase==='caught'&&age>=560&&age<1940;
+  }
   function eventState(id,phase,age,reduced=false){
-    if(!design(id)||!['cast','reeling','caught',...(mythic(id)?['bite']:[])].includes(phase))return null;
+    if(id==='ruyi'&&Journey?.staffState)return Journey.staffState(phase,age,reduced);
+    if(!design(id)||!['cast','caught',...(mythic(id)||Journey?.has(id)||Expansion?.has(id)?['bite']:[])].includes(phase))return null;
     const caught=phase==='caught',start=caught?680:phase==='cast'?30:0,duration=caught?1260:phase==='bite'?560:phase==='cast'?640:760,p=(Math.max(0,Number(age)||0)-start)/duration;
     if(p<0||p>=1)return null;
     return{progress:p,alpha:ease(p/.12)*(1-ease((p-.5)/.5))*(reduced?.18:1),reduced,phase};
@@ -274,6 +299,8 @@
   // Articulation and travel have their own timelines. Opacity only trims the
   // ends; the readable part is a physical action, with anticipation and follow-through.
   function themePose(id,state){
+    if(Expansion?.has(id))return Expansion.pose(id,state);
+    if(Journey?.has(id))return Journey.pose(id,state);
     if(mythic(id))return mythicPose(id,state);
     const p=state.reduced?.42:clamp(state.progress),lift=ease((p-.08)/.38),finish=ease((p-.58)/.42),breath=Math.sin(p*Math.PI),turn=p*TAU;
     const pose={x:0,y:0,rotation:0,scale:1,orbit:0,wing:0,opening:0,draw:0,fold:finish,travel:lift};
@@ -291,6 +318,7 @@
     return{x:(x*c-y*s)*perspective,y:(x*s+y*c)*perspective,z};
   }
   function paintThemeAction(ctx,id,state,position,colors){
+    if(Journey?.has(id)){Journey.paint(ctx,id,state,position);return;}
     if(mythic(id)){paintMythic(ctx,id,state,position,colors);return;}
     if(id==='cloud'){paintTornado(ctx,state,position,colors,null,state.reduced?0:state.progress*1.2);return;}
     const q=themePose(id,state),p=state.reduced?.42:clamp(state.progress),size=position.size;
@@ -358,9 +386,14 @@
   }
   function transform(strand,x,y,size){return{...strand,points:strand.points.map(p=>({x:x+p.x*size,y:y+p.y*size,w:p.w*size}))};}
   const SUMMON_TIERS=Object.freeze({common:{duration:440,reveal:160,strength:.3},rare:{duration:680,reveal:210,strength:.55},epic:{duration:940,reveal:260,strength:.8},legendary:{duration:1200,reveal:310,strength:1}});
-  const SUMMON_SCENES=Object.freeze({moon:{duration:2400,kind:'lunar-eclipse'},phoenix:{duration:3200,kind:'phoenix-wings',art:'summon-phoenix-v1.png'},cloud:{duration:2600,kind:'wind-vortex'},astral:{duration:2800,kind:'stellar-forge'},dragon:{duration:3200,kind:'thunder-dragon',art:'summon-azure-dragon-v1.png'},lotus:{duration:2700,kind:'lotus-bloom'},guandao:{duration:3400,kind:'azure-transformation',art:'summon-azure-dragon-v1.png'},katana:{duration:2800,kind:'asura-iaido',art:'summon-ashura-v2.png'},golden:{duration:3200,kind:'caishen',art:'golden-caishen-v1.png'},
-    candlewyrm:{duration:3100,kind:'candlewyrm-nightwatch',art:'summon-candlewyrm-v1.png'},thunderdrum:{duration:2700,kind:'thunderdrum-strike',art:'summon-thunderdrum-v1.png'},abysswhale:{duration:3000,kind:'abysswhale-breach',art:'summon-abysswhale-v1.png'},foxfire:{duration:2700,kind:'foxfire-hunt',art:'summon-foxfire-v1.png'},lilybell:{duration:2600,kind:'lilybell-prayer',art:'summon-lilybell-v1.png'},sandscript:{duration:2800,kind:'sandscript-reversal',art:'summon-sandscript-v1.png'},frostwolf:{duration:2900,kind:'frostwolf-howl',art:'summon-frostwolf-v1.png'},rosevow:{duration:2900,kind:'rosevow-bloom',art:'summon-rosevow-v1.png'},inkjudge:{duration:2800,kind:'inkjudge-verdict',art:'summon-inkjudge-v1.png'},butterfly:{duration:2700,kind:'butterfly-emergence',art:'summon-butterfly-v1.png'},sunforge:{duration:3000,kind:'sunforge-smelting',art:'summon-sunforge-v1.png'},leviathan:{duration:3300,kind:'leviathan-command',art:'summon-leviathan-v1.png'},eclipse:{duration:3400,kind:'eclipse-collapse'}});
-  const summonScene=id=>Object.prototype.hasOwnProperty.call(SUMMON_SCENES,id)?SUMMON_SCENES[id]:null;
+  const SUMMON_SCENES=Object.freeze(Object.assign({},Anime?.scenes,Expansion?.scenes,Journey?.scenes,{moon:{duration:2400,kind:'lunar-eclipse'},phoenix:{duration:3200,kind:'phoenix-wings',art:'summon-phoenix-v1.png'},cloud:{duration:2600,kind:'wind-vortex'},astral:{duration:2800,kind:'stellar-forge'},dragon:{duration:3200,kind:'thunder-dragon',art:'summon-azure-dragon-v1.png'},lotus:{duration:2700,kind:'lotus-bloom'},guandao:{duration:3400,kind:'azure-transformation',art:'summon-azure-dragon-v1.png'},katana:{duration:2800,kind:'asura-iaido',art:'summon-ashura-v2.png'},golden:{duration:3200,kind:'caishen',art:'golden-caishen-v1.png'},
+    candlewyrm:{duration:3100,kind:'candlewyrm-nightwatch',art:'summon-candlewyrm-v1.png'},thunderdrum:{duration:2700,kind:'thunderdrum-strike',art:'summon-thunderdrum-v1.png'},abysswhale:{duration:3000,kind:'abysswhale-breach',art:'summon-abysswhale-v1.png'},foxfire:{duration:2700,kind:'foxfire-hunt',art:'summon-foxfire-v1.png'},lilybell:{duration:2600,kind:'lilybell-prayer',art:'summon-lilybell-v1.png'},sandscript:{duration:2800,kind:'sandscript-reversal',art:'summon-sandscript-v1.png'},frostwolf:{duration:2900,kind:'frostwolf-howl',art:'summon-frostwolf-v1.png'},rosevow:{duration:2900,kind:'rosevow-bloom',art:'summon-rosevow-v1.png'},inkjudge:{duration:2800,kind:'inkjudge-verdict',art:'summon-inkjudge-v1.png'},butterfly:{duration:2700,kind:'butterfly-emergence',art:'summon-butterfly-v1.png'},sunforge:{duration:3000,kind:'sunforge-smelting',art:'summon-sunforge-v1.png'},leviathan:{duration:3300,kind:'leviathan-command',art:'summon-leviathan-v1.png'},eclipse:{duration:3400,kind:'eclipse-collapse'}}));
+  const quickScenes=new Map([...quickRods].filter(([id])=>Object.prototype.hasOwnProperty.call(SUMMON_SCENES,id)).map(([id,rod])=>[id,Object.freeze({...SUMMON_SCENES[id],duration:rod.hidden?1700:QUICK_DURATIONS[rod.rarity]})]));
+  const summonScene=id=>quickScenes.get(id)||(Object.prototype.hasOwnProperty.call(SUMMON_SCENES,id)?SUMMON_SCENES[id]:null);
+  function entranceTiming(rod,reduced=false){
+    const tier=Object.prototype.hasOwnProperty.call(SUMMON_TIERS,rod?.rarity)?rod.rarity:'common',quick=quickIds.has(rod?.id),canonical=quickRods.get(rod?.id)||rod;
+    return{duration:reduced?260:quick?(canonical.hidden?1700:QUICK_DURATIONS[tier]):summonScene(rod?.id)?.duration||SUMMON_TIERS[tier].duration,interruptible:quick,exitDuration:reduced?180:quick?200:1200};
+  }
   const spiritImageCaches=new WeakMap();
   function imageLease(doc){
     let cache=spiritImageCaches.get(doc);if(!cache){cache=new Map();spiritImageCaches.set(doc,cache);}let held=null;
@@ -371,10 +404,11 @@
   }
   function summonState(rod,age,reduced=false){
     if(!Number.isFinite(age)||age<0)return null;
-    const tier=Object.prototype.hasOwnProperty.call(SUMMON_TIERS,rod?.rarity)?rod.rarity:'common',config=SUMMON_TIERS[tier],scene=summonScene(rod?.id),duration=reduced?260:scene?.duration||config.duration;
+    const tier=Object.prototype.hasOwnProperty.call(SUMMON_TIERS,rod?.rarity)?rod.rarity:'common',config=SUMMON_TIERS[tier],scene=summonScene(rod?.id),timing=entranceTiming(rod,reduced),duration=timing.duration;
     if(age>=duration)return null;
     const progress=age/duration;
-    const gather=reduced?1:ease((progress-.48)/.38),reveal=reduced?ease(age/140):scene?ease((progress-.66)/.27):ease(age/config.reveal);
+    const quick=timing.interruptible;
+    const gather=reduced?1:ease((progress-(quick?.12:.48))/(quick?.58:.38)),reveal=reduced?ease(age/140):quick?ease(age/Math.min(duration*.64,300)):scene?ease((progress-.66)/.27):ease(age/config.reveal);
     return{tier,kind:scene?.kind||tier,progress,reduced,reveal,gather,stage:progress<.18?'manifest':progress<.48?'awaken':progress<.86?'transform':'settle',alpha:ease(progress/.14)*(1-ease((progress-.87)/.13))*config.strength*(reduced?.18:1)};
   }
 
@@ -407,12 +441,21 @@
     return{x,y,right,left,top,bottom,anchor,nx,ny};
   }
   function caishenPose(state,g,aspect=1,id='golden'){
-    const p=state.reduced?.38:state.progress,baseHeight=Math.min(g.height*(id==='golden'?.61:.72),202,g.width*(illustrated(id)?.45:.38)/aspect),breathe=state.reduced?1:1+.025*Math.sin(ease((p-.12)/.38)*Math.PI),height=baseHeight*breathe,width=height*aspect;
+    if(id==='ruyi'){
+      // Reserve the full swept diameter, including diagonal source art, so a
+      // complete staff turn fits even in the small desktop pond window.
+      const diameter=Math.min(g.height*.72,g.width*.45,208),height=diameter/Math.hypot(1,aspect),width=height*aspect;
+      const position=summonPlacement(id,g,diameter+12,diameter+12);
+      return {x:position.x,y:position.y,width,height,alpha:Math.min(1,state.alpha*(state.reduced?.55:1.18))*(1-ease((state.progress-.79)/.18))};
+    }
+    const p=state.reduced?.38:state.progress,baseHeight=Math.min(g.height*(advancedArt(id)?.82:id==='golden'?.61:.72),advancedArt(id)?250:202,g.width*(advancedArt(id)?.52:illustrated(id)?.45:.38)/aspect),breathe=state.reduced?1:1+.025*Math.sin(ease((p-.12)/.38)*Math.PI),height=baseHeight*breathe,width=height*aspect;
     const pad=illustrated(id)||id==='katana'?20:0,placement=summonPlacement(id,g,width+pad,height+pad),x=placement.x,y=Math.max(placement.top+(height+pad)/2,Math.min(placement.bottom-(height+pad)/2,placement.y-(state.reduced?0:6*(1-ease(p/.22)))));
-    return{width,height,x,y,alpha:state.alpha*(state.reduced?.55:.86)*(1-ease((p-.79)/.18))};
+    return{width,height,x,y,alpha:Math.min(1,state.alpha*(state.reduced?.55:advancedArt(id)?1.18:.86))*(1-ease((p-.79)/.18))};
   }
 
   function paintSummonScene(ctx,id,state,g,colors){
+    if(advancedArt(id))return;
+    if(Journey?.has(id)){const size=Math.min(88,g.width*.23,g.height*.32),position=summonPlacement(id,g,size*2.1,size*2.1);Journey.paint(ctx,id,{...state,phase:'summon'},{...position,size},g);return;}
     if(mythic(id)){const size=Math.min(id==='katana'?64:98,g.width*(id==='katana'?.17:.26),g.height*(id==='katana'?.25:.37)),origin=summonPlacement(id,g,size*1.95,size*1.95);paintMythic(ctx,id,{...state,phase:'summon'},{...origin,size},colors,g);return;}
     if(id==='cloud'){const size=Math.min(62,g.width*.155,g.height*.22),origin=summonPlacement(id,g,size*2.2,size*2.2);paintTornado(ctx,{...state,phase:'summon'},{...origin,size},colors,g,state.reduced?0:state.progress*2.6);return;}
     const p=state.reduced?.4:state.progress,closing=state.reduced?0:state.gather,fullSize=Math.min(id==='lotus'?48:55,g.width*.145,g.height*.21),size=fullSize*(1-closing*.84),origin=summonPlacement(id,g,fullSize*2.2,fullSize*2.2);
@@ -428,14 +471,99 @@
     function shader(type,source){const s=gl.createShader(type);shaders.push(s);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))return false;gl.attachShader(program,s);return true;}
     const ok=shader(gl.VERTEX_SHADER,`
       precision mediump float;attribute vec2 a;varying vec2 uv;
-      uniform float p,kind,quiet,action;uniform vec4 choreography;uniform vec2 viewport;uniform vec4 portrait;uniform vec2 shaft[9];
+      uniform float p,kind,quiet,action;uniform vec4 choreography;uniform vec4 rig;uniform vec2 viewport;uniform vec4 portrait;uniform vec2 shaft[9];
       vec2 rod(float u){float t=clamp(u,0.,.99999)*8.;vec2 point=shaft[0];for(int i=0;i<8;i++){if(t>=float(i)&&t<float(i+1))point=mix(shaft[i],shaft[i+1],t-float(i));}return point;}
       vec2 hinge(vec2 point,vec2 pivot,float angle){vec2 d=point-pivot;return pivot+mat2(cos(angle),sin(angle),-sin(angle),cos(angle))*d;}
       void main(){
         uv=a;float pi=3.14159265,t=p*pi*2.,m=quiet>.5||action>.5?0.:smoothstep((kind>3.5?.68:.48)+.035*(1.-a.y),kind>3.5?.96:.86,p);
         vec2 local=(a-.5)*portrait.zw*vec2(1.,-1.);
         if(quiet<.5){
-          if(kind>10.5){
+          if(kind>29.5){
+            // Continuous masks preserve faces, armour cores and adjacent seams.
+            float side=a.x<.5?-1.:1.,outer=smoothstep(.13,.37,abs(a.x-.5));
+            float lower=1.-smoothstep(.42,.70,a.y),shoulder=outer*(1.-smoothstep(.64,.79,a.y));
+            if(rig.x<.5){
+              local=hinge(local,vec2(side*.16,-.055)*portrait.zw,shoulder*choreography.x*rig.y*.25*side);
+              local.x+=lower*sin(a.y*8.-t*rig.z)*portrait.z*.015;
+              float plume=smoothstep(.78,.94,a.y)*outer;
+              local.x+=plume*sin(a.y*11.-t*rig.z)*portrait.z*.018;
+            }else if(rig.x<1.5){
+              local=hinge(local,vec2(side*.13,.015)*portrait.zw,outer*sin(t*rig.z)*rig.y*.18*side);
+              local.y+=lower*sin(a.x*9.-t)*portrait.w*.009;
+            }else if(rig.x<2.5){
+              local=hinge(local,vec2(-.12,-.02)*portrait.zw,lower*sin(t*rig.z)*.038);
+              local.x+=outer*lower*sin(a.y*8.-t)*portrait.z*.019;
+            }else if(rig.x<3.5){
+              float rim=1.-smoothstep(.18,.38,distance(a,vec2(.5,.54)));
+              local=hinge(local,vec2(0.,-.04)*portrait.zw,rim*sin(t*rig.z)*.058*rig.w);
+              local.y+=outer*sin(t*rig.z+a.x*7.)*portrait.w*.005;
+            }else if(rig.x<4.5){
+              local.x+=outer*sin(a.y*9.-t*rig.z)*portrait.z*.023*rig.y;
+              local.y+=outer*lower*sin(a.x*8.+t)*portrait.w*.012;
+            }else{
+              local=hinge(local,vec2(0.,.24)*portrait.zw,choreography.x*.05*rig.w);
+              local.x+=outer*lower*sin(a.y*7.-t*rig.z)*portrait.z*.012;
+            }
+          }else if(kind>16.5){
+            // Journey rigs: continuous weighted joints, fixed faces and bodies.
+            // UV a.y points up. Each illustration uses its own limb regions.
+            if(kind<17.5){
+              float body=1.-smoothstep(.58,.85,a.y),tail=(1.-smoothstep(.12,.38,a.y));
+              local.x+=sin(a.y*8.-t*.7)*body*portrait.z*.028;
+              local=hinge(local,vec2(-.04,.25)*portrait.zw,tail*sin(t*.7)*.08);
+              float mane=smoothstep(.20,.42,abs(a.x-.51))*smoothstep(.52,.80,a.y);
+              local.y+=mane*sin(a.x*7.+t)*portrait.w*.009;
+            }else if(kind<18.5){
+              float side=a.x<.5?-1.:1.,sleeve=smoothstep(.11,.33,abs(a.x-.5))*(1.-smoothstep(.72,.83,a.y));
+              local=hinge(local,vec2(side*.13,-.07)*portrait.zw,-side*sleeve*choreography.x*.36);
+              float hem=1.-smoothstep(.08,.48,a.y);local.x+=hem*sin(a.y*9.-t*.8)*portrait.z*.014;
+            }else if(kind<19.5){
+              float fan=smoothstep(.63,.79,a.x)*smoothstep(.55,.68,a.y);
+              local=hinge(local,vec2(.32,-.13)*portrait.zw,fan*choreography.x*.45);
+              float cloth=(1.-smoothstep(.38,.66,a.y))*(1.-smoothstep(.32,.55,a.x));
+              local.x+=cloth*sin(a.y*7.-t)*portrait.z*.022;
+            }else if(kind<20.5){
+              float spear=exp(-pow((a.y-(.20+a.x*.46))/.075,2.));
+              local=hinge(local,vec2(.03,.06)*portrait.zw,spear*choreography.x*.26);
+              float fire=smoothstep(.64,.79,a.y)*smoothstep(.10,.28,abs(a.x-.5));
+              local.x+=fire*sin(a.y*10.-t*1.3)*portrait.z*.018;
+              float sash=(1.-smoothstep(.32,.60,a.x))*(1.-smoothstep(.50,.68,a.y));
+              local.y+=sash*sin(a.x*9.-t)*portrait.w*.012;
+            }else if(kind<21.5){
+              float willow=(1.-smoothstep(.36,.48,a.x))*smoothstep(.57,.73,a.y);
+              local=hinge(local,vec2(-.10,-.09)*portrait.zw,willow*choreography.x*.35);
+              float sleeve=(1.-smoothstep(.21,.47,a.y))*smoothstep(.15,.34,abs(a.x-.5));
+              local.x+=sleeve*sin(a.y*9.-t*.7)*portrait.z*.013;
+            }else if(kind<22.5){
+              local=hinge(local,vec2(0.,.12)*portrait.zw,(choreography.y-.5)*.11);
+              local.x*=.97+.03*cos(t*.45);
+            }else if(kind<23.5){
+              for(int i=0;i<3;i++){float k=float(i),bx=.27+k*.23,mask=exp(-pow((a.x-bx)/.14,2.))*(1.-smoothstep(.66,.88,a.y));local=hinge(local,vec2(bx-.5,-.23)*portrait.zw,mask*sin(t*1.4-k*.4)*.09);}
+            }else if(kind<24.5){
+              local=hinge(local,vec2(0.,.30)*portrait.zw,choreography.x*.35);
+              float tassel=(1.-smoothstep(.17,.40,a.y))*smoothstep(.12,.28,abs(a.x-.5));local.x+=tassel*sin(a.y*9.-t)*portrait.z*.014;
+            }else if(kind<25.5){
+              local=hinge(local,vec2(-.01,.09)*portrait.zw,choreography.x*.36);
+              float ribbon=smoothstep(.19,.33,abs(a.x-.5))*(1.-smoothstep(.32,.64,a.y));local.x+=ribbon*sin(a.y*8.-t)*portrait.z*.018;
+            }else if(kind<26.5){
+              float side=a.x<.5?-1.:1.,wheels=(1.-smoothstep(.18,.31,a.y))*smoothstep(.09,.21,abs(a.x-.5));
+              vec2 pivot=vec2(side*.22,.31)*portrait.zw;local=hinge(local,pivot,side*wheels*choreography.z*.22);
+              float sash=smoothstep(.20,.38,abs(a.x-.5))*smoothstep(.36,.68,a.y);
+              local.y+=sash*sin(a.x*11.-t)*portrait.w*.013;
+            }else if(kind<27.5){
+              local=hinge(local,vec2(0.),choreography.x);
+            }else if(kind<28.5){
+              float spear=smoothstep(.58,.77,a.x)*smoothstep(.32,.56,a.y);
+              local=hinge(local,vec2(.12,.02)*portrait.zw,spear*choreography.x*.23);
+              float cape=(1.-smoothstep(.28,.48,a.x))*(1.-smoothstep(.64,.81,a.y));local.x+=cape*sin(a.y*8.-t*.9)*portrait.z*.022;
+            }else{
+              float staff=exp(-pow((a.y-(.87-a.x*.74))/.076,2.));
+              local=hinge(local,vec2(.00,.07)*portrait.zw,staff*choreography.x*.22);
+              float plume=smoothstep(.73,.86,a.y)*smoothstep(.11,.26,abs(a.x-.5));
+              local.x+=plume*sin(a.x*8.-t)*portrait.z*.015;
+              float ribbon=smoothstep(.23,.38,abs(a.x-.5))*(1.-smoothstep(.24,.53,a.y));local.y+=ribbon*sin(a.x*10.-t*.8)*portrait.w*.016;
+            }
+          }else if(kind>10.5){
             if(kind<11.5){
               // Both mallets rotate from their outboard grips. The drum shell
               // remains rigid; only its membrane and suspended tassels respond.
@@ -619,7 +747,7 @@
     if(!ok||!gl.getProgramParameter(program,gl.LINK_STATUS)){destroy();return null;}
     const vertices=[];for(let y=0;y<48;y++)for(let x=0;x<40;x++){const l=x/40,r=(x+1)/40,b=y/48,t=(y+1)/48;vertices.push(l,b,r,b,l,t,l,t,r,b,r,t);}
     gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);const a=gl.getAttribLocation(program,'a');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);gl.bindTexture(gl.TEXTURE_2D,texture);for(const key of [gl.TEXTURE_MIN_FILTER,gl.TEXTURE_MAG_FILTER])gl.texParameteri(gl.TEXTURE_2D,key,gl.LINEAR);for(const key of [gl.TEXTURE_WRAP_S,gl.TEXTURE_WRAP_T])gl.texParameteri(gl.TEXTURE_2D,key,gl.CLAMP_TO_EDGE);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
-    const uniforms=Object.fromEntries(['p','kind','quiet','action','choreography','viewport','portrait','shaft[0]'].map(k=>[k,gl.getUniformLocation(program,k)]));
+    const uniforms=Object.fromEntries(['p','kind','quiet','action','choreography','rig','viewport','portrait','shaft[0]'].map(k=>[k,gl.getUniformLocation(program,k)]));
     return{draw(image,id,state,pose,g){if(disposed||gl.isContextLost())return null;
       const ratio=Math.min(2,doc.defaultView?.devicePixelRatio||1),w=Math.ceil(g.width*ratio),h=Math.ceil(g.height*ratio);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
       if(lastImage!==image){
@@ -631,6 +759,7 @@
         lastImage=image;
       }
       gl.uniform1f(uniforms.p,state.progress);gl.uniform1f(uniforms.kind,SPIRIT_KINDS[id]??2);gl.uniform1f(uniforms.quiet,state.reduced?1:0);
+      const rig=Expansion?.rig(id)||[0,0,0,0];gl.uniform4f(uniforms.rig,...rig);
       const poseMotion=themePose(id,state);gl.uniform1f(uniforms.action,state.action?1:0);gl.uniform4f(uniforms.choreography,poseMotion.wing,id==='leviathan'?poseMotion.jaw:poseMotion.opening,poseMotion.orbit,poseMotion.draw);
       gl.uniform2f(uniforms.viewport,g.width,g.height);gl.uniform4f(uniforms.portrait,pose.x,pose.y,pose.width,pose.height);
       const points=[];for(let i=0;i<=8;i++){const point=g.curve?g.curve(i/8):{x:mix(g.grip.x,g.tip.x,i/8),y:mix(g.grip.y,g.tip.y,i/8)};points.push(point.x,point.y);}gl.uniform2fv(uniforms['shaft[0]'],new Float32Array(points));
@@ -645,6 +774,8 @@
       ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,g.width,g.height);canvas.dataset.tier=state.tier;canvas.dataset.progress=String(state.progress);
       const valid=c=>/^#[0-9a-f]{6}$/i.test(c||''),colors=design(rod?.id)?.colors||[valid(rod?.color)?rod.color:'#8da392',valid(rod?.accent)?rod.accent:'#c5dfcf','#fff5dc'];
       ctx.save();canvas.dataset.apparition='';canvas.dataset.scene=state.kind;canvas.dataset.stage=state.departing?'depart':state.stage;canvas.dataset.gather=String(state.gather);
+      if(Anime?.has(rod?.id)){const anchor=g.curve?g.curve(.55):g.grip;Anime.draw(ctx,rod.id,'cast',state.progress*Anime.cleanDurations.cast,{},{...g,water:anchor},g.grip,anchor,state.reduced,Math.min(.7,state.alpha));canvas.dataset.apparition='anime-'+Anime.entries[rod.id].action;canvas.dataset.spiritRenderer='technique-canvas';ctx.restore();return;}
+      if(RelicVFX?.has(rod?.id)){const anchor=g.curve?g.curve(.53):g.grip;const q=RelicVFX.draw(ctx,rod.id,'summon',state.progress*RelicVFX.durations.summon,{},{...g,water:anchor},g.grip,anchor,state.reduced,Math.min(.78,state.alpha));canvas.dataset.apparition=rod.id;canvas.dataset.spiritRenderer=q?.renderer||'';ctx.restore();return;}
       const scene=summonScene(rod?.id);if(rod?.id!=='katana')paintSummonScene(ctx,rod?.id,state,g,colors);
       if(scene?.art){
         const image=images.get(rod.id);
@@ -654,7 +785,7 @@
           const source=spiritSurface?.draw(image,rod.id,state,pose,g);canvas.dataset.spiritRenderer=source?'webgl':'canvas';canvas.dataset.spiritMaterial='translucent-crystal';
           ctx.globalAlpha=pose.alpha;
           if(source)ctx.drawImage(source,0,0,g.width,g.height);
-          else{const m=state.reduced?0:state.gather,anchor=g.curve?g.curve(.5):g.grip;ctx.save();ctx.translate(mix(pose.x,anchor.x,m),mix(pose.y,anchor.y,m));ctx.rotate(m*Math.atan2(g.tip?.x-g.grip.x,g.grip.y-g.tip?.y));ctx.drawImage(image,-pose.width*(1-m*.97)/2,-pose.height/2,pose.width*(1-m*.97),pose.height);ctx.restore();}
+          else{const m=state.reduced?0:state.gather,anchor=g.curve?g.curve(.5):g.grip;ctx.save();ctx.translate(mix(pose.x,anchor.x,m),mix(pose.y,anchor.y,m));ctx.rotate(m*Math.atan2(g.tip?.x-g.grip.x,g.grip.y-g.tip?.y)+(rod.id==='ruyi'&&!state.reduced?Journey.staffPose({...state,phase:'summon'}).angle*(1-m):0));ctx.drawImage(image,-pose.width*(1-m*.97)/2,-pose.height/2,pose.width*(1-m*.97),pose.height);ctx.restore();}
           ctx.globalAlpha=1;
           if(!state.reduced){
             const gather=state.gather;
@@ -665,7 +796,7 @@
       if(rod?.id==='katana')paintSummonScene(ctx,rod.id,state,g,colors);
       for(const strand of summonField(rod,state,g))paint(ctx,strand,colors,state.alpha*(scene?.art?.08+.82*state.gather:1));ctx.restore();
     }
-    return{draw,preload:rod=>disposed?null:images.get(rod?.id),destroy(){if(disposed)return;disposed=true;images.destroy();spiritSurface?.destroy();spiritSurface=null;canvas.width=canvas.height=1;canvas.remove();}};
+    return{draw,preload:rod=>disposed?null:RelicVFX?.has(rod?.id)?RelicVFX.load(doc,rod.id):images.get(rod?.id),destroy(){if(disposed)return;disposed=true;images.destroy();spiritSurface?.destroy();spiritSurface=null;canvas.width=canvas.height=1;canvas.remove();}};
   }
   function coinPose(progress,reduced=false){const p=clamp(progress);return{rise:reduced?.35:ease(p)*.95,angle:reduced?.35:.35+p*TAU*1.65,radius:.34,alpha:ease(p/.12)*(1-ease((p-.72)/.28))};}
   function paintCoin(ctx,x,y,size,state){
@@ -684,42 +815,149 @@
     for(const side of [-1,1])for(let i=0;i<5;i++){const a=.3+i*.22,xx=side*Math.sin(a)*r*.64,yy=Math.cos(a)*r*.62;ctx.beginPath();ctx.ellipse(xx,yy,r*.12,r*.035,side*(.2+i*.2),0,TAU);ctx.fill();ctx.stroke();}
     ctx.restore();
   }
+
+  function paintThunder(ctx,state,g,point){
+    const p=state.reduced?.45:state.progress,strike=ease((p-.08)/.25),top=Math.max(12,point.y-Math.min(160,g.height*.62)),height=(point.y-top)*strike;
+    const bolt=Array.from({length:12},(_,i)=>({x:point.x+(i===0||i===11?0:Math.sin(i*7.13)*8*(1-i/14)),y:top+i/11*height}));
+    ctx.save();ctx.lineJoin='miter';ctx.lineCap='round';
+    for(const [width,color,alpha]of [[8,'#6dadd4',.13],[3,'#97dffa',.62],[.9,'#fff5d6',.95]]){trace(ctx,bolt);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.globalAlpha=state.alpha*alpha;ctx.stroke();}
+    if(strike>.9){ctx.beginPath();ctx.ellipse(point.x,point.y,12+p*21,3+p*5,0,0,TAU);ctx.strokeStyle='#a8e7ff';ctx.lineWidth=1;ctx.globalAlpha=state.alpha*.5;ctx.stroke();}ctx.restore();
+  }
+  const FLOAT_GLYPHS={
+    moon:'M8 9A7 7 0 1 0 20 19A8 8 0 0 1 8 9Z',
+    phoenix:'M14 23Q2 18 7 6L14 13L22 5Q23 19 14 23Z',
+    thunderdrum:'M6 10Q14 6 22 10V20Q14 24 6 20ZM7 10L21 20M21 10L7 20',
+    whitedragon:'M7 22Q4 11 14 8Q24 7 18 17Q13 22 9 15M13 8L10 3M18 8L22 3',
+    kasaya:'M14 6L5 10L3 23L14 20L25 23L23 10ZM8 11L20 19M9 8L21 15',
+    windfan:'M14 24L3 11Q14-2 25 11ZM14 23L8 8M14 23V5M14 23L20 8',
+    redboy:'M14 24Q1 21 9 9L11 14L15 3Q25 13 22 20Z',
+    jadebottle:'M10 4H18L16 12Q25 18 19 24H9Q3 18 12 12Z',
+    demonmirror:'M14 4A10 10 0 1 0 14 24A10 10 0 1 0 14 4M14 9L20 14L14 19L8 14Z',
+    goldenbell:'M10 6Q14 2 18 6L20 18L24 22H4L8 18ZM14 22V26',
+    sevenstars:'M14 3L18 19L14 25L10 19ZM6 20H22',
+    gourd:'M11 4H17L16 7Q23 10 16 14Q26 20 19 25H9Q2 20 12 14Q5 10 12 7Z',
+    lotuswheel:'M14 5A9 9 0 1 0 14 23A9 9 0 1 0 14 5M14 5V23M5 14H23M8 8L20 20M8 20L20 8',
+    erlang:'M14 2L17 13L23 5L21 17L14 23L7 17L5 5L11 13ZM14 17V27',
+    wukong:'M5 12Q3 2 10 6L14 9L18 6Q25 2 23 12L21 22L14 26L7 22ZM8 14L12 16M20 14L16 16M5 9Q14 4 23 9',
+    eclipse:'M14 5A9 9 0 1 0 14 23A9 9 0 1 0 14 5M8 14Q14 3 20 14Q14 25 8 14',
+    golden:'M5 8L9 13L14 5L19 13L23 8L21 23H7Z',
+    cloud:'M4 18Q0 9 9 10Q12 1 19 9Q29 8 25 19ZM6 22Q14 28 22 22',
+    astral:'M14 3L17 10L25 13L18 17L14 25L10 17L3 13L10 10ZM3 22L25 5',
+    dragon:'M4 21Q4 12 16 9Q25 6 21 17Q18 23 12 16M16 9L13 3M20 9L25 4',
+    lotus:'M14 25Q2 23 4 12L10 16L14 5L18 16L24 12Q26 23 14 25Z',
+    guandao:'M12 26V4Q26 2 24 14L17 20L18 10H12',
+    katana:'M10 27L12 20L21 3Q22 17 15 22L13 28M7 19L17 24',
+    candlewyrm:'M10 25V13H18V25ZM14 13Q5 9 15 2Q24 12 14 13',
+    abysswhale:'M3 17Q6 6 18 11L24 6L23 14L27 18L20 18Q10 26 3 17Z',
+    foxfire:'M5 5L11 10L17 10L24 5L22 19L14 26L6 19ZM8 15L12 17M20 15L16 17',
+    lilybell:'M14 27V5M14 8Q2 6 4 17L11 16Q14 12 14 8M14 14Q26 10 25 21L18 22Q14 18 14 14',
+    sandscript:'M6 5H22L20 10L15 14L20 20L22 25H6L8 20L13 14L8 10ZM9 24L14 18L19 24',
+    frostwolf:'M5 3L12 9L19 4L24 16L18 25L10 22L5 13ZM10 13L13 15M20 13L17 15',
+    rosevow:'M14 27V17M14 19L5 15M14 23L22 19M14 4L21 7L23 14L16 19L8 16L5 9ZM10 9L17 8L18 13L13 15Z',
+    inkjudge:'M8 27L20 4Q6 3 6 15L12 18M11 20L25 10',
+    butterfly:'M14 11Q4-1 3 10Q2 17 10 16Q1 22 8 26L14 18L20 26Q27 22 18 16Q26 17 25 10Q24-1 14 11ZM14 8V23',
+    sunforge:'M14 2L17 7L23 6L22 12L27 15L22 18L23 24L17 23L14 28L11 23L5 24L6 18L1 15L6 12L5 6L11 7ZM14 9A6 6 0 1 0 14 21A6 6 0 1 0 14 9',
+    leviathan:'M4 7L9 12L14 4L19 12L24 7L22 20Q14 27 6 20ZM7 22Q14 29 21 22'
+  };
+  // One drawn cloud silhouette is shared by the float and rod-side wisps.
+  // Its curled ends and recessed spirals stay legible at desktop icon sizes.
+  const RUYI_CLOUD={
+    body:[['M',4,24],['C',0,23,1,18,5,17],['C',7,16,10,17,11,18],['C',8,13,11,8,17,9],['C',18,3,27,3,30,9],['C',35,6,41,9,40,14],['C',46,12,49,19,44,23],['C',41,26,35,23,31,25],['C',26,28,21,27,17,25],['C',12,23,8,28,3,27],['C',6,26,7,25,4,24],['Z']],
+    shade:[['M',3,22],['C',8,24,12,20,18,23],['C',23,26,27,25,31,23],['C',36,21,40,25,45,21],['C',43,27,36,23,31,25],['C',26,28,21,27,17,25],['C',12,23,8,28,3,27],['C',7,25,6,24,3,22],['Z']],
+    scroll:[['M',13,17],['C',10,13,15,10,19,13],['C',22,16,19,21,15,20],['C',22,24,31,21,31,16],['C',31,12,26,11,24,14],['C',22,17,26,19,28,16],['M',35,18],['C',36,14,42,15,42,18],['C',42,21,38,21,36,20]],
+    rim:[['M',5,19],['C',8,18,9,19,10,20],['M',14,10],['C',16,9,18,11,19,11],['M',21,7],['C',24,5,28,8,28,10],['M',32,11],['C',35,9,38,11,37,13]]
+  };
+  const cloudPath=commands=>commands.map(c=>c.join(' ')).join(' ');
+  let floatSequence=0;
+  function cloudBobber(){
+    const id='fishing-ruyi-cloud-'+(++floatSequence);
+    return '<svg class="fishing-themed-float fishing-themed-float--cloud" data-float-theme="ruyi" viewBox="0 0 48 36" aria-hidden="true">'+
+      '<defs><linearGradient id="'+id+'" x1="0" y1="0" x2=".25" y2="1"><stop stop-color="#fffef0"/><stop offset=".4" stop-color="#fff0c9"/><stop offset=".74" stop-color="#e9d3a0"/><stop offset="1" stop-color="#b7aa82"/></linearGradient></defs>'+
+      '<ellipse cx="24" cy="29" rx="12" ry="2.3" fill="#496e66" opacity=".15"/><path d="M10 30C16 33 34 33 39 29" fill="none" stroke="#fff4cf" stroke-width=".8" opacity=".55"/>'+
+      '<path d="'+cloudPath(RUYI_CLOUD.body)+'" fill="url(#'+id+')" stroke="#aa8345" stroke-width="1.05" stroke-linejoin="round"/>'+
+      '<path d="'+cloudPath(RUYI_CLOUD.shade)+'" fill="#8d9d8d" opacity=".2"/>'+
+      '<path d="'+cloudPath(RUYI_CLOUD.scroll)+'" fill="none" stroke="#b69050" stroke-width="1.05" stroke-linecap="round"/>'+
+      '<path d="'+cloudPath(RUYI_CLOUD.rim)+'" fill="none" stroke="#fffef0" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  }
+  function ruyiCloudField(time,g,reduced=false){
+    const t=reduced?0:(Number(time)||0)/1000,curve=g.curve||((u)=>({x:mix(g.grip.x,g.tip.x,u),y:mix(g.grip.y,g.tip.y,u)})),a=curve(.15),b=curve(.95),size=Math.max(13,Math.min(29,Math.hypot(b.x-a.x,b.y-a.y)*.17));
+    return [.35,.60,.83].map((base,i)=>{
+      const phase=t*.53+i*2.2,s=base+(reduced?0:Math.sin(phase*.7)*.014),p=curve(s),lo=curve(s-.012),hi=curve(s+.012),length=Math.hypot(hi.x-lo.x,hi.y-lo.y)||1,nx=-(hi.y-lo.y)/length,ny=(hi.x-lo.x)/length;
+      const offset=(i===1?-1:1)*(9+(reduced?0:Math.sin(phase)*3.5)),width=size*(i===1?1:.78);
+      return {x:p.x+nx*offset,y:p.y+ny*offset-(reduced?0:Math.sin(phase+.8)*1.8),width,angle:reduced?0:Math.sin(phase*.8)*.055,alpha:reduced?.28:.55+Math.cos(phase)*.09};
+    });
+  }
+  function paintRuyiClouds(ctx,time,g,reduced,energy){
+    const trace=commands=>{ctx.beginPath();for(const [op,...v]of commands){if(op==='M')ctx.moveTo(...v);else if(op==='C')ctx.bezierCurveTo(...v);else ctx.closePath();}};
+    for(const q of ruyiCloudField(time,g,reduced)){
+      ctx.save();ctx.translate(q.x,q.y);ctx.rotate(q.angle);ctx.scale(q.width/48,q.width/48);ctx.translate(-24,-17);
+      const fill=ctx.createLinearGradient(16,5,29,28);fill.addColorStop(0,'#fffdeb');fill.addColorStop(.42,'#f6e8c0');fill.addColorStop(1,'#b8bd9e');
+      trace(RUYI_CLOUD.body);ctx.globalAlpha=q.alpha*energy;ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle='#dec18a';ctx.lineWidth=.95;ctx.lineJoin='round';ctx.stroke();
+      trace(RUYI_CLOUD.shade);ctx.fillStyle='#89998b';ctx.globalAlpha=q.alpha*energy*.28;ctx.fill();
+      trace(RUYI_CLOUD.scroll);ctx.strokeStyle='#b29a62';ctx.lineWidth=1.05;ctx.lineCap='round';ctx.globalAlpha=q.alpha*energy*.8;ctx.stroke();
+      trace(RUYI_CLOUD.rim);ctx.strokeStyle='#fffce5';ctx.lineWidth=1.35;ctx.globalAlpha=q.alpha*energy*.88;ctx.stroke();ctx.restore();
+    }
+  }
+  function bobberMarkup(rod){
+    if(!rod||!['epic','legendary'].includes(rod.rarity))return '';
+    const prestige=Prestige?.bobberMarkup(rod);if(prestige)return prestige;
+    if(rod.id==='ruyi')return cloudBobber();
+    const anime=Anime?.detailedBobber(rod.id);if(anime)return anime;
+    const id=rod.id,colors=design(id)?.colors||['#9b9b83',/^#[0-9a-f]{6}$/i.test(rod.accent||'')?rod.accent:'#dfcca0','#fff4d0'];
+    const path=Anime?.bobber(id)||Expansion?.glyphs[id]||FLOAT_GLYPHS[id]||'M14 4L17 10L24 13L17 17L14 24L10 17L4 13L10 10Z';
+    return '<svg class="fishing-themed-float" data-float-theme="'+id+'" viewBox="0 0 28 42" aria-hidden="true"><path d="M14 25V40M14 1V5" fill="none" stroke="'+colors[2]+'" stroke-width="1.2"/><path d="'+path+'" fill="'+colors[0]+'" fill-opacity=".9" stroke="'+colors[1]+'" stroke-width="1.25" stroke-linejoin="round"/><circle cx="14" cy="30" r="2" fill="'+colors[2]+'"/></svg>';
+  }
+  function decorateBobber(node,rod){if(!node?.dataset||!node.insertAdjacentHTML)return;const key=['epic','legendary'].includes(rod?.rarity)?rod.id:'';if(node.dataset.floatSkin===key)return;node.dataset.floatSkin=key;node.querySelector?.('.fishing-themed-float')?.remove();const art=bobberMarkup(rod);if(art)node.insertAdjacentHTML('beforeend',art);}
+
   function create(host){
     const doc=host.ownerDocument,win=doc.defaultView||globalThis,canvas=doc.createElement('canvas'),ctx=canvas.getContext?.('2d',{alpha:true});if(!ctx)return null;
     canvas.className='fishing-flow-canvas';canvas.setAttribute('aria-hidden','true');host.appendChild(canvas);
     let width=0,height=0,ratio=0,disposed=false,lastVariant='',history=[],spiritSurface=null,spiritAttempted=false;const images=imageLease(doc);
     function draw(profile,phase,age,values,g,tip,point,control1,control2,reduced=false){
       if(disposed)return;
-      const info=design(profile?.variant);canvas.hidden=!info;if(!info){history=[];return;}
+      const info=design(profile?.variant)||RelicVFX?.has(profile?.variant);canvas.hidden=!info;if(!info){history=[];return;}
       const dpr=Math.min(2,win.devicePixelRatio||1);
       if(g.width!==width||g.height!==height||ratio!==dpr){width=g.width;height=g.height;ratio=dpr;canvas.width=Math.max(1,Math.ceil(width*dpr));canvas.height=Math.max(1,Math.ceil(height*dpr));}
-      ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);ctx.save();ctx.beginPath();ctx.rect(0,0,Math.max(0,width-40),height);ctx.clip();
+      ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);ctx.save();ctx.beginPath();ctx.rect(0,0,Math.max(0,width-(profile.variant==='valorant_spike'?0:40)),height);ctx.clip();
       const id=profile.variant;
+      canvas.dataset.variant=id;canvas.dataset.phase=phase;
+      if(!effectVisible(phase,age,id)){
+        history=[];for(const key of ['spell','spellStage','technique','event','action','spiritRenderer'])canvas.dataset[key]='';canvas.dataset.eventAlpha='0';ctx.restore();return;
+      }
+      if(Anime?.has(id)){const q=Anime.draw(ctx,id,phase,age,values,g,tip,point,reduced,profile.energy);canvas.dataset.spell=Anime.entries[id].action;canvas.dataset.spellStage=q?.stage||'';canvas.dataset.technique=q?.technique||'';canvas.dataset.action='anime-'+Anime.entries[id].action;canvas.dataset.eventAlpha=String(q?.alpha||0);canvas.dataset.spiritRenderer=q?.renderer||'articulated-canvas';history=[];ctx.restore();return;}
+      if(RelicVFX?.has(id)&&phase==='idle'){if(id==='ruyi')paintRuyiClouds(ctx,values.effectTime??age,{...g,tip},reduced,profile.energy);history=[];ctx.restore();return;}
+      if(RelicVFX?.has(id)&&phase!=='idle'){const q=RelicVFX.draw(ctx,id,phase,age,values,g,tip,point,reduced,profile.energy);canvas.dataset.spell=RelicVFX.specs[id].motion;canvas.dataset.spellStage=q?.stage||'';canvas.dataset.action=id+'-'+phase;canvas.dataset.eventAlpha=String(q?.alpha||0);canvas.dataset.spiritRenderer=q?.renderer||'';history=[];ctx.restore();return;}
       images.get(id);const t=reduced?0:age/1000,power=phase==='charging'?clamp(values.castPower):phase==='reeling'?clamp(values.tension):.15,energy=(reduced?.16:.44+power*.3)*profile.energy;
       canvas.dataset.variant=id;canvas.dataset.phase=phase;
       if(lastVariant!==id){history=[];lastVariant=id;}
       const spine=u=>g.curve?g.curve(u):{x:mix(g.grip.x,tip.x,u),y:mix(g.grip.y,tip.y,u)};
-      for(let k=0;k<(id==='golden'?1:3);k++){
+      if(id==='ruyi'&&phase==='idle')paintRuyiClouds(ctx,values.effectTime??age,{...g,tip,curve:spine},reduced,profile.energy);
+      for(let k=0;k<(Spells?.has(id)?1:id==='golden'?1:3);k++){
         const strand=sample(u=>{const along=.24+u*.76,p=spine(along),a=spine(Math.max(0,along-.01)),b=spine(Math.min(1,along+.01)),len=Math.hypot(b.x-a.x,b.y-a.y)||1,s=Math.sin(along*TAU*info.frequency-t*info.speed*2+k*2.1),spread=(2.2+power*2.8)*info.spread*Math.sin(u*Math.PI);return{x:p.x-(b.y-a.y)/len*s*spread,y:p.y+(b.x-a.x)/len*s*spread};},u=>(.5+power*.45)*Math.sin(u*Math.PI),.8-k*.13,k%2,56);
         paint(ctx,strand,info.colors,energy);
       }
-      if(['cast','reeling'].includes(phase)&&!reduced){
+      if(['cast','reeling'].includes(phase)&&!reduced&&!Spells?.has(id)){
         const line=u=>{const a=1-u;return{x:a**3*tip.x+3*a*a*u*control1.x+3*a*u*u*control2.x+u**3*point.x,y:a**3*tip.y+3*a*a*u*control1.y+3*a*u*u*control2.y+u**3*point.y};};
         for(let k=0;k<3;k++){const head=(t*(id==='katana'?1.8:.7)+k*.34)%1;paint(ctx,sample(u=>line(clamp(head-u*.23)),u=>.85*Math.sin(u*Math.PI),.7,k%2,28),info.colors,.7*profile.energy);}
       }
-      if(phase==='cast'&&!reduced){history.push({...tip});if(history.length>15)history.shift();if(history.length>2)paint(ctx,{alpha:.65,color:1,points:history.map((p,i)=>({...p,w:Math.sin(i/(history.length-1)*Math.PI)*1.3}))},info.colors,1);}else history=[];
+      if(phase==='cast'&&!reduced&&!Spells?.has(id)){history.push({...tip});if(history.length>15)history.shift();if(history.length>2)paint(ctx,{alpha:.65,color:1,points:history.map((p,i)=>({...p,w:Math.sin(i/(history.length-1)*Math.PI)*1.3}))},info.colors,1);}else history=[];
+      const spell=Spells?.draw(ctx,id,phase,age,values,g,tip,point,reduced,profile.energy);canvas.dataset.spell=spell?Spells.spells[id][0]:'';canvas.dataset.spellStage=spell?.stage||'';
       const state=eventState(id,phase,age,reduced);canvas.dataset.event=state?phase:'';canvas.dataset.eventAlpha=String(state?.alpha||0);canvas.dataset.action='';canvas.dataset.spiritRenderer='';
       if(state){
+        if(id==='thunderdrum'&&!Spells&&['cast','bite','caught'].includes(phase))paintThunder(ctx,state,g,point);
         const position=layout(id,state,g,tip,point),p=reduced?.45:state.progress,shape=mythic(id)?[]:flow(id,t,p),size=position.size*(.76+.24*ease(p/.3));
-        const articulated=mythic(id)||['moon','cloud','astral','lotus','guandao','phoenix'].includes(id),spirit=!!summonScene(id)?.art&&(illustrated(id)||phase==='caught'&&['phoenix','dragon','guandao','katana'].includes(id)),poseMotion=themePose(id,state);
+        const articulated=Expansion?.has(id)||Journey?.has(id)||mythic(id)||['moon','cloud','astral','lotus','guandao','phoenix'].includes(id),spirit=id!=='ruyi'&&!!summonScene(id)?.art&&(advancedArt(id)?['cast','caught'].includes(phase):illustrated(id)||phase==='caught'&&['phoenix','dragon','guandao','katana'].includes(id)),poseMotion=themePose(id,state);
         canvas.dataset.action=articulated||spirit?(id==='cloud'?'tornado':id)+'-'+phase:'';
-        if(articulated&&!(id==='phoenix'&&spirit)&&!(id==='katana'&&spirit))paintThemeAction(ctx,id,{...state,alpha:state.alpha*profile.energy},{...position,size},info.colors);
-        if(id!=='cloud'&&!mythic(id))for(const strand of shape)paint(ctx,transform(strand,position.x,position.y,size),info.colors,state.alpha*profile.energy*(articulated?.2:spirit?.28:1));
+        if(id==='ruyi')canvas.dataset.spiritRenderer='canvas';
+        if(articulated&&!Spells?.has(id)&&!(id==='phoenix'&&spirit)&&!(id==='katana'&&spirit))paintThemeAction(ctx,id,{...state,alpha:state.alpha*profile.energy},{...position,size},info.colors);
+        if(id!=='cloud'&&!mythic(id)&&!Journey?.has(id)&&!Expansion?.has(id))for(const strand of shape)paint(ctx,transform(strand,position.x,position.y,size),info.colors,state.alpha*profile.energy*(articulated?.2:spirit?.28:1));
         if(spirit){
           const art=images.get(id);
           if(art?.complete&&art.naturalWidth){
             if(!spiritAttempted){spiritAttempted=true;spiritSurface=createSpiritSurface(doc);}
-            const aspect=art.naturalWidth/art.naturalHeight,h=size*1.43,w=h*aspect,portrait={x:position.x+poseMotion.x*size,y:position.y+poseMotion.y*size,width:w,height:h},surface=spiritSurface?.draw(art,id,{...state,action:true},portrait,{...g,tip});
+            const aspect=art.naturalWidth/art.naturalHeight,journey=advancedArt(id),anchor=journey?caishenPose({...state,alpha:1},g,aspect,id):null,h=journey?anchor.height:size*1.43,w=h*aspect,portrait={x:(journey?anchor.x:position.x)+poseMotion.x*size,y:(journey?anchor.y:position.y)+poseMotion.y*size,width:w,height:h};
+            if(journey&&id==='wukong'&&phase==='caught'&&values.catchCount>1){for(let echo=1;echo<Math.min(3,values.catchCount);echo++){const side=echo===1?-1:1,echoPose={...portrait,x:Math.max(6+w*.42,Math.min(g.width-42-w*.42,portrait.x+side*w*.20)),y:portrait.y+8,width:w*.84,height:h*.84};const echoSurface=spiritSurface?.draw(art,id,{...state,progress:clamp(state.progress-echo*.06),action:true},echoPose,{...g,tip});ctx.globalAlpha=state.alpha*.22;if(echoSurface)ctx.drawImage(echoSurface,0,0,width,height);else ctx.drawImage(art,echoPose.x-echoPose.width/2,echoPose.y-echoPose.height/2,echoPose.width,echoPose.height);}}
+            const surface=spiritSurface?.draw(art,id,{...state,action:true},portrait,{...g,tip});
             ctx.globalAlpha=state.alpha*(reduced?.25:.72)*profile.energy;if(surface)ctx.drawImage(surface,0,0,width,height);else ctx.drawImage(art,portrait.x-w/2,portrait.y-h/2,w,h);
             canvas.dataset.spiritRenderer=surface?'webgl':'canvas';
           }
@@ -727,7 +965,7 @@
         if(id==='katana'&&spirit)paintThemeAction(ctx,id,{...state,alpha:state.alpha*profile.energy},{...position,size},info.colors);
         if(id==='golden'&&phase==='caught')paintCoin(ctx,position.x,position.y,size,state);
         if(!reduced){
-          const count=id==='golden'||id==='cloud'||mythic(id)?0:18;
+          const count=id==='golden'||id==='cloud'||mythic(id)||Journey?.has(id)||Expansion?.has(id)?0:18;
           for(let i=0;i<count;i++){
             const source=shape[i%shape.length].points,u=(i*.618+t*(id==='phoenix'?.31:.12))%1,j=Math.floor(u*(source.length-5))+2,pt=source[j],prior=source[j-2],drift=(.5+.5*Math.sin(i*7.3+t))*state.progress,px=position.x+pt.x*size,py=position.y+pt.y*size-drift*size*.12,life=Math.sin(u*Math.PI)*state.alpha*(.28+i%3*.11);
             ctx.globalAlpha=life;ctx.strokeStyle=info.colors[i%5===0?2:1];ctx.lineWidth=i%4===0?1.1:.6;ctx.beginPath();ctx.moveTo(px+(prior.x-pt.x)*size*1.4,py+(prior.y-pt.y)*size*1.4);ctx.lineTo(px,py);ctx.stroke();
@@ -739,7 +977,12 @@
     return{draw,destroy(){if(disposed)return;disposed=true;history=[];images.destroy();spiritSurface?.destroy();spiritSurface=null;canvas.width=canvas.height=1;canvas.remove();}};
   }
   function catalogMarkup(rod,id,curve){
+    const prestige=Prestige?.catalogMarkup(rod,id,curve,design(rod.id)?.theme,design(rod.id)?.colors[1]);if(prestige)return prestige;
     const info=design(rod.id);if(!info)return'';
+    if(rod.id==='valorant_spike'){
+      const p=curve(.36),glow=id+'-device';
+      return '<g class="fishing-catalog-fx fishing-catalog-fluid" data-fx-theme="'+info.theme+'" data-fx-variant="valorant_spike" style="--rod-glow:'+info.colors[1]+';--rod-accent:'+info.colors[0]+'" aria-hidden="true"><defs><radialGradient id="'+glow+'"><stop stop-color="#5de8c2" stop-opacity=".06"/><stop offset="1" stop-color="#5de8c2" stop-opacity="0"/></radialGradient></defs><ellipse class="fishing-catalog-halo fishing-catalog-flow" cx="'+f(p.x)+'" cy="'+f(p.y)+'" rx="43" ry="35" fill="url(#'+glow+')"/></g>';
+    }
     if(mythic(rod.id))return catalogMythicMarkup(rod,id,curve,info);
     if(rod.id==='cloud')return catalogTornadoMarkup(rod,id,curve,info);
     const colors=info.colors,gradient=id+'-flow',glow=id+'-mist',strands=[],quiet=rod.id==='golden';
@@ -776,5 +1019,5 @@
     const ribbon=(strand,front,index)=>'<path class="fishing-catalog-flow" data-wind-depth="'+(front?'front':'back')+'" d="'+path(envelope(strand.points,front?1:1.2))+'" fill="url(#'+light+')" fill-opacity="'+f(strand.alpha*(front?.83:.27))+'" style="--flow-delay:'+(-index*.17)+'s"/>',center=curve(.58);
     return'<g class="fishing-catalog-fx fishing-catalog-fluid" data-fx-theme="tornado" data-fx-variant="cloud" data-fx-surface="tapered-vortex" style="--rod-glow:'+colors[1]+';--rod-accent:'+colors[0]+';--fx-energy:.85" aria-hidden="true"><defs><linearGradient id="'+density+'" x1="0" y1=".5" x2="1" y2=".5"><stop stop-color="'+colors[0]+'" stop-opacity="0"/><stop offset=".28" stop-color="'+colors[2]+'" stop-opacity=".26"/><stop offset=".55" stop-color="'+colors[1]+'" stop-opacity=".07"/><stop offset=".83" stop-color="'+colors[2]+'" stop-opacity=".16"/><stop offset="1" stop-color="'+colors[0]+'" stop-opacity="0"/></linearGradient><linearGradient id="'+light+'" x1="0" y1="1" x2=".8" y2="0"><stop stop-color="'+colors[0]+'" stop-opacity="0"/><stop offset=".21" stop-color="'+colors[1]+'" stop-opacity=".72"/><stop offset=".65" stop-color="'+colors[2]+'" stop-opacity=".86"/><stop offset="1" stop-color="'+colors[1]+'" stop-opacity=".07"/></linearGradient><radialGradient id="'+glow+'"><stop stop-color="'+colors[1]+'" stop-opacity=".11"/><stop offset="1" stop-color="'+colors[0]+'" stop-opacity="0"/></radialGradient></defs><ellipse class="fishing-catalog-halo" cx="'+f(center.x)+'" cy="'+f(center.y)+'" rx="43" ry="93" fill="url(#'+glow+')"/>'+parts.back.map((strand,i)=>ribbon(strand,false,i)).join('')+'<path data-wind-volume="true" d="'+path(silhouette)+'" fill="url(#'+density+')"/>'+parts.front.map((strand,i)=>ribbon(strand,true,i)).join('')+'</g>';
   }
-  return Object.freeze({design,flow,themePose,mythicPose,mythicGeometry,tornadoPose,tornadoPoint,tornadoField,orbitalPoint,coinPose,paintCoin,envelope,eventState,layout,summonScene,summonState,summonField,summonPlacement,caishenPose,createSummon,create,catalogMarkup});
+  return Object.freeze({hasPainted:id=>RelicVFX?.has(id)||false,bobberMarkup,decorateBobber,ruyiCloudField,effectVisible,design,flow,themePose,mythicPose,mythicGeometry,tornadoPose,tornadoPoint,tornadoField,orbitalPoint,coinPose,paintCoin,envelope,eventState,layout,entranceTiming,summonScene,summonState,summonField,summonPlacement,caishenPose,createSummon,create,catalogMarkup});
 });

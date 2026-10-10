@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('node:fs'),F=require('../public/fishing-model'),P=require('../skins/tracer/fishing-prestige');
+const art=JSON.parse(fs.readFileSync('output/fishing-prestige/art-manifest.json','utf8'));
+const qa=JSON.parse(fs.readFileSync('output/fishing-prestige/art-qa.json','utf8'));
+const hidden={treasury:'方孔金币沿竿游走；三枚立体元宝绕金色椭圆轨道运行。',singularity:'倾斜的双层引力镜，黑色核心与收缩晶片；两层以不同速度转动。',clones:'三道金箍棒棍影各托一朵祥云，错开相位浮动。',mandate:'玉玺印框呼吸展开，五条金玉龙环绕，保留篆刻结构。',truth_orbs:'九枚黑色求道玉带微弱球面反光，额外展开六道锡杖与椭圆光环。',liberation:'珍珠白云随独立节奏漂浮，叠加双拍式鼓点光环。',radianite:'三棱装甲片与青色三角核心同步展开；跟随实际投掷装置，起爆时淡出。'};
+const rows=F.catalog.rods.filter(r=>P.get(r.id));
+let doc='# 传说鱼竿环绕效果与鱼漂升级\n\n现有 66 款传说鱼竿逐款配置主题轨迹、轮廓与材质，其中 7 款隐藏鱼竿另有独立的结构动画。桌面钓鱼、主界面钓鱼和图鉴预览均已接入。\n\n';
+doc+='## 鱼漂原画\n\n66 款透明鱼漂使用内置 imagegen 逐款生成，运行资源放在 `skins/tracer/fishing-art/float-prestige-*-v1.png`。生成原图保留，运行图采用保留透明通道的标准裁边和缩放，最长边 384 像素，总计 '+(Object.values(art.assets).reduce((n,a)=>n+a.bytes,0)/1024/1024).toFixed(2)+' MiB。\n\n西游、三国、万象使用雕刻、金属与玉石材质；动漫系列强调轮廓与角色符号；VALORANT 使用特工的技能或装置。盖可最终采用对照游戏截图重绘的迪兹，未采用早期偏离原作的草稿。爆能器的收藏图保留装置形态，钓鱼仍直接投掷爆能器。\n\n[鱼漂画廊](../output/fishing-prestige/float-gallery.html) · [每款提示词、原图路径与导出记录](../output/fishing-prestige/art-manifest.json) · [隐藏款预览](../output/fishing-prestige/hidden-catalog.png)\n\n';
+doc+='## 隐藏款\n\n| 鱼竿 | 专属结构动画 |\n| --- | --- |\n'+rows.filter(r=>r.hidden).map(r=>'| '+r.name[0]+' | '+hidden[P.get(r.id).signature]+' |').join('\n')+'\n\n';
+doc+='## 全部主题\n\n| 鱼竿 | 环绕主题 | 鱼漂资产 |\n| --- | --- | --- |\n'+rows.map(r=>'| '+r.name[0]+' | '+P.get(r.id).label+' | [PNG](../skins/tracer'+P.get(r.id).src+') |').join('\n')+'\n\n';
+doc+='## 动画与交互\n\n环绕以真实竿身曲线为锚点，前后分层绘制，保留鱼竿的弯曲、握点、抛竿与鱼线几何。新增层复用现有动画时钟，绘制频率上限为 30 Hz；相位连续，没有序列帧循环接缝。进入咬钩、溜鱼时约 110 ms 平滑收敛到低强度，保留控制区域留白。隐藏状态不参与输入，切换成普通鱼竿时隐藏，销毁时释放画布；系统减少动态效果选项会冻结轨迹。\n\n图鉴中的隐藏结构另有连续的 CSS 轨迹与材质呼吸动画；进入实景渲染后隐藏图鉴装饰，避免重复叠加。爆能器近侧装饰置于装置前方，起爆开始后 300 ms 内淡出。\n\n本次为表现层升级，抽取概率、隐藏被动、渔获价格、自动马达、鱼苗与饵料消耗继续使用原有逻辑。\n\n';
+doc+='## 验证\n\n- 66 款鱼竿 × 等待、溜鱼、抛竿 × 两个界面：396 组画布检查，无缺失资源或浏览器脚本错误。\n- 66 张运行图完整解码，透明度与有效内容检查通过；逐页检查四张画廊和实际 30 × 38 像素缩略图。\n- 7 款隐藏图鉴的专属结构与动画均已检查；释放后无遗留画布。\n- 新增层单独采样 '+qa.performance.samples+' 次，P95 绘制调用约 '+qa.performance.p95Ms.toFixed(2)+' ms。这是新增层的调用耗时，不是整页帧率保证。\n- 桌面测试 59 项通过；打包检查保留 693 项花园、钓鱼资源。完整测试 1,446 项全部通过，结果保存在 `output/fishing-prestige/final-tests.log`。\n\n';
+doc+='## 设计参考\n\n- [ONE PIECE 官方角色目录](https://one-piece.com/character/)：角色和能力的视觉主题。\n- [火影忍者官方六道仙人篇](https://naruto-official.com/en/anime/naruto2/list/01_865)：六道主题参考。\n- [VALORANT 官方特工目录](https://playvalorant.com/en-us/agents/)、[Gekko](https://playvalorant.com/en-us/agents/gekko/)、[Miks](https://playvalorant.com/en-au/agents/miks/)、[Waylay](https://playvalorant.com/en-au/agents/waylay/)：技能与器械方向。\n- 迪兹造型复核使用 [游戏截图](https://staticg.sportskeeda.com/editor/2023/12/c57d1-17040460413007-1920.jpg)；参考截图仅保存在验证目录，不作为游戏运行资源。\n\n鱼漂是针对钓鱼玩法的主题化道具设计，非从原作直接导出的模型。\n';
+fs.writeFileSync('docs/fishing-prestige-upgrade.md',doc);
+console.log('Saved design map for '+rows.length+' rods; all '+art.completed+' float sprites exported.');

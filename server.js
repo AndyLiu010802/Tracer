@@ -241,6 +241,18 @@ async function routeRequest(req, res) {
     if (activeScope !== 'guest') activeDataDir = accounts.directory(activeScope);
   }
 
+  if (pathname === '/api/fishing/weather') {
+    const transport = require('./lib/account-http');
+    if (req.method !== 'GET') { transport.send(res,405,{error:'method-not-allowed'}); return; }
+    if (!transport.trusted(req)) { transport.send(res,403,{error:'forbidden'}); return; }
+    res.setHeader('Cache-Control','no-store');
+    try {
+      routeRequest.fishingWeather ||= require('./lib/fishing-weather').createWeatherService();
+      transport.send(res,200,await routeRequest.fishingWeather(url.searchParams.get('latitude'),url.searchParams.get('longitude')));
+    } catch (error) { transport.send(res,error.status === 400 ? 400 : 503,{error:error.status === 400 ? 'invalid-location' : 'weather-unavailable'}); }
+    return;
+  }
+
   if (pathname.startsWith('/api/ai/')) {
     const { aiGateway } = servicesFor(activeDataDir);
     const send = (status, body) => { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); res.end(JSON.stringify(body)); };

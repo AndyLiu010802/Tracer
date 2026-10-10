@@ -22,7 +22,7 @@
     if (disposed || !snapshot || !nativeVisible || document.hidden) { pause(); return; }
     document.body.dataset.paused = 'false';
     if (!renderer) renderer = display.create(host, { compact: true, yaw: snapshot.desktopYaw, onBoundsChange: publishRegions });
-    renderer.update(snapshot.showcase, snapshot.language, { yaw: snapshot.desktopYaw });
+    renderer.update(snapshot.showcase, snapshot.language, { yaw: snapshot.desktopYaw, accountScope:snapshot.accountScope, accountGeneration:snapshot.accountGeneration, accountRestoreId:snapshot.accountRestoreId });
     const en = snapshot.language === 'en';
     document.documentElement.lang = en ? 'en' : 'zh-CN';
     frame.setAttribute('aria-label', en ? 'Legendary aquarium. Drag with the left button; right-click to rotate, resize or hide.' : '传奇水族箱，左键拖动，右键可旋转、缩放或隐藏。');

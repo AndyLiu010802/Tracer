@@ -1,0 +1,292 @@
+{
+  "assets": [
+    {
+      "id": "meteor",
+      "path": "skins/tracer/fishing-art/summon-expansion-meteor-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-cceb133d-d15c-490e-9477-645a502ffffb.png",
+      "prompt": "Use case: stylized-concept. Production transparent summoning apparition for a premium Chinese fantasy fishing game, ONE standalone asset. Subject: A jagged iron meteor with a molten amber core, broken mineral facets and three swept fire tails. Art direction: exquisitely detailed hand-painted 3D fantasy illustration, lifelike sculptural volume, rich physical materials, engraved micro-details, crisply separated silhouette, elegant restrained magical light. Principal palette #4d526f with #f3bc7b accents. Full subject and all protruding ornaments visible with 12% clear margin. Centered tall composition. Face and central torso firm, wide garments or moving appendages separated clearly so a continuous mesh can animate them. Object illustrations should have detailed three-quarter perspective. Soft directional key light plus subtle rim light. Actual transparent alpha background, no scenery, floor, vignette or opaque backdrop, no UI, typography, watermark, border or logo. Fine gold engraving and clear structure readable at a small 200px game size. Avoid a flat icon, generic light blob, excessive bloom, cropped weapon or pasted particle border.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "c9ab9bc428dc46d1d6907479c2764d9c5c4a9307fd44b5eff4d85144766885a8"
+    },
+    {
+      "id": "auroraprism",
+      "path": "skins/tracer/fishing-art/summon-expansion-auroraprism-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-67f029f6-2bb3-4ebd-924a-d77f91f64cfc.png",
+      "prompt": "Use case: stylized-concept. Production transparent summoning apparition for a premium Chinese fantasy fishing game, ONE standalone asset. Subject: An elaborate silver-framed hexagonal crystal prism containing folded cyan violet aurora ribbons. Art direction: exquisitely detailed hand-painted 3D fantasy illustration, lifelike sculptural volume, rich physical materials, engraved micro-details, crisply separated silhouette, elegant restrained magical light. Principal palette #77a6ba with #d5b9e4 accents. Full subject and all protruding ornaments visible with 12% clear margin. Centered tall composition. Face and central torso firm, wide garments or moving appendages separated clearly so a continuous mesh can animate them. Object illustrations should have detailed three-quarter perspective. Soft directional key light plus subtle rim light. Actual transparent alpha background, no scenery, floor, vignette or opaque backdrop, no UI, typography, watermark, border or logo. Fine gold engraving and clear structure readable at a small 200px game size. Avoid a flat icon, generic light blob, excessive bloom, cropped weapon or pasted particle border.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "525ace83659ea44ad4f3b0ba51445c962ec229b235a0c26d1bae685002b32b5b"
+    },
+    {
+      "id": "tidetrident",
+      "path": "skins/tracer/fishing-art/summon-expansion-tidetrident-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-5a228824-65c6-482d-951a-0e410be383a0.png",
+      "prompt": "Use case: stylized-concept. Production transparent summoning apparition for a premium Chinese fantasy fishing game, ONE standalone asset. Subject: An ornate ocean trident of blue patinated bronze, pearl-inlaid shell guard, sharp swept silver wave blades. Art direction: exquisitely detailed hand-painted 3D fantasy illustration, lifelike sculptural volume, rich physical materials, engraved micro-details, crisply separated silhouette, elegant restrained magical light. Principal palette #347d8d with #e3d29b accents. Full subject and all protruding ornaments visible with 12% clear margin. Centered tall composition. Face and central torso firm, wide garments or moving appendages separated clearly so a continuous mesh can animate them. Object illustrations should have detailed three-quarter perspective. Soft directional key light plus subtle rim light. Actual transparent alpha background, no scenery, floor, vignette or opaque backdrop, no UI, typography, watermark, border or logo. Fine gold engraving and clear structure readable at a small 200px game size. Avoid a flat icon, generic light blob, excessive bloom, cropped weapon or pasted particle border.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "2a23eac22827152247ee34c751ce9d2abc01e1a5f7d30650c217a7c00b93ce7e"
+    },
+    {
+      "id": "qilin",
+      "path": "skins/tracer/fishing-art/summon-expansion-qilin-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-f8793467-bed5-47e9-ac31-cb5ef6c4eb39.png",
+      "prompt": "Use case: stylized-concept. Production transparent summoning apparition for a premium Chinese fantasy fishing game, ONE standalone asset. Subject: A majestic jade-and-gold qilin with antlers, carp scales, leonine mane, split hooves and a pearl in its mouth. Art direction: exquisitely detailed hand-painted 3D fantasy illustration, lifelike sculptural volume, rich physical materials, engraved micro-details, crisply separated silhouette, elegant restrained magical light. Principal palette #678b76 with #efd28c accents. Full subject and all protruding ornaments visible with 12% clear margin. Centered tall composition. Face and central torso firm, wide garments or moving appendages separated clearly so a continuous mesh can animate them. Object illustrations should have detailed three-quarter perspective. Soft directional key light plus subtle rim light. Actual transparent alpha background, no scenery, floor, vignette or opaque backdrop, no UI, typography, watermark, border or logo. Fine gold engraving and clear structure readable at a small 200px game size. Avoid a flat icon, generic light blob, excessive bloom, cropped weapon or pasted particle border.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "a587b5881201394d6c22fe821aee752af15beb17028b8999d3a233762db849ef"
+    },
+    {
+      "id": "scarabsun",
+      "path": "skins/tracer/fishing-art/summon-expansion-scarabsun-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-07719ebe-8e5a-46a4-b203-5a245be1549e.png",
+      "prompt": "Use case: stylized-concept. ONE production transparent summoning apparition for a premium Chinese fantasy fishing game. Subject: A sacred golden scarab with articulated lapis and turquoise wing covers lifting a carved amber solar disk. Exquisite hand-painted 3D fantasy illustration, sculptural volume, material-rich sharp carving, meticulous small engraving, luxurious yet readable silhouette. Palette #367f8a and #edc36d. Entire subject visible including all appendages, centered vertically with 12% clear transparent margin on every side. Clear separated moving wings, branches or pieces suitable for continuous mesh animation; keep central structural core steady. Three-quarter perspective. Soft key light and subtle rim. Actual transparent alpha; zero scenery, solid backdrop, floor, frame, lettering or watermark. No flat icon, no generic glowing blob, no oversized bloom. Details should remain readable at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "caf9643e984685952594854dd1f1fb4183a42ccdb6f7870ac68842c624a206d0"
+    },
+    {
+      "id": "peacock",
+      "path": "skins/tracer/fishing-art/summon-expansion-peacock-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-47dd07aa-0b87-419e-95e8-01dd8282b67b.png",
+      "prompt": "Use case: stylized-concept. ONE production transparent summoning apparition for a premium Chinese fantasy fishing game. Subject: A regal emerald peacock displaying layered long eye-spotted tail feathers with tiny gold filigree ribs. Exquisite hand-painted 3D fantasy illustration, sculptural volume, material-rich sharp carving, meticulous small engraving, luxurious yet readable silhouette. Palette #397f74 and #b1dca4. Entire subject visible including all appendages, centered vertically with 12% clear transparent margin on every side. Clear separated moving wings, branches or pieces suitable for continuous mesh animation; keep central structural core steady. Three-quarter perspective. Soft key light and subtle rim. Actual transparent alpha; zero scenery, solid backdrop, floor, frame, lettering or watermark. No flat icon, no generic glowing blob, no oversized bloom. Details should remain readable at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "fa10c95fb443b0e59eaf044c9a468c526b3dd42e3615deead4d4e9e49b3ce834"
+    },
+    {
+      "id": "worldtree",
+      "path": "skins/tracer/fishing-art/summon-expansion-worldtree-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-798c3d97-c5b3-45fa-be07-cb5ca32d6184.png",
+      "prompt": "Use case: stylized-concept. ONE production transparent summoning apparition for a premium Chinese fantasy fishing game. Subject: An ancient bonsai-like world tree with intertwined roots, deeply carved bark and translucent golden-green leaves. Exquisite hand-painted 3D fantasy illustration, sculptural volume, material-rich sharp carving, meticulous small engraving, luxurious yet readable silhouette. Palette #6c8051 and #e3c995. Entire subject visible including all appendages, centered vertically with 12% clear transparent margin on every side. Clear separated moving wings, branches or pieces suitable for continuous mesh animation; keep central structural core steady. Three-quarter perspective. Soft key light and subtle rim. Actual transparent alpha; zero scenery, solid backdrop, floor, frame, lettering or watermark. No flat icon, no generic glowing blob, no oversized bloom. Details should remain readable at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "99840d5dd723df8a1b1e689162dd7c0942bf17c85aa4676c5d808eef8b274883"
+    },
+    {
+      "id": "chronoclock",
+      "path": "skins/tracer/fishing-art/summon-expansion-chronoclock-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-be89a943-b38a-492f-a1bd-ad4963b5c60b.png",
+      "prompt": "Use case: stylized-concept. ONE production transparent summoning apparition for a premium Chinese fantasy fishing game. Subject: An opened antique brass pocket watch with interlocking exposed gears, a glass sand chamber and engraved astronomical hands. Exquisite hand-painted 3D fantasy illustration, sculptural volume, material-rich sharp carving, meticulous small engraving, luxurious yet readable silhouette. Palette #847859 and #e7ce92. Entire subject visible including all appendages, centered vertically with 12% clear transparent margin on every side. Clear separated moving wings, branches or pieces suitable for continuous mesh animation; keep central structural core steady. Three-quarter perspective. Soft key light and subtle rim. Actual transparent alpha; zero scenery, solid backdrop, floor, frame, lettering or watermark. No flat icon, no generic glowing blob, no oversized bloom. Details should remain readable at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "6cd79bf3f4fde69140d589cdd353a11e1df75c72932d6e57d22196e7822b5f2f"
+    },
+    {
+      "id": "ninephoenix",
+      "path": "skins/tracer/fishing-art/summon-expansion-ninephoenix-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-e3aa56cb-0871-43dd-a291-b0decdef360d.png",
+      "prompt": "Use case: stylized-concept. ONE production transparent summoning apparition for a premium Chinese fantasy fishing game. Subject: A magnificent dark violet phoenix with exactly nine distinct long golden-edged tail plumes and a blazing amber breast. Exquisite hand-painted 3D fantasy illustration, sculptural volume, material-rich sharp carving, meticulous small engraving, luxurious yet readable silhouette. Palette #654968 and #edb876. Entire subject visible including all appendages, centered vertically with 12% clear transparent margin on every side. Clear separated moving wings, branches or pieces suitable for continuous mesh animation; keep central structural core steady. Three-quarter perspective. Soft key light and subtle rim. Actual transparent alpha; zero scenery, solid backdrop, floor, frame, lettering or watermark. No flat icon, no generic glowing blob, no oversized bloom. Details should remain readable at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "beab1a0c7c94edd2ae5f2769e375226f557b32b509ad4cab0ee22a87f4ae2b20"
+    },
+    {
+      "id": "scorpion",
+      "path": "skins/tracer/fishing-art/summon-expansion-scorpion-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-8bc1bf56-ec18-48f9-9c62-ae0019970ccb.png",
+      "prompt": "Use case: stylized-concept. ONE independent summoning apparition asset for a Chinese Journey to the West fantasy fishing game. Subject: An ornate violet-gold scorpion curling its articulated stinger over a carved pear-shaped Chinese pipa lute. Meticulously crafted high-end hand-painted 3D fantasy illustration, strong recognizable anatomy and artifact construction, fine engraved bronze and jade, precise ornament, material texture and elegant dynamic pose. Palette #766482 with #e0bd7d. Entire subject visible, generous 12% clear margin, centered tall portrait. Clearly separated arms, horns, tails and sleeves for animation. Keep face fully visible and calm central mass. Soft directional key and rim light. Real transparent alpha background, no scenery, no floor, no text, no UI or border. Restrained spell light only close to subject, no fog rectangle. No generic icon or flat emblem. Readable when displayed at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "5da157ce7107438496397e4777fbae1ae9bbec65dbc884841bb9f9eba5431232"
+    },
+    {
+      "id": "spiderweb",
+      "path": "skins/tracer/fishing-art/summon-expansion-spiderweb-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-53527b8a-bbd9-4f7a-8804-38de9d94b564.png",
+      "prompt": "Use case: stylized-concept. ONE independent summoning apparition asset for a Chinese Journey to the West fantasy fishing game. Subject: A lavish silver and amethyst spider-spindle with eight jointed legs and an intricate stretched moonlit silk web. Meticulously crafted high-end hand-painted 3D fantasy illustration, strong recognizable anatomy and artifact construction, fine engraved bronze and jade, precise ornament, material texture and elegant dynamic pose. Palette #867495 with #e4c6dd. Entire subject visible, generous 12% clear margin, centered tall portrait. Clearly separated arms, horns, tails and sleeves for animation. Keep face fully visible and calm central mass. Soft directional key and rim light. Real transparent alpha background, no scenery, no floor, no text, no UI or border. Restrained spell light only close to subject, no fog rectangle. No generic icon or flat emblem. Readable when displayed at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "65f12e642551004118d070049d0c30e73ee5e0ba70ffef34f119fb305b3f3b4d"
+    },
+    {
+      "id": "whitebone",
+      "path": "skins/tracer/fishing-art/summon-expansion-whitebone-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-050d586f-6bbe-4f1a-b21e-7cf3a7928a03.png",
+      "prompt": "Use case: stylized-concept. ONE independent summoning apparition asset for a Chinese Journey to the West fantasy fishing game. Subject: Three elegant ivory masks showing maiden, mature woman and skull aspects around a polished bone scepter with silver-gray silk. Meticulously crafted high-end hand-painted 3D fantasy illustration, strong recognizable anatomy and artifact construction, fine engraved bronze and jade, precise ornament, material texture and elegant dynamic pose. Palette #c0bfb1 with #b3c7d7. Entire subject visible, generous 12% clear margin, centered tall portrait. Clearly separated arms, horns, tails and sleeves for animation. Keep face fully visible and calm central mass. Soft directional key and rim light. Real transparent alpha background, no scenery, no floor, no text, no UI or border. Restrained spell light only close to subject, no fog rectangle. No generic icon or flat emblem. Readable when displayed at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "6e11cd2154baa44aba86b2402725bb338d123dc93c5999dfdb2b96115ef1ac2b"
+    },
+    {
+      "id": "dragonpalace",
+      "path": "skins/tracer/fishing-art/summon-expansion-dragonpalace-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-a329fc49-484f-4f10-b00b-54545ae8b354.png",
+      "prompt": "Use case: stylized-concept. ONE independent summoning apparition asset for a Chinese Journey to the West fantasy fishing game. Subject: An exquisite jade and gilt miniature underwater dragon palace with three sweeping eaves, coral pillars and a pearl dragon seal. Meticulously crafted high-end hand-painted 3D fantasy illustration, strong recognizable anatomy and artifact construction, fine engraved bronze and jade, precise ornament, material texture and elegant dynamic pose. Palette #528c99 with #eed1a0. Entire subject visible, generous 12% clear margin, centered tall portrait. Clearly separated arms, horns, tails and sleeves for animation. Keep face fully visible and calm central mass. Soft directional key and rim light. Real transparent alpha background, no scenery, no floor, no text, no UI or border. Restrained spell light only close to subject, no fog rectangle. No generic icon or flat emblem. Readable when displayed at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "63e4e1183a5f346f5aaf7fdec01f502ba3e2985abcb9f6f6a4565d8a3ada03d1"
+    },
+    {
+      "id": "bullking",
+      "path": "skins/tracer/fishing-art/summon-expansion-bullking-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-b916cd08-18f3-4570-8640-404fc806a99e.png",
+      "prompt": "Use case: stylized-concept. ONE independent summoning apparition asset for a Chinese Journey to the West fantasy fishing game. Subject: The Bull Demon King, powerful bull-headed warrior with two great curved horns, dark bronze lamellar armor and a black iron staff, waist-up. Meticulously crafted high-end hand-painted 3D fantasy illustration, strong recognizable anatomy and artifact construction, fine engraved bronze and jade, precise ornament, material texture and elegant dynamic pose. Palette #824b43 with #d7b888. Entire subject visible, generous 12% clear margin, centered tall portrait. Clearly separated arms, horns, tails and sleeves for animation. Keep face fully visible and calm central mass. Soft directional key and rim light. Real transparent alpha background, no scenery, no floor, no text, no UI or border. Restrained spell light only close to subject, no fog rectangle. No generic icon or flat emblem. Readable when displayed at 200px.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "24895e72f40a64e2f1d2fc5718f339b5436d280b5277ce8ff6d2bb2bed74757b"
+    },
+    {
+      "id": "guanyuyunchang",
+      "path": "skins/tracer/fishing-art/summon-expansion-guanyuyunchang-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-7d746f1e-8108-40da-8a2d-15dcb4f9ed48.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning character for an original Three Kingdoms historical fantasy fishing game. Subject: Guan Yu, dignified long-bearded Chinese martial saint in deep green robe and engraved gilt armor, holding an ornate crescent dragon glaive, waist-up. Distinguished individual face, authentic Han Chinese visual vocabulary reimagined with restrained fantasy. Exquisitely carved lamellar armor and silk brocade, detailed seams, metal edging, flowing hair and finely rendered hands holding the stated implement correctly. High-end painterly 3D game illustration. Principal colors #347862 and #eed39a. Framing: all upper body, weapon, hair and cape ornaments fully visible inside the canvas; 12% clear margin on ALL sides; centered tall portrait. Keep face and chest readable; moving weapon arm, sleeves, cloak and plumes distinct for later mesh animation. Soft key light, warm reflected light, crisp subtle rim. Actual transparent alpha background, no rectangular backdrop, no scenery, no ground, no writing, UI or watermark. No overwhelming glow. No cropped weapon or hands.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "0dfcd850f7ec83a9eb07a9cb7738a6f110639230dd40045bf8ba9b28e79bec26"
+    },
+    {
+      "id": "zhangfei",
+      "path": "skins/tracer/fishing-art/summon-expansion-zhangfei-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-508c5846-35b7-4f3c-9f55-37ac297ab763.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning character for an original Three Kingdoms historical fantasy fishing game. Subject: Zhang Fei, fierce broad-shouldered bearded general in black and bronze armor, holding an elegant undulating serpent spear, waist-up. Distinguished individual face, authentic Han Chinese visual vocabulary reimagined with restrained fantasy. Exquisitely carved lamellar armor and silk brocade, detailed seams, metal edging, flowing hair and finely rendered hands holding the stated implement correctly. High-end painterly 3D game illustration. Principal colors #554f62 and #d8a36e. Framing: all upper body, weapon, hair and cape ornaments fully visible inside the canvas; 12% clear margin on ALL sides; centered tall portrait. Keep face and chest readable; moving weapon arm, sleeves, cloak and plumes distinct for later mesh animation. Soft key light, warm reflected light, crisp subtle rim. Actual transparent alpha background, no rectangular backdrop, no scenery, no ground, no writing, UI or watermark. No overwhelming glow. No cropped weapon or hands.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "071b2246123450d420127e6910e3a9411d4f9d0e26e0ef9dd43d1bad73f806cb"
+    },
+    {
+      "id": "zhaoyun",
+      "path": "skins/tracer/fishing-art/summon-expansion-zhaoyun-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-4eb12ee6-4c11-4a1c-b2c5-a678cd2e330f.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning character for an original Three Kingdoms historical fantasy fishing game. Subject: Zhao Yun, noble young Chinese warrior in intricately engraved silver armor, white cloak and pale blue plume, holding a silver dragon spear, waist-up. Distinguished individual face, authentic Han Chinese visual vocabulary reimagined with restrained fantasy. Exquisitely carved lamellar armor and silk brocade, detailed seams, metal edging, flowing hair and finely rendered hands holding the stated implement correctly. High-end painterly 3D game illustration. Principal colors #9bbdc5 and #e3e5da. Framing: all upper body, weapon, hair and cape ornaments fully visible inside the canvas; 12% clear margin on ALL sides; centered tall portrait. Keep face and chest readable; moving weapon arm, sleeves, cloak and plumes distinct for later mesh animation. Soft key light, warm reflected light, crisp subtle rim. Actual transparent alpha background, no rectangular backdrop, no scenery, no ground, no writing, UI or watermark. No overwhelming glow. No cropped weapon or hands.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "13c41fa8677dc2c7953a03d3d68bbbdf18476f9320f86fa2a2d1fd35080e5945"
+    },
+    {
+      "id": "machao",
+      "path": "skins/tracer/fishing-art/summon-expansion-machao-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-2275f711-2a47-48ba-be10-c54363062a9d.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning character for an original Three Kingdoms historical fantasy fishing game. Subject: Ma Chao, handsome western cavalry general wearing a silver lion helmet and embroidered white cape, carrying a cavalry spear, waist-up. Distinguished individual face, authentic Han Chinese visual vocabulary reimagined with restrained fantasy. Exquisitely carved lamellar armor and silk brocade, detailed seams, metal edging, flowing hair and finely rendered hands holding the stated implement correctly. High-end painterly 3D game illustration. Principal colors #a0aab5 and #e0c496. Framing: all upper body, weapon, hair and cape ornaments fully visible inside the canvas; 12% clear margin on ALL sides; centered tall portrait. Keep face and chest readable; moving weapon arm, sleeves, cloak and plumes distinct for later mesh animation. Soft key light, warm reflected light, crisp subtle rim. Actual transparent alpha background, no rectangular backdrop, no scenery, no ground, no writing, UI or watermark. No overwhelming glow. No cropped weapon or hands.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "0e881fface72ac33d24d3ddb7938e332dc6b3a8d8769ace1bf2b150d3e593e11"
+    },
+    {
+      "id": "zhouyu",
+      "path": "skins/tracer/fishing-art/summon-expansion-zhouyu-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-a7b898fe-4221-446a-9ed1-774e448a7c1f.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning character for an original Three Kingdoms historical fantasy fishing game. Subject: Zhou Yu, elegant Chinese admiral with refined face, crimson brocade cloak and bronze armor, lifting a command sword beside a small burning warship apparition, waist-up. Distinguished individual face, authentic Han Chinese visual vocabulary reimagined with restrained fantasy. Exquisitely carved lamellar armor and silk brocade, detailed seams, metal edging, flowing hair and finely rendered hands holding the stated implement correctly. High-end painterly 3D game illustration. Principal colors #9b514c and #edc27e. Framing: all upper body, weapon, hair and cape ornaments fully visible inside the canvas; 12% clear margin on ALL sides; centered tall portrait. Keep face and chest readable; moving weapon arm, sleeves, cloak and plumes distinct for later mesh animation. Soft key light, warm reflected light, crisp subtle rim. Actual transparent alpha background, no rectangular backdrop, no scenery, no ground, no writing, UI or watermark. No overwhelming glow. No cropped weapon or hands.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "88ef1133c12b67d9404fca2018dca374bd89f100ac497f69e53b980d65dc50c2"
+    },
+    {
+      "id": "simayi",
+      "path": "skins/tracer/fishing-art/summon-expansion-simayi-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-4cec7c4f-57c8-46da-8f98-b527b24ba1f7.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning character for an original Three Kingdoms historical fantasy fishing game. Subject: Sima Yi, austere older Chinese strategist in layered indigo robes with silver constellations, narrow sharp eyes and a dark feather fan, waist-up. Distinguished individual face, authentic Han Chinese visual vocabulary reimagined with restrained fantasy. Exquisitely carved lamellar armor and silk brocade, detailed seams, metal edging, flowing hair and finely rendered hands holding the stated implement correctly. High-end painterly 3D game illustration. Principal colors #595873 and #c1c4db. Framing: all upper body, weapon, hair and cape ornaments fully visible inside the canvas; 12% clear margin on ALL sides; centered tall portrait. Keep face and chest readable; moving weapon arm, sleeves, cloak and plumes distinct for later mesh animation. Soft key light, warm reflected light, crisp subtle rim. Actual transparent alpha background, no rectangular backdrop, no scenery, no ground, no writing, UI or watermark. No overwhelming glow. No cropped weapon or hands.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "a4afe819160e403788b2e55b6a34a71e70bb63f78801da37efdc0883f0c091e0"
+    },
+    {
+      "id": "pangtong",
+      "path": "skins/tracer/fishing-art/summon-expansion-pangtong-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-840b6d20-9b09-4a91-abeb-458f16c20bc8.png",
+      "prompt": "Use case: stylized-concept. ONE isolated transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Pang Tong, unconventional bearded Chinese strategist in ochre robes and a small phoenix-feather crown, holding bronze interlocking chain rings, waist-up. Historical Chinese design vocabulary rendered as luxurious restrained fantasy, exquisitely worked bronze, jade, brocade and individual facial features. Principal colors #89694e and #e0b986. High-end painterly 3D game art, clear silhouette, credible anatomy, finely drawn hands and implements. Centered portrait with ALL weapon tips, sleeves, ornaments inside canvas with 14% empty margin on all four sides. Character chest and face face viewer in three-quarter view; flexible sleeves, ribbon and side ornaments distinct for mesh animation. True transparent alpha; no scenery or opaque backdrop, no writing, UI, watermark, no cropped parts. Detailed materials, soft warm key and delicate rim. This is one coherent subject, no contact sheet.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "5546b8f94dfc0d0c6058301318c33e36dffed1503a1cd4e7db94c7b1da1e2aa2"
+    },
+    {
+      "id": "huangyueying",
+      "path": "skins/tracer/fishing-art/summon-expansion-huangyueying-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-9cfea426-7a7f-496e-b3b9-530cd447f4f0.png",
+      "prompt": "Use case: stylized-concept. ONE isolated transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Huang Yueying, ingenious Chinese woman inventor in olive and ochre scholar clothing, with a beautifully detailed small mechanical wooden ox and articulated brass gears, waist-up. Historical Chinese design vocabulary rendered as luxurious restrained fantasy, exquisitely worked bronze, jade, brocade and individual facial features. Principal colors #96794f and #c5d4a8. High-end painterly 3D game art, clear silhouette, credible anatomy, finely drawn hands and implements. Centered portrait with ALL weapon tips, sleeves, ornaments inside canvas with 14% empty margin on all four sides. Character chest and face face viewer in three-quarter view; flexible sleeves, ribbon and side ornaments distinct for mesh animation. True transparent alpha; no scenery or opaque backdrop, no writing, UI, watermark, no cropped parts. Detailed materials, soft warm key and delicate rim. This is one coherent subject, no contact sheet.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "01a66093ec5d028652ffba35785e695d95de92291903423a3e269690ca19cd93"
+    },
+    {
+      "id": "daqiao",
+      "path": "skins/tracer/fishing-art/summon-expansion-daqiao-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-77ad9f0b-b184-4cea-9876-e97734b39ff4.png",
+      "prompt": "Use case: stylized-concept. ONE isolated transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Da Qiao, graceful adult Chinese woman in pale rose and celadon Han clothing with magnolia hair ornaments, long sleeves flowing like spring water, waist-up. Historical Chinese design vocabulary rendered as luxurious restrained fantasy, exquisitely worked bronze, jade, brocade and individual facial features. Principal colors #ad91a0 and #e5d0b0. High-end painterly 3D game art, clear silhouette, credible anatomy, finely drawn hands and implements. Centered portrait with ALL weapon tips, sleeves, ornaments inside canvas with 14% empty margin on all four sides. Character chest and face face viewer in three-quarter view; flexible sleeves, ribbon and side ornaments distinct for mesh animation. True transparent alpha; no scenery or opaque backdrop, no writing, UI, watermark, no cropped parts. Detailed materials, soft warm key and delicate rim. This is one coherent subject, no contact sheet.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "51ce7e81d77979392714c54e1357cd3f44b4bed78eb83bd4c1ce4974d9c3ef01"
+    },
+    {
+      "id": "xiaoqiao",
+      "path": "skins/tracer/fishing-art/summon-expansion-xiaoqiao-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-40066ce2-cc67-450b-89ce-d1b53aab81ee.png",
+      "prompt": "Use case: stylized-concept. ONE isolated transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Xiao Qiao, graceful adult Chinese woman in pale blue silk Han clothing, holding a finely carved seven-string zither with bronze swallow ornaments, waist-up. Historical Chinese design vocabulary rendered as luxurious restrained fantasy, exquisitely worked bronze, jade, brocade and individual facial features. Principal colors #77999f and #e0c791. High-end painterly 3D game art, clear silhouette, credible anatomy, finely drawn hands and implements. Centered portrait with ALL weapon tips, sleeves, ornaments inside canvas with 14% empty margin on all four sides. Character chest and face face viewer in three-quarter view; flexible sleeves, ribbon and side ornaments distinct for mesh animation. True transparent alpha; no scenery or opaque backdrop, no writing, UI, watermark, no cropped parts. Detailed materials, soft warm key and delicate rim. This is one coherent subject, no contact sheet.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "e93539b77649a73fb3a02c1803537b2250cc11cd49284adb9fb6994997b8c350"
+    },
+    {
+      "id": "diaochan",
+      "path": "skins/tracer/fishing-art/summon-expansion-diaochan-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-5c3d2aa4-857e-4717-b59b-fad87fd789b6.png",
+      "prompt": "Use case: stylized-concept. ONE isolated transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Diao Chan, elegant adult Chinese dancer in layered violet silk, ornate gold hair pins, long trailing dance sleeves and two crescent rings, waist-up. Historical Chinese design vocabulary rendered as luxurious restrained fantasy, exquisitely worked bronze, jade, brocade and individual facial features. Principal colors #9c698f and #e7c7b1. High-end painterly 3D game art, clear silhouette, credible anatomy, finely drawn hands and implements. Centered portrait with ALL weapon tips, sleeves, ornaments inside canvas with 14% empty margin on all four sides. Character chest and face face viewer in three-quarter view; flexible sleeves, ribbon and side ornaments distinct for mesh animation. True transparent alpha; no scenery or opaque backdrop, no writing, UI, watermark, no cropped parts. Detailed materials, soft warm key and delicate rim. This is one coherent subject, no contact sheet.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "667a3bd947df8b665cfb09e17cc00737bf73bbe62252cb02383d0bc9938f1993"
+    },
+    {
+      "id": "dongzhuo",
+      "path": "skins/tracer/fishing-art/summon-expansion-dongzhuo-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-2f9d4b74-598b-4b04-bd02-5b93f41da7b4.png",
+      "prompt": "Use case: stylized-concept. ONE isolated transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: A massive ancient Chinese bronze ritual tripod cauldron with intricate taotie masks, beast-shaped handles, dark patina and contained amber fire. Historical Chinese design vocabulary rendered as luxurious restrained fantasy, exquisitely worked bronze, jade, brocade and individual facial features. Principal colors #65584d and #d5ab70. High-end painterly 3D game art, clear silhouette, credible anatomy, finely drawn hands and implements. Centered portrait with ALL weapon tips, sleeves, ornaments inside canvas with 14% empty margin on all four sides. Character chest and face face viewer in three-quarter view; flexible sleeves, ribbon and side ornaments distinct for mesh animation. True transparent alpha; no scenery or opaque backdrop, no writing, UI, watermark, no cropped parts. Detailed materials, soft warm key and delicate rim. This is one coherent subject, no contact sheet.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "56b4e51c6d8f533c08b5b0e91ebb59752686921878448e24a8d4c4fb79f0a785"
+    },
+    {
+      "id": "zhugeliang",
+      "path": "skins/tracer/fishing-art/summon-expansion-zhugeliang-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-36776a1d-4c55-4e76-b647-768a1df4b662.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Zhuge Liang, wise Chinese strategist with a calm face, black scholar cap, ivory and celadon robes, holding a large individual-feather fan over seven floating stars, waist-up. Magnificent individual design, ornate historical Chinese bronze and jade, perfectly rendered anatomy, exquisite carved detail and textile folds, subtly luminous accents. Principal colors #7d9d9c and #ead39b. Premium painterly 3D game illustration. Centered portrait, ALL weapon tips, plumes, hands, ribbons and creature parts fully visible with 15% clear margin on every side. Distinct flexible side elements for mesh animation, clear central silhouette. Genuine transparent alpha background, no scenery, no solid backdrop, no text or symbols resembling writing, no watermark or UI. One subject only, no sheet. Restrained elegant lighting and precise texture, no overwhelming glow.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "353e9caf8cdeab4027549dde70ae5b5a2a6b6174654cc3a70058ad2b69b52092"
+    },
+    {
+      "id": "lubu",
+      "path": "skins/tracer/fishing-art/summon-expansion-lubu-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-26769109-2485-42fb-b3bf-b76f2c0e9b6e.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Lu Bu, imposing Chinese warrior in ornate black crimson and gold armor with two very long curved pheasant plumes, holding a double-crescent halberd, waist-up. Magnificent individual design, ornate historical Chinese bronze and jade, perfectly rendered anatomy, exquisite carved detail and textile folds, subtly luminous accents. Principal colors #92545b and #e8c189. Premium painterly 3D game illustration. Centered portrait, ALL weapon tips, plumes, hands, ribbons and creature parts fully visible with 15% clear margin on every side. Distinct flexible side elements for mesh animation, clear central silhouette. Genuine transparent alpha background, no scenery, no solid backdrop, no text or symbols resembling writing, no watermark or UI. One subject only, no sheet. Restrained elegant lighting and precise texture, no overwhelming glow.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "43ce638b975f09be969b8658cd2865c4459e0d3cfcc9476b5cd2a39cb08aff22"
+    },
+    {
+      "id": "jiangdongtiger",
+      "path": "skins/tracer/fishing-art/summon-expansion-jiangdongtiger-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-9f7954e3-4c34-49fa-9da7-9b1a57da924e.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Sun Jian, battle-hardened Chinese general in bronze tiger armor with a crimson scarf and curved ancient saber, accompanied by a spectral white-browed tiger head, waist-up. Magnificent individual design, ornate historical Chinese bronze and jade, perfectly rendered anatomy, exquisite carved detail and textile folds, subtly luminous accents. Principal colors #a47847 and #e6d196. Premium painterly 3D game illustration. Centered portrait, ALL weapon tips, plumes, hands, ribbons and creature parts fully visible with 15% clear margin on every side. Distinct flexible side elements for mesh animation, clear central silhouette. Genuine transparent alpha background, no scenery, no solid backdrop, no text or symbols resembling writing, no watermark or UI. One subject only, no sheet. Restrained elegant lighting and precise texture, no overwhelming glow.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "7e3605cc6a8c62ef4f5f0af58498866592e2086e1b5c4d362cf1f6c6adb9ebbf"
+    },
+    {
+      "id": "yuanshao",
+      "path": "skins/tracer/fishing-art/summon-expansion-yuanshao-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-cd2227ef-4a42-47ac-b759-f3d1d4a65173.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: An elaborate Han imperial military standard with four layered ivory and gold banners, carved jade ceremonial axe and individual gilded silk tassels. Magnificent individual design, ornate historical Chinese bronze and jade, perfectly rendered anatomy, exquisite carved detail and textile folds, subtly luminous accents. Principal colors #947654 and #ecda9e. Premium painterly 3D game illustration. Centered portrait, ALL weapon tips, plumes, hands, ribbons and creature parts fully visible with 15% clear margin on every side. Distinct flexible side elements for mesh animation, clear central silhouette. Genuine transparent alpha background, no scenery, no solid backdrop, no text or symbols resembling writing, no watermark or UI. One subject only, no sheet. Restrained elegant lighting and precise texture, no overwhelming glow.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "868e80f1a9c4c9a9d652d7e266d31351d377c337ce4d39f616e4562407dcea22"
+    },
+    {
+      "id": "zuoci",
+      "path": "skins/tracer/fishing-art/summon-expansion-zuoci-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-6135d935-c0e4-4b0b-b2de-a5846c7f0f7f.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: Zuo Ci, aged Chinese Taoist sage with flowing white beard and indigo robes, holding an unfurling celestial scroll with golden abstract diagrams and crane feathers, waist-up. Magnificent individual design, ornate historical Chinese bronze and jade, perfectly rendered anatomy, exquisite carved detail and textile folds, subtly luminous accents. Principal colors #768ba5 and #decfa7. Premium painterly 3D game illustration. Centered portrait, ALL weapon tips, plumes, hands, ribbons and creature parts fully visible with 15% clear margin on every side. Distinct flexible side elements for mesh animation, clear central silhouette. Genuine transparent alpha background, no scenery, no solid backdrop, no text or symbols resembling writing, no watermark or UI. One subject only, no sheet. Restrained elegant lighting and precise texture, no overwhelming glow.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "60e8cb43223966c81ce2b434286c7a73a77cd880b7369d4175a154c452025609"
+    },
+    {
+      "id": "emperorjade",
+      "path": "skins/tracer/fishing-art/summon-expansion-emperorjade-v1.png",
+      "source": "C:\\Users\\andyl\\.codex\\generated_images\\01a114c6-cf3c-74d1-9527-abb474814a21\\exec-81fd215b-9eb8-4780-8e02-e6cc7a1d0797.png",
+      "prompt": "Use case: stylized-concept. ONE standalone transparent summoning apparition for an original Three Kingdoms historical fantasy fishing game. Subject: An extraordinary square pale-jade Chinese imperial seal topped with five intricately intertwined golden dragons, repaired gold corner and mountain-and-river relief sides. Magnificent individual design, ornate historical Chinese bronze and jade, perfectly rendered anatomy, exquisite carved detail and textile folds, subtly luminous accents. Principal colors #599a82 and #eed796. Premium painterly 3D game illustration. Centered portrait, ALL weapon tips, plumes, hands, ribbons and creature parts fully visible with 15% clear margin on every side. Distinct flexible side elements for mesh animation, clear central silhouette. Genuine transparent alpha background, no scenery, no solid backdrop, no text or symbols resembling writing, no watermark or UI. One subject only, no sheet. Restrained elegant lighting and precise texture, no overwhelming glow.",
+      "generator": "image_gen.imagegen",
+      "transparentBackground": true,
+      "sha256": "74d748e4f159d82c360f722fe76544d9e1c9217cb24e0b709859599bb2238efc"
+    }
+  ]
+}

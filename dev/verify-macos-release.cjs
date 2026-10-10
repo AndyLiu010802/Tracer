@@ -126,7 +126,7 @@ async function main() {
       const response = await fetch(origin + url, { signal: AbortSignal.timeout(5000) }), html = await response.text();
       assert.ok(response.ok);
       let previous = -1;
-      const scripts = url==='/' ? ['fishing-model.js', 'fishing-art.js', 'fishing-rod-effects.js', 'fishing-motion.js', 'fishing-game.js', 'fishing-view.js', 'fishing.js'] : url==='/fishing-desktop.html' ? ['fishing-art.js', 'fishing-rod-effects.js', 'fishing-motion.js', 'fishing-desktop.js'] : ['fishing-aquarium-motion.js', 'fishing-art.js', 'fishing-aquarium.js', 'fishing-aquarium-desktop.js'];
+      const scripts = url==='/' ? ['fishing-model.js', 'fishing-art.js', 'fishing-rod-effects.js', 'fishing-motion.js', 'fishing-view.js', 'fishing.js'] : url==='/fishing-desktop.html' ? ['fishing-art.js', 'fishing-rod-effects.js', 'fishing-motion.js', 'fishing-desktop.js'] : ['fishing-aquarium-motion.js', 'fishing-art.js', 'fishing-aquarium.js', 'fishing-aquarium-desktop.js'];
       for (const name of scripts) {
         const position = html.indexOf('src="/' + name + '"');
         assert.ok(position > previous, `${url} loads ${name} in dependency order`); previous = position;

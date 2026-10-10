@@ -1,7 +1,7 @@
 'use strict';
 const { contextBridge, ipcRenderer } = require('electron');
-const actions = new Set(['cast-start', 'cast-release', 'hook', 'reel-start', 'reel-release', 'cancel', 'cast', 'hold', 'release', 'catch', 'open-home', 'open-tackle']);
-const commands = new Set(['ready', 'hide', 'resize', 'context-menu', 'input-regions', 'pointer-pass-through', 'drag-start', 'drag-move', 'drag-end']);
+const actions = new Set(['cast-start', 'cast-release', 'hook', 'reel-start', 'reel-release', 'cancel', 'cast', 'hold', 'release', 'catch', 'open-home', 'open-tackle', 'start-motor', 'pause-motor']);
+const commands = new Set(['ready', 'hide', 'open-bait-box', 'resize', 'context-menu', 'input-regions', 'pointer-pass-through', 'drag-start', 'drag-move', 'drag-end']);
 let snapshot = null, sequence = 0, pendingCast = null;
 const castSession = value => value?.fishing?.sessionId || value?.sessionId || value?.session?.id || '';
 const accountKey = value => JSON.stringify([value?.accountScope || 'guest', value?.accountGeneration || 0, value?.accountRestoreId || '']);
@@ -32,7 +32,7 @@ if (process.isMainFrame) {
         pendingCast = null;
         // An accepted cast may arrive while an unrelated workspace save keeps
         // controls disabled. Its release/cancel still belongs to this gesture.
-        if (nextSession && value.session?.phase === 'charging' && pending.terminal) sendAction(pending.terminal);
+        if (nextSession && value.session?.phase === 'charging' && pending.terminal) sendAction(pending.terminal, pending.extra);
       } else if (value.error || value.disabled) pendingCast = null;
     }
   });
@@ -48,10 +48,10 @@ if (process.isMainFrame) {
             pendingCast = { account: accountKey(snapshot), session: castSession(snapshot), native: snapshot.nativeSessionId, terminal: null };
         }
         if (pendingCast && ['cast-release', 'cancel'].includes(message.type)) {
-          if (pendingCast.terminal !== 'cancel') pendingCast.terminal = message.type;
+          if (pendingCast.terminal !== 'cancel') { pendingCast.terminal = message.type; pendingCast.extra = message.type === 'cast-release' && Number.isFinite(message.heldMs) && message.heldMs >= 0 && message.heldMs <= 8000 ? { heldMs: message.heldMs } : {}; }
           return;
         }
-        sendAction(message.type, message.type === 'cast-start' && message.entranceReady === true ? { entranceReady: true } : {});
+        sendAction(message.type, message.type === 'cast-start' && message.entranceReady === true ? { entranceReady: true } : message.type === 'cast-release' && Number.isFinite(message.heldMs) && message.heldMs >= 0 && message.heldMs <= 8000 ? { heldMs: message.heldMs } : {});
         return;
       }
       if (!commands.has(message.type)) return;

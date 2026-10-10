@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),art=require('./fishing-valorant-art-specs.cjs'),data=require('./fishing-valorant-data.cjs');
+const manifest=art.jobs.map(job=>{const b=fs.readFileSync(path.join(root,job.destination));if(b[25]!==6)throw Error('Expected RGBA: '+job.destination);return{key:job.key,kind:job.kind,skill:job.skill,file:job.destination,sha256:crypto.createHash('sha256').update(b).digest('hex'),width:b.readUInt32BE(16),height:b.readUInt32BE(20),rgba:true};});
+const revisions=Object.fromEntries(manifest.filter(r=>r.kind==='rod').map(r=>['valorant_'+r.key,r.sha256.slice(0,12)]));
+let p=fs.readFileSync(path.join(root,'skins/tracer/fishing-valorant-painted.js'),'utf8');p=p.replace(/const revisions=.*?; \/\/ GENERATED VALORANT REVISIONS/,'const revisions='+JSON.stringify(revisions)+'; // GENERATED VALORANT REVISIONS');fs.writeFileSync(path.join(root,'skins/tracer/fishing-valorant-painted.js'),p);
+const specs=Object.fromEntries(manifest.filter(r=>r.kind==='fx').map(r=>{const job=art.jobs.find(j=>j.destination===r.file),agent=data.agents.find(a=>a[0]===r.key),ability=agent?.[6].find(s=>s[0]===r.skill);return['valorant_'+r.key+':'+r.skill,{src:r.file.replace('skins/tracer',''),motion:job.motion,name:ability?.[1]||r.skill,nameEn:ability?.[2]||r.skill,revision:r.sha256.slice(0,12)}];}));
+let v=fs.readFileSync(path.join(root,'skins/tracer/fishing-valorant-vfx.js'),'utf8');v=v.replace(/const specs=.*?; \/\/ GENERATED VALORANT VFX SPECS/,'const specs='+JSON.stringify(specs)+'; // GENERATED VALORANT VFX SPECS');fs.writeFileSync(path.join(root,'skins/tracer/fishing-valorant-vfx.js'),v);
+fs.writeFileSync(path.join(root,'docs/fishing-valorant-art-manifest.json'),JSON.stringify({generator:'built-in image_gen',originals:manifest},null,2));
+fs.writeFileSync(path.join(root,'docs/fishing-valorant-prompts.json'),JSON.stringify({generator:'built-in image_gen',jobs:art.jobs},null,2));
+console.log('Verified '+manifest.length+' generated assets; Spike uses independent v2 compact/deployed artwork.');

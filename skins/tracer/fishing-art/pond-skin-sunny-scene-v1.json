@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "id": "sunny",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-sunny-scene-v1.bin",
+  "triangles": 33268,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#b87840",
+      "material": 5,
+      "name": "wood",
+      "offset": 0,
+      "count": 4428
+    },
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 106272,
+      "count": 5412
+    },
+    {
+      "anchor": "back",
+      "color": "#f0dfb6",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 236160,
+      "count": 13932
+    },
+    {
+      "anchor": "back",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 570528,
+      "count": 7596
+    },
+    {
+      "anchor": "back",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 752832,
+      "count": 7392
+    },
+    {
+      "anchor": "back",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 930240,
+      "count": 432
+    },
+    {
+      "anchor": "back",
+      "color": "#f0dfb6",
+      "material": 7,
+      "name": "plaster",
+      "offset": 940608,
+      "count": 324
+    },
+    {
+      "anchor": "back",
+      "color": "#deb870",
+      "material": 10,
+      "name": "trim",
+      "offset": 948384,
+      "count": 9012
+    },
+    {
+      "anchor": "back",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 1164672,
+      "count": 2316
+    },
+    {
+      "anchor": "back",
+      "color": "#bb4e3a",
+      "material": 7,
+      "name": "roof",
+      "offset": 1220256,
+      "count": 3408
+    },
+    {
+      "anchor": "back",
+      "color": "#bb4e3a",
+      "material": 7,
+      "name": "rooflight",
+      "offset": 1302048,
+      "count": 18768
+    },
+    {
+      "anchor": "back",
+      "color": "#b4a17b",
+      "material": 5,
+      "name": "rope",
+      "offset": 1752480,
+      "count": 144
+    },
+    {
+      "anchor": "back",
+      "color": "#d7ad57",
+      "material": 10,
+      "name": "gold",
+      "offset": 1755936,
+      "count": 4992
+    },
+    {
+      "anchor": "left",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 1875744,
+      "count": 612
+    },
+    {
+      "anchor": "left",
+      "color": "#6e8b54",
+      "material": 6,
+      "name": "leaf",
+      "offset": 1890432,
+      "count": 12600
+    },
+    {
+      "anchor": "left",
+      "color": "#d7ad57",
+      "material": 10,
+      "name": "gold",
+      "offset": 2192832,
+      "count": 4704
+    },
+    {
+      "anchor": "right",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 2305728,
+      "count": 852
+    },
+    {
+      "anchor": "right",
+      "color": "#b4a17b",
+      "material": 5,
+      "name": "rope",
+      "offset": 2326176,
+      "count": 2880
+    }
+  ]
+}

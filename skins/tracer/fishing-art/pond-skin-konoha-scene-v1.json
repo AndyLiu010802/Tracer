@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "id": "konoha",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-konoha-scene-v1.bin",
+  "triangles": 47092,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 0,
+      "count": 7548
+    },
+    {
+      "anchor": "back",
+      "color": "#dcd0ad",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 181152,
+      "count": 9396
+    },
+    {
+      "anchor": "back",
+      "color": "#a95d39",
+      "material": 5,
+      "name": "wood",
+      "offset": 406656,
+      "count": 4212
+    },
+    {
+      "anchor": "back",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 507744,
+      "count": 22212
+    },
+    {
+      "anchor": "back",
+      "color": "#dcd0ad",
+      "material": 7,
+      "name": "plaster",
+      "offset": 1040832,
+      "count": 1464
+    },
+    {
+      "anchor": "back",
+      "color": "#d5bd7e",
+      "material": 10,
+      "name": "trim",
+      "offset": 1075968,
+      "count": 10284
+    },
+    {
+      "anchor": "back",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 1322784,
+      "count": 972
+    },
+    {
+      "anchor": "back",
+      "color": "#597657",
+      "material": 7,
+      "name": "roof",
+      "offset": 1346112,
+      "count": 4548
+    },
+    {
+      "anchor": "back",
+      "color": "#597657",
+      "material": 7,
+      "name": "rooflight",
+      "offset": 1455264,
+      "count": 18768
+    },
+    {
+      "anchor": "back",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 1905696,
+      "count": 1464
+    },
+    {
+      "anchor": "back",
+      "color": "#e5ce93",
+      "material": 11,
+      "name": "glow",
+      "offset": 1940832,
+      "count": 1728
+    },
+    {
+      "anchor": "left",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 1982304,
+      "count": 2052
+    },
+    {
+      "anchor": "left",
+      "color": "#6e8b54",
+      "material": 6,
+      "name": "leaf",
+      "offset": 2031552,
+      "count": 12600
+    },
+    {
+      "anchor": "left",
+      "color": "#a95d39",
+      "material": 5,
+      "name": "wood",
+      "offset": 2333952,
+      "count": 636
+    },
+    {
+      "anchor": "right",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 2349216,
+      "count": 5412
+    },
+    {
+      "anchor": "right",
+      "color": "#dcd0ad",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 2479104,
+      "count": 1944
+    },
+    {
+      "anchor": "right",
+      "color": "#a95d39",
+      "material": 5,
+      "name": "wood",
+      "offset": 2525760,
+      "count": 4212
+    },
+    {
+      "anchor": "right",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 2626848,
+      "count": 4140
+    },
+    {
+      "anchor": "right",
+      "color": "#d5bd7e",
+      "material": 10,
+      "name": "trim",
+      "offset": 2726208,
+      "count": 3588
+    },
+    {
+      "anchor": "right",
+      "color": "#597657",
+      "material": 7,
+      "name": "roof",
+      "offset": 2812320,
+      "count": 3408
+    },
+    {
+      "anchor": "right",
+      "color": "#597657",
+      "material": 7,
+      "name": "rooflight",
+      "offset": 2894112,
+      "count": 18768
+    },
+    {
+      "anchor": "right",
+      "color": "#9d4a55",
+      "material": 7,
+      "name": "cloth",
+      "offset": 3344544,
+      "count": 1920
+    }
+  ]
+}

@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { randomUUID } = require('node:crypto');
 const { attachOverlayPointer } = require('./overlay-pointer');
+const { attachBaitBox } = require('./fishing-bait');
 const WINDOW_WIDTH = 304, WINDOW_HEIGHT = 208;
 
 // The main application owns bait, catches and inventory. This window only
@@ -13,13 +14,15 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
   let pointerGuard = null, menuOpen = false, gestureHeld = false;
   function setIgnored(value) { if (value !== passThrough) { passThrough = value; window.setIgnoreMouseEvents?.(value, { forward: true }); } }
   const file = path.join(userData, 'fishing-window.json');
-  const actions = new Set(['cast-start', 'cast-release', 'hook', 'reel-start', 'reel-release', 'cancel', 'cast', 'hold', 'release', 'catch', 'open-home', 'open-tackle']);
+  const actions = new Set(['cast-start', 'cast-release', 'hook', 'reel-start', 'reel-release', 'cancel', 'cast', 'hold', 'release', 'catch', 'open-home', 'open-tackle', 'start-motor', 'pause-motor']);
   let saved = {}, window = null, snapshot = null, paused = false, drag = null, disposed = false, overlayReady = false;
-  let nativeSessionId = randomUUID(), lastActionSequence = 0, passThrough = false;
+  let nativeSessionId = randomUUID(), lastActionSequence = 0, passThrough = false, rendererAccount = null;
   try { saved = JSON.parse(fs.readFileSync(file, 'utf8')); } catch {}
   if (!saved || typeof saved !== 'object' || Array.isArray(saved)) saved = {};
   saved.enabled = saved.enabled === true;
   saved.scale = Number.isFinite(saved.scale) ? Math.max(.5, Math.min(2.5, saved.scale)) : 1;
+
+  const baitBox = attachBaitBox(origin, () => !paused && !disposed ? state() : null, forward, () => window && !window.isDestroyed() ? window.getBounds() : null, dependencies);
 
   function trusted(event, target, pathname) {
     if (!target || target.isDestroyed() || event.sender !== target.webContents || event.senderFrame !== target.webContents.mainFrame) return false;
@@ -35,7 +38,15 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
     return snapshot && { ...snapshot, nativeSessionId, desktopVisible: saved.enabled, desktopScale: saved.scale };
   }
   function sendSnapshot() {
-    if (!paused && overlayReady && snapshot && window && !window.isDestroyed()) window.webContents.send('tracer-fishing-snapshot', state());
+    baitBox.sync();
+    if (!paused && saved.enabled && overlayReady && snapshot && window && !window.isDestroyed()) {
+      rendererAccount = scope(snapshot); window.webContents.send('tracer-fishing-snapshot', state());
+    }
+  }
+  // State arrives throughout every cast. Re-showing an already visible
+  // transparent HWND forces unnecessary native composition / z-order work.
+  function reveal() {
+    if (saved.enabled && overlayReady && !paused && snapshot && window && !window.isDestroyed() && !window.isVisible()) window.showInactive();
   }
   function persist() {
     if (window && !window.isDestroyed()) {
@@ -44,7 +55,7 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
     try { fs.writeFileSync(file, JSON.stringify({ enabled: saved.enabled, x: saved.x, y: saved.y, scale: saved.scale })); } catch {}
   }
   function pauseAccount() {
-    paused = true; snapshot = null; rotateSession();
+    paused = true; snapshot = null; rotateSession(); baitBox.close();
     if (window && !window.isDestroyed()) window.hide();
   }
   function update(event, next) {
@@ -54,8 +65,18 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
     const projected = {};
     for (const key of ['accountScope', 'accountGeneration', 'accountRestoreId', 'language', 'lang', 'session', 'sessionId', 'rod', 'bait', 'spot', 'lastCatch', 'fish', 'disabled', 'recastRemaining', 'error', 'notice']) if (Object.hasOwn(next, key)) projected[key] = next[key];
     projected.fishing = { sessionId: gameSession(next) };
+    projected.busy = !!next.busy;
+    if (next.autoMotor) projected.autoMotor = {
+      owned: !!next.autoMotor.owned, installed: !!next.autoMotor.installed, running: !!next.autoMotor.running,
+      baitCount: Number.isSafeInteger(next.autoMotor.baitCount) ? Math.max(0, next.autoMotor.baitCount) : 0,
+      saving: !!next.autoMotor.saving
+    };
+    if (next.tackle && Array.isArray(next.tackle.baits)) projected.tackle = {
+      coins: next.tackle.coins, pondSkinId: require('../skins/tracer/fishing-pond-skins').get(next.tackle.pondSkinId)?.id || null, equippedBaitId: next.tackle.equippedBaitId, busy: !!next.tackle.busy, locked: !!next.tackle.locked, pendingSave: !!next.tackle.pendingSave,
+      baits: next.tackle.baits.slice(0, 5).map(({ id, name, role, count, price, quantity }) => ({ id, name, role, count, price, quantity }))
+    };
     if (next.desktopPond?.pond && Array.isArray(next.desktopPond.fish)) projected.desktopPond = {
-      pond: { id: next.desktopPond.pond.id, style: next.desktopPond.pond.style, decorations: next.desktopPond.pond.decorations?.slice(0, 16) },
+      pond: { id: next.desktopPond.pond.id, style: next.desktopPond.pond.style, skinId: require('../skins/tracer/fishing-pond-skins').get(next.desktopPond.pond.skinId)?.id || null, decorations: next.desktopPond.pond.decorations?.slice(0, 16) },
       fish: next.desktopPond.fish.slice(0, 5)
     };
     let serialized;
@@ -69,11 +90,11 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
     if (projected.session?.phase === 'bite' && passThrough && window && !window.isDestroyed()) {
       passThrough = false; window.setIgnoreMouseEvents?.(false);
     }
-    if (scopeChanged && window && !window.isDestroyed()) {
+    if (scopeChanged && rendererAccount && window && !window.isDestroyed()) {
       overlayReady = false; window.hide(); window.webContents.reload();
     }
     sendSnapshot();
-    if (saved.enabled && overlayReady && window && !window.isDestroyed() && !scopeChanged) window.showInactive();
+    reveal();
   }
   function bounds() {
     const primary = screen.getPrimaryDisplay().workArea;
@@ -91,28 +112,29 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
       window = new BrowserWindow({ ...bounds(), transparent: true, backgroundColor: '#00000000', frame: false, resizable: false,
         maximizable: false, fullscreenable: false, alwaysOnTop: true, skipTaskbar: true, show: false,
         title: 'Tracer Fishing', webPreferences: { preload: path.join(__dirname, 'fishing-preload.js'),
-          contextIsolation: true, sandbox: true, nodeIntegration: false, backgroundThrottling: false } });
+          contextIsolation: true, sandbox: true, nodeIntegration: false, backgroundThrottling: true } });
       const created = window;
+      rendererAccount = null;
       pointerGuard = attachOverlayPointer(created, screen, setIgnored, () => drag || menuOpen || gestureHeld || ['charging', 'bite', 'reeling'].includes(snapshot?.session?.phase)); overlayReady = false; passThrough = false;
       created.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
       created.webContents.on('will-navigate', (event, url) => { if ((event.url || url) !== origin + '/fishing-desktop.html') event.preventDefault(); });
       const ready = () => {
         if (created !== window || created.isDestroyed()) return;
         sendSnapshot();
-        if (overlayReady && !paused && snapshot && saved.enabled) created.showInactive();
+        reveal();
       };
       created.webContents.on('did-finish-load', () => {
         // A fresh renderer starts with input enabled; match that local state.
         if (passThrough) { passThrough = false; created.setIgnoreMouseEvents?.(false); }
-        pointerGuard?.reset(); menuOpen = false; overlayReady = true; ready();
+        pointerGuard?.reset(); menuOpen = false; rendererAccount = null; overlayReady = true; ready();
       });
       created.once('ready-to-show', ready);
       created.webContents.on('render-process-gone', () => { overlayReady = false; drag = null; rotateSession(); persist(); created.destroy(); });
       created.on('moved', () => { if (!drag) persist(); });
       created.on('closed', () => { if (window === created) { window = null; drag = null; } });
       created.loadURL(origin + '/fishing-desktop.html');
-    } else if (overlayReady && !paused && snapshot) window.showInactive();
-    persist(); sendSnapshot();
+    }
+    persist(); sendSnapshot(); reveal();
   }
   function forward(type, extra = {}) {
     if (!snapshot || paused || disposed || main.isDestroyed()) return;
@@ -138,7 +160,7 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
     if (['cast-start', 'reel-start', 'hold'].includes(message.type)) { gestureHeld = true; setIgnored(false); }
     if (['cast-release', 'reel-release', 'release', 'cancel'].includes(message.type)) gestureHeld = false;
     if (message.type === 'open-home' || message.type === 'open-tackle') showMain();
-    forward(message.type, { sequence: message.sequence, ...(message.type === 'cast-start' && message.entranceReady === true ? { entranceReady: true } : {}) });
+    forward(message.type, { sequence: message.sequence, ...(message.type === 'cast-start' && message.entranceReady === true ? { entranceReady: true } : {}), ...(message.type === 'cast-release' && Number.isFinite(message.heldMs) && message.heldMs >= 0 && message.heldMs <= 8000 ? { heldMs: message.heldMs } : {}) });
   }
   function pointer(value) {
     if (!value || !Number.isFinite(value.screenX) || !Number.isFinite(value.screenY)
@@ -162,6 +184,7 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
     if (!trusted(event, window, '/fishing-desktop.html')) return;
     if (message.type === 'ready') { sendSnapshot(); return; }
     if (!authorized(message)) return;
+    if (message.type === 'open-bait-box') { if (window.isVisible()) baitBox.show(); return; }
     if (message.type === 'input-regions') { pointerGuard?.update(message.value); return; }
     if (message.type === 'context-menu') {
       if (!window.isVisible() || !Menu || drag || menuOpen) return;
@@ -178,7 +201,8 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
         item('放大水塘','Enlarge pond',()=>command(event,{...message,type:'resize',value:saved.scale*1.1})),
         item('缩小水塘','Shrink pond',()=>command(event,{...message,type:'resize',value:saved.scale/1.1})),
         item('恢复默认大小','Reset size',()=>command(event,{...message,type:'resize',value:1})),
-        {type:'separator'},item('打开钓具盒','Open tackle box',()=>{showMain();forward('open-tackle');}),
+        {type:'separator'},item('打开饵料盒','Open bait box',()=>baitBox.show()),
+        item('更换鱼竿','Change fishing rod',()=>{showMain();forward('open-tackle');}),
         item('打开我的鱼塘','Open my ponds',()=>{showMain();forward('open-home');}),
         item('隐藏水塘','Hide pond',()=>hide())
       ]).popup({window, callback:()=>{menuOpen=false;pointerGuard?.poll();}});return;
@@ -225,7 +249,7 @@ function attachFishing(main, origin, userData, showMain, dependencies = require(
   ipcMain.on('tracer-fishing-command', command);
   function destroy() {
     if (disposed) return;
-    disposed = true; snapshot = null; rotateSession();
+    disposed = true; snapshot = null; rotateSession(); baitBox.destroy();
     for (const [name, handler] of [['tracer-fishing-update', update], ['tracer-fishing-show', showIPC], ['tracer-fishing-hide', hideIPC], ['tracer-fishing-action', action], ['tracer-fishing-command', command]]) ipcMain.removeListener(name, handler);
     main.webContents.removeListener('did-start-navigation', startNavigation);
     main.webContents.removeListener('did-frame-navigate', commitNavigation);

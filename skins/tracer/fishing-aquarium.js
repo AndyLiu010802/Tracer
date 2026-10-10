@@ -27,7 +27,21 @@
   function create(host,options={}){
     const scene=host.ownerDocument.createElement('div');scene.className='fishing-aquarium-scene'+(options.compact?' is-compact':'');scene.setAttribute('role','img');host.appendChild(scene);
     const normalizeYaw=value=>Number.isFinite(value)?((value%360+540)%360)-180:0;
-    let renderers=[],volume=null,volumeAttempted=false,signature='',disposed=false,yaw=normalizeYaw(options.yaw),boundsSignature='';
+    let renderers=[],volume=null,volumeAttempted=false,signature='',disposed=false,yaw=normalizeYaw(options.yaw),boundsSignature='',feedingAccount='',residents=new Map(),feedReceipts=new Map(),activeFeeding=null,activeFeedingAt=0;
+    function accountKey(value,view){const account=root.TracerAccount;return JSON.stringify([view.accountScope??value.accountScope??account?.scope??'guest',view.accountGeneration??value.accountGeneration??account?.context?.generation??0,view.accountRestoreId??value.accountRestoreId??account?.context?.restoreId??'']);}
+    function recentFeeding(fish){
+      // Keep receipt history separate from the displayed snapshot: a late update
+      // must still render, but must not replay a feeding or maturity effect.
+      const now=Date.now(),recent=[],grown=[],next=new Map();
+      for(const f of fish){
+        const fedAt=Number(f.fedAt)||0,updatedAt=Number(f.updatedAt)||0,growth=Math.max(0,Math.min(100,Number(f.growth==null?100:f.growth)||0)),previous=residents.get(f.id),seen=feedReceipts.get(f.id)||0,stale=previous&&(fedAt<previous.fedAt||updatedAt<previous.updatedAt);
+        if(!stale&&fedAt>seen&&now-fedAt>=-1000&&now-fedAt<5000){recent.push(f);if(previous&&previous.growth<100&&growth>=100)grown.push(f.id);}
+        feedReceipts.set(f.id,Math.max(seen,fedAt));next.set(f.id,stale?previous:{growth,fedAt,updatedAt});
+      }
+      residents=next;return recent.length?{at:Math.max(...recent.map(f=>f.fedAt)),fishIds:recent.map(f=>f.id),grownFishIds:grown}:undefined;
+    }
+    function activeFeed(){if(activeFeeding&&Date.now()-activeFeedingAt>=4800)activeFeeding=null;return activeFeeding;}
+    function retainFeed(value){activeFeeding=value;activeFeedingAt=Number.isFinite(Number(value.at))&&Number(value.at)>0?Number(value.at):Date.now();}
     function clear(){for(const renderer of renderers)renderer.destroy();renderers=[];}
     function syncBounds(bounds){
       if(disposed||!volume)return;
@@ -43,9 +57,10 @@
       if(disposed||!value)return;const en=language==='en',label=item=>Array.isArray(item?.name)?item.name[en?1:0]:item?.name||'',fish=(value.fish||[]).filter(f=>f.rarity==='legendary').slice(0,3);
       const decorations=(value.selection?.decorationIds||defaultDecorations).filter(id=>root.TracerFishingModel.catalog.aquariumDecorations.some(d=>d.id===id)).slice(0,3);
       if(Object.hasOwn(view,'yaw'))yaw=normalizeYaw(view.yaw);
-      const key=JSON.stringify([fish,language,decorations,yaw]);if(key===signature)return;signature=key;scene.dataset.count=fish.length;scene.dataset.decorations=JSON.stringify(decorations);
+      const account=accountKey(value,view);if(account!==feedingAccount){feedingAccount=account;residents.clear();feedReceipts.clear();activeFeeding=null;}
+      const key=JSON.stringify([fish,language,decorations,yaw,account]);if(key===signature)return;signature=key;scene.dataset.count=fish.length;scene.dataset.decorations=JSON.stringify(decorations);
       scene.setAttribute('aria-label',(en?'Legendary aquarium: ':'传奇水族箱：')+(fish.length?fish.map(label).join('、'):en?'A glass aquarium awaiting legendary residents':'等待传奇住客入住的玻璃水族箱'));
-      const recent=fish.filter(f=>f.fedAt&&Date.now()-f.fedAt<5000),feeding=recent.length?{at:Math.max(...recent.map(f=>f.fedAt)),fishIds:recent.map(f=>f.id)}:undefined;
+      const feeding=recentFeeding(fish);if(feeding)retainFeed(feeding);
       const settings={fish,aquariumDecorations:decorations,language,feeding,aquariumYaw:yaw,onBoundsChange:syncBounds};
       // Fish, ornaments, water and glass share depth and lighting in one scene.
       // Changing residents or decorations keeps its GPU context alive.
@@ -65,14 +80,21 @@
         syncBounds();
         return;
       }
-      scene.dataset.renderer='fallback';clear();
+      // A committed growth snapshot can replace figures after an explicit feed.
+      // Keep its original timestamp so replacement figures resume the remaining
+      // reaction instead of losing the celebration or starting it again.
+      const fallbackFeeding=activeFeed();scene.dataset.renderer='fallback';clear();
       scene.innerHTML='<div class="fishing-aquarium-shadow"></div><div class="fishing-aquarium-lid"><i></i><span>✦</span></div><div class="fishing-aquarium-tank"><div class="fishing-aquarium-water"></div><div class="fishing-aquarium-sand"></div><div class="fishing-aquarium-bubbles"><i></i><i></i><i></i></div>'+fish.map((f,i)=>'<div class="fishing-aquarium-specimen specimen-'+i+'" title="'+A.escape(label(f))+'"><div data-specimen="'+i+'"></div></div>').join('')+(!fish.length?'<div class="fishing-aquarium-empty"><b>✧</b><span>'+A.escape(en?'A home for your legends':'等待传奇住客入住')+'</span><small>'+A.escape(en?'Move a legendary fingerling into your aquarium':'从育养箱选一条传奇鱼放入这里')+'</small></div>':'')+'<div class="fishing-aquarium-glass"></div></div><div class="fishing-aquarium-base"><span>'+A.escape(en?'Legendary aquarium':'传奇水族箱')+'</span><small>'+A.escape(en?'WONDERS BELOW THE WATER':'珍藏水下奇遇')+'</small><i></i></div><div class="fishing-aquarium-feet"><i></i><i></i></div>';
       const decor=host.ownerDocument.createElement('div');decor.className='fishing-aquarium-decorations';decor.dataset.count=decorations.length;
       decor.innerHTML=decorations.map((id,i)=>'<div class="fishing-aquarium-decoration" data-aquarium-decoration="'+id+'" style="--slot:'+i+'">'+decorationMarkup(id)+'</div>').join('');
       scene.querySelector('.fishing-aquarium-sand').after(decor);
-      for(let i=0;i<fish.length;i++){const mount=scene.querySelector('[data-specimen="'+i+'"]');if(A.createFishFigure){const renderer=A.createFishFigure(mount,{fish:fish[i]});renderers.push(renderer);if(fish[i].fedAt&&Date.now()-fish[i].fedAt<5000)renderer.update({feeding:{at:fish[i].fedAt,fishIds:[fish[i].id]}});}else mount.innerHTML=A.fishMarkup(fish[i]);}
+      for(let i=0;i<fish.length;i++){const mount=scene.querySelector('[data-specimen="'+i+'"]');if(A.createFishFigure){const renderer=A.createFishFigure(mount,{fish:fish[i]});renderers.push(renderer);if(fallbackFeeding?.fishIds.includes(fish[i].id))renderer.update({feeding:{...fallbackFeeding,fishIds:[fish[i].id],grownFishIds:fallbackFeeding.grownFishIds.filter(id=>id===fish[i].id)}});}else mount.innerHTML=A.fishMarkup(fish[i]);}
     }
-    return {update,feed(value){volume?.feed(value);for(const renderer of renderers)renderer.update({feeding:value});},destroy(){if(disposed)return;disposed=true;volume?.destroy();volume=null;clear();scene.remove();}};
+    return {update,feed(value){
+      if(disposed||!value)return;const at=Number(value.at),ids=value.fishIds||[...residents.keys()],fresh=Number.isFinite(at)&&at>0?ids.filter(id=>at>(feedReceipts.get(id)||0)):ids;
+      if(ids.length&&!fresh.length)return;const feeding={...value,fishIds:fresh,grownFishIds:(value.grownFishIds||[]).filter(id=>fresh.includes(id))};
+      for(const id of fresh)if(Number.isFinite(at)&&at>0)feedReceipts.set(id,at);retainFeed(feeding);volume?.feed(feeding);for(const renderer of renderers)renderer.update({feeding});
+    },destroy(){if(disposed)return;disposed=true;activeFeeding=null;volume?.destroy();volume=null;clear();scene.remove();}};
   }
   root.TracerFishingAquariumArt={create,decorationMarkup,defaultDecorations};
 })(typeof window!=='undefined'?window:globalThis);

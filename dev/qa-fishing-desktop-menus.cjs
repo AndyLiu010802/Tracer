@@ -9,7 +9,8 @@ const assets=path.resolve(__dirname,'../skins/tracer'),out=fs.mkdtempSync(path.r
  await page.goto('http://menus.test/fishing-desktop.html');
  const rod=F.catalog.rods.find(r=>r.id==='guandao'),duration=FX.summonScene(rod.id).duration;
  await page.evaluate(rod=>{receive({rod,language:'zh',session:{phase:'idle',id:''}});advance(16);},rod);
- assert.equal(await page.locator('#fishing-tools').count(),0);
+ assert.equal(await page.locator('#fishing-tools').count(),1);
+ await page.locator('#fishing-tools').click();assert((await page.evaluate(()=>messages)).some(x=>x.type==='open-bait-box'),'the bait model opens its desktop window');
  await page.keyboard.press('f');assert(!(await page.evaluate(()=>messages)).some(x=>x.type==='cast-start'),'F before summon cannot fish');
  await page.locator('#fishing-pond').click({button:'right'});assert((await page.evaluate(()=>messages)).some(x=>x.type==='context-menu'));
  await page.evaluate(()=>{menu({type:'summon-rod'});advance(500);});await page.waitForTimeout(250);await page.evaluate(()=>advance(100));

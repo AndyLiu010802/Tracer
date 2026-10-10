@@ -12,6 +12,41 @@
 <body>
   <main id="desktop-fishing" data-phase="idle" data-rod-visible="false" aria-label="鱼竿和小水潭">
     <div id="fishing-pond" tabindex="0" role="button" aria-label="按住鱼塘蓄力，松开抛竿，也可使用 F 或空格"></div>
+    <button id="fishing-tools" type="button" aria-label="打开饵料盒" title="饵料盒 · 右键购买或装备">
+      <svg class="desktop-bait-model" viewBox="0 0 84 66" aria-hidden="true">
+        <defs>
+          <linearGradient id="bait-wood-top" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#d1a66b"/><stop offset=".45" stop-color="#9f7549"/><stop offset="1" stop-color="#745034"/></linearGradient>
+          <linearGradient id="bait-wood-front" x1="0" y1="0" x2=".2" y2="1"><stop stop-color="#a2774b"/><stop offset=".24" stop-color="#89613d"/><stop offset="1" stop-color="#57402e"/></linearGradient>
+          <linearGradient id="bait-wood-side" x2="1" y2=".7"><stop stop-color="#65472e"/><stop offset="1" stop-color="#352b22"/></linearGradient>
+          <linearGradient id="bait-brass" x1="0" y1="0" x2="1" y2=".7"><stop stop-color="#f1d79a"/><stop offset=".3" stop-color="#c2a064"/><stop offset=".64" stop-color="#83683e"/><stop offset=".82" stop-color="#d3b477"/><stop offset="1" stop-color="#796039"/></linearGradient>
+          <radialGradient id="bait-ground"><stop stop-color="#141b12" stop-opacity=".55"/><stop offset="1" stop-color="#141b12" stop-opacity="0"/></radialGradient>
+        </defs>
+        <ellipse cx="43" cy="53" rx="39" ry="12" fill="url(#bait-ground)"/>
+        <path d="M11 41V48L17 50V44M55 54V60L61 58V53M71 43V48L76 44V39" fill="#352b21"/>
+        <path d="M8 26L58 40V58L8 44Z" fill="url(#bait-wood-front)" stroke="#4b3627" stroke-width="1.1" stroke-linejoin="round"/>
+        <path d="M58 40L77 27V45L58 58Z" fill="url(#bait-wood-side)" stroke="#372a20" stroke-width="1.1" stroke-linejoin="round"/>
+        <path d="M10 30L56 43M10 35L56 48M10 40L56 53M60 44L75 33M60 49L75 38M60 54L75 43" fill="none" stroke="#d7b079" stroke-opacity=".23" stroke-width=".65"/>
+        <path d="M10 32C21 33 21 37 34 38S43 42 56 45M10 41C21 45 24 42 35 47S45 48 56 52" fill="none" stroke="#392a20" stroke-opacity=".38" stroke-width=".55"/>
+        <path d="M7 21L58 36V42L7 27Z" fill="#7a5536" stroke="#4a3527" stroke-width="1"/>
+        <path d="M58 36L77 23V29L58 42Z" fill="#483727" stroke="#342a20" stroke-width="1"/>
+        <path d="M7 21L25 8L77 23L58 36Z" fill="url(#bait-wood-top)" stroke="#e4c38d" stroke-width="1" stroke-linejoin="round"/>
+        <path d="M11 20L26 11L72 24L57 33Z" fill="none" stroke="#563f2b" stroke-width="1"/>
+        <path d="M16 20L28 13L67 24L55 31Z" fill="none" stroke="#e0b779" stroke-opacity=".56" stroke-width=".65"/>
+        <path d="M28 11L70 23M24 14L67 26M20 17L62 29M15 20L56 32" stroke="#eed1a1" stroke-opacity=".2" stroke-width=".7"/>
+        <path d="M30 15L57 23L46 30L19 22Z" fill="#253e30" stroke="#ccb07a" stroke-width=".85"/>
+        <path d="M27 22Q35 17 44 25L49 24L47 28L43 26Q34 26 27 22Z" fill="#c3b780" opacity=".85"/>
+        <path d="M32 18Q33 13 41 16L45 17Q47 18 46 22" fill="none" stroke="#4b3827" stroke-width="2.8"/>
+        <path d="M32 17Q34 13 41 16L45 17Q47 18 46 21" fill="none" stroke="url(#bait-brass)" stroke-width="1.6"/>
+        <path d="M9 25L14 27V45L9 43ZM51 37L57 39V56L51 54Z" fill="url(#bait-brass)" stroke="#66502f" stroke-width=".5"/>
+        <path d="M59 40L63 37V54L59 57ZM73 30L76 28V43L73 46Z" fill="#8e7548" stroke="#55452d" stroke-width=".5"/>
+        <path d="M32 32L39 34V46Q39 49 35 47L32 46Z" fill="url(#bait-brass)" stroke="#4d3b26" stroke-width=".75"/>
+        <path d="M33 39L38 40V44L33 43Z" fill="#503e29" stroke="#e9cb8e" stroke-width=".5"/><path d="M34 40L37 41V43L34 42Z" fill="#cdb079"/>
+        <g fill="#443723" stroke="#efd49a" stroke-width=".4"><ellipse cx="11.5" cy="29.5" rx=".7" ry=".9"/><ellipse cx="11.5" cy="41.5" rx=".7" ry=".9"/><ellipse cx="54" cy="41" rx=".7" ry=".9"/><ellipse cx="54" cy="52" rx=".7" ry=".9"/><ellipse cx="35.5" cy="35.8" rx=".6" ry=".8"/></g>
+        <path d="M8 22L58 37L76 25M9 44L58 58L77 45" fill="none" stroke="#edc890" stroke-opacity=".45" stroke-width=".65"/>
+      </svg>
+      <span class="desktop-bait-label">饵料</span>
+    </button>
+    <button id="fishing-motor" type="button" hidden aria-label="自动钓鱼马达"><img src="/fishing-art/gift-auto_fishing_motor-v1.png" alt="" draggable="false"><span></span><small></small></button>
     <svg id="fishing-line" viewBox="0 0 380 260" aria-hidden="true"><path/></svg>
     <button id="fishing-rod" type="button" tabindex="-1" aria-hidden="true" aria-label="按住鱼竿蓄力，松开抛竿"></button>
     <button id="fishing-float" type="button" hidden aria-label="鱼儿咬钩时点击提竿"><i></i><b></b></button>
@@ -23,14 +58,25 @@
     <div id="fishing-power" hidden role="progressbar" aria-label="抛竿力度"><i></i></div>
     <div id="fishing-reel" hidden role="progressbar" aria-label="收线进度"><div class="desktop-reel-track"><i class="desktop-reel-target"></i><b class="desktop-reel-fish"><svg viewBox="0 0 24 16" aria-hidden="true"><path d="M2 8C5 2 12 1 18 6L23 3V13L18 10C12 15 5 14 2 8Z"/><circle cx="6" cy="7" r="1"/></svg></b></div><div class="desktop-reel-progress"><i></i></div></div>
     <div id="fishing-toast" hidden role="status"></div>
+    <div id="fishing-skill" role="status" hidden></div>
     <div id="fishing-status" hidden><span></span><i class="fishing-stamina"><b></b></i></div>
 
     <span id="fishing-live" class="desktop-sr-only" aria-live="polite"></span>
   </main>
   <script src="/fishing-lighting.js"></script>
+<script src="/fishing-aquatic-renderer.js"></script>
+<script src="/fishing-pond-skins.js"></script>
+<script src="/fishing-species-painted.js"></script>
+<script src="/fishing-species-live.js"></script>
 <script src="/fishing-art.js"></script>
   <script src="/fishing-rewards.js"></script>
-  <script src="/fishing-rod-effects.js"></script>
+  <script src="/fishing-onepiece-painted.js"></script><script src="/fishing-naruto-painted.js"></script><script src="/fishing-vfx-tween.js"></script><script src="/fishing-naruto-vfx.js"></script><script src="/fishing-valorant-painted.js"></script><script src="/fishing-valorant-vfx.js"></script><script src="/fishing-painted-vfx.js"></script><script src="/fishing-basic-painted.js"></script>
+<script src="/fishing-relic-painted.js"></script><script src="/fishing-relic-vfx.js"></script><script src="/fishing-onepiece-vfx.js"></script><script src="/fishing-onepiece-rods.js"></script><script src="/fishing-anime-rods.js"></script><script src="/fishing-anime-effects.js"></script><script src="/fishing-crafted-rods.js"></script>
+<script src="/fishing-expansion-effects.js"></script>
+<script src="/fishing-spell-effects.js"></script>
+<script src="/fishing-journey-effects.js"></script>
+<script src="/fishing-orbit-art.js"></script><script src="/fishing-orbit-renderer.js"></script><script src="/fishing-prestige.js"></script>
+<script src="/fishing-rod-effects.js"></script>
   <script src="/fishing-motion.js"></script>
   <script src="/fishing-rod-renderer.js"></script>
   <script src="/fishing-desktop.js"></script>

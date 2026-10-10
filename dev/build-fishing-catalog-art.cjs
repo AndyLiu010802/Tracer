@@ -14,37 +14,57 @@ const root = path.resolve(__dirname, '..');
 const outputDirectory = path.join(root, 'skins/tracer/fishing-art');
 const sourceFiles = [
   'skins/tracer/fishing-lighting.js',
+  'skins/tracer/fishing-aquatic-renderer.js',
+  'skins/tracer/fishing-pond-skins.js',
+  'skins/tracer/fishing-basic-painted.js','skins/tracer/fishing-onepiece-painted.js','skins/tracer/fishing-naruto-painted.js','skins/tracer/fishing-valorant-painted.js','skins/tracer/fishing-relic-painted.js','skins/tracer/fishing-onepiece-rods.js',
+  'skins/tracer/fishing-anime-rods.js',
+  'skins/tracer/fishing-crafted-rods.js',
   'skins/tracer/fishing-art.js',
   'skins/tracer/fishing-rod-renderer.js',
   'public/fishing-model.js',
   'dev/build-fishing-catalog-art.cjs',
 ];
+const paintedAssets={...require('../skins/tracer/fishing-basic-painted').assets,...require('../skins/tracer/fishing-onepiece-painted').assets,...require('../skins/tracer/fishing-naruto-painted').assets,...require('../skins/tracer/fishing-valorant-painted').assets,...require('../skins/tracer/fishing-relic-painted').assets};
+const paintFiles=Object.values(paintedAssets).map(a=>'skins/tracer'+a.src);
 const sourceContents = new Map(sourceFiles.map(file => [file, fs.readFileSync(path.join(root, file))]));
 const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const sources = Object.fromEntries([...sourceContents].map(([file, bytes]) => [
   file, sha256(bytes.toString('utf8').replace(/\r\n/g, '\n')),
 ]));
+for(const file of paintFiles)sources[file]=sha256(fs.readFileSync(path.join(root,file)));
 const layouts = {
-  rods: { file: 'rods-model-v1.png', columns: 5, rows: Math.ceil(catalog.rods.length / 5), cellWidth: 300, cellHeight: 500 },
+  rods: { file: 'rods-model-v1.png', columns: 10, rows: Math.ceil(catalog.rods.length / 10), cellWidth: 300, cellHeight: 500 },
   fish: { file: 'fish-model-v1.png', columns: 5, rows: Math.ceil(catalog.fish.length / 5), cellWidth: 328, cellHeight: 216 },
 };
 
 // This is deliberately a tiny renderer-only page: no application, API routes,
 // workspace files, or user account data are involved in building the assets.
 const documentSource = '<!doctype html><meta charset="utf-8"><title>Fishing catalogue renderer</title>' +
-  '<script src="/fishing-lighting.js"></script><script src="/fishing-art.js"></script><script src="/fishing-rod-renderer.js"></script>';
+  '<script src="/fishing-pond-skins.js"></script>' +
+  '<script src="/fishing-lighting.js"></script><script src="/fishing-aquatic-renderer.js"></script><script src="/fishing-onepiece-painted.js"></script><script src="/fishing-naruto-painted.js"></script><script src="/fishing-valorant-painted.js"></script><script src="/fishing-basic-painted.js"></script><script src="/fishing-relic-painted.js"></script><script src="/fishing-onepiece-rods.js"></script><script src="/fishing-anime-rods.js"></script><script src="/fishing-crafted-rods.js"></script><script src="/fishing-art.js"></script><script src="/fishing-rod-renderer.js"></script>';
 const routes = new Map([
+  ['/fishing-pond-skins.js', sourceContents.get('skins/tracer/fishing-pond-skins.js')],
+  ['/fishing-aquatic-renderer.js', sourceContents.get('skins/tracer/fishing-aquatic-renderer.js')],
+  ['/fishing-onepiece-painted.js', sourceContents.get('skins/tracer/fishing-onepiece-painted.js')],
+  ['/fishing-naruto-painted.js', sourceContents.get('skins/tracer/fishing-naruto-painted.js')],
+  ['/fishing-basic-painted.js', sourceContents.get('skins/tracer/fishing-basic-painted.js')],
+  ['/fishing-relic-painted.js', sourceContents.get('skins/tracer/fishing-relic-painted.js')],
+  ['/fishing-valorant-painted.js', sourceContents.get('skins/tracer/fishing-valorant-painted.js')],
+  ['/fishing-onepiece-rods.js', sourceContents.get('skins/tracer/fishing-onepiece-rods.js')],
+  ['/fishing-anime-rods.js', sourceContents.get('skins/tracer/fishing-anime-rods.js')],
+  ['/fishing-crafted-rods.js', sourceContents.get('skins/tracer/fishing-crafted-rods.js')],
   ['/fishing-lighting.js', sourceContents.get('skins/tracer/fishing-lighting.js')],
   ['/fishing-art.js', sourceContents.get('skins/tracer/fishing-art.js')],
   ['/fishing-rod-renderer.js', sourceContents.get('skins/tracer/fishing-rod-renderer.js')],
 ]);
+for(const file of paintFiles)routes.set(file.replace('skins/tracer',''),fs.readFileSync(path.join(root,file)));
 const server = http.createServer((request, response) => {
   const pathname = new URL(request.url, 'http://127.0.0.1').pathname;
   if (pathname === '/') {
     response.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
     response.end(documentSource);
   } else if (routes.has(pathname)) {
-    response.writeHead(200, { 'content-type': 'application/javascript; charset=utf-8' });
+    response.writeHead(200, { 'content-type': pathname.endsWith('.png')?'image/png':'application/javascript; charset=utf-8' });
     response.end(routes.get(pathname));
   } else {
     response.writeHead(404);
@@ -75,6 +95,7 @@ async function main() {
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(origin, { waitUntil: 'load' });
 
+    await page.evaluate(()=>Promise.all([TracerFishingBasicPainted.preload(document),TracerFishingOnePiecePainted.preload(document),TracerFishingNarutoPainted.preload(document),TracerFishingValorantPainted.preload(document),TracerFishingRelicPainted.preload(document)]));
     const rendered = await page.evaluate(({ catalog, layouts }) => {
       function host(width, height) {
         const element = document.createElement('div');

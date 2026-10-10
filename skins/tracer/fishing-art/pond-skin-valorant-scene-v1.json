@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "id": "valorant",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-valorant-scene-v1.bin",
+  "triangles": 5176,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 0,
+      "count": 3864
+    },
+    {
+      "anchor": "back",
+      "color": "#3b4759",
+      "material": 7,
+      "name": "slate",
+      "offset": 92736,
+      "count": 3564
+    },
+    {
+      "anchor": "back",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 178272,
+      "count": 648
+    },
+    {
+      "anchor": "back",
+      "color": "#63d4d4",
+      "material": 11,
+      "name": "cyan",
+      "offset": 193824,
+      "count": 1680
+    },
+    {
+      "anchor": "back",
+      "color": "#a7babd",
+      "material": 10,
+      "name": "silver",
+      "offset": 234144,
+      "count": 2532
+    },
+    {
+      "anchor": "back",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 294912,
+      "count": 648
+    },
+    {
+      "anchor": "left",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 310464,
+      "count": 324
+    },
+    {
+      "anchor": "left",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 318240,
+      "count": 648
+    },
+    {
+      "anchor": "left",
+      "color": "#63d4d4",
+      "material": 11,
+      "name": "cyan",
+      "offset": 333792,
+      "count": 324
+    },
+    {
+      "anchor": "right",
+      "color": "#374a59",
+      "material": 10,
+      "name": "steel",
+      "offset": 341568,
+      "count": 324
+    },
+    {
+      "anchor": "right",
+      "color": "#ecdfc2",
+      "material": 7,
+      "name": "paper",
+      "offset": 349344,
+      "count": 648
+    },
+    {
+      "anchor": "right",
+      "color": "#63d4d4",
+      "material": 11,
+      "name": "cyan",
+      "offset": 364896,
+      "count": 324
+    }
+  ]
+}

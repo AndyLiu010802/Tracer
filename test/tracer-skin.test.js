@@ -93,8 +93,9 @@ test('Tracer loads the garden and new fishing modules in dependency order withou
   for (const name of ['pet', 'garden-companion', 'garden-wildflower-motion', 'combat', 'equip', 'mining', 'magic', 'farm', 'farm-data']) {
     assert.ok(!html.includes('src="/' + name + '.js"'), 'must not load ' + name);
   }
+  assert.ok(!html.includes('src="/fishing-game.js"'));
   assert.ok(!html.includes('href="/farm.css"'), 'must not load legacy game styles');
-  const order = ['fishing-model', 'task-garden', 'model', 'workspace-sync', 'app', 'task-garden-actions', 'garden-plant-atlas', 'garden-plant-art', 'garden-plant-animation', 'garden-harvest-model', 'garden-world-view', 'fishing-art', 'fishing-motion', 'fishing-rod-renderer', 'fishing-game', 'fishing-tackle', 'fishing-view', 'garden-home-view', 'garden-planets-view', 'garden', 'fishing'];
+  const order = ['fishing-model', 'task-garden', 'model', 'workspace-sync', 'app', 'task-garden-actions', 'garden-plant-atlas', 'garden-plant-art', 'garden-plant-animation', 'garden-harvest-model', 'garden-world-view', 'fishing-art', 'fishing-motion', 'fishing-rod-renderer', 'fishing-tackle', 'fishing-view', 'garden-home-view', 'garden-planets-view', 'garden', 'fishing'];
   // Historical backup validation is available before account storage starts.
   const early = ['pet-animation', 'pet-model', 'backup-preferences', 'account-storage'];
   for (let i = 0; i < early.length; i++) {

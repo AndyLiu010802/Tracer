@@ -38,14 +38,14 @@ test('nonlegendary rare and epic fry remain pond candidates while legendary fry 
   assert.equal(F.placeAquariumFish(ws,legend.fry.id,true,120002).ok,true);assert.equal(F.aquarium(ws).fish[0].speciesId,'dragonkoi');assert.equal(F.read(ws).ponds[0].fishIds.length,2);
 });
 
-test('a Dream ray pond still requires exactly five residents to archive and rejects a sixth without changing stock',async()=>{
+test('legacy five-fish collections remain readable and allow residents to return to the nursery',async()=>{
   const ws=workspace(),species=[['dreamray','glow'],['koi','grain'],['goldfish','grain'],['moonfin','stardust'],['crystal','frost'],['seahorse','shrimp']],catches=species.map(([id,bait],i)=>land(ws,id,bait,1000+i*30000));
   const pondId=F.read(ws).activePondId;assert.equal(F.placeFry(ws,catches[0].fry.id,pondId,200000).ok,true);assert.equal(F.archivePond(ws,pondId,200001).reason,'requires-five-fish');
   for(const caught of catches.slice(1,5))assert.equal(F.placeFry(ws,caught.fry.id,pondId,200002).ok,true);
   const before=copy(ws);assert.equal(F.placeFry(ws,catches[5].fry.id,pondId,200003).reason,'pond-full');assert.deepEqual(ws,before);
   const archived=F.archivePond(ws,pondId,200004);assert.equal(archived.ok,true);assert.equal(F.read(ws).ponds.find(p=>p.id===pondId).sealedFishIds.length,5);assert.equal(F.read(ws).fry.find(f=>f.id===catches[5].fry.id).pondId,null);
-  assert.equal(F.placeFry(ws,catches[0].fry.id,null,200005).reason,'pond-archived');assert.equal(F.releaseFish(ws,catches[0].fry.id,200006).reason,'pond-archived');
-  assert.equal(F.sellFish(ws,catches[0].catch.id,200007).ok,true);const reloaded=S.validate(JSON.parse(JSON.stringify(ws)));assert.equal(F.read(reloaded).ponds.find(p=>p.id===pondId).fishIds.length,5);assert.equal(F.read(reloaded).fry.find(f=>f.id===catches[0].fry.id).pondId,pondId);assert.equal((await desktopSnapshot(reloaded)).pond.id,archived.activePondId,'the next active pond is selected after archiving');
+  assert.equal(F.placeFry(ws,catches[0].fry.id,null,200005).ok,true);
+  assert.equal(F.sellFish(ws,catches[0].catch.id,200007).ok,true);const reloaded=S.validate(JSON.parse(JSON.stringify(ws)));assert.equal(F.read(reloaded).ponds.find(p=>p.id===pondId).fishIds.length,4);assert.equal(F.read(reloaded).fry.find(f=>f.id===catches[0].fry.id).pondId,null);assert.equal((await desktopSnapshot(reloaded)).pond.id,archived.activePondId,'the next active pond is selected after archiving');
 });
 
 test('historical legendary pond residents remain valid and can move to an aquarium without save migration',()=>{

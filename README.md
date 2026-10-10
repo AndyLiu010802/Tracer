@@ -1,34 +1,34 @@
 # Tracer
 
-当前版本以任务花园与桌面钓鱼组成休闲系统。人物桌宠、花精灵、伙伴聊天和生成界面已移除；花园、植物图鉴与花朵星球继续保留。现有 38 款鱼竿、基础与万象秘藏两个独立奖池、7 种鱼饵、24 种鱼、传奇水族箱和六种 3D 鱼塘。万象秘藏新增 20 款鱼竿，包含 10 款史诗、3 款传奇，每个奖池各有一款获得前隐藏的秘藏。水族箱展示已钓获的传奇鱼，也可摆到桌面，拖动、缩放及左右旋转；鱼、植被与鱼竿均采用非像素美术。完整规则见[桌面钓鱼与鱼塘](docs/desktop-fishing.md)。
+当前版本以任务花园与桌面钓鱼组成休闲系统。0.4.4 更新六处渔场插画背景，渔场按顺序使用金币永久解锁，鱼获价值随渔场逐级提升。生成鱼类原画结合有厚度的三维网格，改善转身时变成纸片的问题；礼包集齐常规鱼竿后开启独立的隐藏款 100 抽保底。完整规则见[桌面钓鱼与鱼塘](docs/desktop-fishing.md)与[渔场进阶说明](docs/fishing-ground-progression.md)。
 
-鱼塘永久免费：珍稀、史诗鱼捕获后额外获得鱼苗，每池最多五条，组建中可以放生换鱼。确认五条后，鱼塘成为可随时查看和投喂的永久收藏，并自动开启下一座。传奇鱼苗入住独立水族箱，最多三条。旧工作区的任务、花园与历史备份继续兼容。
+鱼苗收藏塘永久免费（与付费解锁的垂钓渔场独立）：珍稀、史诗鱼捕获后额外获得鱼苗，每池最多五条，组建中可以放生换鱼。确认五条后，鱼塘成为可随时查看和投喂的永久收藏，并自动开启下一座。传奇鱼苗入住独立水族箱，最多三条。旧工作区的任务、花园与历史备份继续兼容。
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[Tracer 0.4.2：Windows 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.2)** · [Mac 0.4.0 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0) · **[Mac 安装与构建](docs/macos-install.md)** · [0.4.2 更新说明](docs/desktop-release-0.4.2.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[Tracer 0.4.4：Windows 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.4)** · [Mac 0.4.0 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0) · **[Mac 安装与构建](docs/macos-install.md)** · [0.4.4 更新说明](docs/desktop-release-0.4.4.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-**0.4.2 本次先提供 Windows x64。** 新版包含万象秘藏 20 款新鱼竿、居合修罗与专属主题动作，以及桌面钓鱼、六种鱼塘、可旋转的传奇水族箱、鱼苗育养与神秘礼包，详见 [0.4.2 更新与验证说明](docs/desktop-release-0.4.2.md)。
+**0.4.4 本次提供 Windows x64。** 渔场价值倍率调整为 1 / 1.2 / 1.5 / 1.8 / 2.2 / 2.6，解锁价格为免费 / 400 / 1,000 / 2,200 / 4,500 / 8,500 金币；包含场景背景、立体鱼类和隐藏款保底更新，详见 [0.4.4 更新与验证说明](docs/desktop-release-0.4.4.md)。
 
 Mac 继续提供已验证的 0.4.0：Apple 芯片和 Intel 版本均可从 [0.4.0 发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)下载。[0.4.0 三平台构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35834504837)。
 
 | 电脑类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Windows x64 | [Tracer-Setup-0.4.2-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.2/Tracer-Setup-0.4.2-x64.exe) | — |
+| Windows x64 | [Tracer-Setup-0.4.4-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.4/Tracer-Setup-0.4.4-x64.exe) | — |
 | Mac：Apple 芯片（M 系列） | [Tracer-0.4.0-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-arm64.zip) |
 | Mac：Intel | [Tracer-0.4.0-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-x64.zip) |
 
-Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置。Windows 0.4.2 分发版使用独立工作区，旧版存档保留在原目录，不会自动迁移；详见[安装说明](docs/desktop-release-0.4.2.md#安装)。
+Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置。Windows 0.4.4 分发版使用独立工作区，旧版存档保留在原目录，不会自动迁移；详见[安装说明](docs/desktop-release-0.4.4.md)。
 
 
 Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证。真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
 
 - **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
-- **本地数据**：Windows 0.4.2 分发版使用 `%APPDATA%\tracer-desktop-commercial\`；源码与历史版本使用 `%APPDATA%\tracer-desktop\`。两个目录独立，旧数据不自动迁入；正常卸载保留用户数据，分享的安装包使用接收者自己的工作区。
-- **核对下载**：Windows 使用 [SHA256SUMS-0.4.2.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.2/SHA256SUMS-0.4.2.txt)，覆盖 EXE 和 [blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.2/Tracer-Setup-0.4.2-x64.exe.blockmap)；blockmap 无需单独安装。Mac 0.4.0 使用其发布页的 [SHA256SUMS-0.4.0.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/SHA256SUMS-0.4.0.txt)。
+- **本地数据**：Windows 0.4.4 分发版使用 `%APPDATA%\tracer-desktop-commercial\`；源码与历史版本使用 `%APPDATA%\tracer-desktop\`。两个目录独立，旧数据不自动迁入；正常卸载保留用户数据，分享的安装包使用接收者自己的工作区。
+- **核对下载**：Windows 使用 [SHA256SUMS-0.4.4.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.4/SHA256SUMS-0.4.4.txt)，覆盖 EXE 和 [blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.4/Tracer-Setup-0.4.4-x64.exe.blockmap)；blockmap 无需单独安装。Mac 0.4.0 使用其发布页的 [SHA256SUMS-0.4.0.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/SHA256SUMS-0.4.0.txt)。
 
 ## 功能
 
@@ -94,7 +94,7 @@ node dev/verify-macos-release.cjs
 
 浏览器开发模式的数据在仓库 `data/` 和 `bookmarks.json` 中，与桌面用户目录独立。以下阅读器、皮肤和代理说明保留供浏览器模式及开发使用；桌面版的原生参考浏览器不使用 fixture view 和网页代理。
 
-修改 `public/` 中的任务历史、项目删除或任务翻译共享模块后，运行 `node dev/sync-shared-modules.js` 更新 Tracer 皮肤中的副本。历史设计与旧版发布说明统一保存在 [文档归档](docs/archive/README.md)。
+修改 `public/` 中的任务历史、项目删除或任务翻译共享模块后，运行 `node dev/sync-shared-modules.js` 更新 Tracer 皮肤中的副本。已退役的内嵌钓鱼与早期设计归档已清理，范围见 [清理记录](docs/fishing-inline-retirement.json)。
 
 ## 浏览器模式：阅读面板
 

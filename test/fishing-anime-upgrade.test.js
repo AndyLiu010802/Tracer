@@ -1,0 +1,41 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const F=require('../public/fishing-model'),M=require('../skins/tracer/model'),A=require('../skins/tracer/fishing-anime-effects'),R=require('../skins/tracer/fishing-rod-renderer'),Motion=require('../skins/tracer/fishing-motion'),Aquatic=require('../skins/tracer/fishing-aquatic-renderer'),Swim=require('../skins/tracer/fishing-aquarium-motion');
+const legacyContext={module:{exports:{}},require:require('node:module').createRequire(require.resolve('../public/fishing-model'))};vm.runInNewContext(fs.readFileSync(require.resolve('../public/fishing-model'),'utf8').replace("rules:rod.id==='valorant_spike'?8:7","rules:rod.id==='valorant_spike'?6:5"),legacyContext);const Legacy=legacyContext.module.exports;
+const freshFish=F.catalog.fish.filter(f=>f.expansion===3),freshRods=F.catalog.rods.filter(r=>['naruto','onepiece'].includes(r.collection)),env=spotId=>({spotId,timeId:'day',weatherId:'clear'});
+function workspace(){const ws=M.emptyWorkspace();F.ensure(ws);ws.taskGarden.market.testCredit={id:'anime_test',amount:100000,updatedAt:1};return ws;}
+function toReeling(id,seed=7,model=F){const s=model.createSession(null,{rodId:id,seed,expedition:env('creek')});model.stepSession(s,{},700);model.stepSession(s,{release:true},0);for(let i=0;i<700&&!['bite','caught'].includes(s.phase);i++)model.stepSession(s,{},16);if(s.phase==='bite')model.stepSession(s,{hook:true},0);return s;}
+test('fifty additional species have valid ecology, distinct feeding notes and accessible habitats',()=>{
+ assert.equal(freshFish.length,50);assert.equal(F.catalog.fish.length,156);assert.equal(new Set(F.catalog.fish.map(f=>f.id)).size,156);
+ assert.deepEqual(['common','rare','epic','legendary'].map(q=>freshFish.filter(f=>f.rarity===q).length),[20,16,10,4]);
+ for(const f of freshFish){assert.equal(f.fry,f.rarity!=='common',f.id+' follows the existing nursery eligibility');assert(Aquatic.styles[f.id],f.id);assert(F.catalog.spots.some(s=>F.expedition({fishing:{...F.empty(),expedition:{...env(s.id),updatedAt:0}}}).fish.some(x=>x.id===f.id)));assert(F.catalog.baits.find(b=>b.id===f.diet).fishIds.includes(f.id));assert(f.feedingReaction.description[0].length>14);}
+ assert.equal(new Set(freshFish.map(f=>f.feedingReaction.description[0])).size,50);
+});
+test('both anime pools have independent receipts, guarantees, colour tiers and one 0.5% secret',()=>{
+ assert.equal(freshRods.length,90);assert.equal(F.catalog.rods.length,253);
+ for(const id of ['naruto','onepiece']){const pool=F.catalog.rodPools.find(p=>p.id===id),ws=workspace();assert.equal(pool.rodIds.length,44);assert.equal(pool.odds.hidden,.005);assert.equal(F.catalog.rods.filter(r=>r.collection===id&&r.hidden).length,1);const opened=[];for(let n=0;n<40;n++){const result=F.buyBox(ws,{poolId:id,now:100+n,random:()=>0});assert(result.ok);opened.push(result.rod);assert.equal(result.poolId,id);}assert(['epic','legendary'].includes(opened[9].rarity));assert.equal(opened[39].rarity,'legendary');const secret=F.buyBox(ws,{poolId:id,random:()=>5480,now:500});assert.equal(secret.rod.id,pool.hiddenRodId);assert.equal(F.pity(F.read(ws),id==='naruto'?'onepiece':'naruto').epicRemaining,10);assert.doesNotThrow(()=>F.validate(ws.fishing));}
+});
+test('rarity sorting is stable, puts secrets first and never reorders authoritative seeded catalog',()=>{
+ const before=F.catalog.rods.map(r=>r.id),sorted=F.sortedRods(F.catalog.rods),rank=r=>r.hidden?4:['common','rare','epic','legendary'].indexOf(r.rarity);for(let i=1;i<sorted.length;i++)assert(rank(sorted[i-1])>=rank(sorted[i]));assert.deepEqual(F.catalog.rods.map(r=>r.id),before);assert.notEqual(sorted,F.catalog.rods);assert(sorted[0].hidden);
+});
+test('180 frozen rules-4 seeds retain exactly the previous species after the 50-fish expansion',()=>{
+ const source=fs.readFileSync(require.resolve('../public/fishing-model'),'utf8').replace("Object.assign(session,{rules:rod.id==='valorant_spike'?8:7,baitId:activeBaitId(baitId)",'Object.assign(session,{rules:4,baitId:activeBaitId(baitId)'),context={module:{exports:{}},require:require('node:module').createRequire(require.resolve('../public/fishing-model'))};vm.runInNewContext(source,context);const Old=context.module.exports,baseline=require('./fixtures/fishing-rules4-baseline.json');assert.equal(baseline.fish.length,106);
+ for(const row of baseline.samples){const s=Old.createSession(Old.empty(),{seed:row.seed,baitId:row.baitId,expedition:env(row.spotId)});assert.equal(s.fishId,row.fishId,row.spotId+'/'+row.seed);}
+ const ws=workspace();F.unlockGround(ws,'reef',1);for(let n=0;n<8;n++){const result=Old.beginCast(ws,{seed:100+n*17,expedition:env('reef')});assert(result.ok);const s=result.session;Old.stepSession(s,{},900);Old.stepSession(s,{release:true},0);Old.commitCast(ws,s);for(let i=0;i<5000&&!['caught','escaped'].includes(s.phase);i++)Old.stepSession(s,{hook:s.phase==='bite',holding:s.fishPosition>s.barPosition},16);if(s.phase==='caught')assert(Old.recordCatch(ws,s).ok);}assert(ws.fishing.catches.length>0);const saved=JSON.parse(JSON.stringify(ws.fishing));assert.deepEqual(F.validate(saved),saved);
+});
+test('historical rules 5: Nika instantly catches about 20 percent of actual fish bites, never triples or affects salvage',()=>{
+ let fish=0,instant=0;for(let seed=0;seed<4000;seed++){const s=Legacy.createSession(null,{rodId:'anime_nika',seed,expedition:env('reef')});if(F.catalog.products.some(p=>p.id===s.fishId)){assert.equal(s.instant,false);continue;}fish++;if(s.instant)instant++;assert.equal(s.haulCount,1);}assert(instant/fish>.175&&instant/fish<.225);
+});
+test('historical rules 5: Six Paths rescues depleted progress once; Nika rescues a line break once',()=>{
+ for(const [id,field,reason]of [['anime_sixpaths','progressRescued','fish-escaped'],['anime_nika','tensionRescued','line-break']]){let verified=false;for(let seed=0;seed<60&&!verified;seed++){const s=toReeling(id,seed,Legacy);if(s.phase!=='reeling')continue;for(let i=0;i<4000&&s.phase==='reeling';i++){Legacy.stepSession(s,{holding:id==='anime_nika'},16);if(s[field])verified=true;}if(verified){assert.equal(s.phase,'escaped');assert.equal(s.reason,reason);assert.equal(s[field],true);}}assert(verified,id);}
+});
+test('rubber finger bones retain length and grip shares the actual fish trajectory without snapping',()=>{
+ for(let i=0;i<=100;i++)for(const f of A.handRig(i/100)){assert(Math.abs(Math.hypot(f.middle.x-f.root.x,f.middle.y-f.root.y)-f.length*.58)<1e-10);assert(Math.abs(Math.hypot(f.tip.x-f.middle.x,f.tip.y-f.middle.y)-f.length*.42)<1e-10);}
+ const g={width:400,height:280,water:{x:305,y:195},ground:{x:185,y:245}};for(const id of ['anime_luffy','anime_nika']){let previous=null;for(let age=0;age<1940;age+=8){const p=Motion.pose('caught',age,{rodId:id,catchKind:'fish'},g,false),q=A.rubberCatch(age,g,false);assert.equal(p.x,q.x);assert.equal(p.y,q.y);if(previous)assert(Math.hypot(p.x-previous.x,p.y-previous.y)<5);previous=p;}assert.equal(A.timeline('waiting',500),null);assert.equal(A.timeline('reeling',6000),null);}
+});
+test('ninety rod meshes are finite, physically anchored and within the software rendering budget',()=>{
+ const signatures=new Set();for(const r of freshRods){const mesh=R.buildMesh(r.id,true);assert(mesh.triangles<28000,r.id+' triangles '+mesh.triangles);assert(mesh.vertices.every(Number.isFinite),r.id);signatures.add(mesh.silhouette||r.animeAction);for(const bend of[-.24,0,.24])for(let i=0;i<mesh.vertices.length;i+=14){const p=R.deformed([mesh.vertices[i],mesh.vertices[i+1],mesh.vertices[i+2]],bend);assert(p.x>-126&&p.x<376.8&&p.y>-126&&p.y<544,r.id+' bounds');}}assert.equal(signatures.size,90);
+});
+test('new long-fin, elongated and bottom species keep safe tank envelopes and appropriate swimming profiles',()=>{
+ assert(Aquatic.swimStyle('knifefish').wave<Aquatic.swimStyle('bichir').wave/5);assert(Aquatic.isBenthic('corydoras'));for(const f of freshFish)for(let t=0;t<6;t+=.2){const p=Swim.sample({id:f.id,speciesId:f.id,growth:100},{time:t});assert(p.x-p.extent.x>=-Swim.tank.x&&p.x+p.extent.x<=Swim.tank.x,f.id);assert(p.z-p.extent.z>=-Swim.tank.z&&p.z+p.extent.z<=Swim.tank.z,f.id);assert([p.x,p.y,p.z,p.scale].every(Number.isFinite));}
+});

@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-10",
+  "status": "deleted after explicit user approval",
+  "removedRuntime": [
+    "skins/tracer/fishing-game.js"
+  ],
+  "targets": [
+    "dev/qa-fishing-anime-runtime.cjs",
+    "dev/qa-fishing-bite-cue.cjs",
+    "dev/qa-fishing-cast-input.cjs",
+    "dev/qa-fishing-catch-products.cjs",
+    "dev/qa-fishing-expansion-runtime.cjs",
+    "dev/qa-fishing-journey-vfx.cjs",
+    "dev/qa-fishing-keyboard.cjs",
+    "dev/qa-fishing-motor.cjs",
+    "dev/qa-fishing-pond-nursery.cjs",
+    "dev/qa-fishing-prestige.cjs",
+    "dev/qa-fishing-relic-runtime.cjs",
+    "dev/qa-fishing-smoothness.cjs",
+    "dev/qa-fishing-tornado.cjs",
+    "dev/qa-fishing-valorant-runtime.cjs",
+    "dev/qa-fishing-valorant-shop.cjs",
+    "dev/qa-fishing-visuals.cjs",
+    "dev/qa-fishing.cjs",
+    "docs/archive"
+  ],
+  "files": [
+    {
+      "path": "dev/qa-fishing-anime-runtime.cjs",
+      "bytes": 9900,
+      "sha256": "65be5ea62bae425fd10af27cd0a19228ca0f8bcfcc7d3b6f55216ad2dbb9a135"
+    },
+    {
+      "path": "dev/qa-fishing-bite-cue.cjs",
+      "bytes": 10975,
+      "sha256": "4a51924115d31f6581db8d54d6790f53c23be2191dc04050444f3b73a3788c3f"
+    },
+    {
+      "path": "dev/qa-fishing-cast-input.cjs",
+      "bytes": 5677,
+      "sha256": "c4f2c84314e9d838751b7cb017ce510b7d05375e6e65fff39f68da29aca28d91"
+    },
+    {
+      "path": "dev/qa-fishing-catch-products.cjs",
+      "bytes": 6341,
+      "sha256": "0c2193f1b6a33a518d0581a7743f1ef1f5e43d06b96335bf70917e7853e244be"
+    },
+    {
+      "path": "dev/qa-fishing-expansion-runtime.cjs",
+      "bytes": 8318,
+      "sha256": "b030a3da692eeea18ad2a68a5e759ab1f9b66866949ab6c02a8824f2edb95f91"
+    },
+    {
+      "path": "dev/qa-fishing-journey-vfx.cjs",
+      "bytes": 8349,
+      "sha256": "7c682adafd431c072f35c35f7db0317f98b43084d5bf3e2fec198ec738016b70"
+    },
+    {
+      "path": "dev/qa-fishing-keyboard.cjs",
+      "bytes": 15515,
+      "sha256": "65cc3297d86fbf9d3918a3f295d3405f25fe9d3eee59924cb6ee1c3d27bf5063"
+    },
+    {
+      "path": "dev/qa-fishing-motor.cjs",
+      "bytes": 7387,
+      "sha256": "5fcf4390dde2e777cc936bbadf2416026b957124ccebdb38cc4b08abe7a6a9be"
+    },
+    {
+      "path": "dev/qa-fishing-pond-nursery.cjs",
+      "bytes": 14882,
+      "sha256": "4a4fede2f03b7355058f2166c2afbbe7dda579280b582441552f7b308a9cc8e7"
+    },
+    {
+      "path": "dev/qa-fishing-prestige.cjs",
+      "bytes": 6182,
+      "sha256": "a13f4339b0a686b4a7a7236bb05ebb90b4b4ea7a5bd29288eee98a58c3ba19c4"
+    },
+    {
+      "path": "dev/qa-fishing-relic-runtime.cjs",
+      "bytes": 7915,
+      "sha256": "f155d57d93d1dd4b1d23e622120c81e03b180726d8e439541e8db59abfdb6deb"
+    },
+    {
+      "path": "dev/qa-fishing-smoothness.cjs",
+      "bytes": 8321,
+      "sha256": "1ec5b39d0d92957e02d20c8bfa99076ba8e5bd65e1b70882dae2efba9c7a4ee8"
+    },
+    {
+      "path": "dev/qa-fishing-tornado.cjs",
+      "bytes": 20150,
+      "sha256": "07fbfe8d16a33dc793df0ce00c8ab6fb58e1583001b8b1c9474089a115304261"
+    },
+    {
+      "path": "dev/qa-fishing-valorant-runtime.cjs",
+      "bytes": 9405,
+      "sha256": "d47937fc0ce25e536243287767aa766c43044d4df7a2dd8065bd18f9ec6c564e"
+    },
+    {
+      "path": "dev/qa-fishing-valorant-shop.cjs",
+      "bytes": 7341,
+      "sha256": "a2b55248ede013c00eab8446bd0feee10eb139d1a966310645a130b588268ee9"
+    },
+    {
+      "path": "dev/qa-fishing-visuals.cjs",
+      "bytes": 11967,
+      "sha256": "9bbff7e8bee785878d2431817e62bc96878dd06914182385d0ec475ab135a6a8"
+    },
+    {
+      "path": "dev/qa-fishing.cjs",
+      "bytes": 35254,
+      "sha256": "661f7be98fc46eab104cee2658aee1d50a34d74451f292ddd73d8f0151bf4e70"
+    },
+    {
+      "path": "docs/archive/history-design-notes.zip",
+      "bytes": 293227,
+      "sha256": "e2747a99d02317bc8ccc232ff0d5e65621d746e39e5901913c8124d716c0b6a6"
+    },
+    {
+      "path": "docs/archive/README.md",
+      "bytes": 1826,
+      "sha256": "ae77f281ebf467f67625ae4b660a0b7d7da52d7c0aacc2e83fe1e3a71c5ead77"
+    },
+    {
+      "path": "docs/archive/release-notes-through-0.3.7.zip",
+      "bytes": 16668,
+      "sha256": "c05b5dfe83afcdfae0ea8b8b1a6eea7461b4e216de3d156c9d2d756d992193f9"
+    }
+  ],
+  "totalBytes": 505600,
+  "deletedAt": "2026-10-10T03:16:06.650Z",
+  "approval": "User confirmed permanent deletion of these 20 files"
+}

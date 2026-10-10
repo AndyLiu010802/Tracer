@@ -24,7 +24,7 @@ function fixture(section='tackle'){
 test('selecting a collection changes its preview, purchase target and independent guarantee counters',()=>{
   const f=fixture();for(let i=0;i<9;i++)F.buyBox(f.ws,{poolId:'basic',now:100+i,random:()=>0});f.update();
   assert.match(f.page.innerHTML,/data-rod-pool="basic"/);assert.match(f.page.innerHTML,/Epic or better within 1 boxes/);
-  f.click('select-pool','myriad');assert.match(f.page.innerHTML,/data-rod-pool="myriad"/);assert.match(f.page.innerHTML,/VOL\. 02/);assert.match(f.page.innerHTML,/20 rods/);assert.match(f.page.innerHTML,/Epic or better within 10 boxes/);
+  f.click('select-pool','myriad');assert.match(f.page.innerHTML,/data-rod-pool="myriad"/);assert.match(f.page.innerHTML,/VOL\. 02/);assert.match(f.page.innerHTML,/30 rods/);assert.match(f.page.innerHTML,/Epic or better within 10 boxes/);
   assert(f.previews.every(id=>['willow','moon','astral','walnut','candlewyrm','sunforge'].includes(id)));
   f.click('buy-box');assert.deepEqual(JSON.parse(JSON.stringify(f.actions.at(-1).slice(0,2))),['buy-box','myriad']);
   f.update({language:'zh'});assert.match(f.page.innerHTML,/万象秘藏/);assert.match(f.page.innerHTML,/最多再开 10 盒/);assert.match(f.page.innerHTML,/data-rod-pool="myriad"/);
@@ -37,18 +37,18 @@ test('unrevealed secrets never reach the art renderer, title or description in e
     assert(!f.previews.includes('golden'));assert(!f.previews.includes('eclipse'));
     for(const rod of F.catalog.rods.filter(r=>r.hidden)){assert(!f.page.innerHTML.includes(rod.name[0]));assert(!f.page.innerHTML.includes(rod.name[1]));assert(!f.page.innerHTML.includes(rod.effectDescription[1]));}
     if(section==='rods'){
-      assert.equal((f.page.innerHTML.match(/data-hidden-reward/g)||[]).length,2);
+      assert.equal((f.page.innerHTML.match(/data-hidden-reward/g)||[]).length,F.catalog.rodPools.length);
       f.click('select-rod-pool','myriad');const grid=f.page.innerHTML.split('<div class="fishing-rod-grid">')[1];
-      assert.equal((grid.match(/<article\b/g)||[]).length,20);assert.equal((grid.match(/data-hidden-reward/g)||[]).length,1);assert(!grid.includes('data-preview-id="golden"'));
+      assert.equal((grid.match(/<article\b/g)||[]).length,30);assert.equal((grid.match(/data-hidden-reward/g)||[]).length,1);assert(!grid.includes('data-preview-id="golden"'));
       f.click('open-pool','myriad');assert.equal(f.actions.at(-1)[1],'myriad');
-      f.click('select-rod-pool','basic');const original=f.page.innerHTML.split('<div class="fishing-rod-grid">')[1];assert.equal((original.match(/<article\b/g)||[]).length,17);assert(!original.includes('data-preview-id="walnut"'));
+      f.click('select-rod-pool','basic');const original=f.page.innerHTML.split('<div class="fishing-rod-grid">')[1];assert.equal((original.match(/<article\b/g)||[]).length,27);assert(!original.includes('data-preview-id="walnut"'));
     }
   }
 });
 
 test('a discovered new secret can be inspected and equipped while the other secret stays concealed',()=>{
   const f=fixture('rods');F.buyBox(f.ws,{poolId:'myriad',now:100,random:()=>5450});f.update();
-  assert(f.previews.includes('eclipse'));assert(!f.previews.includes('golden'));assert.match(f.page.innerHTML,/Myriad eclipse/);assert.equal((f.page.innerHTML.match(/data-hidden-reward/g)||[]).length,1);
+  assert(f.previews.includes('eclipse'));assert(!f.previews.includes('golden'));assert.match(f.page.innerHTML,/Myriad eclipse/);assert.equal((f.page.innerHTML.match(/data-hidden-reward/g)||[]).length,F.catalog.rodPools.length-1);
   f.click('equip-rod','eclipse');assert.equal(f.actions.at(-1)[1],'eclipse');
   f.click('filter','owned');const grid=f.page.innerHTML.split('<div class="fishing-rod-grid">')[1];assert.equal((grid.match(/<article\b/g)||[]).length,2);assert(!grid.includes('data-hidden-reward'));
 });
@@ -59,4 +59,13 @@ test('deep linking selects only a known collection and saving or an empty wallet
   f.update({busy:true});f.click('buy-box');assert.equal(f.actions.length,0);
   f.update({economy:{balance:99}});f.click('buy-box');assert.equal(f.actions.length,0);
   f.update();f.click('buy-box');assert.equal(f.actions.at(-1)[1],'myriad');
+});
+
+test('ten-draw button targets the selected collection and needs 1000 coins independently of single draws',()=>{
+  const f=fixture();f.update();f.view.selectPool('naruto');
+  f.click('buy-ten-boxes');assert.deepEqual(JSON.parse(JSON.stringify(f.actions.at(-1).slice(0,2))),['buy-ten-boxes','naruto']);
+  f.actions.length=0;f.update({economy:{balance:999}});f.click('buy-ten-boxes');assert.equal(f.actions.length,0);
+  f.click('buy-box');assert.equal(f.actions.length,1);
+  f.actions.length=0;f.update({busy:true});f.click('buy-ten-boxes');assert.equal(f.actions.length,0);
+  f.update({language:'zh',economy:{balance:1000}});assert.match(f.page.innerHTML,/十连抽 · 1000 金币/);f.click('buy-ten-boxes');assert.equal(f.actions.length,1);
 });

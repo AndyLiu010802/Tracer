@@ -1,5 +1,6 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.TracerAquariumMotion=api;})(typeof window!=='undefined'?window:globalThis,function(){
   'use strict';
+  const Aquatic=typeof module==='object'&&module.exports?require('./fishing-aquatic-renderer'):globalThis.TracerFishingAquatic;
   const TAU=Math.PI*2;
   const tank=Object.freeze({x:2.24,z:1.25,bottom:-.90,top:1.14});
   // Conservative local bounds include fins, jewellery, and peak feeding poses.
@@ -10,8 +11,15 @@
     gulpuffer:{body:3.45,fin:8.15,tail:.11,paddle:.23,wave:.018,wing:0,pitch:0,roll:.075,travel:.66,bob:.072,extent:[1.16,.90,.79],play:'moon-bob'},
     grumpangler:{body:2.40,fin:4.50,tail:.095,paddle:.14,wave:.024,wing:0,pitch:-.015,roll:.050,travel:.61,bob:.030,extent:[1.18,1.09,.78],play:'lure-nod'},
     flopray:{body:2.25,fin:2.10,tail:.065,paddle:.075,wave:.030,wing:.15,pitch:.16,roll:.115,travel:.82,bob:.055,extent:[1.88,.58,1.64],play:'soft-hug'},
-    snagglefin:{body:3.35,fin:4.15,tail:.19,paddle:.17,wave:.10,wing:0,pitch:.005,roll:.11,travel:.93,bob:.04,extent:[1.39,1.17,.72],play:'wish-sway'}
+    snagglefin:{body:3.35,fin:4.15,tail:.19,paddle:.17,wave:.10,wing:0,pitch:.005,roll:.11,travel:.93,bob:.04,extent:[1.39,1.17,.72],play:'wish-sway'},
+    clownfish:{body:3.55,fin:4.8,tail:.20,paddle:.16,wave:.044,wing:0,pitch:.010,roll:.080,travel:1.10,bob:.035,extent:[1.50,.77,.57],play:'reef-dance'},
+    bluebetta:{body:2.65,fin:3.4,tail:.15,paddle:.12,wave:.055,wing:0,pitch:.015,roll:.095,travel:.77,bob:.05,extent:[2.20,1.08,.65],play:'silk-fan'},
+    pearljelly:{body:1.75,fin:2.30,tail:.02,paddle:.075,wave:.021,wing:0,pitch:0,roll:.025,travel:.43,bob:.065,extent:[.87,1.48,.87],play:'pearl-pulse'},
+    crownray:{body:2.35,fin:2.25,tail:.065,paddle:.075,wave:.035,wing:.15,pitch:.16,roll:.115,travel:.85,bob:.050,extent:[2.00,.66,1.57],play:'star-loop'}
   };
+  Object.assign(profiles,{stormmanta:{...profiles.crownray,extent:[2.05,.70,1.70],play:'storm-glide'},emberdrake:{...profiles.dragonkoi,extent:[1.94,1.10,.76],play:'ember-leap'},abysskraken:{...profiles.pearljelly,extent:[1.22,1.60,1.13],play:'star-embrace'},aurorawhale:{...profiles.galaxywhale,extent:[2.16,.90,1.12],play:'aurora-rise'}});
+  if(Aquatic)for(const [id,s]of Object.entries(Aquatic.styles)){const bottom=Aquatic.isBenthic(id);profiles[id]={body:bottom?1.8:2.8,fin:s.body==='jelly'?2:3.9,tail:bottom?.025:.16,paddle:bottom?.04:.12,wave:bottom?0:.035,wing:0,pitch:0,roll:bottom?.014:.07,travel:bottom?Aquatic.travelRate(id)/.19:.72,bob:bottom?.004:.042,extent:Aquatic.bounds(id),play:s.motion,...Aquatic.swimStyle(id)};}
+  const matureActions=Object.freeze({dragonkoi:'leap',galaxywhale:'bubble',gulpuffer:'bubble',grumpangler:'glow',flopray:'flutter',snagglefin:'twirl',clownfish:'orbit',bluebetta:'flutter',pearljelly:'bubble',crownray:'flutter'});
   const finite=(value,fallback=0)=>Number.isFinite(value)?value:fallback;
   const clamp=(value,low,high)=>Math.max(low,Math.min(high,value));
   function hash(value){let result=2166136261;for(const character of String(value))result=Math.imul(result^character.charCodeAt(0),16777619);return result>>>0;}
@@ -59,7 +67,11 @@
    * Pure, deterministic aquarium animation. time is seconds; index/count select
    * one of 1–3 separate lanes. scale is the renderer's requested model scale.
    * Feed strength/progress are the existing 0..1 envelope, not wall-clock dates.
+   * Requested scale is the adult-independent model size. Growth (0..100) supplies
+   * a .64..1.18 appearance factor. Reserve adult fitting space before applying
+   * growth so large species grow visibly without changing size as they turn.
    * Use the returned scale in the model matrix (it is constant for this fish).
+   * extraMotion names the action unlocked at 100%; it is null for juveniles.
    * body/fin/wing Phase already include time: shaders add ONLY spatial phase.
    * bodyAmplitude/finAmplitude/wingAmplitude/wingFold are local model units.
    * tailBeat/tailLift/paddle/lureSwing are radians; breath is a local gill offset;
@@ -70,6 +82,7 @@
     fish=fish||{};options=options||{};const species=String(fish.speciesId||fish.fishId||fish.id||'dragonkoi'),profile=Object.hasOwn(profiles,species)?profiles[species]:profiles.dragonkoi;
     const seed=hash(String(fish.instanceId||fish.id||species)+'|'+species),count=clamp(Math.floor(finite(options.count,1)),1,3),index=clamp(Math.floor(finite(options.index,0)),0,count-1),reduced=options.reducedMotion===true,time=reduced?0:Math.max(0,finite(options.time));
     const state=behavior(time,seed),weights=reduced?{swim:0,idle:1,play:0}:state.weights,{swim,idle,play}=weights,feed=reduced?0:clamp(finite(options.feed?.strength),0,1),feedProgress=clamp(finite(options.feed?.progress),0,1);
+    const growth=clamp(finite(Number(fish.growth==null?100:fish.growth),100),0,100),growthScale=.64+.54*growth/100,mature=growth>=100,extraMotion=mature?(matureActions[species]||Aquatic?.styles[species]?.motion||'orbit'):null,maturePlay=mature?play:0;
     const lane=laneFor(index,count),phase=(seed%997)/997*TAU,motor=(reduced?0:state.motorTime),bodyPhase=motor*profile.body+phase,finPhase=motor*profile.fin+phase*1.37,wingPhase=motor*profile.fin+phase;
     const a=(reduced?phase:state.travelTime*.19*profile.travel+phase),heading=Math.atan2(Math.sin(a)*lane.rz,Math.cos(a)*lane.rx),baseHeading=Math.atan2(Math.sin(a),Math.cos(a));
     const playWave=Math.sin(bodyPhase*.45),idleWave=Math.sin(time*.63+phase),feedWave=Math.sin(feedProgress*TAU);
@@ -79,7 +92,7 @@
     else if(species==='galaxywhale'){lift+=play*(.10+.055*playWave);pitch+=play*playWave*.085;roll+=play*Math.sin(bodyPhase*.25)*.035;}
     else if(species==='gulpuffer'){lift+=play*playWave*.10;pitch+=play*Math.sin(finPhase*.25)*.050;}
     else if(species==='grumpangler'){pitch+=play*Math.sin(bodyPhase*.7)*.060;lift+=play*Math.sin(bodyPhase*.7)*.022;}
-    else if(species==='flopray'){
+    else if(species==='flopray'||species==='crownray'){
       lift+=play*(.065+.035*playWave);
       // A small bank toward the fixed tank camera reveals the broad upper disc.
       // Resolve that bank in the fish's changing heading, so reversing direction
@@ -89,24 +102,35 @@
       roll=-(.16+.02*idle+.015*play)*viewX+Math.sin(wingPhase*.32)*.020*(.3*idle+.6*swim+play);
     }
     else if(species==='snagglefin'){roll+=play*playWave*.080;pitch+=play*Math.sin(bodyPhase*.3)*.055;sway=play*Math.sin(bodyPhase*.38)*.055;}
+    else if(species==='clownfish'){roll+=play*playWave*.055;sway=play*Math.sin(bodyPhase*.35)*.050;lift+=play*Math.sin(bodyPhase*.6)*.025;}
+    else if(species==='bluebetta'){pitch+=play*Math.sin(bodyPhase*.4)*.055;roll+=play*playWave*.050;sway=play*Math.sin(bodyPhase*.25)*.045;}
+    else if(species==='pearljelly'){lift+=play*(.045+.045*playWave);pitch+=play*Math.sin(bodyPhase*.35)*.035;}
+    // Mature tricks ease in with the same play envelope as ordinary behaviour.
+    // Keep their banks small enough for the conservative full-body glass bounds.
+    if(extraMotion==='leap'){lift+=maturePlay*(.035+.035*Math.sin(bodyPhase*.55));pitch+=maturePlay*Math.sin(bodyPhase*.55)*.040;}
+    else if(extraMotion==='bubble')lift+=maturePlay*Math.sin(bodyPhase*.55)*.030;
+    else if(extraMotion==='twirl'){roll+=maturePlay*Math.sin(bodyPhase*.4)*.045;sway+=maturePlay*Math.sin(bodyPhase*.3)*.035;}
+    else if(extraMotion==='orbit'){sway+=maturePlay*Math.sin(bodyPhase*.3)*.035;lift+=maturePlay*Math.sin(bodyPhase*.5)*.020;}
     roll+=feed*feedWave*.025;pitch=clamp(pitch,-.27,.30);roll=clamp(roll,-.22,.22);
-    const angle=a+heading-baseHeading+sway,envelope=safetyEnvelope(profile),scale=safeScale(clamp(finite(options.scale,count===1?.60:.42),.05,1),envelope),extent=transformedExtent(profile.extent,scale,angle,pitch,roll),radial=envelope.horizontal*scale;
-    const desired={x:lane.x+Math.sin(a)*lane.rx,y:lane.y+lift+feed*.075,z:lane.z+Math.cos(a)*lane.rz};
+    const angle=a+heading-baseHeading+sway+(Aquatic?.styles[species]?.body==='crab'?Math.PI/2:0),envelope=safetyEnvelope(profile),scale=safeScale(clamp(finite(options.scale,count===1?.60:.42),.05,1)*1.18,envelope)*growthScale/1.18,extent=transformedExtent(profile.extent,scale,angle,pitch,roll),radial=envelope.horizontal*scale;
+    if(Aquatic?.isBenthic(species)){roll=0;pitch=0;extent[1]=Aquatic.groundClearance(species)*scale;}
+    const desired={x:lane.x+Math.sin(a)*lane.rx,y:Aquatic?.isBenthic(species)?tank.bottom+extent[1]+.055:lane.y+lift+feed*.075,z:lane.z+Math.cos(a)*lane.rz};
     // Keep the swimming corridor fixed while the fish turns. An angle-dependent
     // centre clamp pushes a wide ray backwards whenever its silhouette expands.
-    const x=inside(desired.x,-tank.x+radial+.015,tank.x-radial-.015),y=inside(desired.y,tank.bottom+extent[1]+.015,tank.top-extent[1]-.015),z=inside(desired.z,-tank.z+radial+.015,tank.z-radial-.015);
-    const activity=.26*idle+swim+1.25*play,flutter=.62*idle+swim+1.20*play;
+    const x=inside(desired.x,-tank.x+radial+.015,tank.x-radial-.015),y=Aquatic?.isBenthic(species)?tank.bottom+extent[1]+.025:inside(desired.y,tank.bottom+extent[1]+.015,tank.top-extent[1]-.015),z=inside(desired.z,-tank.z+radial+.015,tank.z-radial-.015);
+    const activity=(.26*idle+swim+1.25*play)*(1+.18*maturePlay),flutter=(.62*idle+swim+1.20*play)*(1+.20*maturePlay);
     const articulation={
+      locomotionTime:reduced?0:state.travelTime,
       bodyPhase,bodyAmplitude:profile.wave*activity*(1+feed*.18),
-      finPhase,finAmplitude:.052*flutter,wingPhase,wingAmplitude:profile.wing*(.42*idle+swim+1.35*play),
+      finPhase,finAmplitude:.052*flutter,wingPhase,wingAmplitude:profile.wing*(.42*idle+swim+1.35*play)*(1+.20*maturePlay),
       tailBeat:Math.sin(bodyPhase)*profile.tail*activity,tailLift:species==='galaxywhale'?Math.sin(bodyPhase)*profile.tail*activity:0,
       paddle:Math.sin(finPhase)*profile.paddle*flutter,breath:Math.sin(time*(species==='galaxywhale'?1.35:2.05)+phase)*.0055,
-      wingFold:species==='flopray'?play*(.085+.040*Math.sin(wingPhase*.5)):0,
-      bodyPuff:species==='gulpuffer'?.010+.006*Math.sin(time*1.55+phase)+play*(.021+.009*playWave):0,
-      lureSwing:species==='grumpangler'?Math.sin(finPhase*.30)*(.065+.11*play+feed*.07):0,
+      wingFold:species==='flopray'||species==='crownray'?play*(.085+.040*Math.sin(wingPhase*.5))*(1+.20*maturePlay):0,
+      bodyPuff:species==='gulpuffer'?.010+.006*Math.sin(time*1.55+phase)+play*(.021+.009*playWave)*(1+.18*maturePlay):species==='pearljelly'?.020+.012*Math.sin(bodyPhase)+play*.012:0,
+      lureSwing:species==='grumpangler'?Math.sin(finPhase*.30)*(.065+.11*play+feed*.07+.030*maturePlay):0,
       gaze:Math.sin(time*.68+phase)*(.055+.025*idle)
     };
-    return{x,y,z,angle,pitch,roll,scale,species,seed,mode:reduced?'idle':state.mode,play:profile.play,weights,cycle:{duration:state.duration,progress:reduced?0:state.progress},lane:{index,count,...lane},extent:{x:extent[0],y:extent[1],z:extent[2]},articulation};
+    return{x,y,z,angle,pitch,roll,scale,species,seed,growth,mature,extraMotion,mode:reduced?'idle':state.mode,play:profile.play,weights,cycle:{duration:state.duration,progress:reduced?0:state.progress},lane:{index,count,...lane},extent:{x:extent[0],y:extent[1],z:extent[2]},articulation};
   }
   return Object.freeze({sample,tank});
 });

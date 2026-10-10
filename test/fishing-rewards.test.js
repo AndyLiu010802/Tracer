@@ -27,7 +27,7 @@ test('signed backups retain sealed bundles, junk appearances, opened gifts and e
 
 test('products are independent of species and the fixed seed bands allocate 8% junk and 3% bundles',()=>{
   assert.deepEqual(F.catalog.products.map(p=>p.id),['junk','mystery_bundle']);
-  assert.equal(F.catalog.fish.length,24);assert(!F.catalog.fish.some(f=>F.catalog.products.some(p=>p.id===f.id)));
+  assert.equal(F.catalog.fish.length,156);assert(!F.catalog.fish.some(f=>F.catalog.products.some(p=>p.id===f.id)));
   const counts={fish:0,junk:0,mystery_bundle:0};
   for(let seed=0;seed<1000000;seed+=1000){const s=F.createSession(null,{seed});counts[F.catalog.products.some(p=>p.id===s.fishId)?s.fishId:'fish']++;}
   assert.deepEqual(counts,{fish:890,junk:80,mystery_bundle:30});
@@ -76,7 +76,7 @@ test('gift wearing has its own saved clock and cannot equip unearned gifts or th
   const ws=workspace(),before=copy(ws);
   assert.equal(F.equipGift(ws,'tide_crown','avatarFrame').reason,'gift-not-owned');assert.equal(F.equipGift(ws,null,'unexpected').reason,'invalid-gift-slot');assert.deepEqual(ws,before);
   const one=F.openMysteryBundle(ws,bundle(ws).id,{random:()=>0,now:22000});
-  const two=F.openMysteryBundle(ws,bundle(ws,30000).id,{random:n=>n-1,now:52000});
+  const two=F.openMysteryBundle(ws,bundle(ws,30000).id,{random:n=>n===100000?0:n-1,now:52000});
   assert.equal(one.gift.slot,'avatarFrame');assert.equal(two.gift.slot,'background');
   assert.equal(F.equipGift(ws,one.gift.id,'avatarFrame',53000).ok,true);assert.equal(F.equipGift(ws,two.gift.id,'background',53001).ok,true);
   assert.equal(F.equipGift(ws,one.gift.id,'background',53002).reason,'gift-not-owned');
@@ -125,7 +125,7 @@ test('four rarity tiers have progressively tighter zones and longer fights yet t
 test('every legendary species has a distinct readable movement and stable substepped simulation',()=>{
   const paths=[];
   for(const fish of F.catalog.fish.filter(f=>f.rarity==='legendary')){
-    const bait=F.catalog.baits.find(b=>b.fishIds.includes(fish.id)).id,s=reeling(fish.id,bait),trace=[];
+    const bait=F.catalog.legacyBaits.find(b=>b.fishIds.includes(fish.id)).id,s=reeling(fish.id,bait),trace=[];
     for(let i=0;i<120;i++){const before=s.fishPosition;F.stepSession(s,{holding:s.fishPosition>s.barPosition},16);assert(Math.abs(s.fishPosition-before)/.016<.38);if(i%20===0)trace.push(s.fishPosition.toFixed(4));}
     assert.equal(s.fishTechnique,fish.technique.id);paths.push(trace.join(','));
     const small=reeling(fish.id,bait),large=reeling(fish.id,bait);for(let i=0;i<100;i++)F.stepSession(small,{holding:true},16);for(let i=0;i<10;i++)F.stepSession(large,{holding:true},160);

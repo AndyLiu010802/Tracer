@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "id": "astral",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-astral-scene-v1.bin",
+  "triangles": 12868,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 0,
+      "count": 3336
+    },
+    {
+      "anchor": "back",
+      "color": "#3b4759",
+      "material": 7,
+      "name": "slate",
+      "offset": 80064,
+      "count": 1716
+    },
+    {
+      "anchor": "back",
+      "color": "#cbbd96",
+      "material": 10,
+      "name": "trim",
+      "offset": 121248,
+      "count": 7476
+    },
+    {
+      "anchor": "back",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 300672,
+      "count": 4032
+    },
+    {
+      "anchor": "back",
+      "color": "#303855",
+      "material": 7,
+      "name": "roof",
+      "offset": 397440,
+      "count": 7056
+    },
+    {
+      "anchor": "back",
+      "color": "#a7babd",
+      "material": 10,
+      "name": "silver",
+      "offset": 566784,
+      "count": 3012
+    },
+    {
+      "anchor": "back",
+      "color": "#63d4d4",
+      "material": 11,
+      "name": "cyan",
+      "offset": 639072,
+      "count": 672
+    },
+    {
+      "anchor": "left",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 655200,
+      "count": 564
+    },
+    {
+      "anchor": "left",
+      "color": "#cbbd96",
+      "material": 10,
+      "name": "trim",
+      "offset": 668736,
+      "count": 4932
+    },
+    {
+      "anchor": "left",
+      "color": "#b4a0db",
+      "material": 23,
+      "name": "purple",
+      "offset": 787104,
+      "count": 672
+    },
+    {
+      "anchor": "right",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 803232,
+      "count": 420
+    },
+    {
+      "anchor": "right",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 813312,
+      "count": 2724
+    },
+    {
+      "anchor": "right",
+      "color": "#b4a0db",
+      "material": 23,
+      "name": "purple",
+      "offset": 878688,
+      "count": 864
+    },
+    {
+      "anchor": "right",
+      "color": "#cbbd96",
+      "material": 10,
+      "name": "trim",
+      "offset": 899424,
+      "count": 1128
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "id": "wano",
+  "authoring": "Blender 4.5.14 LTS",
+  "coordinates": "X right / Y up / Z depth",
+  "binary": "/fishing-art/pond-skin-wano-scene-v1.bin",
+  "triangles": 48840,
+  "parts": [
+    {
+      "anchor": "back",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 0,
+      "count": 7932
+    },
+    {
+      "anchor": "back",
+      "color": "#e5c7b6",
+      "material": 5,
+      "name": "woodlight",
+      "offset": 190368,
+      "count": 17172
+    },
+    {
+      "anchor": "back",
+      "color": "#934f59",
+      "material": 5,
+      "name": "wood",
+      "offset": 602496,
+      "count": 4212
+    },
+    {
+      "anchor": "back",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 703584,
+      "count": 18528
+    },
+    {
+      "anchor": "back",
+      "color": "#e5c7b6",
+      "material": 7,
+      "name": "plaster",
+      "offset": 1148256,
+      "count": 648
+    },
+    {
+      "anchor": "back",
+      "color": "#d5b980",
+      "material": 10,
+      "name": "trim",
+      "offset": 1163808,
+      "count": 14844
+    },
+    {
+      "anchor": "back",
+      "color": "#203c46",
+      "material": 23,
+      "name": "glass",
+      "offset": 1520064,
+      "count": 1944
+    },
+    {
+      "anchor": "back",
+      "color": "#433d59",
+      "material": 7,
+      "name": "roof",
+      "offset": 1566720,
+      "count": 6816
+    },
+    {
+      "anchor": "back",
+      "color": "#433d59",
+      "material": 7,
+      "name": "rooflight",
+      "offset": 1730304,
+      "count": 34656
+    },
+    {
+      "anchor": "back",
+      "color": "#d8a1b4",
+      "material": 7,
+      "name": "petal",
+      "offset": 2562048,
+      "count": 1728
+    },
+    {
+      "anchor": "left",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 2603520,
+      "count": 612
+    },
+    {
+      "anchor": "left",
+      "color": "#d8a1b4",
+      "material": 7,
+      "name": "petal",
+      "offset": 2618208,
+      "count": 12600
+    },
+    {
+      "anchor": "right",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 2920608,
+      "count": 612
+    },
+    {
+      "anchor": "right",
+      "color": "#d8a1b4",
+      "material": 7,
+      "name": "petal",
+      "offset": 2935296,
+      "count": 12600
+    },
+    {
+      "anchor": "right",
+      "color": "#88938b",
+      "material": 7,
+      "name": "stone",
+      "offset": 3237696,
+      "count": 660
+    },
+    {
+      "anchor": "front",
+      "color": "#ad4845",
+      "material": 7,
+      "name": "red",
+      "offset": 3253536,
+      "count": 4212
+    },
+    {
+      "anchor": "front",
+      "color": "#d5b980",
+      "material": 10,
+      "name": "trim",
+      "offset": 3354624,
+      "count": 5880
+    },
+    {
+      "anchor": "front",
+      "color": "#514d40",
+      "material": 5,
+      "name": "wooddark",
+      "offset": 3495744,
+      "count": 864
+    }
+  ]
+}

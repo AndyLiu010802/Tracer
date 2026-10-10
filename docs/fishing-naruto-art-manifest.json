@@ -1,0 +1,815 @@
+{
+  "generator": "built-in image_gen",
+  "originals": [
+    {
+      "key": "iruka",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-iruka-v2.png",
+      "sha256": "6e40d5602f81cb2472d679761b217dcf6202f5c6a07950c80a05ff4b7d8b9665",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "iruka",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-iruka-v2.png",
+      "sha256": "a37fe93983bbb33e11abe4882b6ca165d10179b94f85f57f0a5912c932f3c7c4",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "tenten",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-tenten-v2.png",
+      "sha256": "3f1b19ba9c8e602200ad8cad8ce92a13f4647a62474290a588598dd1908d3e74",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "tenten",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-tenten-v2.png",
+      "sha256": "05303da09afdd93b87346c55ba7dc54dad9138171af87d58ab48cfc589dcac88",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "shikamaru",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-shikamaru-v2.png",
+      "sha256": "500ae799434932085f7b7b7419065879d9476eeca26e865d0fb40d95dcbd198f",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "shikamaru",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-shikamaru-v2.png",
+      "sha256": "97d35d9ded359654428d119355146075604a8be6dbbd637560bbef7ab58bbfd1",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "kiba",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-kiba-v2.png",
+      "sha256": "d43b532295e500bfc570d680d7572a954f711e320c5e8abdd57cbaba6d523d4b",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "kiba",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-kiba-v2.png",
+      "sha256": "49f97080cb66418ee0e1854e036a9eea9d10e1fca7dfa8735eeb21d6e5a5e6ba",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "shino",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-shino-v2.png",
+      "sha256": "7cd25483a82cea058909790611c1b7284a12f23d25f678b45d0ba8b4fc2353cf",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "shino",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-shino-v2.png",
+      "sha256": "ccb23bec39948103f9d4171765f56e13b8d575f30dd748c757407c88d6b6196e",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "asuma",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-asuma-v2.png",
+      "sha256": "3ad2fb56bb6893411455ac7786609446e39277b4622c673ea957d9b8728b83ac",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "asuma",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-asuma-v2.png",
+      "sha256": "a714afd6ac3ace0696a09ec9001416d6503d2b8409c0c94b63b2fc676a5375f7",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sai",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-sai-v2.png",
+      "sha256": "1b89ba6133a6312b28ea187c2b9372d296ec54b79ac2c68259bbd4e13ca8ad3e",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "sai",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-sai-v2.png",
+      "sha256": "dab10593627fcb042a7528106540e8df747d306cf3dd0a5f1bf8ac5aad8aecd8",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "ino",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-ino-v2.png",
+      "sha256": "d6317c409e5f7deb5cbc7d5fe77e32990d0bc75670cadc1bcbe5b223c1ee610e",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "ino",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-ino-v2.png",
+      "sha256": "5c3cf6e32c15be4709d243b66b6ec931b5177eeac4d2c630ec475493f8060408",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sakura",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-sakura-v2.png",
+      "sha256": "20305da1e26a836aded74cfc6a491406aa3a82e7929b80bfa59387d62c3d16b5",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "sakura",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-sakura-v2.png",
+      "sha256": "71f8e468203e65d06d4db6e02d2a8d175fca2fb6311499d0babcb1912c521450",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "hinata",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-hinata-v2.png",
+      "sha256": "97f72fe347328fd2a97bba834a80db7d8d31d0b30ce0bc8271ce381a4e1d29b3",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "hinata",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-hinata-v2.png",
+      "sha256": "dce7697a945fe7f1e0609de7e43df25860bba44e8830dcf62ffe0266d5562056",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "neji",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-neji-v2.png",
+      "sha256": "f2809c6ce53f12f8f2ea3e41c3d96db0f6fd304c3222230339f487b78bbabb47",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "neji",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-neji-v2.png",
+      "sha256": "318391d13ae642b699d25eb192ba766043572c23d105bf850081ab0543dfa97f",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "lee",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-lee-v2.png",
+      "sha256": "c66cee6d2fb0c838d83d799a6e013b2277c725aacef34e9cc43ed8cd611a97df",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "lee",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-lee-v2.png",
+      "sha256": "7b1bcc70b5ce0073c1e07c4c31581458cd0ba1aaf6a4caee356adf0f39c3df55",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "temari",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-temari-v2.png",
+      "sha256": "1469e524906fb781c2f25231cdc9de23806f31732982a536a4d1560ae198f520",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "temari",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-temari-v2.png",
+      "sha256": "9827f81b0f45a5fa8295f094e3af3861cb8824ddeca30884caf5845960c1da42",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "kankuro",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-kankuro-v2.png",
+      "sha256": "91be9ab91588685fb302a3c81300d02a6805c80ea844b33b2739286eba361c22",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "kankuro",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-kankuro-v2.png",
+      "sha256": "43768a55ecbdc70784681b0890a7c3b1fcefaadb8e73447d49a4b481d3981a75",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "choji",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-choji-v2.png",
+      "sha256": "87b358c6d59be1501cf400ad9932d6515f75e4c0b630fe7fe70ba9c1b0781055",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "choji",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-choji-v2.png",
+      "sha256": "d246fe1a1c8c152f061062f18967e883f6e66f21a4f4cd13bbf97fe98deb3b0a",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "yamato",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-yamato-v2.png",
+      "sha256": "a3fdbc78a48a63e68b0bd36f31a2152550e3b2a89c86e6ac91e076055bccf89e",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "yamato",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-yamato-v2.png",
+      "sha256": "e92dcdfcdff63f03b5a71e0d1fd8a04e2c4476b74c282ab0fb51de4ec37b08ef",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "suigetsu",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-suigetsu-v2.png",
+      "sha256": "38e905efe3658dd736b6663765a2647b0a3583de74be26afa004a89c77bcbecd",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "suigetsu",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-suigetsu-v2.png",
+      "sha256": "3b54f3df84a8aab6469737f3593d80e364a62cd14cc670304a0b724dfb5246ff",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "gaara",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-gaara-v2.png",
+      "sha256": "918c5ef52bec38cca23de60e901630dca8358c8c7325d1a01cdd4f3f5f0ca085",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "gaara",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-gaara-v2.png",
+      "sha256": "22c2922b2361557e752d5972a494751e7500df79706a93459e4b4d5b28b47ed1",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "kakashi",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-kakashi-v2.png",
+      "sha256": "02323502e0edeb3f3889ec832349be9bceeccf6a83d1d715b74b7a6bf55e3fec",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "kakashi",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-kakashi-v2.png",
+      "sha256": "d49aa4c8bc4f1811fb5eee4cb2181f8ae6b2a0dc84ae0cd0b01c0225c5d1a48b",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "itachi",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-itachi-v2.png",
+      "sha256": "3595a3095de3db78138dbaab5409bee46f24db2ab858758e1a09f5e753982caf",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "itachi",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-itachi-v2.png",
+      "sha256": "cd0b1f75a7ad6f29035a08dc561941e5ffd4ac4f7a82c3cebe94d60e093c348d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "jiraiya",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-jiraiya-v2.png",
+      "sha256": "de042f97a670797d3b9c17fe43622b41a09d1ace4f1d0a32c2baac4bda01456b",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "jiraiya",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-jiraiya-v2.png",
+      "sha256": "6d2a640414913afdd5bba44171fbceec5eea119c44cf3532d2a2b7fce8dc017d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "minato",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-minato-v2.png",
+      "sha256": "21a3f5b142053c72cab6b1e8b3e30c2363d6297948edf2dd0e3637f454839ce3",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "minato",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-minato-v2.png",
+      "sha256": "2bb1f30a5a853abefdf5ff415a04550782e261a3b57d3af5fb3333bd8c61335b",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "deidara",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-deidara-v2.png",
+      "sha256": "6b576886eb6897e4d43d9b6e111b32d30d85dc016c914f15ead6420530758e30",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "deidara",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-deidara-v2.png",
+      "sha256": "6afebeb20435cb73d5ab0a7e893bc9116a6fc54ea89b98e3da4e60fe5c9c66ec",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "konan",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-konan-v2.png",
+      "sha256": "491fbdf3e791baab7df4c1e0f7d877905f6798f5490b9e466c1ebe4fbf068e0f",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "konan",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-konan-v2.png",
+      "sha256": "00737b0bd6ef18acca6e29dec456f6721e913fca38a8ff82c230a09632104898",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "obito",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-obito-v2.png",
+      "sha256": "a2c0ba3630309de02c7ca2cac6a243a9f3295848fd8595cc776f58388035baf7",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "obito",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-obito-v2.png",
+      "sha256": "b7fdc0ea3f4abc0cfc2185b096bf12a626893d96ea728f07a8403eb44b687ae9",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "naruto",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-naruto-v2.png",
+      "sha256": "ee9218e4010ac19929fcdd61938a291a08fc07a08353897849b76b5ee350af61",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "naruto",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-naruto-v2.png",
+      "sha256": "89ddcf306abe1fcc0bb09501cec06ece4db3961fa61bf4214a102cdbe9fa025d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sasuke",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-sasuke-v2.png",
+      "sha256": "709201d0e7412c995817221ff328f39eb6fa7fbdcd4b862eea6cd9c3dc27914d",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "sasuke",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-sasuke-v2.png",
+      "sha256": "28f2c10e2cd38aa79cbd30e5eb0692ae1a0a8a261ca3d4cc039eb1a6d111ba1e",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "hashirama",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-hashirama-v2.png",
+      "sha256": "4ac53c0c7b60d486887f1361baa57c9a0b22273c1bf547e40fd2ed5a1a4db584",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "hashirama",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-hashirama-v2.png",
+      "sha256": "68ed16242a1dfb128918b94b314e10e7509ca23c1fa0a16d8a1f188cd4bc79c0",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "madara",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-madara-v2.png",
+      "sha256": "58f0c98f517f8e00f643784b7db4b6218af014ba3523ca2b3aeef316a29d6d4d",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "madara",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-madara-v2.png",
+      "sha256": "96b9f29240078a9ef0dbb64b19c3bb69cdb268facdeb18db6af61ac08dbff9b6",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sixpaths",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-sixpaths-v2.png",
+      "sha256": "3cec7d6b09580f97bc409a50fa57b48be08009ef3c6598e6fd1ba8386b37e291",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "sixpaths",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-sixpaths-v2.png",
+      "sha256": "c8ab9e979ad29fb96a8a6a5336ff1f42e117f2cdb4cb88343422e6eff8f32dcc",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "konohamaru",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-konohamaru-v2.png",
+      "sha256": "eb44add1d8712a67c7d00fbbb7ec9839fb37c475a830c7c5d1f9722e6222b805",
+      "width": 2164,
+      "height": 727,
+      "rgba": true
+    },
+    {
+      "key": "konohamaru",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-konohamaru-v2.png",
+      "sha256": "2a8bd833dd547698873dbf8d139580dc733ad6e01ef02d33d82fbd9f728e9e56",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "ebisu",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-ebisu-v2.png",
+      "sha256": "6a536bee05bd79f48076976e25fd05db1a704f2935501d66b7fb134edc5c8ae7",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "ebisu",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-ebisu-v2.png",
+      "sha256": "31df0a65f3199eb22a35e1a44b1bbec16117eece26399613d38f11cee389c305",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "genma",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-genma-v2.png",
+      "sha256": "cc955c6241d3adc44b039db676abb0e31c149bc75d34965c5402229dfc93cd2e",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "genma",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-genma-v2.png",
+      "sha256": "f4c684841edfba98b8130dbdec03a6c8753abe32a7a8f1bef1377b4ba098e236",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "izumo",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-izumo-v2.png",
+      "sha256": "3d1ae623a1785391581a09e9ecc876992679d4f2de7fd84354a6b071516136ba",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "izumo",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-izumo-v2.png",
+      "sha256": "d1fe40e514d511e169318cabb0a4cfe3d753c0844f25c13d467d8cd61c154a1d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "kurenai",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-kurenai-v2.png",
+      "sha256": "4f6f37be3101f6b2d0f338844a96153ca9536b32f9f65dd84846aa10628314e1",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "kurenai",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-kurenai-v2.png",
+      "sha256": "478131b739029c8d9654141506b0fecb3011a5055be8b5c3c1b5b54d2faa5db6",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "anko",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-anko-v2.png",
+      "sha256": "0de1c4765a3f91d2f07e5e06217d5e782257f145564ebad2fd21a0a6cc3aa5a5",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "anko",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-anko-v2.png",
+      "sha256": "0955e83eeceed3156857a6179a63ef7ab287c99e6c10de228c803931c2a7f1cd",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "haku",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-haku-v2.png",
+      "sha256": "c1461063431f0b8fc4256ff5d43826a97b14ab51d8c356c4ab08acaba7d51487",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "haku",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-haku-v2.png",
+      "sha256": "9b0ff72a595eda125f43ef6569fe8a24264bbc3f020aa1cf7b3b61c386ef40e7",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "zabuza",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-zabuza-v2.png",
+      "sha256": "dda3ce6fe3fd125d2cc062a9ccc7034211571335049604d1edc2d4fca0c04987",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "zabuza",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-zabuza-v2.png",
+      "sha256": "8f34d787157279de92ac3ae9c96479684cb5252f1277f8c7252c7d8528d4381d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "kisame",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-kisame-v2.png",
+      "sha256": "2e5193990f3f31291e01ef638ec656ae1fde0c9040072104c824c2de003b6650",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "kisame",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-kisame-v2.png",
+      "sha256": "fe117fc34ffc22728b53762d82f4142c7725e739913eb5e6a3398a136229ab32",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "hidan",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-hidan-v2.png",
+      "sha256": "d667832ec348d16e95ca2eea18f9c29ddb66838f728ce60d518be007567c9e5f",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "hidan",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-hidan-v2.png",
+      "sha256": "feae397a8386fa798a29b92ebd118fbcf670e5da17273678e70afd64e53e8c77",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "sasori",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-sasori-v2.png",
+      "sha256": "974b1c46d205f9c572748dfb7f3ff9992f072e31deb476c81390344da398352d",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "sasori",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-sasori-v2.png",
+      "sha256": "7692be80b225659009779bbf0583a97c34e90740f343d38bf757ee94e0b01f7d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "tsunade",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-tsunade-v2.png",
+      "sha256": "1f3928d83c0fb00ae7929ecf100eb7889b0b8b5d0ba93132bba89539014342f1",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "tsunade",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-tsunade-v2.png",
+      "sha256": "1722d18f1b32f8c93faa1eafbcddab1a0f219d614578f0b2b353cf856a0b682d",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "pain",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-pain-v2.png",
+      "sha256": "8f6bc3534f6c7833fba4c3ff709cd9618617c7d004a80b9615c0e05a2fa1b711",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "pain",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-pain-v2.png",
+      "sha256": "fe0548a70e0559d0ce89e285be8157399be05717ff787085d50c9aad16a8ad21",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "tobirama",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-tobirama-v2.png",
+      "sha256": "5b29dff29404b1bf5957ae50f9cd91eb36bf5528f229cf76e55d9f21853ae78c",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "tobirama",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-tobirama-v2.png",
+      "sha256": "c35461e29f7e4487d618fed12ee108114da93ebb9d6713047f0f068b93c8f6da",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    },
+    {
+      "key": "orochimaru",
+      "kind": "rod",
+      "file": "skins/tracer/fishing-art/rod-naruto-orochimaru-v2.png",
+      "sha256": "b24d2e5cf95b962c6de3e43581e5fb96e12d279783334e89a81d9a15aa0ce4fa",
+      "width": 2172,
+      "height": 724,
+      "rgba": true
+    },
+    {
+      "key": "orochimaru",
+      "kind": "fx",
+      "file": "skins/tracer/fishing-art/fx-naruto-orochimaru-v2.png",
+      "sha256": "3b20994daa5ef459e34ec53665fbb290914e974918fb2a501b4ecb27faa52dfa",
+      "width": 1536,
+      "height": 1024,
+      "rgba": true
+    }
+  ]
+}
