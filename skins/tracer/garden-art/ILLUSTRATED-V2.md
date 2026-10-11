@@ -1,10 +1,10 @@
 # Illustrated plant sprites v2
 
-Generated with the built-in ImageGen tool. The six original RGBA PNG files are stored beside this document as `<kind>-v2.png`. Their original pixels and alpha are preserved without background removal or recoloring. ImageGen previews may show the RGB matte, while browser rendering correctly applies the alpha channel.
+Historical generation prompts for the original plant illustrations follow below. In October 2026, all nine ordinary/cyber plant atlases were edited with the built-in ImageGen tool to delete both fairy character cells. The current `<kind>-v2.png` files contain ordinary botanical plants only; see [REGIONAL-WORLDS-V1.md](REGIONAL-WORLDS-V1.md).
 
-Each file has a 3 × 2 grid: seedling, budding plant, ordinary mature plant; ordinary mature plant, rare companion, shiny companion. Runtime uses cell 3 for mature plants and cells 4/5 for the two companions. Stages 2 and 3 use the budding illustration at different sizes. Stage 0 retains the small seed drawing.
+Each file retains its 3 × 2 grid: seedling, budding plant, ordinary mature plant; ordinary mature plant, empty, empty. Runtime exposes only the first four cells and uses cell 3 for mature plants, including historical saves. Stages 2 and 3 use the budding illustration at different sizes. Stage 0 retains the small seed drawing.
 
-`../garden-plant-atlas.js` contains measured crop bounds from `dev/inspect-garden-atlas.cjs`. SVG viewports crop the atlas at runtime; images themselves are untouched. Each drawing is scaled around the same ground anchor (80,151) in the 160 × 176 sprite space. A shared requestAnimationFrame player supplies continuous sway, bounce and squash poses; these are animated illustrations, not separately painted frame-by-frame motion sheets.
+`../garden-plant-atlas.js` contains measured crop bounds from `dev/inspect-garden-atlas.cjs`. SVG viewports crop the atlas in the main garden. The desktop renderer converts ordinary plant cutouts into closed relief meshes and combines them with true 3D island and building geometry.
 
 ## Final prompt set
 

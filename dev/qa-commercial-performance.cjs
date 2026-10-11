@@ -133,6 +133,7 @@ async function main() {
           const before = await metrics(), at = performance.now(); await delay(3000); const elapsedMs = performance.now() - at, after = await metrics();
           const visibility = await page.evaluate(() => { benchmarkMutationObserver.disconnect(); return { documentHidden: document.hidden, tracerHidden: document.tracerHidden, mutations: benchmarkMutations }; });
           const native = await nativeState(), expectedHidden = /minimized|hidden-to-tray/.test(state);
+          report.lastVisibilitySample = { state, sample, native, ...visibility }; write();
           assert.equal(visibility.tracerHidden, expectedHidden, state + ' keeps the expected app visibility');
           assert.equal(native.visible && !native.minimized, !expectedHidden, state + ' keeps the expected native visibility');
           samples.push({ elapsedMs: round(elapsedMs), taskMs: round((after.TaskDuration - before.TaskDuration) * 1000), scriptMs: round((after.ScriptDuration - before.ScriptDuration) * 1000), layoutMs: round((after.LayoutDuration - before.LayoutDuration) * 1000), taskPercentOfOneMainThread: round((after.TaskDuration - before.TaskDuration) * 100000 / elapsedMs), heapMB: round(after.JSHeapUsedSize / 1048576), native, ...visibility });

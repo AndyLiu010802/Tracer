@@ -59,6 +59,14 @@ if (process.isMainFrame && location.protocol === 'http:'
       return () => ipcRenderer.removeListener('tracer-fishing-action', listener);
     },
   });
+  contextBridge.exposeInMainWorld('TracerDesktopGarden', {
+    update: snapshot => ipcRenderer.send('tracer-garden-update', snapshot),
+    show: () => ipcRenderer.send('tracer-garden-show'),hide: () => ipcRenderer.send('tracer-garden-hide'),
+    lockAccount: () => ipcRenderer.send('tracer-garden-command', {type:'account-lock'}),
+    unlockAccount: () => ipcRenderer.send('tracer-garden-command', {type:'account-unlock'}),
+    onAction: callback => { if(typeof callback!=='function')return()=>{};const listener=(_event,value)=>callback(value);ipcRenderer.on('tracer-garden-action',listener);return()=>ipcRenderer.removeListener('tracer-garden-action',listener); },
+    onState: callback => { if(typeof callback!=='function')return()=>{};const listener=(_event,value)=>callback(value);ipcRenderer.on('tracer-garden-state',listener);return()=>ipcRenderer.removeListener('tracer-garden-state',listener); }
+  });
   contextBridge.exposeInMainWorld('TracerFishingAquarium', {
     update: snapshot => ipcRenderer.send('tracer-fishing-aquarium-update', snapshot),
     show: () => ipcRenderer.send('tracer-fishing-aquarium-show'),

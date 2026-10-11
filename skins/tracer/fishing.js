@@ -8,7 +8,8 @@
   let motorRun=null,motorChanging=false,motorReason='paused';
 
   const weather=window.TracerFishingWeather?.create({onChange:()=>refresh()});
-  const liveExpedition=()=>F.expedition(T.store.data,weather?.snapshot()||{timeId:(new Date(Date.now()).getHours()>=6&&new Date(Date.now()).getHours()<18)?'day':'night',weatherId:'unknown'});
+  const liveConditions=()=>weather?.snapshot()||{timeId:(new Date(Date.now()).getHours()>=6&&new Date(Date.now()).getHours()<18)?'day':'night',weatherId:'unknown'};
+  const liveExpedition=()=>F.expedition(T.store.data,liveConditions());
   const tr=(zh,en)=>TracerLocale.language()==='en'?en:zh;
   const active=()=>session&&!['caught','escaped'].includes(session.phase);
   const playable=()=>session&&['waiting','bite','reeling'].includes(session.phase);
@@ -50,7 +51,7 @@
   }
   function snapshot(){
     if(!T.store.data)return null;
-    const state=F.read(T.store.data);state.equippedBaitId=F.activeBaitId(state.equippedBaitId);
+    const display=F.presentation(T.store.data,liveConditions()),state=display.state;state.equippedBaitId=F.activeBaitId(state.equippedBaitId);
     // Keep the uncommitted gift out of collection thumbnails as well as the
     // reveal dialog. The authoritative opening stays intact for a save retry.
     if(pendingResult?.type==='open-bundle'&&sameAccount(pendingResult.account)&&!pendingResult.result.alreadyOpened){
@@ -60,11 +61,11 @@
       const bundle=state.catches.find(c=>c.id===pending.opening.catchId);if(bundle)bundle.openedAt=null;
     }
     const pond=state.ponds.find(p=>desktopPondChoice?.scope===JSON.stringify(context())&&p.id===desktopPondChoice.id)||state.ponds.find(p=>p.id===state.activePondId)||state.ponds[0];
-    const expedition=liveExpedition(),groundStyle=expedition.spot.style;
+    const expedition=display.expedition,groundStyle=expedition.spot.style;
     const desktopPond={pond:{...pond,skinId:state.pondAppearance?.skinId||null,style:groundStyle,styleId:groundStyle,decorations:pond.styleId===groundStyle?pond.decorations:F.defaultPondDecorations(groundStyle,0)},fish:state.fry.filter(f=>f.pondId===pond.id&&f.releasedAt===null).slice(0,5).map(f=>({...F.catalog.fish.find(x=>x.id===f.fishId),...f,speciesId:f.fishId}))};
-    const autoMotor=motorSnapshot(state),progression=F.progression(T.store.data),fortune=progression.achievements.find(a=>a.id==='fortune_child');
+    const autoMotor=motorSnapshot(state),progression=display.progression,fortune=progression.achievements.find(a=>a.id==='fortune_child');
     if(fortune){fortune.current=autoMotor.owned?1:0;fortune.complete=autoMotor.owned;}
-    return {...context(),autoMotor,tackle:desktopTackle(state),expedition,weather:weather?.snapshot(),progression,spot:{...expedition.spot,pondStyle:expedition.spot.style},desktopPond,language:TracerLocale.language(),state,catalog:F.catalog,showcase:F.aquarium(T.store.data),economy:F.economy(T.store.data),rod:F.catalog.rods.find(r=>r.id===state.equippedRodId),bait:F.catalog.baits.find(b=>b.id===state.equippedBaitId),session,sessionId:session?.id||'',lastCatch,fish:session&&F.catchItem(session),busy:!!(busy||T.store.inflight),loadoutLocked:!!active(),disabled:!!(busy||T.store.inflight||recording)&&!playable(),recastRemaining:recastRemaining(),error,notice};
+    return {...context(),autoMotor,tackle:desktopTackle(state,display.economy.balance),expedition,weather:weather?.snapshot(),progression,spot:{...expedition.spot,pondStyle:expedition.spot.style},desktopPond,language:TracerLocale.language(),state,catalog:F.catalog,showcase:display.showcase,economy:display.economy,rod:F.catalog.rods.find(r=>r.id===state.equippedRodId),bait:F.catalog.baits.find(b=>b.id===state.equippedBaitId),session,sessionId:session?.id||'',lastCatch,fish:session&&F.catchItem(session),busy:!!(busy||T.store.inflight),loadoutLocked:!!active(),disabled:!!(busy||T.store.inflight||recording)&&!playable(),recastRemaining:recastRemaining(),error,notice};
   }
   function publish(force=false){
     if(!cached)return;
@@ -127,7 +128,7 @@
     else if(type==='remove-motor'){motorRun=null;motorReason='paused';notice=tr('马达已卸下。','Motor removed.');}
     else if(type==='open-bundle'){
       window.TracerFishingRewards?.reveal(result);
-      notice=result.gift.id==='auto_fishing_motor'?tr('什么！？躺着也能赚钱了！！','What!? I can earn while lying down!!'):result.duplicate?tr('重复礼物已转为 '+result.earned+' 金币。','Duplicate gift exchanged for '+result.earned+' coins.'):tr('专属礼物已保存，可以在「礼物收藏」中使用。','Your exclusive gift is saved. Use it from Gift collection.');
+      notice=result.gift.slot==='coins'?tr('礼包奖励已保存：'+result.earned.toLocaleString()+' 金币。','Bundle reward saved: '+result.earned.toLocaleString()+' coins.'):result.gift.id==='auto_fishing_motor'?tr('什么！？躺着也能赚钱了！！','What!? I can earn while lying down!!'):result.duplicate?tr('重复礼物已转为 '+result.earned+' 金币。','Duplicate gift exchanged for '+result.earned+' coins.'):tr('专属礼物已保存，可以在「礼物收藏」中使用。','Your exclusive gift is saved. Use it from Gift collection.');
     }
     else if(type==='feed-pond'||type==='feed-aquarium'){
       const target=type==='feed-aquarium'?'cabin':'ponds',account=context(),feeding={at:Date.now(),fishIds:result.fishIds||result.reactions?.map(r=>r.id)||[],reactions:result.reactions||[],grownFishIds:result.grownFishIds||[],maturation:result.maturation||[]};views.get(target)?.feed(feeding);
@@ -367,7 +368,7 @@
   document.getElementById('fishing-open').addEventListener('click',open);
   window.addEventListener('tracer-workspace-saved',refresh);
   const motorClock=setInterval(()=>{void motorPulse();},100);
-  const feedingClock=setInterval(()=>{if(T.currentSec()==='ponds'&&!document.hidden&&!document.tracerHidden&&!active())refresh();},2000);
+  const feedingClock=setInterval(()=>{if(cached&&sameAccount(cached)&&!document.hidden&&!document.tracerHidden&&!active()&&!T.store.lost&&!A?.locked&&!A?.switching&&['ponds','cabin'].includes(T.currentSec()))views.get(T.currentSec())?.update({...cached,busy:!!(busy||T.store.inflight),loadoutLocked:false});},2000);
   if(B)unsub=B.onAction(message=>{const c=context();if(Object.keys(c).some(k=>message[k]!==c[k])||message.sessionId!==(session?.id||''))return;if(['start-motor','pause-motor'].includes(message.type))return action(message.type);if(['buy-bait','buy-equip-bait','equip-bait','retry-save'].includes(message.type)){if(message.type!=='retry-save'&&!F.catalog.baits.some(b=>b.id===message.value))return;return action(message.type,message.value);}if(message.type==='open-home'){T.show('ponds');return;}if(message.type==='open-tackle'){openTackle();return;}input(message.type,message);});
   if(C)unsubCabin=C.onAction(message=>{const c=context();if(Object.keys(c).some(k=>message[k]!==c[k])||A?.locked||A?.switching||T.store.lost)return;if(message.type==='open-aquarium')T.show('cabin');});
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&!B)cancel();});

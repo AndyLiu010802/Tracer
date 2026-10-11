@@ -84,3 +84,4 @@
   .garden-world-identity{gap:5px}.garden-world-name{font-size:11px}.garden-world-speech{font-size:11px}.garden-world-next{font-size:9px}.garden-home .garden-world-focus{grid-column:2;justify-self:start;min-height:36px}.garden-world-collection{padding:0 12px 18px}.garden-world-badges{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.garden-world-badge{padding:8px}.garden-world-toast{top:90px;width:max-content;font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.garden-home .garden-world *{animation:none!important;transition:none!important}}
+.garden-world:is([data-farm="coast"],[data-farm="sakura"],[data-farm="alpine"],[data-farm="dunes"]):not([data-art="fallback"]) :is(.garden-world-bench,.garden-world-lanterns){display:none}

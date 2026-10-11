@@ -30,6 +30,7 @@
     const tr=(zh,en)=>language==='zh'?zh:en;
     const button=(parent,cls,action,icon)=>{const node=el('button',cls,parent);node.type='button';node.dataset.homeAction=action;if(icon){const image=el('span','garden-home-icon',node);image.innerHTML=icons[icon];}const label=el('span','garden-home-button-label',node);return {node,label};};
     const top=el('div','garden-home-top',home),eyebrow=el('span','garden-home-eyebrow',top),marketLink=button(top,'garden-home-button garden-home-secondary','open-market','leaf'),planetLink=button(top,'garden-home-button garden-home-secondary','open-planets','bloom');
+    const desktopLink=button(top,'garden-home-button garden-home-secondary','desktop-garden');desktopLink.node.hidden=!root.TracerDesktopGarden;
     const hero=el('section','garden-home-hero',home),intro=el('div','garden-home-intro',hero),title=el('h1','garden-home-title',intro),description=el('p','garden-home-description',intro);
     const stats=el('div','garden-home-today',intro);stats.setAttribute('role','group');
     const stat=(icon)=>{const item=el('div','garden-home-stat',stats),mark=el('span','garden-home-icon',item);mark.innerHTML=icons[icon];return {value:el('strong','garden-home-stat-value',item),label:el('span','garden-home-stat-label',item)};};
@@ -65,7 +66,7 @@
       return {card,serial,art,name,count,variants};
     }
     function updateCollection(entry,item,kind){
-      const names={wildflower:tr('野花','Wildflower'),sunflower:tr('向日葵','Sunflower'),lavender:tr('薰衣草','Lavender'),apple:tr('苹果树','Apple tree'),peach:tr('桃树','Peach tree'),cherry:tr('樱桃树','Cherry tree'),neon_orchid:tr('霓虹兰','Neon orchid'),volt_berry:tr('电光莓','Volt berry'),crystal_tree:tr('晶芯树','Crystal tree')};
+      const names={wildflower:tr('野花','Wildflower'),sunflower:tr('向日葵','Sunflower'),lavender:tr('薰衣草','Lavender'),apple:tr('苹果树','Apple tree'),peach:tr('桃树','Peach tree'),cherry:tr('樱桃树','Cherry tree'),neon_orchid:tr('霓虹兰','Neon orchid'),volt_berry:tr('电光莓','Volt berry'),crystal_tree:tr('晶芯树','Crystal tree'),coconut_palm:tr("椰子树","Coconut palm"),coral_hibiscus:tr("珊瑚扶桑","Coral hibiscus"),sakura_tree:tr("樱花树","Sakura tree"),wisteria:tr("紫藤","Wisteria"),edelweiss:tr("雪绒花","Edelweiss"),snow_pine:tr("雪松","Snow pine"),golden_cactus:tr("金琥仙人球","Golden barrel cactus"),desert_rose:tr("沙漠玫瑰","Desert rose")};
       set(entry.name,item.total?names[kind]:tr('尚未发现','Undiscovered'));
       set(entry.count,item.total?tr('已收获 ','Harvested ')+item.total+tr(' 次',' times'):tr('等待一颗种子带来惊喜','A seed holds a little surprise'));
       set(entry.variants,item.total?tr('珍稀花色 ','Rare colours ')+number(item.rare)+tr(' · 闪光 ',' · Shiny ')+number(item.shiny):'???');
@@ -83,7 +84,7 @@
       set(marketLink.label,tr('商店与收藏','Shop & collection'));
       const nextTreasure=snapshot.collectibles?.target;collectGoal.node.hidden=!nextTreasure;
       if(nextTreasure)set(collectGoal.label,tr('下一件心愿：','Your next treasure: ')+nextTreasure.name[language==='en'?1:0]+' · '+Math.min(snapshot.economy?.balance||0,nextTreasure.price)+' / '+nextTreasure.price+tr(' 金币 →',' coins →'));
-      set(title,tr('任务花园','Task garden'));set(description,tr('开始一项任务，种下一颗惊喜。每次完成，都有花朵替你记住。','Begin a task, plant a little surprise. Let each finished step leave a flower.'));set(planetLink.label,tr('花朵星球','Memory planets'));
+      set(title,tr('任务花园','Task garden'));set(description,tr('开始一项任务，种下一颗惊喜。每次完成，都有花朵替你记住。','Begin a task, plant a little surprise. Let each finished step leave a flower.'));set(planetLink.label,tr('花朵星球','Memory planets'));set(desktopLink.label,snapshot.desktopEnabled?tr('收回桌面花园','Bring garden back'):tr('搬到桌面','Move to desktop'));desktopLink.node.setAttribute('aria-pressed',String(!!snapshot.desktopEnabled));
       stats.setAttribute('aria-label',tr('今天的进展','Today’s progress'));set(todayTasks.value,number(snapshot.today?.tasks));set(todayTasks.label,tr('今天完成','tasks today'));set(todayFocus.value,number(snapshot.today?.minutes));set(todayFocus.label,tr('专注分钟','focus minutes'));
       set(gardenTitle,tr('植物图鉴','Botanical collection'));set(gardenHelp,tr('每一朵收获都留在这里。完成任务、收获植物，赚取金币装点鱼塘。','Every harvest belongs here. Finish tasks and sell plants to furnish your ponds.'));
       set(add.label,tr('前往任务','Go to tasks'));

@@ -123,17 +123,31 @@ function safeJoin(dir, rel) {
 // 图片/字体等二进制资源可缓存，避免界面重绘时重复下载。
 // HTML/CSS/JS 仍走 no-store，保证改动即时可见。
 const CACHEABLE_EXT = new Set(['.webp', '.png', '.jpg', '.svg', '.woff2']);
+// Retain only atlas validators, never large image buffers. An unchanged atlas
+// can answer a browser revalidation without rereading and hashing the PNG.
+const atlasValidators = new Map();
+function atlasStamp(stat) { return [stat.dev, stat.ino, stat.size, stat.mtimeMs, stat.ctimeMs].join(':'); }
 
 async function serveFile(req, res, filePath, fallbackType) {
   try {
-    const buf = await fsp.readFile(filePath);
     const ext = path.extname(filePath).toLowerCase();
     const type = MIME[ext] || fallbackType || 'application/octet-stream';
     const modelAtlas = /^(fish|rods)-model-v\d+\.png$/.test(path.basename(filePath));
     const cache = modelAtlas ? 'no-cache' : CACHEABLE_EXT.has(ext) ? 'public, max-age=86400' : 'no-store';
     const headers = { 'content-type': type, 'cache-control': cache };
+    const stamp = modelAtlas ? atlasStamp(await fsp.stat(filePath)) : null;
+    const previous = modelAtlas && atlasValidators.get(filePath);
+    if (previous && previous.stamp === stamp && req.headers['if-none-match'] === previous.etag) {
+      headers.etag = previous.etag; res.writeHead(304, headers); res.end(); return true;
+    }
+    const buf = await fsp.readFile(filePath);
     if (modelAtlas) {
       headers.etag = '"' + createHash('sha256').update(buf).digest('hex') + '"';
+      if (atlasStamp(await fsp.stat(filePath)) === stamp) {
+        atlasValidators.delete(filePath);
+        atlasValidators.set(filePath, { stamp, etag: headers.etag });
+        while (atlasValidators.size > 16) atlasValidators.delete(atlasValidators.keys().next().value);
+      } else atlasValidators.delete(filePath);
       if (req.headers['if-none-match'] === headers.etag) { res.writeHead(304, headers); res.end(); return true; }
     }
     res.writeHead(200, headers);

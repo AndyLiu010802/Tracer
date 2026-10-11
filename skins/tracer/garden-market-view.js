@@ -1,7 +1,11 @@
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else{root.GardenMarketView=api;root.TracerGardenMarketView=api;}})(typeof window!=='undefined'?window:globalThis,function(root){
   'use strict';
-  const names={wildflower:['野花','Wildflower'],sunflower:['向日葵','Sunflower'],lavender:['薰衣草','Lavender'],apple:['苹果树','Apple tree'],peach:['桃树','Peach tree'],cherry:['樱桃树','Cherry tree'],neon_orchid:['霓虹兰','Neon orchid'],volt_berry:['电光莓','Volt berry'],crystal_tree:['晶芯树','Crystal tree']};
+  const names={wildflower:['野花','Wildflower'],sunflower:['向日葵','Sunflower'],lavender:['薰衣草','Lavender'],apple:['苹果树','Apple tree'],peach:['桃树','Peach tree'],cherry:['樱桃树','Cherry tree'],neon_orchid:['霓虹兰','Neon orchid'],volt_berry:['电光莓','Volt berry'],crystal_tree:['晶芯树','Crystal tree'],coconut_palm:["椰子树","Coconut palm"],coral_hibiscus:["珊瑚扶桑","Coral hibiscus"],sakura_tree:["樱花树","Sakura tree"],wisteria:["紫藤","Wisteria"],edelweiss:["雪绒花","Edelweiss"],snow_pine:["雪松","Snow pine"],golden_cactus:["金琥仙人球","Golden barrel cactus"],desert_rose:["沙漠玫瑰","Desert rose"]};
   const farms={meadow:{name:['春日田园','Spring meadow'],subtitle:['把日常的努力，种进温柔的春天。','Let everyday effort grow into a little spring.'],image:'/garden-art/spring-garden-v1.png',kinds:['wildflower','sunflower','lavender','apple','peach','cherry']},cyber:{name:['霓虹温室','Neon greenhouse'],subtitle:['暮色中的空中温室，培育会发光的新生命。','A rooftop greenhouse where new life glows after dusk.'],image:'/garden-art/cyber-garden-v1.png',kinds:['neon_orchid','volt_berry','crystal_tree']}};
+  farms.coast={"name": ["海风庭院", "Coastal garden"], "subtitle": ["灯塔、潮水与沙岸，收藏一段海边日常。", "A lighthouse, quiet tides and a garden beside the sea."], "image": "/garden-art/coast-garden-v2.png", "kinds": ["coconut_palm","coral_hibiscus"]};
+  farms.sakura={"name": ["樱谷花境", "Cherry valley"], "subtitle": ["花瓣落在溪流上，让认真的日子慢慢开花。", "Petals on the stream, and patient days in bloom."], "image": "/garden-art/sakura-garden-v2.png", "kinds": ["sakura_tree","wisteria"]};
+  farms.alpine={"name": ["雪岭小院", "Alpine retreat"], "subtitle": ["雪峰、松林与木屋，留一盏温暖的灯。", "Snowy peaks, pine woods and a warmly lit cabin."], "image": "/garden-art/alpine-garden-v2.png", "kinds": ["edelweiss","snow_pine"]};
+  farms.dunes={"name": ["沙洲绿庭", "Oasis garden"], "subtitle": ["沙丘里的清泉，把努力种成一片绿洲。", "Turn your daily care into an oasis among the dunes."], "image": "/garden-art/dunes-garden-v2.png", "kinds": ["golden_cactus","desert_rose"]};
   const number=value=>Number.isSafeInteger(Number(value))&&Number(value)>=0?Number(value):0;
   const svg=body=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+body+'</svg>';
   const icons={coin:svg('<circle cx="12" cy="12" r="8"/><path d="M15 8.5h-4a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4H9m3-10v12"/>'),leaf:svg('<path d="M20 4C8 2 3 7 5 14s12 7 15-10Z"/><path d="m4 21 11-12"/>'),box:svg('<path d="m4 7 8-4 8 4v11l-8 4-8-4V7Zm0 0 8 4 8-4M12 11v11M8 5l8 4v5"/>'),check:svg('<path d="m5 12 4 4L19 6"/>'),spark:svg('<path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3Z"/>')};
@@ -52,7 +56,7 @@
       const footer=el('div','garden-market-farm-footer',body),price=el('span','garden-market-farm-price',footer);icon(price,'coin');const priceText=el('strong','',price),action=button(footer,'garden-market-farm-action','farm');action.dataset.farmId=id;const note=el('p','garden-market-farm-note',body);
       return{card,edition,state,name,description,plantLabels,priceText,action,note,row:{id,owned:id==='meadow',equipped:id==='meadow',price:id==='cyber'?240:0}};
     }
-    for(const id of ['meadow','cyber'])farmCards.set(id,createFarm(id));
+    for(const id of Object.keys(farms))farmCards.set(id,createFarm(id));
     function locked(){return !!(snapshot.busy||localPending||snapshot.error||localError);}
     function currentQuantity(entry){const raw=Number(entry.quantity.value);return Number.isSafeInteger(raw)&&raw>=1&&raw<=number(entry.row.available)?raw:0;}
     function updateTrade(entry){
@@ -68,10 +72,10 @@
     }
     function updateFarm(entry,row){
       entry.row=row;const id=row.id,definition=farms[id],owned=!!row.owned,equipped=!!row.equipped,coins=number(snapshot.economy?.balance),price=number(row.price),affordable=coins>=price;
-      entry.card.dataset.owned=String(owned);entry.card.dataset.equipped=String(equipped);set(entry.edition,id==='cyber'?tr('暮色新境','AFTER DARK'):tr('田园原点','THE FIRST GARDEN'));set(entry.state,equipped?tr('正在使用','Equipped'):owned?tr('已拥有','Owned'):tr('新风景','New scenery'));
+      entry.card.dataset.owned=String(owned);entry.card.dataset.equipped=String(equipped);set(entry.edition,id==='meadow'?tr('田园原点','THE FIRST GARDEN'):tr('世界地区','WORLD REGION'));set(entry.state,equipped?tr('正在使用','Equipped'):owned?tr('已拥有','Owned'):tr('新风景','New scenery'));
       set(entry.name,definition.name[language==='en'?1:0]);set(entry.description,definition.subtitle[language==='en'?1:0]);for(const item of entry.plantLabels)set(item.node,label(item.kind));
       set(entry.priceText,owned?tr('已收藏','In your collection'):n(price));entry.action.disabled=locked()||equipped||(!owned&&!affordable);set(entry.action,equipped?tr('当前农场','Current farm'):owned?tr('切换农场','Use this farm'):tr('解锁农场','Unlock farm'));
-      set(entry.note,!owned&&!affordable?tr('还差 ','Need ')+n(price-coins)+tr(' 金币 · 出售收获即可积攒',' more coins · Sell harvests to save up'):!owned?tr('一次解锁，永久拥有 · 含 3 种专属植物','Own it forever · Includes 3 exclusive plants'):tr('切换后开始的任务，会种下这个农场的随机种子','New tasks started here draw seeds from this farm'));
+      set(entry.note,!owned&&!affordable?tr('还差 ','Need ')+n(price-coins)+tr(' 金币 · 出售收获即可积攒',' more coins · Sell harvests to save up'):!owned?tr('一次解锁，永久拥有 · 星球保留地区景观','Own it forever · Region scenery stays on your planets'):tr('切换后开始的任务，会种下这个农场的随机种子','New tasks started here draw seeds from this farm'));
     }
     function closeConfirmation(focus=true){confirmation=null;decision.hidden=true;if(focus&&restoreFocus?.isConnected)restoreFocus.focus();restoreFocus=null;}
     function renderConfirmation(){

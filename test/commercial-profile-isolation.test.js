@@ -119,6 +119,7 @@ async function mainFixture({ packaged, metadata, env = {}, observed = {} }) {
     './migrate': { migrateUserData(...args) { calls.migrations.push(args); return { status: 'synthetic-only' }; } },
     '../lib/ai-gateway': { setSecureStorage() {} }, './backup-files': { attachBackupFiles() {} }, './preferences-import': { attachPreferencesImport() {} },
     './browser': { attachBrowser: () => ({ contents: {} }) }, './window-controls': { attachWindowControls() {} }, './fishing': { attachFishing: () => ({ show() {} }) },
+    './garden': { attachGarden: () => ({ show() {} }) },
     './fishing-aquarium': { attachFishingAquarium: () => ({ show() {} }) }
   };
   const processStub = { platform: 'win32', execPath: 'C:\\fixture\\node.exe', argv: ['C:\\fixture\\node.exe', 'C:\\fixture\\app\\desktop\\main.js'], resourcesPath: 'C:\\fixture\\resources', env: { TRACER_DISABLE_INPUT_HOOK: '1', ...env } };

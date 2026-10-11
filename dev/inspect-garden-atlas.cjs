@@ -19,7 +19,7 @@ function inspect(file,{columns=3,rows=2,threshold=64}={}){
   return {width:w,height:h,clearRatio:Math.round(clear/(w*h)*1000)/1000,maxAlpha,cells};
 }
 if(require.main===module){
-  const data={};for(const kind of require('../public/task-garden').KINDS)data[kind]=inspect(path.join(root,'skins/tracer/garden-art',kind+'-v2.png'));
+  const data={};for(const kind of require('../public/task-garden').KINDS){const current=require('../skins/tracer/garden-plant-atlas')[kind];if(current?.src)data[kind]=current;else{data[kind]=inspect(path.join(root,'skins/tracer/garden-art',kind+'-v2.png'));data[kind].cells=data[kind].cells.slice(0,4);}}
   if(process.argv.includes('--write')){
     const target=path.join(root,'skins/tracer/garden-plant-atlas.js'),temp=target+'.tmp';
     fs.writeFileSync(temp,'// Generated from original PNG alpha bounds by dev/inspect-garden-atlas.cjs.\n(function(root,data){if(typeof module===\'object\'&&module.exports)module.exports=data;else root.TracerGardenPlantAtlas=data;})(typeof globalThis!==\'undefined\'?globalThis:this,'+JSON.stringify(data)+');\n');

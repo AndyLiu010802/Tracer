@@ -19,7 +19,14 @@ function verifyAssets(root){
   for(const pattern of excludedPatterns)assert.ok(pkg.build.files.includes(pattern),'Packaging must exclude the retired character runtime: '+pattern);
   const sources=new Set();
   const plants=require(path.join(root,'skins/tracer/garden-plant-atlas.js'));
-  for(const kind of Object.keys(plants))sources.add('skins/tracer/garden-art/'+kind+'-v2.png');
+  for(const [kind,plant] of Object.entries(plants))sources.add('skins/tracer'+(plant.src||'/garden-art/'+kind+'-v2.png'));
+  for(const file of ['garden-regions.js','garden-plant-atlas.js','garden-plant-art.js','garden-plant-volume.js','garden-buildings-3d.js','garden-terrain-3d.js','garden-island-3d.js','garden-desktop.html','garden-desktop.js','garden-desktop.css'])sources.add('skins/tracer/'+file);
+  sources.add('skins/tracer/garden-art/terrain-materials-v1.png');
+  sources.add('skins/tracer/garden-art/architecture-materials-v1.png');
+  for(const region of Object.values(require('../skins/tracer/garden-regions')))sources.add('skins/tracer'+region.image);
+  sources.add('skins/tracer/garden-art/region-landmarks-v1.png');
+  for(const file of ['garden.js','garden-preload.js'])sources.add('desktop/'+file);
+  for(const gift of require('../public/fishing-model').catalog.gifts.filter(g=>g.slot==='coins'))sources.add('skins/tracer'+gift.asset);
   for(const id of ['earthworm','dough','prawn','cutbait','lotusmeal'])sources.add('skins/tracer/fishing-art/bait-'+id+'-v2.png');
   for(const file of ['fishing-basic-painted.js','fishing-onepiece-painted.js','fishing-naruto-painted.js','fishing-vfx-tween.js','fishing-vfx-tween-worker.js','fishing-vfx-inbetweens.js','fishing-naruto-vfx.js','fishing-valorant-painted.js','fishing-valorant-vfx.js','fishing-painted-vfx.js','fishing-relic-painted.js','fishing-relic-vfx.js','fishing-onepiece-vfx.js','fishing-onepiece-rods.js','fishing-anime-rods.js','fishing-anime-effects.js','fishing-expansion-effects.js','fishing-aquatic-renderer.js','fishing-crafted-rods.js','fishing-model.js','fishing-lighting.js','fishing-art.js','fishing-species-live.js','fishing-rod-effects.js','fishing-journey-effects.js','fishing-spell-effects.js','fishing-motion.js','fishing-rod-renderer.js','fishing-scene.css','fishing-tackle.js','fishing-tackle.css','fishing-weather.js','fishing-view.js','fishing.js','fishing.css','fishing-desktop.html','fishing-desktop.js','fishing-desktop.css','fishing-bait-desktop.html','fishing-bait-desktop.css','fishing-bait-desktop.js'])sources.add('skins/tracer/'+file);
   for(const file of ['fishing.js','fishing-preload.js','fishing-bait.js','fishing-bait-preload.js','fishing-aquarium.js','fishing-aquarium-preload.js'])sources.add('desktop/'+file);

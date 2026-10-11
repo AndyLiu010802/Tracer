@@ -2,6 +2,8 @@
   'use strict';
   const T=window.Tracer,M=window.TracerModel,G=window.TaskGarden;
   const home=document.getElementById('garden-home-root'),planetHost=document.getElementById('garden-planets-root');
+  const desktop=window.TracerDesktopGarden;let desktopEnabled=false,lastDesktop=null;
+  const accountContext=()=>({accountScope:window.TracerAccount?.scope||'guest',accountGeneration:window.TracerAccount?.context.generation||0,accountRestoreId:window.TracerAccount?.context.restoreId||''});
   let view=null,planetView=null,storeView=null,initialized=false,error='',busy=false;
   const tr=(zh,en)=>TracerLocale.language()==='zh'?zh:en;
   const accepted=()=>T.store.base||T.store.data;
@@ -15,8 +17,8 @@
   async function change(callback){
     if(busy||!T.store.data||T.store.lost)return;
     busy=true;
-    try{callback(T.store.data);render();await persist();error='';T.renderProjects?.();}
-    catch{error=failure();}
+    try{callback(T.store.data);render();await persist();error='';T.renderProjects?.();return true;}
+    catch{error=failure();return false;}
     finally{busy=false;render();}
   }
   function initialize(){
@@ -49,14 +51,23 @@
     const today=TracerFocus.dayKey(now),todayTasks=TaskHistory.completed(ws).filter(row=>TracerFocus.dayKey(row.completedAt)===today).length;
     const deletedProjects=new Set((ws.projectDeletions||[]).map(row=>row.id));
     const events=data.seeds.filter(seed=>!seed.forgottenAt&&seed.title&&!deletedProjects.has(seed.projectId)&&(seed.harvestedAt||seed.completedAt||seed.state==='growing')).map(seed=>({type:seed.harvestedAt?'harvest':seed.completedAt?'bloom':'seed',title:seed.title,at:seed.harvestedAt||seed.completedAt||seed.plantedAt,projectName:M.findProject(ws,seed.projectId)?.name||''})).sort((a,b)=>b.at-a.at).slice(0,5);
-    return {language:TracerLocale.language(),plots,collection,harvests:{total:collected.length},pity:G.pity(ws),events,
+    return {desktopEnabled,language:TracerLocale.language(),plots,collection,harvests:{total:collected.length},pity:G.pity(ws),events,
       inventory:G.inventory(ws),economy:G.economy(ws),farms:G.farms(ws),collectibles:G.collectibles(ws),postcards:G.postcards(ws),stickers:G.stickers(ws),wallpapers:data.market.wallpapers||null,companionPlacement:G.companionPlacement(ws),
       journey:{level:index+1,xp,next,progress:next===null?1:(xp-thresholds[index])/(next-thresholds[index]),milestones:[]},
       today:{tasks:todayTasks,minutes:focus.history.filter(row=>TracerFocus.dayKey(row.endedAt)===today).reduce((sum,row)=>sum+row.minutes,0)},
       fishing:T.fishing?.snapshot(),focus:{running:focus.running&&focus.mode==='focus',clock:TracerFocus.format(TracerFocus.remaining(focus,now))},
       error:error||(T.store.dirty&&!T.store.inflight?tr('有更改等待保存，收藏以已保存的记录为准。','Some changes await saving. Collections reflect saved records.') :''),busy:busy||T.store.inflight};
   }
+  function publishDesktop(){
+    if(!desktop||!T.store.data||T.store.lost||window.TracerAccount?.locked||window.TracerAccount?.switching)return;
+    const ws=accepted(),garden=ws.taskGarden,account=accountContext(),locked=!!(busy||T.store.dirty||T.store.inflight||T.store.conflict),language=TracerLocale.language();
+    const key=JSON.stringify([account,locked,language,error]);if(lastDesktop?.garden===garden&&lastDesktop.key===key)return;
+    const archived=new Set((garden?.planets||[]).map(p=>p.projectId)),active=G.active(ws).filter(s=>!archived.has(s.projectId));
+    const plants=active.slice().sort((a,b)=>Number(b.state==='mature')-Number(a.state==='mature')).slice(0,6).map(s=>({id:s.taskId,title:s.title,kind:s.plantKind,stage:s.state==='mature'?4:M.findTask(ws,s.taskId)?.status==='review'?3:1,variant:s.variant,canHarvest:s.state==='mature'}));
+    desktop.update({...account,language,busy:locked,error,garden:{farmId:garden?.market?.equipped.farmId||'meadow',plants,total:active.length}});lastDesktop={garden,key};
+  }
   function render(){
+    publishDesktop();
     if((document.hidden || document.tracerHidden)||!T.store.data||!T.focus)return;
     try{
       if(T.currentSec()==='garden'){
@@ -75,6 +86,7 @@
   function stop(){view?.destroy();view=null;planetView?.destroy();planetView=null;storeView?.destroy();storeView=null;}
   function open(taskId){T.show('garden');if(taskId)view?.selectTask?.(taskId);}
   function action(type,value){
+    if(type==='desktop-garden'){publishDesktop();if(desktopEnabled)desktop?.hide();else desktop?.show();return;}
     if(type==='open-shop')return T.show('shop');
     if(type==='open-garden')return T.show('garden');
     if(type==='open-rods')return T.show('rods');
@@ -97,7 +109,17 @@
     }
   }
   function planetAction(type,value){
-    if(type==='create-postcard')return TracerPostcards.open({...value,language:TracerLocale.language(),collection:G.postcards(accepted()),onShop:()=>{T.show('shop');storeView?.department('postcards');}});
+    if(type==='create-postcard'){
+      const scope=()=>JSON.stringify([window.TracerAccount?.scope,window.TracerAccount?.context]),openedScope=scope();
+      return TracerPostcards.open({...value,language:TracerLocale.language(),collection:G.postcards(accepted()),stickerCollection:G.stickers(accepted()),isCurrent:()=>scope()===openedScope,
+        onStickerChange:async row=>{
+          if(scope()!==openedScope||busy||T.store.inflight||T.store.conflict||T.store.lost)throw new Error('save-pending');
+          if(T.store.dirty)await persist();
+          if(scope()!==openedScope)throw new Error('account-changed');
+          const ok=await change(ws=>{const result=G.layoutSticker(ws,row);if(!result.ok)throw new Error(result.reason);});
+          if(!ok)throw new Error('save-pending');
+        },onStickerShop:()=>{T.show('shop');storeView?.department('stickers');},onShop:()=>{T.show('shop');storeView?.department('postcards');}});
+    }
     if(type==='open-board')return T.show('board');
     if(type==='retry-save')return change(()=>{});
     if(type==='open-project'){
@@ -120,6 +142,12 @@
         ()=>change(ws=>{G.removePlanet(ws,value);M.deleteProject(ws,value);}));
     }
   }
+  desktop?.onState(value=>{if(desktopEnabled===!!value?.enabled)return;desktopEnabled=!!value?.enabled;render();});
+  desktop?.onAction(message=>{
+    const account=accountContext();if(!message||Object.keys(account).some(k=>message[k]!==account[k])||T.store.lost||window.TracerAccount?.locked||window.TracerAccount?.switching)return;
+    if(message.type==='open-garden'){T.show('garden');return;}
+    if(message.type==='harvest'&&!busy&&!T.store.dirty&&!T.store.inflight&&!T.store.conflict){const seed=G.active(accepted()).find(s=>s.taskId===message.id);if(seed?.state==='mature')void change(ws=>{const result=G.harvest(ws,message.id);if(!result||result.state!=='harvested')throw Error('harvest-failed');});}
+  });
   T.garden={refresh,read:()=>G.read(accepted()),open,department:(name,item)=>storeView?.department(name,item),harvest:id=>action('harvest',id)};
   T.onShow('shop',refresh);T.onShow('garden',refresh);T.onShow('planets',refresh);
   T.sections.forEach(name=>T.onShow(name,()=>{if(name!=='garden'){view?.destroy();view=null;}if(name!=='planets'){window.TracerPostcards?.close();planetView?.destroy();planetView=null;}if(name!=='shop'){storeView?.destroy();storeView=null;}}));

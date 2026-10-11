@@ -44,6 +44,7 @@ let win = null;
 let tray = null;
 let fishing = null;
 let fishingAquarium = null;
+let desktopGarden = null;
 let receiveInstanceCommand = () => false;
 let pendingInstanceArgs = null;
 // TRACER_LOCAL_VFX_BEGIN cold_queue
@@ -154,6 +155,7 @@ function createWindow() {
   require('./window-controls').attachWindowControls(win, 'http://' + config.host + ':' + config.port, [reference.contents]);
   fishing = require('./fishing').attachFishing(win, 'http://' + config.host + ':' + config.port, userData, showWindow);
   fishingAquarium = require('./fishing-aquarium').attachFishingAquarium(win, 'http://' + config.host + ':' + config.port, userData, showWindow);
+  desktopGarden = require('./garden').attachGarden(win, 'http://' + config.host + ':' + config.port, userData, showWindow);
   // TRACER_LOCAL_VFX_BEGIN
   if (app.isPackaged === false && desktopProfile.channel === 'local') {
     const localVfx = require('./local-vfx').attachLocalVfx(win, {
@@ -229,6 +231,7 @@ function createTray() {
   tray.setToolTip('Tracer');
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Show Tracer / 打开面板', click: showWindow },
+    { label: 'Desktop garden / 桌面花园', click: function () { if (desktopGarden) desktopGarden.show(); } },
     { label: 'Desktop fishing / 桌面钓鱼', click: function () { if (fishing) fishing.show(); } },
     { label: 'Legendary aquarium / 传奇水族箱', click: function () { if (fishingAquarium) fishingAquarium.show(); } },
     { type: 'separator' },

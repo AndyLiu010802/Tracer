@@ -6432,6 +6432,14 @@
   ].map(function(g){var gift={id:g[0],slot:g[1],name:[g[2],g[3]],description:[g[4],g[5]],theme:g[0],color:g[6],accent:g[7],source:'fishing-mystery',asset:'/fishing-art/gift-'+g[0]+'-v1.png'};if(gift.slot==='avatarFrame')gift.aperture={cx:.5,cy:.5,r:.32};return gift;});
   var AUTO_MOTOR={id:'auto_fishing_motor',slot:'equipment',name:['自动钓鱼马达','Automatic fishing motor'],description:['安装后自动抛竿、提竿和溜鱼，当前饵料用完后自动换饵，直到库存饵料耗尽。','Automatically casts, hooks and reels, switching bait until your inventory is empty.'],source:'fishing-mystery',asset:'/fishing-art/gift-auto_fishing_motor-v1.png',color:'#4d9d89',accent:'#e6c77c',probability:.00001};
   GIFTS.push(AUTO_MOTOR);
+  var COIN_GIFTS=[
+    {id:'coins_pouch',amount:100,first:70899,last:90899,name:['旅人零钱袋','Traveler coin pouch'],color:'#8fae92'},
+    {id:'coins_chest',amount:500,first:90899,last:98899,name:['潮汐宝箱','Tidal treasure chest'],color:'#71aeb3'},
+    {id:'coins_vault',amount:2000,first:98899,last:99899,name:['星光金库','Starlight vault'],color:'#b49bc7'},
+    {id:'coins_jackpot',amount:50000,first:99899,last:99999,name:['传说中的五万金币','Legendary 50,000 coins'],color:'#d4b26b'}
+  ].map(function(g){return Object.assign(g,{slot:'coins',source:'fishing-mystery',probability:(g.last-g.first)/100000,accent:'#f7e9b5',asset:'/fishing-art/gift-'+g.id+'-v1.svg',description:['打开后立即获得 '+g.amount.toLocaleString('en-US')+' 金币，可用于所有金币商店。','Receive '+g.amount.toLocaleString('en-US')+' coins to spend in any coin shop.']});});
+  GIFTS=GIFTS.concat(COIN_GIFTS);
+  function coinGiftForTicket(ticket){return Number.isInteger(ticket)?COIN_GIFTS.find(function(g){return ticket>=g.first&&ticket<g.last;}):undefined;}
   var MOTOR_TICKET_COUNT=100000;
   function motorTicketWins(ticket){return Number.isInteger(ticket)&&ticket===MOTOR_TICKET_COUNT-1;}
   var DIFFICULTY_PROFILES={
@@ -6633,7 +6641,8 @@
     if(effect.skill==='sixpaths-nurture'){var nursery=pool.filter(function(f){return f.fry;});if(nursery.length)fish=pick(nursery,72701);}
     return fish;
   }
-  function expedition(ws,conditions){var state=read(ws),env=Object.assign({rules:5},settings(state),conditions&&find(TIMES,conditions.timeId)&&find(WEATHER,conditions.weatherId)?{timeId:conditions.timeId,weatherId:conditions.weatherId}:{}),bait=liveBait(state.equippedBaitId),pool=spotFish(env.spotId);
+  function expedition(ws,conditions){return expeditionFromState(read(ws),conditions);}
+  function expeditionFromState(state,conditions){var env=Object.assign({rules:5},settings(state),conditions&&find(TIMES,conditions.timeId)&&find(WEATHER,conditions.weatherId)?{timeId:conditions.timeId,weatherId:conditions.weatherId}:{}),bait=liveBait(state.equippedBaitId),pool=spotFish(env.spotId);
     return{selection:clone(env),spot:clone(find(SPOTS,env.spotId)),time:clone(find(TIMES,env.timeId)),weather:clone(find(WEATHER,env.weatherId)),fishChance:fishOdds(bait.id,env),grounds:groundProgress(state),fish:pool.map(function(f){return Object.assign(clone(f),{groundPrice:groundValue(f,env.spotId)});}),favoredFishIds:pool.filter(function(f){return bait.fishIds.includes(f.id);}).map(function(f){return f.id;}),depths:clone(DEPTHS)};
   }
   function setExpedition(ws,patch,now){if(!patch||Object.keys(patch).some(function(k){return !['spotId','timeId','weatherId'].includes(k);}))return{ok:false,reason:'invalid-expedition'};
@@ -6642,7 +6651,8 @@
     if(!find(groundProgress(state),value.spotId).unlocked)return{ok:false,reason:'ground-locked'};
     state.expedition=value;save(ws,state,at);return{ok:true,expedition:expedition(ws)};
   }
-  function progression(ws){var state=read(ws),catches=fishCatches(state),seen=new Set(),xp=0,records=[];
+  function progression(ws){return progressionFromState(read(ws));}
+  function progressionFromState(state){var catches=fishCatches(state),seen=new Set(),xp=0,records=[];
     catches.forEach(function(c){var f=find(FISH,c.fishId);xp+=[8,14,24,40][RARITIES.indexOf(f.rarity)]+(c.quality==='perfect'?6:0)+(seen.has(c.fishId)?0:12);seen.add(c.fishId);});
     var thresholds=[0,40,110,220,380,600,900,1300,1800,2400],level=1;while(level<10&&xp>=thresholds[level])level++;
     FISH.forEach(function(f){var rows=catches.filter(function(c){return c.fishId===f.id;});if(rows.length)records.push({fishId:f.id,count:rows.length,bestLength:Math.max.apply(null,rows.map(function(c){return c.length;})),perfect:rows.filter(function(c){return c.quality==='perfect';}).length});});
@@ -6672,7 +6682,8 @@
       else if(t.kind==='sale'&&t.itemId==='junk'&&t.multiplier===undefined)unit=1;
       else if(t.kind==='harvest'&&(item=find(FISH,t.itemId))&&item.fry)unit=harvestValue(item);
       else if(t.kind==='duplicate'&&(item=find(RODS,t.itemId)))unit=[20,40,75,150][RARITIES.indexOf(receiptRodRarity(item,t.catalogRevision))];
-      else if(t.kind==='gift_duplicate'&&find(GIFTS,t.itemId))unit=15;
+      else if(t.kind==='gift_duplicate'&&(item=find(GIFTS,t.itemId))&&item.slot!=='coins')unit=15;
+      else if(t.kind==='gift_coins'&&(item=find(COIN_GIFTS,t.itemId)))unit=item.amount;
       else fail();
       if(t.valueSpotId!==undefined){if(!['sale','harvest'].includes(t.kind)||!find(FISH,t.itemId)||!find(SPOTS,t.valueSpotId))fail();var baseValue=groundValue(item,t.valueSpotId,t.economyRevision||1);unit=t.kind==='harvest'?Math.round(baseValue*1.5):t.blastPercent===undefined?baseValue*(t.multiplier===2?2:1):Math.max(1,Math.round(baseValue*t.blastPercent/100));}
       if(t.economyRevision!==undefined&&(t.economyRevision!==2||!(t.kind==='ground_unlock'||['sale','harvest'].includes(t.kind)&&t.valueSpotId!==undefined)))fail();
@@ -6778,14 +6789,19 @@
       var giftCatches=new Set();
       rows('mysteryOpenings',20000,function(o){
         var caught=catchMap.get(o.catchId),gift=find(GIFTS,o.giftId),compensations=out.transactions.filter(function(t){return t.kind==='gift_duplicate'&&t.refId===o.id;}),comp=compensations[0];
-        if(!caught||caught.fishId!=='mystery_bundle'||!gift||o.id!=='gift_'+caught.id||giftCatches.has(o.catchId)||!time(o.openedAt)||o.openedAt!==caught.openedAt||o.openedAt>out.updatedAt||typeof o.duplicate!=='boolean'||o.duplicate!==unlocked.has(o.giftId)||compensations.length>1||o.duplicate&&(!comp||comp.id!==giftCompensation(o).id||comp.itemId!==o.giftId||comp.createdAt!==o.openedAt)||!o.duplicate&&comp)fail();
+        if(!caught||caught.fishId!=='mystery_bundle'||!gift||o.id!=='gift_'+caught.id||giftCatches.has(o.catchId)||!time(o.openedAt)||o.openedAt!==caught.openedAt||o.openedAt>out.updatedAt||typeof o.duplicate!=='boolean'||o.duplicate!==(gift.slot!=='coins'&&unlocked.has(o.giftId))||compensations.length>1||o.duplicate&&(!comp||comp.id!==giftCompensation(o).id||comp.itemId!==o.giftId||comp.createdAt!==o.openedAt)||!o.duplicate&&comp)fail();
         if(o.motorTicket!==undefined&&(!Number.isInteger(o.motorTicket)||o.motorTicket<0||o.motorTicket>=MOTOR_TICKET_COUNT||motorTicketWins(o.motorTicket)!==(o.giftId===AUTO_MOTOR.id)))fail();
         if(o.giftId===AUTO_MOTOR.id&&o.motorTicket===undefined)fail();
-        giftCatches.add(o.catchId);unlocked.add(o.giftId);var row={id:o.id,catchId:o.catchId,giftId:o.giftId,openedAt:o.openedAt,duplicate:o.duplicate};if(o.motorTicket!==undefined)row.motorTicket=o.motorTicket;return row;
+        if(o.rewardVersion!==undefined&&o.rewardVersion!==2)fail();
+        if(o.rewardVersion===2&&(o.motorTicket===undefined||(coinGiftForTicket(o.motorTicket)?.id||null)!==(gift.slot==='coins'?gift.id:null)))fail();
+        var payouts=out.transactions.filter(function(t){return t.kind==='gift_coins'&&t.refId===o.id;});
+        if(gift.slot==='coins'){var expected=giftCoins(o);if(o.rewardVersion!==2||payouts.length!==1||Object.keys(expected).some(function(k){return payouts[0][k]!==expected[k];}))fail();}else if(payouts.length)fail();
+        giftCatches.add(o.catchId);if(gift.slot!=='coins')unlocked.add(o.giftId);var row={id:o.id,catchId:o.catchId,giftId:o.giftId,openedAt:o.openedAt,duplicate:o.duplicate};if(o.motorTicket!==undefined)row.motorTicket=o.motorTicket;if(o.rewardVersion!==undefined)row.rewardVersion=o.rewardVersion;return row;
       });
     }
     out.catches.forEach(function(c){if(c.fishId==='mystery_bundle'&&c.openedAt!==null&&!(out.mysteryOpenings||[]).some(function(o){return o.catchId===c.id;}))fail();});
     out.transactions.forEach(function(t){if(t.kind==='gift_duplicate'&&!(out.mysteryOpenings||[]).some(function(o){return o.id===t.refId&&o.duplicate&&o.giftId===t.itemId;}))fail();});
+    out.transactions.forEach(function(t){if(t.kind==='gift_coins'&&!(out.mysteryOpenings||[]).some(function(o){return o.id===t.refId&&o.giftId===t.itemId&&o.rewardVersion===2;}))fail();});
     if(raw.giftAppearance!==undefined){
       var appearance=raw.giftAppearance;
       if(!appearance||typeof appearance!=='object'||Array.isArray(appearance)||Object.keys(appearance).some(function(k){return!['avatarFrameId','backgroundId','updatedAt'].includes(k);})||!time(appearance.updatedAt)||appearance.updatedAt>out.updatedAt)fail();
@@ -6810,9 +6826,12 @@
     Object.keys(BAIT_ALIASES).forEach(function(id){result[BAIT_ALIASES[id]]+=result[id];});
     return result;
   }
-  function read(ws){var state=validate(ws&&ws.fishing);state.rods=['bamboo'].concat(state.boxes.map(function(b){return b.rodId;})).filter(function(id,i,a){return a.indexOf(id)===i;});state.baits=inventoryBait(state);state.ponds.forEach(function(p){p.fishIds=state.fry.filter(function(f){return f.pondId===p.id&&f.releasedAt===null;}).map(function(f){return f.id;});if(p.decorations!==undefined&&factoryDecorationLayout(p.decorations,LEGACY_DECORATION_DEFAULTS[p.styleId]||[]))p.decorations=defaultPondDecorations(p.styleId,p.decorationLayoutAt);if(p.decorations===undefined){p.decorationLayoutAt=p.createdAt;p.decorations=defaultPondDecorations(p.styleId,p.createdAt);}});state.activePondId=state.ponds.find(function(p){return p.archivedAt===null;}).id;state.pity=pity(state);if(state.showcase===undefined){state.showcase=defaultShowcase(state);autoShowcaseStates.add(state);}else{storedShowcaseStates.set(state,state.showcase);state.showcase={fishIds:state.showcase.fishIds.filter(function(id){return find(FISH,id).rarity==='legendary';}),updatedAt:state.showcase.updatedAt};var stored=storedShowcaseStates.get(state);if(stored.decorationIds!==undefined)state.showcase.decorationIds=stored.decorationIds.slice();}if(state.mysteryOpenings===undefined){state.mysteryOpenings=[];autoOpeningStates.add(state);}state.giftUnlocks=GIFTS.filter(function(g){return state.mysteryOpenings.some(function(o){return o.giftId===g.id;});}).map(clone);if(state.giftAppearance===undefined){state.giftAppearance={avatarFrameId:null,backgroundId:null,updatedAt:0};autoGiftStates.add(state);}return state;}
+  function read(ws){var state=validate(ws&&ws.fishing);state.rods=['bamboo'].concat(state.boxes.map(function(b){return b.rodId;})).filter(function(id,i,a){return a.indexOf(id)===i;});state.baits=inventoryBait(state);state.ponds.forEach(function(p){p.fishIds=state.fry.filter(function(f){return f.pondId===p.id&&f.releasedAt===null;}).map(function(f){return f.id;});if(p.decorations!==undefined&&factoryDecorationLayout(p.decorations,LEGACY_DECORATION_DEFAULTS[p.styleId]||[]))p.decorations=defaultPondDecorations(p.styleId,p.decorationLayoutAt);if(p.decorations===undefined){p.decorationLayoutAt=p.createdAt;p.decorations=defaultPondDecorations(p.styleId,p.createdAt);}});state.activePondId=state.ponds.find(function(p){return p.archivedAt===null;}).id;state.pity=pity(state);if(state.showcase===undefined){state.showcase=defaultShowcase(state);autoShowcaseStates.add(state);}else{storedShowcaseStates.set(state,state.showcase);state.showcase={fishIds:state.showcase.fishIds.filter(function(id){return find(FISH,id).rarity==='legendary';}),updatedAt:state.showcase.updatedAt};var stored=storedShowcaseStates.get(state);if(stored.decorationIds!==undefined)state.showcase.decorationIds=stored.decorationIds.slice();}if(state.mysteryOpenings===undefined){state.mysteryOpenings=[];autoOpeningStates.add(state);}state.giftUnlocks=GIFTS.filter(function(g){return g.slot!=='coins'&&state.mysteryOpenings.some(function(o){return o.giftId===g.id;});}).map(clone);if(state.giftAppearance===undefined){state.giftAppearance={avatarFrameId:null,backgroundId:null,updatedAt:0};autoGiftStates.add(state);}return state;}
   function showcase(ws){
-    var state=read(ws),selection=state.showcase;
+    return showcaseFromState(read(ws));
+  }
+  function showcaseFromState(state){
+    var selection=state.showcase;
     var result={fish:selection.fishIds.map(function(id){return clone(find(FISH,id));}),stats:{catches:fishCatches(state).length,species:new Set(fishCatches(state).map(function(c){return c.fishId;})).size,ponds:state.ponds.filter(function(p){return p.archivedAt!==null;}).length},selection:{fishIds:selection.fishIds.slice()}};if(selection.decorationIds!==undefined)result.selection.decorationIds=selection.decorationIds.slice();return result;
   }
   function setShowcase(ws,patch,now){
@@ -6825,9 +6844,18 @@
     state.showcase=showcaseRecord(next,state);autoShowcaseStates.delete(state);storedShowcaseStates.delete(state);save(ws,state,at);return{ok:true,changed:true,spent:0,showcase:showcase(ws)};
   }
   function aquarium(ws){
-    var state=read(ws),value=showcase(ws),ids=state.aquarium?state.aquarium.fryIds:[];
+    return aquariumFromState(read(ws));
+  }
+  function aquariumFromState(state){
+    var value=showcaseFromState(state),ids=state.aquarium?state.aquarium.fryIds:[];
     value.fish=ids.map(function(id){var f=find(state.fry,id);return Object.assign({},clone(find(FISH,f.fishId)),clone(f),{speciesId:f.fishId});});
     value.selection.fishIds=value.fish.map(function(f){return f.fishId;});value.selection.fryIds=ids.slice();return value;
+  }
+  // One validated read per UI refresh. Derived helpers stay private and no
+  // state is cached across calls, accounts, saves or in-place mutations.
+  function presentation(ws,conditions){
+    var state=read(ws);
+    return {state:state,expedition:expeditionFromState(state,conditions),progression:progressionFromState(state),showcase:aquariumFromState(state),economy:economy(ws)};
   }
   function placeAquariumFish(ws,fryId,present,now){
     var state=read(ws),fry=find(state.fry,fryId),ids=state.aquarium?state.aquarium.fryIds.slice():[];
@@ -6991,6 +7019,7 @@
     unsold.forEach(function(c){c.soldAt=Math.max(at,c.caughtAt);earned+=receipt(state,'sale',c.fishId,1,c.soldAt,c.id).amount;});
     save(ws,state,at);return{ok:true,sold:unsold.length,earned:earned};
   }
+  function giftCoins(opening){var gift=find(COIN_GIFTS,opening.giftId);return{id:'gift_coins_'+opening.catchId+'_'+opening.giftId+'_'+opening.openedAt.toString(36),kind:'gift_coins',itemId:gift.id,quantity:1,amount:gift.amount,createdAt:opening.openedAt,refId:opening.id};}
   function giftCompensation(opening){return{id:'gift_comp_'+opening.catchId+'_'+opening.giftId+'_'+opening.openedAt.toString(36),kind:'gift_duplicate',itemId:opening.giftId,quantity:1,amount:15,createdAt:opening.openedAt,refId:opening.id};}
   function openMysteryBundle(ws,catchId,options){
     if(typeof options==='number')options={now:options};options=options||{};
@@ -7001,10 +7030,10 @@
     if(previous)return{ok:true,alreadyOpened:true,gift:clone(find(GIFTS,previous.giftId)),duplicate:previous.duplicate,earned:0,opening:clone(previous)};
     // One independent 1-in-100,000 roll per unopened bundle. Cosmetic collection
     // completion never increases the motor odds, and retries use the receipt.
-    var motorTicket=random(options,MOTOR_TICKET_COUNT),cosmetics=GIFTS.filter(function(g){return g.slot!=='equipment';}),unseen=cosmetics.filter(function(g){return!state.giftUnlocks.some(function(owned){return owned.id===g.id;});}),pool=unseen.length?unseen:cosmetics,gift=motorTicketWins(motorTicket)?AUTO_MOTOR:pool[random(options,pool.length)],at=Math.max(timestamp(options.now),state.updatedAt+1,caught.caughtAt),opening={id:'gift_'+caught.id,catchId:caught.id,giftId:gift.id,openedAt:at,duplicate:state.giftUnlocks.some(function(g){return g.id===gift.id;}),motorTicket:motorTicket};
+    var motorTicket=random(options,MOTOR_TICKET_COUNT),cosmetics=GIFTS.filter(function(g){return ['avatarFrame','background'].includes(g.slot);}),unseen=cosmetics.filter(function(g){return!state.giftUnlocks.some(function(owned){return owned.id===g.id;});}),pool=unseen.length?unseen:cosmetics,gift=motorTicketWins(motorTicket)?AUTO_MOTOR:coinGiftForTicket(motorTicket)||pool[random(options,pool.length)],at=Math.max(timestamp(options.now),state.updatedAt+1,caught.caughtAt),opening={id:'gift_'+caught.id,catchId:caught.id,giftId:gift.id,openedAt:at,duplicate:state.giftUnlocks.some(function(g){return g.id===gift.id;}),motorTicket:motorTicket,rewardVersion:2};
     caught.openedAt=at;state.mysteryOpenings.push(opening);autoOpeningStates.delete(state);
-    if(opening.duplicate)state.transactions.push(giftCompensation(opening));save(ws,state,at);
-    return{ok:true,gift:clone(gift),duplicate:opening.duplicate,earned:opening.duplicate?15:0,opening:clone(opening)};
+    if(gift.slot==='coins')state.transactions.push(giftCoins(opening));else if(opening.duplicate)state.transactions.push(giftCompensation(opening));save(ws,state,at);
+    return{ok:true,gift:clone(gift),duplicate:opening.duplicate,earned:gift.slot==='coins'?gift.amount:opening.duplicate?15:0,opening:clone(opening)};
   }
   function installMotor(ws,installed,now){
     var state=read(ws);if(typeof installed!=='boolean')return{ok:false,reason:'invalid-motor'};
@@ -7162,8 +7191,8 @@
     var unlocked=new Set();
     if(sources.some(function(state){return state.mysteryOpenings!==undefined;})){
       out.mysteryOpenings=Array.from(openings.values()).sort(function(a,b){return a.openedAt-b.openedAt||(a.id<b.id?-1:a.id>b.id?1:0);});
-      out.transactions=out.transactions.filter(function(t){return t.kind!=='gift_duplicate';});
-      out.mysteryOpenings.forEach(function(o){o.duplicate=unlocked.has(o.giftId);unlocked.add(o.giftId);find(out.catches,o.catchId).openedAt=o.openedAt;if(o.duplicate)out.transactions.push(giftCompensation(o));out.updatedAt=Math.max(out.updatedAt,o.openedAt);});
+      out.transactions=out.transactions.filter(function(t){return !['gift_duplicate','gift_coins'].includes(t.kind);});
+      out.mysteryOpenings.forEach(function(o){var coin=find(COIN_GIFTS,o.giftId);o.duplicate=!coin&&unlocked.has(o.giftId);if(!coin)unlocked.add(o.giftId);find(out.catches,o.catchId).openedAt=o.openedAt;if(coin)out.transactions.push(giftCoins(o));else if(o.duplicate)out.transactions.push(giftCompensation(o));out.updatedAt=Math.max(out.updatedAt,o.openedAt);});
     }else delete out.mysteryOpenings;
     var motors=sources.map(function(s){return s.motorInstallation;}).filter(Boolean).sort(function(a,b){return b.updatedAt-a.updatedAt||Number(a.installed)-Number(b.installed);});
     if(motors.length&&unlocked.has(AUTO_MOTOR.id)){out.motorInstallation=clone(motors[0]);out.updatedAt=Math.max(out.updatedAt,out.motorInstallation.updatedAt);}else delete out.motorInstallation;
@@ -7173,5 +7202,5 @@
   }
   function preserve(previous,next){if(!next||!(previous&&previous.fishing)&&next.fishing===undefined)return next;try{next.fishing=merge(previous&&previous.fishing,next.fishing,previous&&previous.fishing);syncMoney(next);}catch(error){throw Object.assign(new Error('workspace-stale'),{code:'workspace-stale',cause:error});}return next;}
   function validateWorkspace(ws){if(ws.fishing===undefined)return ws;ws.fishing=validate(ws.fishing);var ledger=validateTransactions(ws.taskGarden&&ws.taskGarden.market&&ws.taskGarden.market.fishingTransactions);if(JSON.stringify(ledger)!==JSON.stringify(ws.fishing.transactions))fail();return ws;}
-  return{catalog:{pondSkins:clone(POND_SKINS),spots:clone(SPOTS),times:clone(TIMES),weather:clone(WEATHER),depths:clone(DEPTHS),rodPools:clone(ROD_POOLS),rods:clone(RODS),baits:clone(ACTIVE_BAITS),legacyBaits:clone(BAITS),fish:clone(FISH),products:clone(PRODUCTS),gifts:clone(GIFTS),difficultyProfiles:clone(DIFFICULTY_PROFILES),pondStyles:clone(PONDS),decorations:clone(DECORATIONS),aquariumDecorations:clone(AQUARIUM_DECORATIONS)},sortedRods:sortedRods,activeBaitId:activeBaitId,BOX_PRICE:BOX_PRICE,MAX_FISH:MAX_FISH,MAX_SHOWCASE_FISH:MAX_SHOWCASE_FISH,BOX_ODDS:clone(ROD_POOLS[0].odds),empty:empty,expedition:expedition,setExpedition:setExpedition,groundProgress:groundProgress,groundValue:groundValue,unlockGround:unlockGround,progression:progression,validate:validate,validateWorkspace:validateWorkspace,validateTransactions:validateTransactions,moneySummary:moneySummary,read:read,ensure:ensure,economy:economy,pity:pity,showcase:showcase,setShowcase:setShowcase,aquarium:aquarium,placeAquariumFish:placeAquariumFish,feedAquarium:feedAquarium,growthStage:growthStage,growthAppearance:growthAppearance,poolTier:poolTier,catchItem:catchItem,catchValue:catchValue,openMysteryBundle:openMysteryBundle,installMotor:installMotor,motorBait:motorBait,motorTicketWins:motorTicketWins,stepAutoSession:stepAutoSession,equipGift:equipGift,boxRarity:boxRarity,boxPrice:boxPrice,buyBox:buyBox,buyBoxes:buyBoxes,buyPondSkin:buyPondSkin,equipPondSkin:equipPondSkin,buyBait:buyBait,equipRod:function(ws,id,now){return equip(ws,'rod',id,now);},equipBait:function(ws,id,now){return equip(ws,'bait',id,now);},selectPondStyle:selectPondStyle,setPondDecoration:setPondDecoration,resetPondDecorations:resetPondDecorations,defaultPondDecorations:defaultPondDecorations,releaseFish:releaseFish,harvestFish:harvestFish,harvestValue:harvestValue,archivePond:archivePond,placeFry:placeFry,hatch:placeFry,moveFish:placeFry,feedPond:feedPond,sellFish:sellFish,sellFishBatch:sellFishBatch,createSession:createSession,beginCast:beginCast,commitCast:commitCast,stepSession:stepSession,recordCatch:recordCatch,merge:merge,preserve:preserve};
+  return{catalog:{pondSkins:clone(POND_SKINS),spots:clone(SPOTS),times:clone(TIMES),weather:clone(WEATHER),depths:clone(DEPTHS),rodPools:clone(ROD_POOLS),rods:clone(RODS),baits:clone(ACTIVE_BAITS),legacyBaits:clone(BAITS),fish:clone(FISH),products:clone(PRODUCTS),gifts:clone(GIFTS),difficultyProfiles:clone(DIFFICULTY_PROFILES),pondStyles:clone(PONDS),decorations:clone(DECORATIONS),aquariumDecorations:clone(AQUARIUM_DECORATIONS)},sortedRods:sortedRods,activeBaitId:activeBaitId,BOX_PRICE:BOX_PRICE,MAX_FISH:MAX_FISH,MAX_SHOWCASE_FISH:MAX_SHOWCASE_FISH,BOX_ODDS:clone(ROD_POOLS[0].odds),empty:empty,presentation:presentation,expedition:expedition,setExpedition:setExpedition,groundProgress:groundProgress,groundValue:groundValue,unlockGround:unlockGround,progression:progression,validate:validate,validateWorkspace:validateWorkspace,validateTransactions:validateTransactions,moneySummary:moneySummary,read:read,ensure:ensure,economy:economy,pity:pity,showcase:showcase,setShowcase:setShowcase,aquarium:aquarium,placeAquariumFish:placeAquariumFish,feedAquarium:feedAquarium,growthStage:growthStage,growthAppearance:growthAppearance,poolTier:poolTier,catchItem:catchItem,catchValue:catchValue,openMysteryBundle:openMysteryBundle,installMotor:installMotor,motorBait:motorBait,motorTicketWins:motorTicketWins,coinGiftForTicket:coinGiftForTicket,stepAutoSession:stepAutoSession,equipGift:equipGift,boxRarity:boxRarity,boxPrice:boxPrice,buyBox:buyBox,buyBoxes:buyBoxes,buyPondSkin:buyPondSkin,equipPondSkin:equipPondSkin,buyBait:buyBait,equipRod:function(ws,id,now){return equip(ws,'rod',id,now);},equipBait:function(ws,id,now){return equip(ws,'bait',id,now);},selectPondStyle:selectPondStyle,setPondDecoration:setPondDecoration,resetPondDecorations:resetPondDecorations,defaultPondDecorations:defaultPondDecorations,releaseFish:releaseFish,harvestFish:harvestFish,harvestValue:harvestValue,archivePond:archivePond,placeFry:placeFry,hatch:placeFry,moveFish:placeFry,feedPond:feedPond,sellFish:sellFish,sellFishBatch:sellFishBatch,createSession:createSession,beginCast:beginCast,commitCast:commitCast,stepSession:stepSession,recordCatch:recordCatch,merge:merge,preserve:preserve};
 });

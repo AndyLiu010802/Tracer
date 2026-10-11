@@ -1,6 +1,6 @@
 (function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./garden-plant-atlas'):root.TracerGardenPlantAtlas);if(typeof module==='object'&&module.exports)module.exports=api;else root.TracerGardenPlantArt=api;})(typeof globalThis!=='undefined'?globalThis:this,function(Atlas){
   'use strict';
-  const kinds=['wildflower','sunflower','lavender','apple','peach','cherry','neon_orchid','volt_berry','crystal_tree'];
+  const kinds=Object.keys(Atlas);
   const path=(fill,d,extra='')=>`<path fill="${fill}" d="${d}" ${extra}/>`;
   const group=(part,body,origin)=>`<g data-plant-part="${part}" style="transform-origin:${origin};">${body}</g>`;
   const leaf=(flip=false)=>`<g transform="${flip?'translate(160 0) scale(-1 1)':''}">`+
@@ -46,6 +46,7 @@
     return out;
   }
   function pixelMarkup(value,level=0,rare=false){
+    rare=false;
     const kind=kinds.includes(value)?value:'wildflower',stage=Number.isFinite(level)?Math.max(0,Math.min(4,Math.floor(level))):0,tree=kinds.indexOf(kind)>=3;
     if(stage===0)return `<svg class="garden-home-plant-art garden-pixel-plant garden-seed-art" data-kind="${kind}" data-rare="false" viewBox="0 0 160 176" fill="none" aria-hidden="true"><ellipse cx="80" cy="151" rx="25" ry="5" fill="#493e2b" opacity=".2"/><g data-plant-part="body" style="transform-origin:80px 151px"><path d="M61 140c-8-15 5-32 32-40 1 15 14 26 7 40-7 15-31 15-39 0Z" fill="#805034" stroke="#583f2c" stroke-width="2" stroke-linejoin="round"/><path d="M64 136c-4-13 8-25 26-32-4 14 0 30-17 40-4-1-7-4-9-8Z" fill="#bf8953"/><path d="M68 126c3-8 10-13 18-17-6 8-8 17-14 24-4 2-6-3-4-7Z" fill="#e8bc7f"/><path d="M91 105c-9 21-4 31-18 41" stroke="#f3ce94" stroke-width="2.3" stroke-linecap="round"/><path d="M95 116c7 13 4 23-8 28" stroke="#a96d42" stroke-width="3" stroke-linecap="round"/><path d="m66 140 3 3m26-12 1 3" stroke="#e0ac70" stroke-width="1.5" stroke-linecap="round"/></g></svg>`;
     const shadow='<ellipse cx="80" cy="151" rx="39" ry="8" fill="#375c35" opacity=".15"/>';
@@ -57,21 +58,17 @@
       else if(tree){head=treeCrown(kind,stage);headOrigin='80px 102px';eyesY=77;}
       else {left=leaf();right=leaf(true);head=stage===2?path('#457740','M76 63h9v6h8v21h-9v8h-9v-9h-9V72h10Z')+path('#93bf64','M77 67h6v7h6v13h-8v6h-5V81h-6v-7h7Z')+path('#c9dd8f','M76 73h4v11h-4Z'):blossom(kind,stage);}
     }
-    const face=rare&&stage>0?group('face',path('#3b4d37',`M71 ${eyesY}h4v6h-4ZM85 ${eyesY}h4v6h-4Z`)+path('#fff7cf',`M71 ${eyesY}h2v2h-2ZM85 ${eyesY}h2v2h-2Z`)+path('#c76f7f',`M65 ${eyesY+7}h7v3h-7ZM89 ${eyesY+7}h7v3h-7Z`)+path('#6c5940',`M77 ${eyesY+9}h6v2h-6Z`),'80px '+(eyesY+3)+'px'):'';
-    if(rare&&stage===4){head+=face;body+=path('#537c40','M64 143h11v9H60v-5h4ZM86 143h11v4h4v5H86Z');}
-    const spark=rare?'<g class="garden-rare-sparkles" fill="#f4d575"><path d="M124 38h3v-5h3v5h4v3h-4v5h-3v-5h-3ZM28 85h3v-4h3v4h4v3h-4v4h-3v-4h-3Z"/></g>':'';
-    return `<svg class="garden-home-plant-art garden-pixel-plant" data-kind="${kind}" data-rare="${!!rare}" viewBox="0 0 160 176" fill="none" shape-rendering="crispEdges" aria-hidden="true">${shadow}${group('body',body,'80px 149px')}${group('leaf-left',left,'77px 124px')}${group('leaf-right',right,'83px 124px')}${group('head',head,headOrigin)}${spark}</svg>`;
+    return `<svg class="garden-home-plant-art garden-pixel-plant" data-kind="${kind}" data-rare="${!!rare}" viewBox="0 0 160 176" fill="none" shape-rendering="crispEdges" aria-hidden="true">${shadow}${group('body',body,'80px 149px')}${group('leaf-left',left,'77px 124px')}${group('leaf-right',right,'83px 124px')}${group('head',head,headOrigin)}</svg>`;
   }
   function markup(value,level=0,rare=false,shiny=false){
     rare=false;shiny=false;
     const kind=kinds.includes(value)?value:'wildflower',stage=Number.isFinite(level)?Math.max(0,Math.min(4,Math.floor(level))):0;
     if(!Atlas?.[kind]||stage===0)return pixelMarkup(stage===0?kind:'wildflower',stage,false);
-    const data=Atlas[kind],variant=stage===4&&rare?(shiny?5:4):stage===4?3:stage===1?0:stage===2?1:2,cell=data.cells[variant];
+    const data=Atlas[kind],variant=stage===4?3:stage===1?0:stage===2?1:2,cell=data.cells[variant];
     const height=stage===1?65:stage===2?99:133;
     const scale=Math.min(height/(cell.rootY-cell.y),126/cell.w);
     const x=80+(cell.x-cell.rootX)*scale,y=151+(cell.y-cell.rootY)*scale;
-    const face=rare&&stage===4?' data-plant-part="face"':'';
-    return `<svg class="garden-home-plant-art garden-pixel-plant garden-illustrated-plant" data-kind="${kind}" data-rare="${!!rare}" data-variant="${variant}" data-art="illustrated-v2" viewBox="0 0 160 176" fill="none" aria-hidden="true"><ellipse cx="80" cy="151" rx="33" ry="6" fill="#27402a" opacity=".18"/><g data-plant-part="illustration" style="transform-origin:80px 151px"><svg x="${x}" y="${y}" width="${cell.w*scale}" height="${cell.h*scale}" viewBox="${cell.x} ${cell.y} ${cell.w} ${cell.h}" overflow="hidden"><image${face} href="/garden-art/${kind}-v2.png" width="${data.width}" height="${data.height}" preserveAspectRatio="none"/></svg></g></svg>`;
+    return `<svg class="garden-home-plant-art garden-pixel-plant garden-illustrated-plant" data-kind="${kind}" data-rare="${!!rare}" data-variant="${variant}" data-art="illustrated-v2" viewBox="0 0 160 176" fill="none" aria-hidden="true"><ellipse cx="80" cy="151" rx="33" ry="6" fill="#27402a" opacity=".18"/><g data-plant-part="illustration" style="transform-origin:80px 151px"><svg x="${x}" y="${y}" width="${cell.w*scale}" height="${cell.h*scale}" viewBox="${cell.x} ${cell.y} ${cell.w} ${cell.h}" overflow="hidden"><image href="${data.src||`/garden-art/${kind}-v2.png`}" width="${data.width}" height="${data.height}" preserveAspectRatio="none"/></svg></g></svg>`;
   }
   return {kinds,markup,pixelMarkup};
 });

@@ -33,16 +33,20 @@ function cyber() {
 }
 function row(workspace, kind) { return G.inventory(workspace).find(p => p.plantKind === kind); }
 
-test('market projections are read-only and expose nine species with a free equipped meadow', () => {
+test('market projections are read-only and expose seventeen species with a free equipped meadow', () => {
   const workspace = ws(), original = clone(workspace);
-  assert.deepEqual(G.KINDS, ['wildflower', 'sunflower', 'lavender', 'apple', 'peach', 'cherry', 'neon_orchid', 'volt_berry', 'crystal_tree']);
-  assert.deepEqual(G.CATALOG.map(p => p.unitPrice), [12, 18, 20, 25, 30, 28, 32, 36, 40]);
+  assert.deepEqual(G.KINDS, ['wildflower', 'sunflower', 'lavender', 'apple', 'peach', 'cherry', 'neon_orchid', 'volt_berry', 'crystal_tree', 'coconut_palm', 'coral_hibiscus', 'sakura_tree', 'wisteria', 'edelweiss', 'snow_pine', 'golden_cactus', 'desert_rose']);
+  assert.deepEqual(G.CATALOG.map(p => p.unitPrice), [12, 18, 20, 25, 30, 28, 32, 36, 40, 28, 24, 32, 30, 34, 38, 36, 40]);
   assert.deepEqual(G.economy(workspace), { balance: 0, earned: 0, spent: 0, equippedFarmId: 'meadow', ownedFarmIds: ['meadow'] });
-  assert.equal(G.inventory(workspace).length, 9);
+  assert.equal(G.inventory(workspace).length, 17);
   assert.ok(G.inventory(workspace).every(p => p.available === 0 && p.harvested === 0 && p.sold === 0));
   assert.deepEqual(G.farms(workspace), [
     { id: 'meadow', price: 0, plantKinds: G.KINDS.slice(0, 6), owned: true, equipped: true },
-    { id: 'cyber', price: 240, plantKinds: G.KINDS.slice(6), owned: false, equipped: false }
+    { id: 'cyber', price: 240, plantKinds: G.KINDS.slice(6,9), owned: false, equipped: false },
+    { id: 'coast', price: 160, plantKinds: ['coconut_palm','coral_hibiscus'], owned: false, equipped: false },
+    { id: 'sakura', price: 200, plantKinds: ['sakura_tree','wisteria'], owned: false, equipped: false },
+    { id: 'alpine', price: 280, plantKinds: ['edelweiss','snow_pine'], owned: false, equipped: false },
+    { id: 'dunes', price: 320, plantKinds: ['golden_cactus','desert_rose'], owned: false, equipped: false }
   ]);
   assert.deepEqual(workspace, original);
   const farms = G.farms(workspace); farms[0].plantKinds.pop();

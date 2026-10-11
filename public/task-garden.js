@@ -11,6 +11,7 @@
     {id:'pc_field',price:0,name:['原野来信','A letter from the meadow'],colors:['#eee9db','#e0e3cf','#304537','#738269']},
     {id:'pc_forest',price:60,name:['森林纪念','Forest keepsake'],colors:['#20291f','#293424','#eee9d4','#b1b68b']},
     {id:'pc_letter',price:80,name:['复古邮笺','Vintage correspondence'],colors:['#efe1c6','#e3d0ae','#584633','#99714d']},
+    {"id": "pc_coast", "price": 70, "name": ["海风邮笺", "Coastal airmail"], "colors": ["#f4ecdc", "#b5d7d2", "#294d57", "#b47951"]},{"id": "pc_sakura", "price": 90, "name": ["樱谷花信", "Cherry valley letter"], "colors": ["#fbf0ed", "#eacbd0", "#64444f", "#b9657c"]},{"id": "pc_alpine", "price": 100, "name": ["雪岭远信", "Alpine correspondence"], "colors": ["#f0f5f4", "#c3d5dc", "#354e63", "#658da0"]},{"id": "pc_dunes", "price": 100, "name": ["沙洲旅记", "Desert travelogue"], "colors": ["#f5e5ca", "#d6b186", "#694a39", "#ac674a"]},{"id": "pc_rain", "price": 110, "name": ["雨巷小记", "Rainy afternoon"], "colors": ["#e7efea", "#a7beba", "#314d48", "#63867c"]},{"id": "pc_sunset", "price": 130, "name": ["落日航线", "Sunset passage"], "colors": ["#fbead6", "#eac6aa", "#6e4945", "#b86957"]},{"id": "pc_aurora", "price": 150, "name": ["极光夜航", "Aurora voyage"], "colors": ["#172f3c", "#294d55", "#e5eede", "#92bca9"]},{"id": "pc_orbit", "price": 160, "name": ["环星邮局", "Orbital post"], "colors": ["#282744", "#414260", "#eeeadb", "#c7b888"]},
     {id:'pc_night',price:120,name:['星夜邮局','The midnight post'],colors:['#1e263b','#29334d','#eef0ed','#aebde0']}
   ];
   function postcardInfo(id){return POSTCARDS.find(function(i){return i.id===id;});}
@@ -119,13 +120,13 @@
   ]);
   function stickerInfo(id){return STICKERS.find(function(i){return i.id===id;});}
   function stickerLedger(market){return market.stickers||{purchases:[],placements:[]};}
-  function stickerTarget(ws,type,id){return (type==='note'?ws.notes||[]:[]).find(function(row){return row.id===id;});}
+  function stickerTarget(ws,type,id){return (type==='note'?ws.notes||[]:type==='postcard'?ws.taskGarden?.planets||[]:[]).find(function(row){return row.id===id&&(type!=='postcard'||!(ws.taskGarden.deletedPlanets||[]).some(function(p){return p.projectId===id;}));});}
   function stickerRecord(raw){
     if(!raw||!Array.isArray(raw.purchases)||raw.purchases.length>STICKERS.length||!Array.isArray(raw.placements)||raw.placements.length>10000)fail();
     var owned=new Set(),ids=new Set();
     var purchases=raw.purchases.map(function(p){if(!p||!stickerInfo(p.itemId)||owned.has(p.itemId)||!time(p.purchasedAt))fail();owned.add(p.itemId);return{itemId:p.itemId,purchasedAt:p.purchasedAt};});
     var placements=raw.placements.map(function(p){
-      if(!p||!validId(p.id)||ids.has(p.id)||!owned.has(p.itemId)||!['task','note'].includes(p.targetType)||!validId(p.targetId)||!time(p.updatedAt)||typeof p.visible!=='boolean'||!Number.isFinite(p.x)||p.x<0||p.x>100||!Number.isFinite(p.y)||p.y<0||p.y>100||!Number.isFinite(p.size)||p.size<36||p.size>180||!Number.isFinite(p.rotation)||p.rotation< -180||p.rotation>180)fail();
+      if(!p||!validId(p.id)||ids.has(p.id)||!owned.has(p.itemId)||!['task','note','postcard'].includes(p.targetType)||!validId(p.targetId)||!time(p.updatedAt)||typeof p.visible!=='boolean'||!Number.isFinite(p.x)||p.x<0||p.x>100||!Number.isFinite(p.y)||p.y<0||p.y>100||!Number.isFinite(p.size)||p.size<36||p.size>180||!Number.isFinite(p.rotation)||p.rotation< -180||p.rotation>180)fail();
       ids.add(p.id);return{id:p.id,itemId:p.itemId,targetType:p.targetType,targetId:p.targetId,x:p.x,y:p.y,size:p.size,rotation:p.rotation,visible:p.visible,updatedAt:p.updatedAt};
     });return{purchases:purchases,placements:placements};
   }
@@ -141,7 +142,7 @@
     var g=read(ws),saved=stickerLedger(g.market),old=saved.placements.find(function(p){return p.id===value.id;});
     var row=old?clone(old):{id:value.id,itemId:value.itemId,targetType:value.targetType,targetId:value.targetId,x:72,y:24,size:84,rotation:0,visible:true};
     if(old&&['itemId','targetType','targetId'].some(function(k){return value[k]!==undefined&&value[k]!==old[k];}))return{ok:false,reason:'immutable-placement'};
-    if(row.targetType!=='note')return{ok:false,reason:'notes-only'};
+    if(!['note','postcard'].includes(row.targetType))return{ok:false,reason:'notes-only'};
     var target=stickerTarget(ws,row.targetType,row.targetId);if(!target)return{ok:false,reason:'target-missing'};
     if(row.targetType==='task'&&(ws.projects||[]).some(function(p){return p.id===target.projectId&&p.status==='completed';}))return{ok:false,reason:'project-archived'};
     if(!saved.purchases.some(function(p){return p.itemId===row.itemId;}))return{ok:false,reason:'not-owned'};
@@ -200,14 +201,19 @@
   }
   return{items,sets,find,ledger,stats,eligible,project};
   })();
-  var KINDS = ['wildflower', 'sunflower', 'lavender', 'apple', 'peach', 'cherry', 'neon_orchid', 'volt_berry', 'crystal_tree'];
+  var KINDS = ['wildflower', 'sunflower', 'lavender', 'apple', 'peach', 'cherry', 'neon_orchid', 'volt_berry', 'crystal_tree', 'coconut_palm', 'coral_hibiscus', 'sakura_tree', 'wisteria', 'edelweiss', 'snow_pine', 'golden_cactus', 'desert_rose']; 
   // Market version 1 prices are immutable: saved receipts never change value after a reload.
-  var CATALOG = KINDS.map(function (kind, i) {
+  var CATALOG = KINDS.slice(0,9).map(function (kind, i) {
     return { plantKind: kind, farmId: i < 6 ? 'meadow' : 'cyber', unitPrice: [12, 18, 20, 25, 30, 28, 32, 36, 40][i] };
   });
+  CATALOG = CATALOG.concat([{"plantKind":"coconut_palm","farmId":"coast","unitPrice":28},{"plantKind":"coral_hibiscus","farmId":"coast","unitPrice":24},{"plantKind":"sakura_tree","farmId":"sakura","unitPrice":32},{"plantKind":"wisteria","farmId":"sakura","unitPrice":30},{"plantKind":"edelweiss","farmId":"alpine","unitPrice":34},{"plantKind":"snow_pine","farmId":"alpine","unitPrice":38},{"plantKind":"golden_cactus","farmId":"dunes","unitPrice":36},{"plantKind":"desert_rose","farmId":"dunes","unitPrice":40}]);
   var FARMS = [
     { id: 'meadow', price: 0, plantKinds: KINDS.slice(0, 6) },
-    { id: 'cyber', price: 240, plantKinds: KINDS.slice(6) }
+    { id: 'cyber', price: 240, plantKinds: KINDS.slice(6,9) },
+    {"id": "coast", "price": 160, "plantKinds": ["coconut_palm","coral_hibiscus"], "legacyPlantKinds": ["wildflower", "sunflower", "apple"]},
+    {"id": "sakura", "price": 200, "plantKinds": ["sakura_tree","wisteria"], "legacyPlantKinds": ["wildflower", "peach", "cherry"]},
+    {"id": "alpine", "price": 280, "plantKinds": ["edelweiss","snow_pine"], "legacyPlantKinds": ["lavender", "apple", "cherry"]},
+    {"id": "dunes", "price": 320, "plantKinds": ["golden_cactus","desert_rose"], "legacyPlantKinds": ["sunflower", "lavender", "peach"]}
   ];
   var STATES = ['growing', 'mature', 'destroyed', 'harvested'];
   var MAX_TIME = 8640000000000000;
@@ -251,8 +257,8 @@
         !Number.isInteger(row.ticket) || row.ticket < 0 || row.ticket >= 10000 ||
         row.variant !== variant(row.ticket) || STATES.indexOf(row.state) < 0 ||
         !time(row.plantedAt) || !time(row.updatedAt) || row.updatedAt < row.plantedAt) fail();
-    var farmId = plantInfo(row.plantKind).farmId;
-    if (row.farmId !== undefined && row.farmId !== farmId) fail();
+    var farmId = row.farmId === undefined ? plantInfo(row.plantKind).farmId : row.farmId;
+    if (!farmInfo(farmId) || !farmInfo(farmId).plantKinds.concat(farmInfo(farmId).legacyPlantKinds||[]).includes(row.plantKind)) fail();
     var out = { taskId: row.taskId, title: row.title, projectId: row.projectId, plantKind: row.plantKind, farmId: farmId,
       ticket: row.ticket, variant: row.variant, plantedAt: row.plantedAt, updatedAt: row.updatedAt, state: row.state };
     ['completedAt', 'harvestedAt', 'destroyedAt', 'retiredAt', 'forgottenAt', 'clearedAt'].forEach(function (key) {

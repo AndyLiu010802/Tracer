@@ -155,6 +155,7 @@ function mainFixture(overrides = {}) {
     if (id === './browser') return { attachBrowser: () => ({ contents: new EventEmitter() }) };
     if (id === './window-controls') return { attachWindowControls() {} };
     if (id === './fishing') return { attachFishing: () => ({ show() {} }) };
+    if (id === './garden') return { attachGarden: () => ({ show() {} }) };
     if (id === './fishing-aquarium') return { attachFishingAquarium: () => ({ show() {} }) };
     if (id === './local-vfx') return { attachLocalVfx: (win, settings) => { attachments.push(settings); return localController; } };
     if (id === './local-vfx-shell-model') return M;

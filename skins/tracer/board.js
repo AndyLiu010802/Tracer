@@ -10,6 +10,7 @@
     { key: 'done', label: 'Done' },
   ];
   var filters = { query: '', priority: '', due: '' };
+  var renderedCards = new Map(), renderedColumns = [];
   function text(zh, en) { return window.TracerLocale.language() === 'zh' ? zh : en; }
   function activeWorkspace(ws) {
     var archived = new Set(ws.projects.filter(function (p) { return p.status === 'completed'; }).map(function (p) { return p.id; }));
@@ -68,9 +69,9 @@
       + '<button class="btn" id="board-clear">' + L('clearFilters') + '</button></div>'
       + '<p class="board-results" aria-live="polite">' + L('boardResults', { count: visible.length, total: scope.length }) + '</p>'
       + '<p class="board-drag-hint" id="board-drag-hint">' + L('dragHint') + '</p>'
-      + '<div class="board">';
+      + '<div class="board' + (scope.length > 100 ? ' board-dense' : '') + '">';
     COLS.forEach(function (c) {
-      var cards = visible.filter(function (t) { return t.status === c.key; });
+      var cards = scope.filter(function (t) { return t.status === c.key; });
       html += '<div class="col" data-col="' + c.key + '">'
         + '<div class="col-head"><span>' + L(c.key) + '</span>'
         + '<span class="col-count">' + cards.length + '</span></div>'
@@ -85,8 +86,34 @@
     sec.innerHTML = html;
     sec.querySelector('#board-priority').value = filters.priority;
     sec.querySelector('#board-due').value = filters.due;
+    renderedCards = new Map(Array.from(sec.querySelectorAll('.card'), function (card) { return [card.dataset.id, card]; }));
+    renderedColumns = Array.from(sec.querySelectorAll('.col'), function (col) {
+      var empty = document.createElement('p'); empty.className = 'col-empty'; empty.textContent = L('empty');
+      return { key: col.dataset.col, body: col.querySelector('.col-body'), count: col.querySelector('.col-count'), empty: empty };
+    });
     wire(ws);
+    applyFilters(visible, scope.length);
     if (T.gettingStarted) T.gettingStarted.mount(sec.querySelector('#getting-started-slot'));
+  }
+
+  // Filter by moving existing nodes. The input, caret, card handlers and drag
+  // container survive typing; clearing a query reuses the detached cards.
+  function applyFilters(visible, total) {
+    if (!visible) {
+      var active = activeWorkspace(T.store.data), projectId = T.projectFilter ? T.projectFilter() : null;
+      visible = M.filterTasks(active, { query: filters.query, priority: filters.priority, due: filters.due, projectId: projectId });
+      total = M.filterTasks(active, { projectId: projectId }).length;
+    }
+    renderedColumns.forEach(function (col) {
+      var rows = visible.filter(function (task) { return task.status === col.key; });
+      var nodes = rows.map(function (task) { return renderedCards.get(task.id); }).filter(Boolean);
+      if (!nodes.length) nodes.push(col.empty);
+      var current = col.body.childNodes;
+      if (current.length !== nodes.length || nodes.some(function (node, i) { return current[i] !== node; })) col.body.replaceChildren.apply(col.body, nodes);
+      if (col.count.textContent !== String(rows.length)) col.count.textContent = String(rows.length);
+    });
+    var result = sec.querySelector('.board-results'), label = L('boardResults', { count: visible.length, total: total });
+    if (result.textContent !== label) result.textContent = label;
   }
 
   function wire(ws) {
@@ -124,17 +151,14 @@
     var archiveButton = sec.querySelector('#board-complete-project');
     if (archiveButton) archiveButton.onclick = function () { T.completeProjectDialog(T.projectFilter()); };
     sec.querySelector('#board-search').oninput = function (e) {
-      if (e.isComposing) return;
-      var pos = e.target.selectionStart;
-      filters.query = e.target.value; render();
-      var input = sec.querySelector('#board-search'); input.focus();
-      input.setSelectionRange(pos, pos);
+      if (e.isComposing || filters.query === e.target.value) return;
+      filters.query = e.target.value; applyFilters();
     };
-    sec.querySelector('#board-search').oncompositionend = function (e) { this.oninput(e); };
+    sec.querySelector('#board-search').addEventListener('compositionend', function (e) { this.oninput(e); });
     ['priority', 'due'].forEach(function (key) {
-      sec.querySelector('#board-' + key).onchange = function (e) { filters[key] = e.target.value; render(); sec.querySelector('#board-' + key).focus(); };
+      sec.querySelector('#board-' + key).onchange = function (e) { filters[key] = e.target.value; applyFilters(); };
     });
-    sec.querySelector('#board-clear').onclick = function () { filters = { query: '', priority: '', due: '' }; render(); sec.querySelector('#board-search').focus(); };
+    sec.querySelector('#board-clear').onclick = function () { filters = { query: '', priority: '', due: '' }; ['search', 'priority', 'due'].forEach(function (key) { sec.querySelector('#board-' + key).value = ''; }); applyFilters(); sec.querySelector('#board-search').focus({ preventScroll: true }); };
     // 建卡
     sec.querySelectorAll('.col-add').forEach(function (btn) {
       btn.addEventListener('click', function () { quickAdd(ws, btn.dataset.col); });

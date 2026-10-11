@@ -1,8 +1,8 @@
 (function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./garden-plant-atlas'):root.TracerGardenPlantAtlas);if(typeof module==='object'&&module.exports)module.exports=api;else root.TracerGardenPlanetsView=api;})(typeof globalThis!=='undefined'?globalThis:this,function(Atlas){
   'use strict';
   const TAU=Math.PI*2,CAMERA=4.2,MAX_SPRITES=72,PAGE_SIZE=24,CARD_PAGE=12;
-  const KINDS=['wildflower','sunflower','lavender','apple','peach','cherry','neon_orchid','volt_berry','crystal_tree'];
-  const NAMES={wildflower:['野花','Wildflower'],sunflower:['向日葵','Sunflower'],lavender:['薰衣草','Lavender'],apple:['苹果树','Apple tree'],peach:['桃树','Peach tree'],cherry:['樱桃树','Cherry tree'],neon_orchid:['霓虹兰','Neon orchid'],volt_berry:['电光莓','Volt berry'],crystal_tree:['晶芯树','Crystal tree']};
+  const KINDS=Object.keys(Atlas);
+  const NAMES={wildflower:['野花','Wildflower'],sunflower:['向日葵','Sunflower'],lavender:['薰衣草','Lavender'],apple:['苹果树','Apple tree'],peach:['桃树','Peach tree'],cherry:['樱桃树','Cherry tree'],neon_orchid:['霓虹兰','Neon orchid'],volt_berry:['电光莓','Volt berry'],crystal_tree:['晶芯树','Crystal tree'],coconut_palm:["椰子树","Coconut palm"],coral_hibiscus:["珊瑚扶桑","Coral hibiscus"],sakura_tree:["樱花树","Sakura tree"],wisteria:["紫藤","Wisteria"],edelweiss:["雪绒花","Edelweiss"],snow_pine:["雪松","Snow pine"],golden_cactus:["金琥仙人球","Golden barrel cactus"],desert_rose:["沙漠玫瑰","Desert rose"]};
   const imagesByDocument=new WeakMap();
   const texturesByDocument=new WeakMap();
   function hash(value){let h=2166136261;for(const c of String(value||'')){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
@@ -15,7 +15,17 @@
   // as the paths, beds, stones and pond. Yaw reveals the other side of the garden.
   const BEDS=[{x:.48,z:.32,r:.22},{x:.43,z:-.36,r:.23},{x:-.12,z:-.65,r:.22},{x:-.60,z:-.33,r:.19},{x:-.13,z:.68,r:.19},{x:.73,z:-.04,r:.12}];
   const isCyber=f=>f.farmId==='cyber'||['neon_orchid','volt_berry','crystal_tree'].includes(kind(f));
+  const REGIONS={coast:{land:[180,194,139],water:[64,161,179],rock:[173,149,113],cover:'#a5ad75'},sakura:{land:[170,181,128],water:[121,171,166],rock:[148,114,119],cover:'#dab0bc'},alpine:{land:[211,225,219],water:[114,173,190],rock:[139,164,172],cover:'#b3cecc'},dunes:{land:[218,186,124],water:[61,164,149],rock:[181,135,89],cover:'#91a57c'}};
+  const regionOf=f=>REGIONS[f.farmId]?f.farmId:isCyber(f)?'cyber':'meadow';
+  function regionAt(p,layout){let nearest=Infinity,id='meadow';for(const b of layout.beds){const distance=(p.x-b.x)**2+(p.z-b.z)**2;if(distance<nearest){nearest=distance;id=b.region|| (b.cyber?'cyber':'meadow');}}return id;}
   function biomes(flowers){
+    if(flowers.some(f=>REGIONS[f.farmId])){
+      const counts={};for(const f of flowers){const id=regionOf(f);counts[id]=(counts[id]||0)+1;}
+      const ids=Object.keys(counts).sort(),assigned=Object.fromEntries(ids.map(id=>[id,1]));
+      for(let n=ids.length;n<BEDS.length;n++){const id=ids.reduce((best,id)=>counts[id]/assigned[id]>counts[best]/assigned[best]?id:best);assigned[id]++;}
+      const regions=ids.flatMap(id=>Array(assigned[id]).fill(id)),beds=BEDS.map((b,i)=>({...b,index:i,region:regions[i],cyber:regions[i]==='cyber'}));
+      return{cyber:counts.cyber||0,meadow:flowers.length-(counts.cyber||0),counts,regional:true,key:regions.join(':'),beds};
+    }
     const cyber=flowers.filter(isCyber).length,total=flowers.length;
     const count=cyber===0?0:cyber===total?6:Math.max(1,Math.min(5,Math.round(cyber/total*6)));
     const order=[0,1,5,2,4,3],neon=new Set(order.slice(0,count));
@@ -43,14 +53,14 @@
   function positions(flowers,seed){
     const count=flowers.length,occupied=new Set(),layout=biomes(flowers),mixed=layout.cyber>0&&layout.meadow>0,counters={cyber:0,meadow:0};
     return flowers.map((flower,i)=>{
-      const biome=isCyber(flower)?'cyber':'meadow',beds=mixed?layout.beds.filter(b=>b.cyber===isCyber(flower)):BEDS,ordinal=mixed?counters[biome]++:i,total=mixed?layout[biome]:count;
+      const biome=regionOf(flower),beds=layout.regional?layout.beds.filter(b=>b.region===biome):mixed?layout.beds.filter(b=>b.cyber===isCyber(flower)):BEDS,ordinal=layout.regional?(counters[biome]=(counters[biome]||0)+1)-1:mixed?counters[biome]++:i,total=layout.regional?layout.counts[biome]:mixed?layout[biome]:count;
       const b=beds[ordinal%beds.length],row=Math.floor(ordinal/beds.length),n=Math.ceil((total-ordinal%beds.length)/beds.length);
       const a=row*2.399963229728653+seed*.13,r=n<=1?0:Math.sqrt((row+.5)/n)*b.r*.78;
       let p=surfacePoint(b.x+Math.sin(a)*r,b.z+Math.cos(a)*r*.82);
       // Keep every receipt, but never put its roots in water or on a walkway.
       const key=q=>q.x.toFixed(8)+':'+q.z.toFixed(8);
       for(let attempt=0;attempt<32;attempt++){
-        const t=terrain(p,seed),mix=biomeMix(p,layout);if(t.water>=.025&&t.path>=.068&&!occupied.has(key(p))&&(!mixed||(biome==='cyber'?mix>=.9:mix<=.1)))break;
+        const t=terrain(p,seed),mix=biomeMix(p,layout);if(t.water>=.025&&t.path>=.068&&!occupied.has(key(p))&&(layout.regional?regionAt(p,layout)===biome:!mixed||(biome==='cyber'?mix>=.9:mix<=.1)))break;
         const angle=a+(attempt+1)*2.399963229728653,spread=Math.max(.0001,r)*Math.pow(.88,Math.floor(attempt/4));
         p=surfacePoint(b.x+Math.sin(angle)*spread,b.z+Math.cos(angle)*spread*.82);
       }
@@ -73,7 +83,7 @@
       const image=new doc.defaultView.Image(),entry={image,ready:false,failed:false,waiters:new Set()};cache.set(plantKind,entry);
       image.onload=()=>{entry.ready=true;for(const fn of entry.waiters)fn();entry.waiters.clear();};
       image.onerror=()=>{entry.failed=true;for(const fn of entry.waiters)fn();entry.waiters.clear();};
-      image.src='/garden-art/'+plantKind+'-v2.png';
+      image.src=plantKind==='$landmarks'?'/garden-art/region-landmarks-v1.png':(Atlas[plantKind]?.src||'/garden-art/'+plantKind+'-v2.png');
     }
     const entry=cache.get(plantKind);if(!entry.ready&&!entry.failed&&redraw)entry.waiters.add(redraw);return entry;
   }
@@ -120,6 +130,7 @@
         const blend=Math.max(0,Math.min(1,(p.y-t.edge+.025)/.08));
         for(let c=0;c<3;c++)rgb[c]=rgb[c]*(1-blend)+material.data[mi+c]*blend;
       }
+      const paintedRGB=rgb.slice();let cyberRGB=null;
       const neon=biomeMix(p,layout);
       if(neon){
         let cyber;
@@ -132,7 +143,30 @@
           const layers=Math.sin(p.y*49+Math.sin(lon*7)*.6),seam=Math.abs(Math.sin(lon*9+p.y*2))<.025&&p.y<.28&&p.y>-.7;
           cyber=seam?[65,167,177]:[55+layers*5+fine*8,79+layers*6+fine*8,90+layers*7+fine*9];
         }
-        for(let c=0;c<3;c++)rgb[c]=rgb[c]*(1-neon)+cyber[c]*neon;
+        cyberRGB=cyber;for(let c=0;c<3;c++)rgb[c]=rgb[c]*(1-neon)+cyber[c]*neon;
+      }
+      if(layout.regional){
+        // Overlapping, meandering habitats share the original painted geology.
+        // Soft weights avoid straight Voronoi seams, even on the underside.
+        const wx=p.x+Math.sin(p.z*12+seed)*.035+Math.sin(p.x*23-p.z*9)*.018,wz=p.z+Math.cos(p.x*11-seed)*.04+Math.sin(p.z*21+p.x*7)*.015;
+        const weights={};let total=0;
+        for(const b of layout.beds){const d=(wx-b.x)**2+(wz-b.z)**2+.075,w=1/(d*d*d);weights[b.region]=(weights[b.region]||0)+w;total+=w;}
+        const original=paintedRGB,lum=(original[0]*.24+original[1]*.53+original[2]*.23)/145,result=[0,0,0];
+        const water=p.y>=t.edge&&(material?original[2]>original[0]*1.1&&original[2]>original[1]*.73:t.water<0),path=p.y>=t.edge&&(material?original[0]>original[1]*1.04&&original[0]>154:t.path<.05);
+        for(const id of Object.keys(weights)){
+          const region=REGIONS[id];let color=original;
+          if(id==='cyber')color=cyberRGB||original.map((v,i)=>v*[.55,.72,.98][i]);
+          else if(region){
+            const base=p.y<t.edge?region.rock:water?region.water:path?[218,200,164]:region.land;
+            const tint=p.y<t.edge?.52:water?.6:path?.35:id==='alpine'?.86:id==='dunes'?.77:id==='coast'?.62:.45;
+            color=base.map((v,i)=>original[i]*(1-tint)+v*(.45+lum*.55)*tint);
+            // Snow follows height and brush grain; sakura petals scatter among grass.
+            if(id==='alpine'&&!water&&!path&&p.y>t.edge){const snow=Math.max(0,Math.min(.32,(brush+fine+.3)*.28));color=color.map((v,i)=>v*(1-snow)+[232,239,230][i]*snow);}
+            if(id==='sakura'&&!water&&!path&&p.y>t.edge&&fine>.41&&brush>.1)color=color.map((v,i)=>v*.45+[235,178,193][i]*.55);
+          }
+          for(let c=0;c<3;c++)result[c]+=color[c]*weights[id]/total;
+        }
+        rgb=result;
       }
       const at=(y*width+x)*3;for(let c=0;c<3;c++)data[at+c]=rgb[c];
     }
@@ -150,12 +184,14 @@
   function renderer(canvas,planet,options={}){
     const doc=canvas.ownerDocument,win=doc.defaultView,ctx=canvas.getContext('2d'),seed=hash(planet.id)/4294967296*TAU,all=positions(planet.flowers||[],seed),layout=biomes(planet.flowers||[]),random=randomSource(seed+1);
     let tex=null,groundReady=meadow(doc).ready,cyberReady=layout.cyber?meadow(doc,null,'cyber').ready:false;
-    canvas.dataset.biome=layout.cyber?(layout.meadow?'mixed':'cyber'):'meadow';
+    canvas.dataset.regions=layout.regional?Object.keys(layout.counts).join(','):layout.cyber?(layout.meadow?'meadow,cyber':'cyber'):'meadow';
+    canvas.dataset.biome=layout.regional?'mixed':layout.cyber?(layout.meadow?'mixed':'cyber'):'meadow';
     // Decorative vegetation is ground cover, never an extra harvestable plant.
     const cover=[];for(let i=0;i<180;i++){const a=random()*TAU,r=Math.sqrt(random())*.96,p=surfacePoint(Math.sin(a)*r,Math.cos(a)*r),t=terrain(p,seed);if(p.y>t.edge+.02&&t.water>.022&&t.path>.064)cover.push({point:p,size:.012+random()*.014,tone:random(),phase:random()*TAU});}
     const rocks=[];for(let i=0;i<43;i++){const a=i/43*TAU,rx=.29+Math.sin(a*3+seed)*.023,rz=.395+Math.sin(a*3+seed)*.025,x=-.36+Math.sin(a)*rx,z=.10+Math.cos(a)*rz;rocks.push({point:surfacePoint(x,z),size:.022+random()*.017,tone:random()});}
     const steps=[];for(let z=-.76;z<.79;z+=.12){steps.push({point:surfacePoint(pathX(z,seed)+(random()-.5)*.022,z),size:.040+random()*.009,tone:random()});}
     const lights=layout.beds.filter(b=>b.cyber).map(b=>({point:surfacePoint(b.x-b.r*.42,b.z+b.r*.73),size:.06}));
+    const landmarks=layout.regional?layout.beds.filter(b=>REGIONS[b.region]).map(b=>({point:surfacePoint(b.x+b.r*.3,b.z-b.r*.72),region:b.region})):[];
     const vines=[];for(let i=0;i<13;i++){const a=i/13*TAU+(random()-.5)*.22+seed*.1,chain=[],length=4+Math.floor(random()*8);for(let j=0;j<length;j++){const y=.38-j*.044,ring=Math.sqrt(1-y*y),turn=a+Math.sin(j*.85+i)*.023;chain.push({x:Math.sin(turn)*ring,y,z:Math.cos(turn)*ring});}vines.push(chain);}
     const initialYaw=((hash(planet.id+'-view')%1000)/1000-.5)*.90;
     let yaw=initialYaw,pitch=.90,selected=-1,dead=false,inView=!win.IntersectionObserver,raf=0,wake=0,last=0,drag=null,moved=false,width=0,height=0,radius=0,hitAreas=[],surface=null,rays=null,buffer=null;
@@ -167,6 +203,7 @@
     meadow(doc,loaded);
     if(layout.cyber)meadow(doc,loaded,'cyber');
     for(const k of new Set(all.map(p=>kind(p.flower))))sprite(doc,k,loaded);
+    if(landmarks.length)sprite(doc,'$landmarks',loaded);
     function makeRays(size){
       surface=doc.createElement('canvas');surface.width=surface.height=size;const context=surface.getContext('2d');buffer=context.createImageData(size,size);rays=[];
       const rad=(size-2)/2,f=rad*Math.sqrt(CAMERA*CAMERA-1);
@@ -205,7 +242,7 @@
       const p=screen(item.point,cx,cy);if(!p.visible)return;const s=p.scale*item.size;
       ctx.save();ctx.translate(p.x,p.y);ctx.lineCap='round';ctx.lineWidth=Math.max(.7,s*.18);
       const neon=biomeMix(item.point,layout)>.5;
-      for(let j=-1;j<=1;j++){ctx.strokeStyle=neon?(j===0?'#8ecec9':item.tone>.48?'#519d9e':'#486f85'):j===0?'#adc269':item.tone>.48?'#779b4c':'#668d48';ctx.beginPath();ctx.moveTo(j*s*.25,0);ctx.quadraticCurveTo(j*s*.7,-s*.7,j*s*.8+Math.sin(item.phase)*s*.25,-s*(j===0?1:.75));ctx.stroke();}
+      for(let j=-1;j<=1;j++){ctx.strokeStyle=REGIONS[regionAt(item.point,layout)]?.cover||(neon?(j===0?'#8ecec9':item.tone>.48?'#519d9e':'#486f85'):j===0?'#adc269':item.tone>.48?'#779b4c':'#668d48');ctx.beginPath();ctx.moveTo(j*s*.25,0);ctx.quadraticCurveTo(j*s*.7,-s*.7,j*s*.8+Math.sin(item.phase)*s*.25,-s*(j===0?1:.75));ctx.stroke();}
       if(!foreground&&item.tone>.94){ctx.fillStyle=item.tone>.98?'#e9bfae':'#e9e1b1';ctx.beginPath();ctx.arc(0,-s,Math.max(.6,s*.19),0,TAU);ctx.fill();}ctx.restore();
     }
     function fence(cx,cy){
@@ -224,8 +261,17 @@
       const glow=ctx.createRadialGradient(0,-h,0,0,-h,w*4.8);glow.addColorStop(0,'#85ecf683');glow.addColorStop(1,'#80d7ee00');ctx.fillStyle=glow;ctx.fillRect(-w*5,-h-w*5,w*10,w*10);
       ctx.fillStyle='#26394f';ctx.fillRect(-w,-h-w*.6,w*2,w*1.7);ctx.fillStyle='#a6e8e6';ctx.fillRect(-w*.6,-h-w*.3,w*1.2,w);ctx.fillStyle='#d6e3f4';ctx.fillRect(-w*.9,-h-w*.8,w*1.8,Math.max(.6,w*.25));ctx.restore();
     }
+    function landmark(item,cx,cy){
+      const entry=sprite(doc,'$landmarks',loaded),q=screen(item.point,cx,cy);if(entry.ready){const index=['coast','sakura','alpine','dunes'].indexOf(item.region),cw=entry.image.naturalWidth/2,ch=entry.image.naturalHeight/2,size=q.scale*.35;patch(item.point,.085,.05,'#1d332927',cx,cy);ctx.drawImage(entry.image,index%2*cw,Math.floor(index/2)*ch,cw,ch,q.x-size/2,q.y-size*.94,size,size);return;}
+      const p=screen(item.point,cx,cy),s=p.scale*.13;ctx.save();ctx.translate(p.x,p.y);ctx.scale(s,s);ctx.lineJoin='round';ctx.lineCap='round';
+      ctx.fillStyle='#233e3a25';ctx.beginPath();ctx.ellipse(0,0,.6,.20,0,0,TAU);ctx.fill();
+      if(item.region==='coast'){ctx.fillStyle='#ecebd5';ctx.beginPath();ctx.moveTo(-.24,0);ctx.lineTo(-.17,-1.28);ctx.lineTo(.17,-1.28);ctx.lineTo(.24,0);ctx.fill();ctx.fillStyle='#b97560';ctx.fillRect(-.21,-.5,.42,.23);ctx.fillStyle='#547c84';ctx.fillRect(-.24,-1.4,.48,.24);ctx.fillStyle='#ecdaa2';ctx.fillRect(-.12,-1.36,.24,.16);ctx.beginPath();ctx.moveTo(-.32,-1.42);ctx.lineTo(0,-1.66);ctx.lineTo(.32,-1.42);ctx.fill();}
+      else if(item.region==='sakura'){ctx.strokeStyle='#806258';ctx.lineWidth=.10;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-.82);ctx.stroke();for(let i=0;i<5;i++){ctx.fillStyle=i%2?'#e3b5c5':'#eecdd5';ctx.beginPath();ctx.arc(Math.sin(i*2.4)*.29,-.99+Math.cos(i*2.4)*.2,.3,0,TAU);ctx.fill();}}
+      else if(item.region==='alpine'){ctx.fillStyle='#917567';ctx.fillRect(-.44,-.64,.88,.64);ctx.fillStyle='#e8eee6';ctx.beginPath();ctx.moveTo(-.6,-.62);ctx.lineTo(0,-1.22);ctx.lineTo(.6,-.62);ctx.fill();ctx.fillStyle='#edd1a0';ctx.fillRect(-.25,-.49,.2,.22);ctx.fillStyle='#5f6964';ctx.fillRect(.10,-.37,.20,.37);}
+      else{ctx.strokeStyle='#7f9e80';ctx.lineWidth=.22;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-1.04);ctx.moveTo(0,-.42);ctx.lineTo(-.30,-.42);ctx.lineTo(-.30,-.76);ctx.moveTo(0,-.59);ctx.lineTo(.3,-.59);ctx.lineTo(.3,-.93);ctx.stroke();ctx.strokeStyle='#b3c898';ctx.lineWidth=.04;ctx.beginPath();ctx.moveTo(-.03,0);ctx.lineTo(-.03,-1.02);ctx.stroke();}ctx.restore();
+    }
     function flower(item,cx,cy){
-      const p=screen(item.point,cx,cy),f=item.flower,k=kind(f),r=rarity(f),entry=sprite(doc,k,loaded),cell=Atlas?.[k]?.cells[r==='shiny'?5:r==='rare'?4:3];
+      const p=screen(item.point,cx,cy),f=item.flower,k=kind(f),r=rarity(f),entry=sprite(doc,k,loaded),cell=Atlas?.[k]?.cells[3];
       const tree=['apple','peach','cherry','crystal_tree'].includes(k),density=all.length>35?.79:all.length>16?.9:1;
       const size=p.scale*(tree?.35:k==='sunflower'?.31:.25)*density,rootX=p.x,rootY=p.y;
       // Soft, foreshortened contact shadows bind roots to the actual terrain.
@@ -255,8 +301,8 @@
       // A few pale water glints and lily leaves, all projected onto the pond.
       if(!groundReady)for(let i=0;i<7;i++){const p=surfacePoint(-.32+Math.sin(i*1.9)*.12,-.10+Math.cos(i*2.3)*.19),q=screen(p,cx,cy);if(q.visible){patch(p,.020+i%2*.008,.013,i%3===0?'#8da966':'#c6e4c247',cx,cy);}}
       fence(cx,cy);
-      const items=[...cover.map(item=>({...item,type:'grass'})),...lights.map(item=>({...item,type:'beacon'})),...samplePositions(all,selected).map(item=>({...item,type:'flower'}))].map(item=>({...item,world:rotate(item.point,yaw,pitch)})).filter(item=>CAMERA*item.world.z>1).sort((a,b)=>a.world.z-b.world.z);
-      for(const item of items)if(item.type==='flower')flower(item,cx,cy);else if(item.type==='beacon')beacon(item,cx,cy);else grass(item,cx,cy);
+      const items=[...cover.map(item=>({...item,type:'grass'})),...lights.map(item=>({...item,type:'beacon'})),...landmarks.map(item=>({...item,type:'landmark'})),...samplePositions(all,selected).map(item=>({...item,type:'flower'}))].map(item=>({...item,world:rotate(item.point,yaw,pitch)})).filter(item=>CAMERA*item.world.z>1).sort((a,b)=>a.world.z-b.world.z);
+      for(const item of items)if(item.type==='flower')flower(item,cx,cy);else if(item.type==='landmark')landmark(item,cx,cy);else if(item.type==='beacon')beacon(item,cx,cy);else grass(item,cx,cy);
       // Quiet firefly points sit around the keepsake, not over its flowers.
       for(let i=0;i<5;i++){const a=seed+i*1.24,x=cx+Math.sin(a)*radius*1.24,y=cy+Math.cos(a)*radius*.89;ctx.fillStyle=i%2?'#d6d6a570':'#acc7a760';ctx.beginPath();ctx.arc(x,y,i%2?1.2:.85,0,TAU);ctx.fill();}
     }
@@ -278,7 +324,7 @@
       drawNow(){paint();},
       async snapshot(size=1300){
         const view={yaw,pitch};
-        const entries=[meadow(doc),...(layout.cyber?[meadow(doc,null,'cyber')]:[]),...new Set(all.map(p=>kind(p.flower)))].map(e=>typeof e==='string'?sprite(doc,e):e);
+        const entries=[meadow(doc),...(layout.cyber?[meadow(doc,null,'cyber')]:[]),...(landmarks.length?['$landmarks']:[]),...new Set(all.map(p=>kind(p.flower)))].map(e=>typeof e==='string'?sprite(doc,e):e);
         let timeout;
         try{await Promise.race([Promise.all(entries.map(e=>e.image.decode())),new Promise((_,reject)=>{timeout=win.setTimeout(()=>reject(new Error('planet-assets-timeout')),15000);})]);}
         finally{win.clearTimeout(timeout);}
@@ -303,7 +349,7 @@
     function flowerLabel(f){return (rarity(f)==='shiny'?t('闪光 · ','Shiny · '):rarity(f)==='rare'?t('奇幻 · ','Magical · '):'')+name(f);}
     function current(){return planets.find(p=>p.id===selectedId)||planets[0];}
     function dispose(){mainRenderer?.destroy();mainRenderer=null;for(const r of cardRenderers)r.destroy();cardRenderers=[];}
-    function addImage(parent,flower){const k=kind(flower),cell=Atlas?.[k]?.cells[rarity(flower)==='shiny'?5:rarity(flower)==='rare'?4:3];if(!cell)return;const ns='http://www.w3.org/2000/svg',svg=doc.createElementNS(ns,'svg'),image=doc.createElementNS(ns,'image');svg.setAttribute('viewBox',`${cell.x} ${cell.y} ${cell.w} ${cell.h}`);svg.setAttribute('aria-hidden','true');image.setAttribute('href','/garden-art/'+k+'-v2.png');image.setAttribute('width',Atlas[k].width);image.setAttribute('height',Atlas[k].height);svg.append(image);parent.append(svg);}
+    function addImage(parent,flower){const k=kind(flower),cell=Atlas?.[k]?.cells[3];if(!cell)return;const ns='http://www.w3.org/2000/svg',svg=doc.createElementNS(ns,'svg'),image=doc.createElementNS(ns,'image');svg.setAttribute('viewBox',`${cell.x} ${cell.y} ${cell.w} ${cell.h}`);svg.setAttribute('aria-hidden','true');image.setAttribute('href',Atlas[k]?.src||'/garden-art/'+k+'-v2.png');image.setAttribute('width',Atlas[k].width);image.setAttribute('height',Atlas[k].height);svg.append(image);parent.append(svg);}
     function pick(index,orient=true){selectedFlower=index;const p=current();if(!p?.flowers[index])return;const focus=doc.activeElement?.dataset.planetAction==='select-flower';flowerPage=Math.floor(index/PAGE_SIZE);mainRenderer?.select(index,orient);renderFlowerList();renderMemory();if(focus)root.querySelector('[data-planet-action="select-flower"][data-value="'+index+'"]')?.focus({preventScroll:true});}
     function renderMemory(){const target=root.querySelector('.garden-planets-memory');if(!target)return;target.replaceChildren();const f=current()?.flowers[selectedFlower];
       if(!f){target.append(el('span','garden-planets-memory-icon','✧'),el('p','',t('轻轻转动，找到每一次努力留下的花。','Turn gently to find a flower for every effort.')));return;}
@@ -357,6 +403,6 @@
     };
   }
   View.snapshot=async function(doc,planet,size=1300){const still=renderer(doc.createElement('canvas'),planet,{size});try{return await still.snapshot(size);}finally{still.destroy();}};
-  View.geometry={rotate,unrotate,project,flowerView,positions,samplePositions,rarity,hash,terrain,biomes,biomeMix,isCyber,MAX_SPRITES};
+  View.geometry={rotate,unrotate,project,flowerView,positions,samplePositions,rarity,hash,terrain,biomes,biomeMix,regionOf,regionAt,isCyber,MAX_SPRITES};
   return View;
 });

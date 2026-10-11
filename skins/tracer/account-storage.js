@@ -75,7 +75,7 @@
     Array.from(document.body.children).forEach(el=>{ if(el.tagName!=='SCRIPT')el.inert=true; });document.body.append(layer);layer.querySelector('button').onclick=async()=>{
       try { const r=await nativeFetch('/api/account/session',{headers:{'x-tracer-account':'1'}});const next=await r.json();if(next.scope==='locked'){const cleared=await nativeFetch('/api/account/logout',{method:'POST',headers:{'x-tracer-account':'1','x-tracer-scope':'locked','content-type':'application/json'},body:'{}'});if(!cleared.ok)throw new Error('retry');}location.reload(); }catch{layer.querySelector('p').textContent='暂时无法读取账户，请稍后重试。 / Please try again.';}
     };layer.querySelector('button').focus();
-    window.Tracer?.fishing?.cancel?.();window.TracerFishing?.lockAccount();window.TracerFishingAquarium?.lockAccount();
+    window.Tracer?.fishing?.cancel?.();window.TracerFishing?.lockAccount();window.TracerFishingAquarium?.lockAccount();window.TracerDesktopGarden?.lockAccount();
   }
   function requestURL(input) { try { return new URL(typeof input === 'string' || input instanceof URL ? input : input.url,location.href); } catch { return null; } }
   function scoped(url) { return url && url.origin === location.origin && /^\/api\/(store\/|ai\/|pet-package\/|pet-art\/|state$)/.test(url.pathname); }
@@ -108,7 +108,7 @@
     Object.defineProperty(event,'storageArea',{value:storage});
   },true);
   window.TracerAccount={ scope, context, storageName, storage, ready, clearLocalData, get locked(){return locked||obsolete();}, get switching(){return switching;}, lock:blocked,
-    suspend(){switching=true;window.Tracer?.fishing?.cancel?.();window.TracerFishing?.lockAccount();window.TracerFishingAquarium?.lockAccount();},resume(){switching=false;window.TracerFishing?.unlockAccount();window.TracerFishingAquarium?.unlockAccount();},
+    suspend(){switching=true;window.Tracer?.fishing?.cancel?.();window.TracerFishing?.lockAccount();window.TracerFishingAquarium?.lockAccount();window.TracerDesktopGarden?.lockAccount();},resume(){switching=false;window.TracerFishing?.unlockAccount();window.TracerFishingAquarium?.unlockAccount();window.TracerDesktopGarden?.unlockAccount();},
     seedLanguage(id,language){if(/^[a-f0-9-]{36}$/.test(id)&&['en','zh'].includes(language)){const key='tracer.account.'+id+'.tracer.language';if(raw.getItem(key)===null)raw.setItem(key,language);}},
     signal(){raw.setItem(signalKey,Date.now()+':'+Math.random());},
     async api(action,data){const r=await nativeFetch('/api/account/'+action,{method:data===undefined?'GET':'POST',headers:{'x-tracer-account':'1','x-tracer-scope':scope,'x-tracer-generation':String(generation),'x-tracer-restore':restoreId,...(data===undefined?{}:{'content-type':'application/json'})},body:data===undefined?undefined:JSON.stringify(data),cache:'no-store'});const result=await r.json();if(!r.ok){if(result.error==='account-changed')blocked();throw Object.assign(new Error(result.error||'request-failed'),{status:r.status});}return result;},

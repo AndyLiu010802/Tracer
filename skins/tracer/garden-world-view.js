@@ -63,7 +63,7 @@
     let selected=null,last=null,language='zh',lastLevel=null,timer=null,destroyed=false;
     const receipts=new Map(),plantCards=new Map();
     const tr=(zh,en)=>language==='zh'?zh:en;
-    const species=kind=>({wildflower:tr('野花','Wildflower'),sunflower:tr('向日葵','Sunflower'),lavender:tr('薰衣草','Lavender'),apple:tr('苹果树','Apple tree'),peach:tr('桃树','Peach tree'),cherry:tr('樱桃树','Cherry tree'),neon_orchid:tr('霓虹兰','Neon orchid'),volt_berry:tr('电光莓','Volt berry'),crystal_tree:tr('晶芯树','Crystal tree')})[kind]||tr('植物','Plant');
+    const species=kind=>({wildflower:tr('野花','Wildflower'),sunflower:tr('向日葵','Sunflower'),lavender:tr('薰衣草','Lavender'),apple:tr('苹果树','Apple tree'),peach:tr('桃树','Peach tree'),cherry:tr('樱桃树','Cherry tree'),neon_orchid:tr('霓虹兰','Neon orchid'),volt_berry:tr('电光莓','Volt berry'),crystal_tree:tr('晶芯树','Crystal tree'),coconut_palm:tr("椰子树","Coconut palm"),coral_hibiscus:tr("珊瑚扶桑","Coral hibiscus"),sakura_tree:tr("樱花树","Sakura tree"),wisteria:tr("紫藤","Wisteria"),edelweiss:tr("雪绒花","Edelweiss"),snow_pine:tr("雪松","Snow pine"),golden_cactus:tr("金琥仙人球","Golden barrel cactus"),desert_rose:tr("沙漠玫瑰","Desert rose")})[kind]||tr('植物','Plant');
     const rarity=item=>'normal';
     const levels=()=>language==='zh'?['初生之庭','林间小憩','微光花园','繁花居所','星光绿洲','四季秘境']:['A new beginning','Woodland retreat','A little glow','House of blooms','Starlit oasis','Evergreen sanctuary'];
     const reward=()=>language==='zh'?['长椅','暖光路灯','花境','萤火虫','星光小径']:['a garden bench','warm lanterns','flower borders','fireflies','a starlit path'];
@@ -163,17 +163,17 @@
       if(destroyed)return;last=snapshot;language=snapshot.language==='en'?'en':'zh';
       const treasures=snapshot.collectibles;layoutEditor.update(snapshot);
       const earnedSets=treasures?.sets.filter(set=>set.owned===set.total)||[];plaques.hidden=!earnedSets.length;set(plaques,earnedSets.map(set=>set.title[language==='en'?1:0]).join(' ? '));
-      const farm=snapshot.economy?.equippedFarmId==='cyber'?'cyber':'meadow';
+      const farm=['cyber','coast','sakura','alpine','dunes'].includes(snapshot.economy?.equippedFarmId)?snapshot.economy.equippedFarmId:'meadow';
       if(world.dataset.farm!==farm){
-        world.dataset.farm=farm;world.dataset.art='loading';backdrop.src='/garden-art/'+(farm==='cyber'?'cyber-garden-v1.png':'spring-garden-v1.png');
-        const anchors=farm==='cyber'?[[41.02,42.38],[52.02,50.78],[61.85,58.59],[29.43,50.78],[40.17,59.96],[51.43,69.04]]:[[40.5,44.1],[51.7,53.1],[62.1,61.7],[29.3,53.2],[40.5,62.3],[51.0,71.3]];
+        world.dataset.farm=farm;world.dataset.art='loading';backdrop.src=root.TracerGardenRegions[farm].image;
+        const anchors=root.TracerGardenRegions[farm].anchors;
         slots.forEach((slot,i)=>{slot.node.style.left=anchors[i][0]+'%';slot.node.style.top=anchors[i][1]+'%';});
       }
       const allItems=snapshot.plots||[],items=(snapshot.scenePlots||allItems).slice(0,6),j=snapshot.journey||{level:1,xp:0,next:30,progress:0,milestones:[]};
       world.dataset.level=String(j.level);world.setAttribute('aria-label',tr('可互动的立体花园','Interactive garden'));
       set(level,'Lv. '+j.level);set(levelText,levels()[j.level-1]);set(xp,j.next===null?j.xp+' XP':j.xp+' / '+j.next+' XP');
       levelBar.value=j.progress;levelBar.setAttribute('aria-label',tr('花园等级进度','Garden level progress'));
-      set(hint,farm==='cyber'?tr('霓虹温室 · 新开始的任务，将种下来自霓虹花境的种子','Neon conservatory · New tasks plant seeds from the neon garden'):tr('林间花园 · 点击花朵或果树，享受一小段田园时光','Woodland garden · Choose a flower or fruit tree for a little garden time'));
+      set(hint,{"coast": ["海风庭院", "Coastal garden"], "sakura": ["樱谷花境", "Cherry valley"], "alpine": ["雪岭小院", "Alpine retreat"], "dunes": ["沙洲绿庭", "Oasis garden"]}[farm]?.[language==='en'?1:0]|| (farm==='cyber'?tr('霓虹温室 · 新开始的任务，将种下来自霓虹花境的种子','Neon conservatory · New tasks plant seeds from the neon garden'):tr('林间花园 · 点击花朵或果树，享受一小段田园时光','Woodland garden · Choose a flower or fruit tree for a little garden time')));
       set(harvestHelp,tr('花园专注种植与收获：开始任务播种，完成后成熟。出售收获可购买鱼竿盲盒、鱼饵和小屋装扮。','The garden is for growing and harvesting. Begin tasks to plant; finish them to bloom. Sell harvests for rod boxes, bait and cabin styles.'));
       set(harvestStats,tr('已收获 ','Harvested ')+(snapshot.harvests?.total||0)+tr(' 次 · 植物收入仓库，可在商店出售',' times · Plants are stored in the warehouse and can be sold in the shop'));
       set(rulesTitle,tr('种子与收获规则','Seeds and harvests'));
