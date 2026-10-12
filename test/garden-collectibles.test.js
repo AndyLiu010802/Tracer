@@ -2,15 +2,25 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const G=require('../public/task-garden'),M=require('../skins/tracer/model'),S=require('../public/workspace-sync');
 const clone=x=>JSON.parse(JSON.stringify(x));
+test('coins from other activities buy furniture with zero harvests and survive reload and merge',()=>{
+ const ws=M.emptyWorkspace();ws.taskGarden=G.empty();ws.taskGarden.market.testCredit={id:'furniture-regression',amount:1000,updatedAt:1};
+ const base=clone(ws);assert.equal(G.collectibles(ws).progress.harvests,0);assert.equal(G.collectibles(ws).progress.species,0);
+ assert.equal(G.buyCollectible(ws,'garden_greenhouse',200).spent,420);assert.equal(G.economy(ws).balance,580);
+ assert.equal(G.buyCollectible(ws,'garden_greenhouse',201).alreadyOwned,true);
+ assert.equal(G.layoutCollectible(ws,{itemId:'garden_greenhouse',x:45,y:63},202).ok,true);
+ const saved=S.validate(clone(ws)),merged=S.merge(base,saved,base).workspace;
+ assert.equal(G.economy(merged).balance,580);assert.equal(G.collectibles(merged).placements[0].itemId,'garden_greenhouse');
+ const before=JSON.stringify(merged);assert.equal(G.buyCollectible(merged,'crystal_deer',203).reason,'insufficient-coins');assert.equal(JSON.stringify(merged),before);
+});
 function harvest(ws,id,kind=4,at=100){const task={id,title:id,status:'doing',projectId:null,createdAt:at,updatedAt:at};ws.tasks.push(task);G.taskChanged(ws,task,at,n=>n===10000?1000:kind);task.status='done';task.doneAt=at+1;task.updatedAt=at+1;G.taskChanged(ws,task,at+1);G.harvest(ws,id,at+2);}
 function funded(){const ws=M.emptyWorkspace();for(let i=0;i<8;i++)harvest(ws,'fund'+i);G.sell(ws,'peach',8,200);return ws;}
 test('old saves gain a read-only catalogue and all progress survives selling',()=>{
  const ws=funded(),before=JSON.stringify(ws),c=G.collectibles(ws);assert.equal(c.total,15);assert.equal(c.owned,0);assert.equal(c.progress.harvests,8);assert.equal(c.progress.species,1);assert.equal(c.target.id,'birdhouse');assert.equal(JSON.stringify(ws),before);
  c.items[0].name[0]='changed';assert.notEqual(G.collectibles(ws).items[0].name[0],'changed');assert.equal(G.economy(ws).balance,240);
 });
-test('collecting charges fixed coins once, enforces eligibility, equips only owned items and persists',()=>{
+test('collecting charges fixed coins once, enforces affordability, equips only owned items and persists',()=>{
  const ws=funded(),before=JSON.stringify(ws);
- assert.equal(G.buyCollectible(ws,'crystal_deer').reason,'collection-locked');assert.equal(G.buyCollectible(ws,'invalid').reason,'unknown-collectible');assert.equal(G.equipCollectible(ws,'birdhouse').reason,'not-owned');assert.equal(JSON.stringify(ws),before);
+ assert.equal(G.buyCollectible(ws,'crystal_deer').reason,'insufficient-coins');assert.equal(G.buyCollectible(ws,'invalid').reason,'unknown-collectible');assert.equal(G.equipCollectible(ws,'birdhouse').reason,'not-owned');assert.equal(JSON.stringify(ws),before);
  assert.equal(G.buyCollectible(ws,'birdhouse',300).spent,18);const owned=JSON.stringify(ws);assert.equal(G.buyCollectible(ws,'birdhouse',301).alreadyOwned,true);assert.equal(JSON.stringify(ws),owned);
  G.equipCollectible(ws,'birdhouse',400);const reloaded=S.validate(clone(ws));assert.equal(G.collectibles(reloaded).equippedId,'birdhouse');assert.equal(G.economy(reloaded).balance,222);
  G.equipCollectible(reloaded,null,1);assert.equal(reloaded.taskGarden.market.collectibles.equipped.updatedAt,401);assert.equal(G.economy(reloaded).balance,222);
@@ -35,8 +45,8 @@ test('farm and collectible purchases share one balance across concurrent merges'
  assert.throws(()=>G.preserve(a,clone(b)),e=>e.code==='workspace-stale');
  const acceptedFarm=clone(b),incoming=clone(a);assert.throws(()=>G.preserve(acceptedFarm,incoming),e=>e.code==='workspace-stale');assert.equal(G.economy(acceptedFarm).balance,0);
 });
-test('tampered, duplicate, unearned, unfunded and impossible display receipts are rejected',()=>{
- const ws=funded();G.buyCollectible(ws,'birdhouse',300);const mutations=[g=>g.market.collectibles.purchases.push({...g.market.collectibles.purchases[0]}),g=>g.market.collectibles.purchases[0].itemId='crystal_deer',g=>g.market.collectibles.purchases[0].purchasedAt=1,g=>g.market.collectibles.equipped.itemId='moon_lamp',g=>g.market.collectibles.wish.updatedAt=-1,g=>g.market.collectibles=null,g=>g.market.sales=[]];
+test('tampered, duplicate, invalid, unfunded and impossible display receipts are rejected',()=>{
+ const ws=funded();G.buyCollectible(ws,'birdhouse',300);const mutations=[g=>g.market.collectibles.purchases.push({...g.market.collectibles.purchases[0]}),g=>g.market.collectibles.purchases[0].itemId='crystal_deer',g=>g.market.collectibles.purchases[0].purchasedAt=0,g=>g.market.collectibles.equipped.itemId='moon_lamp',g=>g.market.collectibles.wish.updatedAt=-1,g=>g.market.collectibles=null,g=>g.market.sales=[]];
  for(const mutate of mutations){const raw=clone(ws.taskGarden);mutate(raw);assert.throws(()=>G.validate(raw),/Invalid task garden/);}
  const raw=clone(ws.taskGarden);raw.market.collectibles.purchases[0].price=-999;assert.equal(G.economy({taskGarden:raw}).spent,18);
 });
@@ -86,7 +96,7 @@ test('companion layouts survive stale windows, merge independently from furnitur
 test('new furniture has attainable entry pieces, fixed prices, and supports all catalogue layouts in both farms',()=>{
  const ws=funded();assert.equal(G.buyCollectible(ws,'reading_bench',300).spent,36);const owned=JSON.stringify(ws);assert.equal(G.buyCollectible(ws,'reading_bench',301).alreadyOwned,true);assert.equal(JSON.stringify(ws),owned);
  G.layoutCollectible(ws,{itemId:'reading_bench'},400);assert.ok(Number.isFinite(G.collectibles(ws).placements[0].x));assert.equal(G.collectibles(ws).sets.length,5);
- const ids=G.collectibles(ws).items.map(i=>i.id);assert.equal(new Set(ids).size,15);assert.equal(G.buyCollectible(ws,'garden_greenhouse').reason,'collection-locked');
+ const ids=G.collectibles(ws).items.map(i=>i.id);assert.equal(new Set(ids).size,15);assert.equal(G.buyCollectible(ws,'garden_greenhouse').reason,'insufficient-coins');
 });
 
 test('six orientations persist across hiding, reload, stale saves and independent farm layouts',()=>{

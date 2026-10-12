@@ -1,34 +1,34 @@
 # Tracer
 
-当前版本以任务花园与桌面钓鱼组成休闲系统。0.4.5 增加桌面 3D 花园、六地区地形建筑、八种地区植物、十二款明信片及贴纸编辑，并丰富神秘礼包金币奖励。花园支持旋转缩放和直接收获，静止时按需绘制。完整玩法见[桌面花园说明](docs/desktop-garden.md)和[桌面钓鱼与鱼塘](docs/desktop-fishing.md)。
+当前版本以任务花园与桌面钓鱼组成休闲系统。0.4.6 增加桌面 3D 花园、六地区地形建筑、八种地区植物、十二款明信片及贴纸编辑，并丰富神秘礼包金币奖励。花园支持旋转缩放和直接收获，静止时按需绘制。完整玩法见[桌面花园说明](docs/desktop-garden.md)和[桌面钓鱼与鱼塘](docs/desktop-fishing.md)。
 
 鱼苗收藏塘永久免费（与付费解锁的垂钓渔场独立）：珍稀、史诗鱼捕获后额外获得鱼苗，每池最多五条，组建中可以放生换鱼。确认五条后，鱼塘成为可随时查看和投喂的永久收藏，并自动开启下一座。传奇鱼苗入住独立水族箱，最多三条。旧工作区的任务、花园与历史备份继续兼容。
 
 Tracer 是中英双语的桌面任务管理与专注工作台。用收集箱、看板、项目、日程和笔记整理工作，保留任务完成历史；番茄钟、循环音频和星月主题帮助你保持专注。
 
-**[Tracer 0.4.5：Windows 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.5)** · [Mac 0.4.0 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0) · **[Mac 安装与构建](docs/macos-install.md)** · [0.4.5 更新说明](docs/desktop-release-0.4.5.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
+**[Tracer 0.4.6：Windows 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.6)** · [Mac 0.4.0 下载](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0) · **[Mac 安装与构建](docs/macos-install.md)** · [0.4.6 更新说明](docs/desktop-release-0.4.6.md) · [ChatGPT 套餐登录指南](docs/chatgpt-ai-setup.md) · [个人 API 设置](docs/personal-ai-setup.md)
 
 ## 下载与安装
 
-**0.4.5 本次提供 Windows x64。** 包含桌面 3D 花园、地区美术、明信片贴纸与礼包更新，详见 [0.4.5 更新与验证说明](docs/desktop-release-0.4.5.md)。
+**0.4.6 本次提供 Windows x64。** 包含桌面花园外观与摆件同步、明信片布局和鱼模型修复，详见 [0.4.6 更新与验证说明](docs/desktop-release-0.4.6.md)。
 
 Mac 继续提供已验证的 0.4.0：Apple 芯片和 Intel 版本均可从 [0.4.0 发布页](https://github.com/AndyLiu010802/Tracer/releases/tag/v0.4.0)下载。[0.4.0 三平台构建记录](https://github.com/AndyLiu010802/Tracer/actions/runs/35834504837)。
 
 | 电脑类型 | 安装包 | 备用压缩包 |
 | --- | --- | --- |
-| Windows x64 | [Tracer-Setup-0.4.5-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.5/Tracer-Setup-0.4.5-x64.exe) | — |
+| Windows x64 | [Tracer-Setup-0.4.6-x64.exe](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.6/Tracer-Setup-0.4.6-x64.exe) | — |
 | Mac：Apple 芯片（M 系列） | [Tracer-0.4.0-mac-arm64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-arm64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-arm64.zip) |
 | Mac：Intel | [Tracer-0.4.0-mac-x64.dmg](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-x64.dmg) | [ZIP](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/Tracer-0.4.0-mac-x64.zip) |
 
-Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置。Windows 0.4.5 分发版使用独立工作区，旧版存档保留在原目录，不会自动迁移；详见[安装说明](docs/desktop-release-0.4.5.md)。
+Windows 运行安装程序，按提示安装；会创建桌面和开始菜单快捷方式。Mac 打开对应芯片的 DMG，将 Tracer 拖入「应用程序」。两者均无需另装 Node.js 或 Codex。更新前彻底退出旧版，再安装到原来的位置。Windows 0.4.6 分发版使用独立工作区，旧版存档保留在原目录，不会自动迁移；详见[安装说明](docs/desktop-release-0.4.6.md)。
 
 
 Windows 安装包目前未签名；Mac 包使用 ad-hoc 签名，尚未获得 Apple Developer ID 签名与公证。真实账号 AI 登录、后台输入授权及未覆盖的界面操作仍需实机验收，详见 [Mac 安装指南](docs/macos-install.md)。
 
 - **无边框全屏**：启动进入全屏，隐藏 Windows 系统标题栏。按 **F11** 或点击右上角全屏按钮切换；窗口模式下可拖动应用顶栏。
 - **托盘运行**：右上角关闭按钮将窗口隐藏到托盘。点击托盘图标恢复，彻底退出使用托盘菜单「退出」。Esc 仍用于关闭任务弹窗。
-- **本地数据**：Windows 0.4.5 分发版使用 `%APPDATA%\tracer-desktop-commercial\`；源码与历史版本使用 `%APPDATA%\tracer-desktop\`。两个目录独立，旧数据不自动迁入；正常卸载保留用户数据，分享的安装包使用接收者自己的工作区。
-- **核对下载**：Windows 使用 [SHA256SUMS-0.4.5.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.5/SHA256SUMS-0.4.5.txt)，覆盖 EXE 和 [blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.5/Tracer-Setup-0.4.5-x64.exe.blockmap)；blockmap 无需单独安装。Mac 0.4.0 使用其发布页的 [SHA256SUMS-0.4.0.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/SHA256SUMS-0.4.0.txt)。
+- **本地数据**：Windows 0.4.6 分发版使用 `%APPDATA%\tracer-desktop-commercial\`；源码与历史版本使用 `%APPDATA%\tracer-desktop\`。两个目录独立，旧数据不自动迁入；正常卸载保留用户数据，分享的安装包使用接收者自己的工作区。
+- **核对下载**：Windows 使用 [SHA256SUMS-0.4.6.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.6/SHA256SUMS-0.4.6.txt)，覆盖 EXE 和 [blockmap 索引](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.6/Tracer-Setup-0.4.6-x64.exe.blockmap)；blockmap 无需单独安装。Mac 0.4.0 使用其发布页的 [SHA256SUMS-0.4.0.txt](https://github.com/AndyLiu010802/Tracer/releases/download/v0.4.0/SHA256SUMS-0.4.0.txt)。
 
 ## 功能
 

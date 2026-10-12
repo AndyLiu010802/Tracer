@@ -46,31 +46,50 @@
     varying vec2 vUv;
     varying vec3 vNormal;
     void main(){
-      vec4 c=texture2D(uPortrait,vUv);if(c.a<.08)discard;
-      if(uShadow>.5){if(c.a<.45)discard;vec2 p=fract(min(gl_FragCoord.z,.99998)*vec2(1.,255.));p.x-=p.y/255.;gl_FragColor=vec4(p,0.,1.);}
+      // The closed geometry defines the silhouette; alpha clipping would reopen it.
+      vec4 c=vec4(texture2D(uPortrait,vUv).rgb,1.);
+      if(uShadow>.5){vec2 p=fract(min(gl_FragCoord.z,.99998)*vec2(1.,255.));p.x-=p.y/255.;gl_FragColor=vec4(p,0.,1.);}
       else {float light=max(0.,dot(normalize(vNormal),normalize(vec3(-.35,.8,.5))));gl_FragColor=vec4(c.rgb*(.72+.33*light),c.a);}
     }`;
+  // RGB bleed supplies the cut edge with neighbouring scale colours, without
+  // changing the artwork's alpha or uploading anything outside the resident cell.
+  function bleedColors(pixels,w,h){
+    const out=new Uint8ClampedArray(pixels),visited=new Uint8Array(w*h),queue=new Int32Array(w*h);let head=0,tail=0;
+    for(let i=0;i<w*h;i++)if(pixels[i*4+3]>80){visited[i]=1;queue[tail++]=i;}
+    while(head<tail){const i=queue[head++],x=i%w,y=Math.floor(i/w);for(const j of[x?i-1:-1,x<w-1?i+1:-1,y?i-w:-1,y<h-1?i+w:-1])if(j>=0&&!visited[j]){visited[j]=1;queue[tail++]=j;for(let k=0;k<3;k++)out[j*4+k]=out[i*4+k];}}
+    return out;
+  }
   function volumeMesh(pixels,w,h,kind=0){
-    const nx=64,ny=44,stride=nx+1,d=new Float32Array(stride*(ny+1)),z=new Float32Array(d.length),aspect=w/h;
+    const nx=96,ny=64,stride=nx+1,d=new Float32Array(stride*(ny+1)),z=new Float32Array(d.length),alpha=new Float32Array(d.length),aspect=w/h,cutoff=80;
     for(let y=0;y<=ny;y++)for(let x=0;x<=nx;x++){
-      const px=Math.min(w-1,Math.round(x/nx*(w-1))),py=Math.min(h-1,Math.round(y/ny*(h-1)));
-      d[y*stride+x]=x&&y&&x<nx&&y<ny&&pixels[(py*w+px)*4+3]>80?999:0;
+      const px=Math.min(w-1,Math.round(x/nx*(w-1))),py=Math.min(h-1,Math.round(y/ny*(h-1))),i=y*stride+x;
+      alpha[i]=x&&y&&x<nx&&y<ny?pixels[(py*w+px)*4+3]:0;d[i]=alpha[i]>cutoff?999:0;
     }
     for(let y=1;y<ny;y++)for(let x=1;x<nx;x++){const i=y*stride+x;d[i]=Math.min(d[i],d[i-1]+1,d[i-stride]+1,d[i-stride-1]+1.414,d[i-stride+1]+1.414);}
     for(let y=ny-1;y>0;y--)for(let x=nx-1;x>0;x--){const i=y*stride+x;d[i]=Math.min(d[i],d[i+1]+1,d[i+stride]+1,d[i+stride+1]+1.414,d[i+stride-1]+1.414);}
     const thickness=[.12,.05,.15,.11,.13,.065][kind]||.12;
     for(let y=0;y<=ny;y++)for(let x=0;x<=nx;x++){
-      const i=y*stride+x,u=x/nx,v=y/ny;
-      // Broad torso, narrow caudal peduncle, thin flexible fins and whiskers.
-      const torso=Math.sqrt(Math.max(0,1-Math.pow((u-.40)/.43,2)-Math.pow((v-.50)/.42,2)));
+      const i=y*stride+x,u=x/nx,v=y/ny,torso=Math.sqrt(Math.max(0,1-Math.pow((u-.40)/.43,2)-Math.pow((v-.50)/.42,2)));
       z[i]=Math.min(Math.sqrt(d[i]/nx)*.44,thickness*(.13+.87*torso))*Math.min(1,d[i]/1.5);
     }
-    const vertices=[];
-    function vertex(x,y,side){const i=y*stride+x,dx=(z[y*stride+Math.min(nx,x+1)]-z[y*stride+Math.max(0,x-1)])*nx/2,dy=(z[Math.min(ny,y+1)*stride+x]-z[Math.max(0,y-1)*stride+x])*ny*aspect/2;vertices.push(x/nx,y/ny,z[i]*side,-dx,dy,side);}
-    for(const side of [1,-1])for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){
-      if(!d[y*stride+x]&&!d[y*stride+x+1]&&!d[(y+1)*stride+x]&&!d[(y+1)*stride+x+1])continue;
-      for(const [dx,dy] of (side===1?[[0,0],[0,1],[1,0],[1,0],[0,1],[1,1]]:[[0,0],[1,0],[0,1],[1,0],[1,1],[0,1]]))vertex(x+dx,y+dy,side);
+    const nodes=[],vertices=[],cuts=new Map();
+    for(let y=0;y<=ny;y++)for(let x=0;x<=nx;x++){const i=y*stride+x,dx=(z[y*stride+Math.min(nx,x+1)]-z[y*stride+Math.max(0,x-1)])*nx/2,dy=(z[Math.min(ny,y+1)*stride+x]-z[Math.max(0,y-1)*stride+x])*ny*aspect/2;nodes.push({id:i,u:x/nx,v:y/ny,z:z[i],nx:-dx,ny:dy,alpha:alpha[i],cut:false});}
+    function intersection(a,b){
+      const key=Math.min(a.id,b.id)+':'+Math.max(a.id,b.id);if(cuts.has(key))return cuts.get(key);
+      const t=(cutoff-a.alpha)/(b.alpha-a.alpha),p={cut:true,alpha:cutoff};for(const k of['u','v','z','nx','ny'])p[k]=a[k]+(b[k]-a[k])*t;
+      p.z=Math.max(.0025,p.z);cuts.set(key,p);return p;
     }
+    function point(p,side,normal){vertices.push(p.u,p.v,p.z*side,normal?normal[0]:p.nx,normal?normal[1]:p.ny,normal?0:side);}
+    function triangle(a,b,c){
+      const input=[a,b,c],polygon=[];
+      for(let i=0;i<3;i++){const a=input[i],b=input[(i+1)%3],insideA=a.alpha>cutoff,insideB=b.alpha>cutoff;if(insideA!==insideB)polygon.push(intersection(a,b));if(insideB)polygon.push(b);}
+      if(polygon.length<3)return;
+      // Identical contour vertices bound both sides; a continuous opaque rim
+      // joins them. Texture alpha cannot cut this structural seal away.
+      for(let i=1;i<polygon.length-1;i++)for(const side of[1,-1])for(const p of(side===1?[polygon[0],polygon[i],polygon[i+1]]:[polygon[0],polygon[i+1],polygon[i]]))point(p,side);
+      for(let i=0;i<polygon.length;i++){const a=polygon[i],b=polygon[(i+1)%polygon.length];if(!a.cut||!b.cut)continue;const dx=b.u-a.u,dy=-(b.v-a.v)/aspect,len=Math.hypot(dx,dy);if(len<1e-12)continue;const normal=[dy/len,-dx/len];for(const [p,side]of[[a,1],[a,-1],[b,1],[b,1],[a,-1],[b,-1]])point(p,side,normal);}
+    }
+    for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){const i=y*stride+x;triangle(nodes[i],nodes[i+stride],nodes[i+1]);triangle(nodes[i+1],nodes[i+stride],nodes[i+stride+1]);}
     return new Float32Array(vertices);
   }
   function swimBasis(angle){return{right:[-Math.cos(angle),0,Math.sin(angle)],up:[0,1,0],normal:[-Math.sin(angle),0,-Math.cos(angle)]};}
@@ -94,7 +113,7 @@
           else{source=doc.createElement('canvas');source.width=w;source.height=h;source.getContext('2d').drawImage(image,x,y,w,h,0,0,w,h);}
           if(destroyed||entry.cancelled){source.close?.();return;}
           const canvas=doc.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0);
-          entry.vertices=volumeMesh(ctx.getImageData(0,0,w,h).data,w,h,profile({id}));entry.count=entry.vertices.length/6;entry.source=source;onReady();
+          const pixels=ctx.getImageData(0,0,w,h);entry.vertices=volumeMesh(pixels.data,w,h,profile({id}));const colors=bleedColors(pixels.data,w,h);source.close?.();entry.count=entry.vertices.length/6;entry.source={width:w,height:h,pixels:new Uint8Array(colors.buffer)};onReady();
         }).catch(()=>{entry.failed=true;onReady();});
       }
     }
@@ -102,7 +121,7 @@
       const p=portrait(f,assets),entry=p&&entries.get(p.id);if(!entry||entry.failed)return false;
       if(!entry.texture&&!entry.source)return true;
       gl.activeTexture(gl.TEXTURE3);
-      if(!entry.texture){entry.texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,entry.texture);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,entry.source);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);entry.source.close?.();entry.source=null;}
+      if(!entry.texture){entry.texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,entry.texture);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,entry.source.width,entry.source.height,0,gl.RGBA,gl.UNSIGNED_BYTE,entry.source.pixels);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);entry.source.close?.();entry.source=null;}
       else gl.bindTexture(gl.TEXTURE_2D,entry.texture);
       gl.useProgram(program);
       if(!entry.buffer){entry.buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,entry.buffer);gl.bufferData(gl.ARRAY_BUFFER,entry.vertices,gl.STATIC_DRAW);entry.vertices=null;}else gl.bindBuffer(gl.ARRAY_BUFFER,entry.buffer);
@@ -117,5 +136,5 @@
     }
     return {sync,draw,stats:()=>({residents:entries.size,ready:[...entries.values()].filter(e=>e.texture||e.source).length,textures:[...entries.values()].filter(e=>e.texture).length,bytes:[...entries.values()].filter(e=>e.texture).reduce((n,e)=>n+(e.p.bounds[2]-e.p.bounds[0])*(e.p.bounds[3]-e.p.bounds[1])*4,0)}),destroy(){if(destroyed)return;destroyed=true;for(const entry of entries.values())drop(entry);entries.clear();gl.deleteProgram(program);}};
   }
-  return Object.freeze({portrait,profile,volumeMesh,swimBasis,create});
+  return Object.freeze({portrait,profile,volumeMesh,bleedColors,swimBasis,create});
 });

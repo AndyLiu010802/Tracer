@@ -33,5 +33,10 @@
     const x=60-(left+right)/2*scale,y=124-bottom*scale;
     return `<svg class="garden-collectible-art" viewBox="0 0 120 140" fill="none" aria-hidden="true"><image href="/garden-art/collectible-${id}-${['reading_bench','book_cabinet','wisteria_swing','flower_cart','glass_terrarium','garden_greenhouse'].includes(id)?'v1':'v2'}.png" x="${x.toFixed(4)}" y="${y.toFixed(4)}" width="${(width*scale).toFixed(4)}" height="${(height*scale).toFixed(4)}" preserveAspectRatio="none"/></svg>`;
   }
-  root.TracerGardenCollectionArt={markup};
+  const volumeAtlas={};
+  for(const [id,[width,height,cells,boxes]]of Object.entries(sixFrames))for(let i=0;i<6;i++){
+    const [x,y,r,b]=boxes[i],cell={x,y,w:r-x,h:b-y};
+    volumeAtlas[id+'_'+i]={src:'/garden-art/collectible-'+id+'-six-v1.png',width,height,cells:[cell,cell,cell,cell]};
+  }
+  root.TracerGardenCollectionArt={markup,volumeAtlas};
 })(typeof window!=='undefined'?window:globalThis);

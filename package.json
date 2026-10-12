@@ -1,7 +1,7 @@
 {
   "name": "tracer-desktop",
   "private": true,
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Tracer bilingual task manager with ChatGPT subscription login, personal AI APIs and simple planning.",
   "main": "desktop/main.js",
   "author": {
@@ -11,6 +11,8 @@
     "start": "electron .",
     "test": "node --test test/*.test.js",
     "dist": "electron-builder --config dev/desktop-commercial.config.cjs --win nsis --x64",
+    "sign:check": "node dev/build-windows-signed.cjs --check",
+    "dist:win:signed": "node dev/build-windows-signed.cjs",
     "dist:mac": "node dev/build-macos.cjs",
     "dist:mac:arm64": "node dev/build-macos.cjs arm64",
     "dist:mac:x64": "node dev/build-macos.cjs x64",

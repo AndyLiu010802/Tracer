@@ -1,0 +1,80 @@
+{
+  "generator": "image_gen.imagegen",
+  "mode": "generation",
+  "created": "2026-10-12",
+  "sharedPrompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling the canvas edge-to-edge, NOT a photographed card on a table. High end art direction, genuinely rich artistic detail and materiality. Layout is crucial: left 52% has a large calm central space for a separate 3D planet illustration that will be composited later; right 48% is elegant mostly quiet writing paper, clean inside x58%-94%, y24%-87% for readable text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs space for title. Do not paint a planet or globe. Absolutely NO text, letters, typography, numbers, logos, watermarks, UI, postage lettering. Decorate richly without crossing the writing area. ",
+  "images": [
+    {
+      "id": "field",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling the canvas edge-to-edge, NOT a photographed card on a table. High end art direction, genuinely rich artistic detail and materiality. Layout is crucial: left 52% has a large calm central space for a separate 3D planet illustration that will be composited later; right 48% is elegant mostly quiet writing paper, clean inside x58%-94%, y24%-87% for readable text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs space for title. Do not paint a planet or globe. Absolutely NO text, letters, typography, numbers, logos, watermarks, UI, postage lettering. Decorate richly without crossing the writing area. An exquisite pressed-flower journal: ivory cotton paper, real pressed daisies and fern specimens, soft sage handmade paper corners, small embossed terracotta wax seal, restrained modern editorial composition. Soft natural light and tactile archival paper.",
+      "sourceFile": "exec-b683aed0-4673-4442-b3c4-0fb61982c635.png",
+      "asset": "field-v2.png"
+    },
+    {
+      "id": "forest",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling the canvas edge-to-edge, NOT a photographed card on a table. High end art direction, genuinely rich artistic detail and materiality. Layout is crucial: left 52% has a large calm central space for a separate 3D planet illustration that will be composited later; right 48% is elegant mostly quiet writing paper, clean inside x58%-94%, y24%-87% for readable text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs space for title. Do not paint a planet or globe. Absolutely NO text, letters, typography, numbers, logos, watermarks, UI, postage lettering. Decorate richly without crossing the writing area. An opulent Art Nouveau botanical invitation: deep emerald velvety left half, sinuous fine antique gold ivy filigree framing the perimeter, graceful fern leaves, delicate moth and tiny seedpod ornaments. Right writing panel pale warm ivory. Museum-quality restrained gilding, sophisticated historic book design.",
+      "sourceFile": "exec-a805f79a-dac2-4bbc-aa6a-64e6644d7d5b.png",
+      "asset": "forest-v2.png"
+    },
+    {
+      "id": "letter",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling the canvas edge-to-edge, NOT a photographed card on a table. High end art direction, genuinely rich artistic detail and materiality. Layout is crucial: left 52% has a large calm central space for a separate 3D planet illustration that will be composited later; right 48% is elegant mostly quiet writing paper, clean inside x58%-94%, y24%-87% for readable text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs space for title. Do not paint a planet or globe. Absolutely NO text, letters, typography, numbers, logos, watermarks, UI, postage lettering. Decorate richly without crossing the writing area. A couture vintage Paris travel scrapbook: buttery antique letter paper, torn vellum, small faded roses and vintage airmail stripes at outer edges, layered ephemera corners, burgundy wax seal at bottom left. Elegant cream right writing panel. Romantic analog collage with realistic paper grain.",
+      "sourceFile": "exec-b1d69e75-09fe-4505-a8bd-cece76c9f8a3.png",
+      "asset": "letter-v2.png"
+    },
+    {
+      "id": "night",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling the canvas edge-to-edge, NOT a photographed card on a table. High end art direction, genuinely rich artistic detail and materiality. Layout is crucial: left 52% has a large calm central space for a separate 3D planet illustration that will be composited later; right 48% is elegant mostly quiet writing paper, clean inside x58%-94%, y24%-87% for readable text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs space for title. Do not paint a planet or globe. Absolutely NO text, letters, typography, numbers, logos, watermarks, UI, postage lettering. Decorate richly without crossing the writing area. An heirloom celestial atlas: midnight indigo paper, exquisitely fine champagne-gold zodiac-like astronomical instruments and engraved moon phases only around edges, mother of pearl pinprick stars, embossed crescent bottom left. Entire right writing panel quiet deep navy with subtle paper grain, suitable for ivory text. No actual zodiac glyphs or letters.",
+      "sourceFile": "exec-8dff29ec-932b-48ea-b4f9-a843197fd064.png",
+      "asset": "night-v2.png"
+    },
+    {
+      "id": "coast",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling canvas edge-to-edge, NOT a photographed card. High end rich art detail. Left 52% has large quiet central space for a separate 3D planet composited later; right 48% quiet writing paper, clean inside x58%-94%, y24%-87% for text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs title space. No planet or globe. Absolutely NO text, letters, numbers, logos, watermarks or UI. Rich decoration must not cross writing area. Mediterranean seaside travel print, sophisticated risograph style: cobalt rolling wave engravings along lower left, coral red lighthouse at far upper left edge, sunbleached ivory and pale aqua paper, embossed scallop border, striped corner tabs. Right quiet warm cream paper. Rich limited-color print grain, elevated travel boutique stationery.",
+      "sourceFile": "exec-b8eef93d-0116-4229-afbd-519c7cc0344a.png",
+      "asset": "coast-v2.png"
+    },
+    {
+      "id": "sakura",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling canvas edge-to-edge, NOT a photographed card. High end rich art detail. Left 52% has large quiet central space for a separate 3D planet composited later; right 48% quiet writing paper, clean inside x58%-94%, y24%-87% for text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs title space. No planet or globe. Absolutely NO text, letters, numbers, logos, watermarks or UI. Rich decoration must not cross writing area. Refined Japanese ukiyo-e and washi stationery: winding dark cherry branch and blush blossoms along top-left and bottom edges, subtle gold dust, tiny vermilion pagoda far left bottom, indigo outer margin and pale sakura pink inner paper. Left central quiet pale sky opening for planet. Right writing area very pale warm pink. Handmade washi fibers, woodblock texture, luxurious composition.",
+      "sourceFile": "exec-037e970c-2826-47f8-ae31-ce1a4f5dd8f4.png",
+      "asset": "sakura-v2.png"
+    },
+    {
+      "id": "alpine",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling canvas edge-to-edge, NOT a photographed card. High end rich art detail. Left 52% has large quiet central space for a separate 3D planet composited later; right 48% quiet writing paper, clean inside x58%-94%, y24%-87% for text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs title space. No planet or globe. Absolutely NO text, letters, numbers, logos, watermarks or UI. Rich decoration must not cross writing area. Premium Swiss alpine travel lithograph and cut-paper collage: petrol-blue and ivory layered snowy mountain peaks at top left perimeter, miniature spruce silhouettes along lower border, burnt orange climbing-rope corner detail, geometric postage-like frame with no lettering, quiet cream paper right half. Sophisticated 1930s travel poster craft, bold shapes, fine printed grain.",
+      "sourceFile": "exec-13b15430-c17c-44e2-a394-0130a7407dfa.png",
+      "asset": "alpine-v2.png"
+    },
+    {
+      "id": "dunes",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling canvas edge-to-edge, NOT a photographed card. High end rich art detail. Left 52% has large quiet central space for a separate 3D planet composited later; right 48% quiet writing paper, clean inside x58%-94%, y24%-87% for text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs title space. No planet or globe. Absolutely NO text, letters, numbers, logos, watermarks or UI. Rich decoration must not cross writing area. Opulent desert invitation inspired by Moroccan zellige and Persian miniature ornament: terracotta sandstone, lapis and muted turquoise mosaic arches on far left, antique-gold geometric border, palm fronds at lower corners, warm sand paper with calm center. Right writing panel luminous pale parchment. Lavish crafted detail, tiny mosaic pattern, tactile gold ink, elegant asymmetrical arch composition.",
+      "sourceFile": "exec-2a5b9101-75ea-4bef-88a8-4c50660c3201.png",
+      "asset": "dunes-v2.png"
+    },
+    {
+      "id": "rain",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling canvas edge-to-edge, NOT a photographed card. High end rich art detail. Left 52% has large quiet central space for a separate 3D planet composited later; right 48% quiet writing paper, clean inside x58%-94%, y24%-87% for text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs title space. No planet or globe. Absolutely NO text, letters, numbers, logos, watermarks or UI. Rich decoration must not cross writing area. Romantic rainy Paris watercolor stationery: exquisite loose watercolor hydrangeas, lilac and smoky blue raindrops along outer borders, misty teal cafe awning and amber lit window tiny at lower left, velvety handmade ivory paper and translucent watercolor washes. Right writing area nearly ivory, clean and luminous. Elegant painterly editorial artwork, delicate wet-on-wet pigments and silver-gray accents.",
+      "sourceFile": "exec-92ffa8c8-077f-4169-b623-760b9bbf05b1.png",
+      "asset": "rain-v2.png"
+    },
+    {
+      "id": "sunset",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling canvas edge-to-edge, NOT a photographed card. High end rich art detail. Left 52% has large quiet central space for a separate 3D planet composited later; right 48% quiet writing paper, clean inside x58%-94%, y24%-87% for text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs title space. No planet or globe. Absolutely NO text, letters, numbers, logos, watermarks or UI. Rich decoration must not cross writing area. Joyful high-end 1970s Riviera travel poster in screenprint style: coral and vermilion sun semicircle, dusty rose clouds, burnt orange palms and mustard yellow wavy borders, lavender coastline at bottom left, warm peach paper. Cream-peach quiet right writing panel. Confident retro geometric composition, visible silkscreen ink texture, stylish chic optimistic palette.",
+      "sourceFile": "exec-418304b2-915f-409f-a582-e5f5396c21a1.png",
+      "asset": "sunset-v2.png"
+    },
+    {
+      "id": "aurora",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling canvas edge-to-edge, NOT a photographed card. High end rich art detail. Left 52% has large quiet central space for a separate 3D planet composited later; right 48% quiet writing paper, clean inside x58%-94%, y24%-87% for text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs title space. No planet or globe. Absolutely NO text, letters, numbers, logos, watermarks or UI. Rich decoration must not cross writing area. Luxurious Nordic aurora gouache invitation: midnight blue starry perimeter, luminous emerald and violet ribbons across TOP EDGE and far LEFT EDGE, fine silver-foil small stars, delicate snowy spruce forest along bottom left edge. Dark ink blue quiet right writing panel for ivory lettering. Central left quiet blue opening for planet. Beautiful painterly layered glow and subtle pearlescent paper, premium winter keepsake.",
+      "sourceFile": "exec-4da9055b-9082-4bfa-8ab7-4786bf889d99.png",
+      "asset": "aurora-v2.png"
+    },
+    {
+      "id": "orbit",
+      "prompt": "Create ONE premium collectible postcard BACKGROUND, landscape 3:2 ratio, flat straight-on print artwork filling canvas edge-to-edge, NOT a photographed card. High end rich art detail. Left 52% has large quiet central space for a separate 3D planet composited later; right 48% quiet writing paper, clean inside x58%-94%, y24%-87% for text added later. Ornaments concentrated at margins and corners. Top left x8%-45%,y8%-18% needs title space. No planet or globe. Absolutely NO text, letters, numbers, logos, watermarks or UI. Rich decoration must not cross writing area. Avant-garde luxury space stationery: opalescent silver-chrome ribbon shapes around perimeter, holographic lavender mint and peach diffraction gradients, translucent frosted-glass embossed geometric orbital arcs along left border, iridescent micro-sparkles only at corners. Right quiet pearl-white writing panel. Y2K futuristic fashion editorial meets high-end invitation, tactile foil print illusion, restrained sculptural elegance. No spacecraft, no robot.",
+      "sourceFile": "exec-6d5b8a62-ee45-42c2-9ba0-18ddf918ddc1.png",
+      "asset": "orbit-v2.png"
+    }
+  ]
+}

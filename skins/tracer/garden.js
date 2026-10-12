@@ -2,7 +2,7 @@
   'use strict';
   const T=window.Tracer,M=window.TracerModel,G=window.TaskGarden;
   const home=document.getElementById('garden-home-root'),planetHost=document.getElementById('garden-planets-root');
-  const desktop=window.TracerDesktopGarden;let desktopEnabled=false,lastDesktop=null;
+  const desktop=window.TracerDesktopGarden;let desktopEnabled=false,lastDesktop=null,desktopPage=0;
   const accountContext=()=>({accountScope:window.TracerAccount?.scope||'guest',accountGeneration:window.TracerAccount?.context.generation||0,accountRestoreId:window.TracerAccount?.context.restoreId||''});
   let view=null,planetView=null,storeView=null,initialized=false,error='',busy=false;
   const tr=(zh,en)=>TracerLocale.language()==='zh'?zh:en;
@@ -36,8 +36,9 @@
   function snapshot(){
     const ws=accepted(),focus=T.focus.read(),now=Date.now(),data=G.read(ws),collection=G.collection(ws);
     const archived=new Set(data.planets.map(p=>p.projectId));
+    const focusMinutes=new Map();for(const row of focus.history)if(row.task?.id)focusMinutes.set(row.task.id,(focusMinutes.get(row.task.id)||0)+row.minutes);
     const plots=G.active(ws).filter(seed=>!archived.has(seed.projectId)).map(seed=>{
-      const task=M.findTask(ws,seed.taskId),minutes=focus.history.filter(row=>row.task?.id===seed.taskId).reduce((sum,row)=>sum+row.minutes,0);
+      const task=M.findTask(ws,seed.taskId),minutes=focusMinutes.get(seed.taskId)||0;
       const checks=task?.checklist||[],ratio=checks.length?checks.filter(row=>row.done).length/checks.length:0;
       const stage=seed.state==='mature'?4:task?.status==='review'?3:minutes>=10||ratio>=.5?2:minutes>0||ratio>0?1:0;
       return {projectId:seed.taskId,taskId:seed.taskId,parentProjectId:seed.projectId,taskExists:!!task,name:seed.title,plant:seed.plantKind,stage,
@@ -59,23 +60,24 @@
       error:error||(T.store.dirty&&!T.store.inflight?tr('有更改等待保存，收藏以已保存的记录为准。','Some changes await saving. Collections reflect saved records.') :''),busy:busy||T.store.inflight};
   }
   function publishDesktop(){
-    if(!desktop||!T.store.data||T.store.lost||window.TracerAccount?.locked||window.TracerAccount?.switching)return;
-    const ws=accepted(),garden=ws.taskGarden,account=accountContext(),locked=!!(busy||T.store.dirty||T.store.inflight||T.store.conflict),language=TracerLocale.language();
-    const key=JSON.stringify([account,locked,language,error]);if(lastDesktop?.garden===garden&&lastDesktop.key===key)return;
-    const archived=new Set((garden?.planets||[]).map(p=>p.projectId)),active=G.active(ws).filter(s=>!archived.has(s.projectId));
-    const plants=active.slice().sort((a,b)=>Number(b.state==='mature')-Number(a.state==='mature')).slice(0,6).map(s=>({id:s.taskId,title:s.title,kind:s.plantKind,stage:s.state==='mature'?4:M.findTask(ws,s.taskId)?.status==='review'?3:1,variant:s.variant,canHarvest:s.state==='mature'}));
-    desktop.update({...account,language,busy:locked,error,garden:{farmId:garden?.market?.equipped.farmId||'meadow',plants,total:active.length}});lastDesktop={garden,key};
+    if(!desktop||!T.store.data||!T.focus||T.store.lost||window.TracerAccount?.locked||window.TracerAccount?.switching)return;
+    const data=snapshot(),account=accountContext(),locked=!!(busy||T.store.dirty||T.store.inflight||T.store.conflict);
+    desktopPage=Math.min(desktopPage,Math.max(0,Math.ceil(data.plots.length/6)-1));
+    const plants=data.plots.slice(desktopPage*6,desktopPage*6+6).map(p=>({id:p.taskId,title:p.name,kind:p.plant,stage:p.stage,variant:'normal',canHarvest:p.stage===4}));
+    const value={...account,language:data.language,busy:locked,error,garden:{farmId:data.economy.equippedFarmId||'meadow',plants,total:data.plots.length,placements:data.collectibles.placements,level:data.journey.level}};
+    const key=JSON.stringify(value);if(key!==lastDesktop){desktop.update(value);lastDesktop=key;}return data;
   }
+  document.addEventListener('tracer-garden-page',event=>{desktopPage=event.detail;publishDesktop();});
   function render(){
-    publishDesktop();
+    const desktopSnapshot=publishDesktop();
     if((document.hidden || document.tracerHidden)||!T.store.data||!T.focus)return;
     try{
       if(T.currentSec()==='garden'){
         if(!view)view=TracerGardenHomeView(home,action);
-        view.update(snapshot());
+        view.update(desktopSnapshot||snapshot());
       }else if(T.currentSec()==='shop'){
         if(!storeView)storeView=TracerGardenStoreView(document.getElementById('garden-store-root'),action);
-        storeView.update(snapshot());
+        storeView.update(desktopSnapshot||snapshot());
       }else if(T.currentSec()==='planets'){
         if(!planetView)planetView=TracerGardenPlanetsView(planetHost,planetAction);
         planetView.update({language:TracerLocale.language(),planets:G.read(accepted()).planets,error:error||(T.store.dirty&&!T.store.inflight?failure():'')});

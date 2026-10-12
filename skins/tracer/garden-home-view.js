@@ -108,6 +108,7 @@
       if(signature!==eventSignature){eventSignature=signature;eventList.replaceChildren();for(const event of events){const row=el('li','garden-home-event',eventList);row.dataset.eventType=event.type;const mark=el('span','garden-home-event-icon',row);mark.innerHTML=icons[event.type==='harvest'?'check':event.type==='seed'?'leaf':'bloom'];const content=el('div','garden-home-event-content',row);el('span','garden-home-event-title',content,(event.type==='seed'?tr('种下 · ','Planted · '):event.type==='harvest'?tr('收藏 · ','Collected · '):tr('盛放 · ','Bloomed · '))+event.title);const details=el('span','garden-home-event-details',content);const parts=[String(event.projectName||''),date(event.at,true)].filter(Boolean);set(details,parts.join(' · '));}journalEmpty.hidden=events.length>0;}
 
       world.update({...snapshot,plots:items,scenePlots:items.slice(pageIndex*6,pageIndex*6+6)});
+      doc.dispatchEvent(new realm.CustomEvent('tracer-garden-page',{detail:pageIndex}));
       market?.update({language,collectibles:snapshot.collectibles,inventory:snapshot.inventory||[],economy:snapshot.economy||{},farms:snapshot.farms||[],busy:!!snapshot.busy,error:snapshot.error||''});
       set(errorText,typeof snapshot.error==='string'?snapshot.error:'');set(retry.label,tr('重试保存','Retry save'));error.hidden=!errorText.textContent;
     }

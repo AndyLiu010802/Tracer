@@ -1,0 +1,30 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{chromium}=require('../.cache/desktop-qa-tools/node_modules/playwright');
+const root=path.resolve(__dirname,'..'),assets=path.join(root,'skins/tracer'),out=fs.mkdtempSync(path.join(root,'.cache/garden-desktop-sync-'));
+(async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{
+ const page=await browser.newPage({viewport:{width:440,height:330}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>{window.sent=[];window.GardenDesktop={send:v=>sent.push(v),onSnapshot:fn=>(window.update=fn,()=>{}),onVisibility:fn=>(window.visibility=fn,()=>{})};});
+ await page.route('**/*',route=>{const u=new URL(route.request().url()),file=path.resolve(assets,'.'+u.pathname);return u.origin==='http://garden-sync.test'&&file.startsWith(assets+path.sep)&&fs.existsSync(file)?route.fulfill({path:file}):route.abort();});
+ await page.goto('http://garden-sync.test/garden-desktop.html');
+ const state={nativeSessionId:'test',desktopVisible:true,language:'zh',garden:{farmId:'meadow',level:4,total:3,plants:[{id:'a',kind:'sunflower',title:'完成报告',stage:4,canHarvest:true},{id:'b',kind:'apple',title:'设计工作',stage:3},{id:'c',kind:'lavender',title:'阅读',stage:2}],placements:[{itemId:'reading_bench',x:25,y:67,scale:1,orientation:0,flip:false,visible:true},{itemId:'moon_fountain',x:70,y:76,scale:1.2,orientation:2,flip:true,visible:true}]}};
+ const push=()=>page.evaluate(s=>update(s),state);
+ await push();await page.waitForFunction(()=>document.querySelector('.garden-world')?.dataset.art==='ready');
+ assert.equal(await page.locator('.garden-world-ornament[data-item-id=moon_fountain] svg svg').evaluate(n=>getComputedStyle(n).transform),'none','mirror must not transform the atlas crop a second time');
+ assert.equal(await page.locator('.garden-world-plot[data-project-id=a]').evaluate(n=>getComputedStyle(n,'::after').display),'grid');
+ assert.equal(await page.locator('.garden-world-plot[data-project-id=a] .garden-plant-sprite').getAttribute('data-playback'),'static','desktop idle scene does not need an animation loop');
+ for(const farmId of ['meadow','coast','sakura','alpine','dunes','cyber']){state.garden.farmId=farmId;await push();await page.waitForFunction(()=>document.querySelector('.garden-world')?.dataset.art==='ready');
+  const data=await page.evaluate(()=>({farm:document.querySelector('.garden-world').dataset.farm,art:document.querySelector('.garden-world-backdrop').getAttribute('src'),ornaments:[...document.querySelectorAll('.garden-world-ornament')].map(n=>({id:n.dataset.itemId,x:n.style.left,y:n.style.top,width:n.style.width,orientation:n.dataset.orientation})),plants:[...document.querySelectorAll('.garden-world-plot')].slice(0,3).map(n=>({id:n.dataset.projectId,x:n.style.left,y:n.style.top}))}));
+  const region=require('../skins/tracer/garden-regions')[farmId];assert.equal(data.art,region.image);assert.equal(data.ornaments.length,2);assert.equal(data.ornaments[0].x,'25%');assert.equal(data.ornaments[1].orientation,'2');assert.equal(data.plants[0].x,region.anchors[0][0]+'%');await page.waitForLoadState('networkidle');await page.screenshot({path:path.join(out,farmId+'.png')});
+ }
+ state.garden.farmId='meadow';state.garden.placements[0]={...state.garden.placements[0],x:61,y:72,scale:1.5,orientation:5,flip:true};state.garden.placements.pop();await push();
+ assert.equal(await page.locator('.garden-world-ornament').count(),1);assert.equal(await page.locator('.garden-world-ornament').evaluate(n=>n.style.width),'18%');assert.equal(await page.locator('.garden-world-ornament').evaluate(n=>n.style.getPropertyValue('--ornament-flip')),'-1');
+ await page.click('.garden-world-plot[data-project-id=a]');assert.equal(await page.evaluate(()=>sent.filter(v=>v.type==='harvest').length),1);assert(await page.locator('.garden-world-plot[data-project-id=a]').isDisabled());
+ state.garden.plants.shift();state.garden.total=2;await push();assert.equal(await page.locator('.garden-world-plot[data-project-id=a]').count(),0);
+ await page.click('#garden-view');await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.decorationTextures==='1');await page.screenshot({path:path.join(out,'orbit.png')});
+ const before=await page.locator('canvas').getAttribute('data-frames');await page.waitForTimeout(350);assert.equal(await page.locator('canvas').getAttribute('data-frames'),before,'idle orbit should not render continuously');
+ state.garden.placements=[];await push();await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.decorations==='0');
+ await page.click('#garden-view');assert.equal(await page.locator('.garden-world-ornament').count(),0);
+ await page.evaluate(()=>visibility({visible:false,clear:true}));assert.equal(await page.locator('.garden-world,canvas').count(),0);
+ await push();await page.waitForFunction(()=>document.querySelector('.garden-world')?.dataset.art==='ready');assert.deepEqual(errors,[]);
+ fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({regions:6,move:true,scale:true,orientation:true,flip:true,remove:true,harvest:true,orbit:true,idle:true,hideAndRestore:true,errors},null,2));console.log(out);
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

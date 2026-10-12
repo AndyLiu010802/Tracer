@@ -27,6 +27,8 @@
   EDITIONS.pc_sunset={"tag": "10 / SUNSET PASSAGE", "subtitle": ["落日圆章 · 暖杏天空", "Sunset seal · Apricot sky"], "scene": "sunset"};
   EDITIONS.pc_aurora={"tag": "11 / AURORA VOYAGE", "subtitle": ["极光织带 · 深海夜色", "Aurora ribbons · Deep ocean night"], "scene": "aurora"};
   EDITIONS.pc_orbit={"tag": "12 / ORBITAL POST", "subtitle": ["行星轨迹 · 紫墨金线", "Orbital paths · Violet and gold"], "scene": "orbit"};
+  const ART=root.TracerPostcardArt,WORLD=root.TracerPostcardWorldLayout;
+  for(const [id,art]of Object.entries(ART.catalog))EDITIONS[id].subtitle=art.subtitle;
   const grainCache=new WeakMap();
   function paperGrain(c){
     const doc=c.canvas.ownerDocument;let tile=grainCache.get(doc);
@@ -46,15 +48,20 @@
     text(c,night?'ASTRA':'FLORA',x+29,y+153,108,17,1,ink,MONO);text(c,'01',x+107,y+25,37,23,1,ink,SERIF);c.restore();
   }
   function postmark(c,x,y,color,date){c.save();c.translate(x,y);c.rotate(-.16);c.strokeStyle=color;c.fillStyle=color;c.globalAlpha=.65;c.lineWidth=2.5;for(const r of [85,72]){c.beginPath();c.arc(0,0,r,0,Math.PI*2);c.stroke();}c.font='18px '+MONO;c.textAlign='center';c.textBaseline='middle';c.fillText('TRACER POST',0,-37);c.fillText(date,0,1);c.fillText('WITH LOVE',0,38);for(let i=0;i<4;i++){c.beginPath();for(let j=0;j<=180;j+=3){const py=-42+i*27+Math.sin(j/29)*8;if(j===0)c.moveTo(72+j,py);else c.lineTo(72+j,py);}c.stroke();}c.restore();}
-  function draw(canvas,{item,planet,globe,language='zh',recipient='',message='',sender='',locked=false,stickers=[],stickerImages=new Map()},scale=1){
-    canvas.width=Math.round(WIDTH*scale);canvas.height=Math.round(HEIGHT*scale);const c=canvas.getContext('2d');c.scale(scale,scale);
+  function draw(canvas,{item,planet,globe,background=null,worldLayout=null,language='zh',recipient='',message='',sender='',locked=false,stickers=[],stickerImages=new Map()},scale=1){
+    const pixelWidth=Math.round(WIDTH*scale),pixelHeight=Math.round(HEIGHT*scale);if(canvas.width!==pixelWidth)canvas.width=pixelWidth;if(canvas.height!==pixelHeight)canvas.height=pixelHeight;const c=canvas.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,pixelWidth,pixelHeight);c.scale(scale,scale);
     const en=language==='en',t=(zh,english)=>en?english:zh,forest=item.id==='pc_forest',vintage=item.id==='pc_letter',night=item.id==='pc_night';
     const edition=EDITIONS[item.id],scene=edition.scene;
     let paper=night?'#182735':vintage?'#eee3cb':forest?'#f1ecdd':'#f7f2e9',ink=night?'#ece5d0':vintage?'#343e43':'#2d4438',accent=night?'#c5ae79':vintage?'#a5533b':forest?'#6d7956':'#b25e45',field=night?'#1e3541':forest?'#243d32':vintage?'#dce0ca':'#e3e7d7';
     if(scene)[paper,field,ink,accent]=item.colors;
+    const artwork=ART.catalog[item.id];if(background){ink=artwork.ink;accent=artwork.accent;paper=['pc_night','pc_aurora'].includes(item.id)?'#182735':'#f7f0e1';}
+    canvas.dataset.postcardArt=background?item.id:'';
     const stampDate=new Date(planet.completedAt),validDate=Number.isFinite(stampDate.getTime()),date=validDate?stampDate.toLocaleDateString(en?'en-US':'zh-CN',{year:'numeric',month:'long',day:'numeric'}):t('纪念日未记录','Date not recorded'),shortDate=validDate?[stampDate.getFullYear(),String(stampDate.getMonth()+1).padStart(2,'0'),String(stampDate.getDate()).padStart(2,'0')].join('.'):'UNDATED';
     c.fillStyle=paper;c.fillRect(0,0,WIDTH,HEIGHT);
-    if(scene){
+    if(background){
+      c.drawImage(background,0,0,WIDTH,HEIGHT);
+      if(globe){const r=WORLD.fittedRect(WORLD.forStyle(worldLayout,artwork.centre),WORLD.contentBox(globe,canvas.ownerDocument));c.drawImage(globe,r.x,r.y,r.width,r.height);canvas.dataset.worldDraw=JSON.stringify(r);}
+    }else if(scene){
       c.fillStyle=field;c.fillRect(66,66,1190,1468);c.save();c.beginPath();c.rect(66,66,1190,1468);c.clip();
       if(scene==='coast'||scene==='dunes'||scene==='aurora'){
         for(let i=0;i<12;i++){c.beginPath();for(let x=66;x<=1256;x+=12){const y=490+i*87+Math.sin(x/(scene==='aurora'?245:180)+i*.45)*90;if(x===66)c.moveTo(x,y);else c.lineTo(x,y);}c.strokeStyle=i%3?accent:paper;c.globalAlpha=scene==='aurora'?.35:.3;c.lineWidth=scene==='aurora'?28:3;c.stroke();}c.globalAlpha=1;
@@ -101,6 +108,7 @@
       c.fillStyle=accent;c.beginPath();c.arc(1175,130,19,0,Math.PI*2);c.fill();text(c,'A NOTE TO KEEP',1375,133,660,31,1,accent,MONO);text(c,'THE SLOW LIVING SERIES',1375,194,700,20,1,accent,MONO);
       line(c,1375,271,1850,271,accent,.6,3);
     }
+    if(!background){
     postage(c,2140,116,{paper,ink:accent,field:night?'#304650':vintage?'#d7dbc3':'#dbe0cd',globe,night});
     if(vintage||forest)postmark(c,2020,258,accent,shortDate);else if(night)star(c,2015,273,27,accent);
     const x=1375,w=865,headingY=vintage?431:439;
@@ -114,9 +122,21 @@
     line(c,x,1386,2265,1386,accent,.36);const flowers=planet.flowers||[];
     text(c,(planet.taskCount??flowers.length)+t(' 项完成',' TASKS FINISHED')+'  /  '+flowers.length+t(' 朵纪念花',' FLOWERS KEPT'),x,1420,w,22,1,accent,MONO);
     text(c,'TRACER POST  ·  '+EDITIONS[item.id].tag,x,1481,w,17,1,accent,MONO);
-    paperGrain(c);
+    }else{
+      const x=1400,w=745;
+      text(c,edition.tag,x,338,w,22,1,accent,MONO);
+      line(c,x,398,x+w,398,accent,.45,2);
+      text(c,planet.name||t('未命名项目','Untitled project'),x,450,w,52,3,ink,SERIF);
+      text(c,date,x,702,w,24,1,accent,MONO);
+      text(c,(en?'DEAR  ':'致  ')+(recipient||t('未来的自己','My future self')),x,788,w,31,2,ink,SERIF);
+      text(c,message||t('你完成的事，开成了花。愿这颗小小的星球，记得每一段认真生活的时光。','What you finished has blossomed. May this little world remember the time and care you gave.'),x,890,w,29,7,ink,SERIF);
+      text(c,(en?'WITH LOVE,  ':'来自  ')+(sender||t('此刻的我','Me, today')),x,1208,w,27,2,ink,SERIF);
+      line(c,x,1320,x+w,1320,accent,.35);
+      text(c,(planet.taskCount??planet.flowers?.length??0)+t(' 项完成',' TASKS FINISHED')+'  /  '+(planet.flowers?.length||0)+t(' 朵纪念花',' FLOWERS KEPT'),x,1348,w,21,1,accent,MONO);
+    }
+    if(!background)paperGrain(c);
     for(const placement of stickers){const image=stickerImages.get(placement.itemId);if(!image||!image.complete||!image.naturalWidth)continue;c.save();c.translate(placement.x/100*WIDTH,placement.y/100*HEIGHT);c.rotate(placement.rotation*Math.PI/180);const size=placement.size*4;c.drawImage(image,-size/2,-size/2,size,size);c.restore();}
-    if(locked){c.save();c.fillStyle=paper;c.globalAlpha=.94;c.fillRect(730,690,940,180);c.globalAlpha=1;line(c,750,710,1650,710,accent,.5);text(c,t('样式预览 · 购买后可导出','STYLE PREVIEW · UNLOCK TO EXPORT'),792,761,830,30,1,ink);c.restore();}
+    if(locked){c.save();c.fillStyle=paper;c.globalAlpha=.94;c.fillRect(220,1348,850,88);c.globalAlpha=1;text(c,t('样式预览 · 购买后可导出','STYLE PREVIEW · UNLOCK TO EXPORT'),252,1377,800,23,1,ink);c.restore();}
   }
   function filename(name){return (String(name||'planet').replace(/[<>:"/\\|?*\u0000-\u001f]/g,'-').replace(/[. ]+$/g,'').slice(0,80)||'planet')+'-postcard.png';}
   let active=null;
@@ -126,14 +146,28 @@
     el('div','postcard-eyebrow',head,'TRACER · THE LITTLE POST OFFICE');const title=el('h2','',head,t('寄出一颗小星球','Send a little world'));title.id='postcard-title';dialog.setAttribute('aria-labelledby',title.id);
     const close=el('button','postcard-close',head,t('关闭','Close'));close.type='button';close.onclick=()=>dialog.close();
     const layout=el('div','postcard-layout',dialog),preview=el('div','postcard-preview',layout),sheet=el('div','postcard-sheet',preview),canvas=el('canvas','',sheet),layer=el('div','postcard-sticker-layer',sheet);canvas.setAttribute('role','img');canvas.setAttribute('aria-label',t('明信片预览：左侧为星球，右侧为寄语','Postcard preview: world on the left, message on the right'));
+    const worldHandle=el('button','postcard-world-handle',sheet);worldHandle.type='button';worldHandle.setAttribute('aria-label',t('拖动星球，或用方向键移动','Drag the world, or use arrow keys'));worldHandle.title=t('拖动调整星球位置','Drag to position your world');
+    const scope=root.TracerAccount?.scope||'guest';let preferenceStorage;try{preferenceStorage=root.localStorage;}catch{}
+    let worldLayout=WORLD.read(preferenceStorage,scope,planet.id),worldDrag=null;
     const form=el('div','postcard-form',layout);el('h3','',form,t('挑一张喜欢的信纸','Choose your stationery'));
     const styles=el('div','postcard-styles',form);styles.setAttribute('role','group');styles.setAttribute('aria-label',t('明信片样式','Postcard styles'));
     const items=collection.items,owned=stickerCollection.items.filter(i=>i.owned),images=new Map(),nodes=new Map(),buttons=new Map();
+    const backgrounds=ART.loader(doc);
     let item=items.find(i=>i.owned)||items[0],globe=null,dead=false,exporting=false,pending=false,failed=null,selected=null,drag=null,raf=0;
     let placements=stickerCollection.placements.filter(p=>p.targetType==='postcard'&&p.targetId===planet.id&&p.visible&&owned.some(i=>i.id===p.itemId)).map(p=>({...p}));
-    for(const row of items){const b=el('button','postcard-style',styles,row.name[en?1:0]+(row.owned?'':t(' · 未购买',' · Locked')));b.type='button';b.dataset.postcardStyle=row.id;b.style.setProperty('--postcard-swatch',row.colors[0]);b.onclick=()=>{item=row;render();};buttons.set(row.id,b);}
+    for(const row of items){const b=el('button','postcard-style',styles,row.name[en?1:0]+(row.owned?'':t(' · 未购买',' · Locked')));b.type='button';b.dataset.postcardStyle=row.id;b.style.setProperty('--postcard-swatch',row.colors[0]);const thumb=doc.createElement('img');thumb.src=ART.catalog[row.id].src;thumb.alt='';thumb.loading='lazy';thumb.decoding='async';b.prepend(thumb);b.onclick=()=>{item=row;ensureArt();render();};buttons.set(row.id,b);}
     function schedule(){if(!raf&&!dead)raf=root.requestAnimationFrame(()=>{raf=0;render();});}
     function field(label,multiline,max,value){const l=el('label','postcard-field',form,label),input=el(multiline?'textarea':'input','',l);input.maxLength=max;input.value=value;input.addEventListener('input',schedule);return input;}
+    const worldControls=el('div','postcard-world-controls',form);el('p','postcard-help',worldControls,t('直接拖动星球调整位置，用滑杆缩放。此设备会记住这颗星球的排版。','Drag the world to position it; use the slider to resize. This device remembers this world’s layout.'));
+    const sizeLabel=el('label','postcard-world-size',worldControls,t('星球大小','World size')),sizeOutput=el('output','',sizeLabel),worldSize=el('input','',sizeLabel);worldSize.type='range';worldSize.min='20';worldSize.max='72';worldSize.step='1';worldSize.value=worldLayout.size;worldSize.setAttribute('aria-label',t('星球大小','World size'));
+    const worldReset=el('button','store-button postcard-world-reset',worldControls,t('复位星球','Reset world'));worldReset.type='button';
+    function rememberWorld(){if(!isCurrent()){dialog.close();return;}WORLD.save(preferenceStorage,scope,planet.id,worldLayout);}
+    worldSize.oninput=()=>{worldLayout=WORLD.normalize({...worldLayout,size:Number(worldSize.value)});rememberWorld();schedule();};
+    worldReset.onclick=()=>{worldLayout={...WORLD.defaults};rememberWorld();render();};
+    worldHandle.onpointerdown=e=>{if(e.button!==0||!globe)return;const r=sheet.getBoundingClientRect();worldDrag={id:e.pointerId,x:e.clientX,y:e.clientY,layout:{...worldLayout},width:r.width,height:r.height};worldHandle.setPointerCapture(e.pointerId);worldHandle.classList.add('is-dragging');e.preventDefault();};
+    worldHandle.onpointermove=e=>{if(!worldDrag||worldDrag.id!==e.pointerId)return;worldLayout=WORLD.normalize({...worldLayout,x:worldDrag.layout.x+(e.clientX-worldDrag.x)/worldDrag.width*100,y:worldDrag.layout.y+(e.clientY-worldDrag.y)/worldDrag.height*100});schedule();};
+    const finishWorld=e=>{if(!worldDrag||worldDrag.id!==e.pointerId)return;worldDrag=null;worldHandle.classList.remove('is-dragging');rememberWorld();};worldHandle.onpointerup=finishWorld;worldHandle.onpointercancel=finishWorld;
+    worldHandle.onkeydown=e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.shiftKey?5:1;worldLayout=WORLD.normalize({...worldLayout,x:worldLayout.x+(e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0),y:worldLayout.y+(e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0)});rememberWorld();render();};
     const recipient=field(t('寄给','To'),false,40,t('未来的自己','My future self'));
     const message=field(t('写一句寄语','Your message'),true,180,t('你完成的事，开成了花。愿这颗小小的星球，记得每一段认真生活的时光。','What you finished has blossomed. May this little world remember the time and care you gave.'));
     const sender=field(t('署名','From'),false,40,t('此刻的我','Me, today'));
@@ -148,36 +182,41 @@
     const stickerShop=el('button','store-button',stickerBox,t('去商店选贴纸','Browse stickers'));stickerShop.type='button';stickerShop.onclick=()=>{dialog.close();onStickerShop?.();};
     const help=el('p','postcard-help',form),status=el('p','postcard-status',form);status.setAttribute('role','status');
     const retry=el('button','store-button',form,t('重试保存贴纸','Retry saving stickers'));retry.type='button';retry.hidden=true;retry.onclick=()=>{if(failed&&!pending)void commit(failed);};
+    const artStatus=el('p','postcard-art-status postcard-help',form);artStatus.setAttribute('role','status');
+    const artRetry=el('button','store-button postcard-art-retry',form,t('重新载入信纸','Reload stationery'));artRetry.type='button';artRetry.hidden=true;artRetry.onclick=()=>ensureArt(true);
+    function ensureArt(retry=false){backgrounds.load(item.id,retry).then(()=>{if(!dead)render();});render();}
     const actions=el('div','postcard-actions',form),save=el('button','store-button',actions,t('导出明信片 PNG','Export postcard PNG')),shop=el('button','store-button',actions,t('去商店挑选样式','Browse styles in the shop'));save.type=shop.type='button';shop.onclick=()=>{dialog.close();onShop?.();};
     function renderStickers(){const live=new Set(placements.map(p=>p.id));for(const [id,node]of nodes)if(!live.has(id)){node.remove();nodes.delete(id);}for(const p of placements){let node=nodes.get(p.id);if(!node){node=el('button','postcard-placed-sticker',layer);node.type='button';node.dataset.placement=p.id;const img=el('img','',node);img.src='/sticker-art/'+p.itemId+'-v1.png';img.alt='';img.draggable=false;node.setAttribute('aria-label',owned.find(i=>i.id===p.itemId)?.name[en?1:0]||t('贴纸','Sticker'));node.onclick=()=>{selected=p.id;renderStickers();};nodes.set(p.id,node);}node.style.left=p.x+'%';node.style.top=p.y+'%';node.style.width=p.size*4/WIDTH*100+'%';node.style.transform='translate(-50%,-50%) rotate('+p.rotation+'deg)';node.setAttribute('aria-pressed',String(p.id===selected));node.disabled=pending||!!failed;}
       for(const b of toolButtons)b.disabled=!selected||pending||!!failed;for(const b of paletteButtons)b.disabled=pending||!!failed||placements.length>=24;}
-    function state(stickers=[]){return{item,planet,globe,language,recipient:recipient.value,message:message.value,sender:sender.value,locked:!item.owned,stickers,stickerImages:images};}
-    function render(){if(dead)return;draw(canvas,state(),.5);renderStickers();for(const [id,b]of buttons)b.setAttribute('aria-pressed',String(id===item.id));save.disabled=!globe||!item.owned||exporting||pending||!!failed||placements.some(p=>!images.get(p.itemId)?.naturalWidth);retry.hidden=!failed;help.textContent=!item.owned?t('这款信纸需 '+item.price+' 金币，购买后可永久使用。','This stationery costs '+item.price+' coins and is yours forever.'):t('PNG 2400 × 1600 · 含已摆放贴纸 · 寄语最多 180 字','PNG 2400 × 1600 · Includes your stickers · Up to 180 characters');}
+    function state(stickers=[]){return{item,planet,globe,worldLayout,background:backgrounds.get(item.id)?.status==='ready'?backgrounds.get(item.id).image:null,language,recipient:recipient.value,message:message.value,sender:sender.value,locked:!item.owned,stickers,stickerImages:images};}
+    function render(){if(dead)return;const art=backgrounds.get(item.id);artRetry.hidden=art?.status!=='error';artStatus.textContent=art?.status==='ready'?'':art?.status==='error'?t('信纸未能载入，请重试后导出。','Stationery failed to load. Retry before exporting.'):t('正在载入艺术信纸…','Loading art stationery…');draw(canvas,state(),.5);const visualLayout=WORLD.forStyle(worldLayout,ART.catalog[item.id].centre);worldHandle.style.left=visualLayout.x+'%';worldHandle.style.top=visualLayout.y+'%';worldHandle.style.width=worldLayout.size*.76+'%';worldHandle.disabled=!globe;worldSize.value=worldLayout.size;sizeOutput.value=Math.round(worldLayout.size/WORLD.defaults.size*100)+'%';canvas.dataset.worldLayout=JSON.stringify(worldLayout);renderStickers();for(const [id,b]of buttons)b.setAttribute('aria-pressed',String(id===item.id));save.disabled=art?.status!=='ready'||!globe||!item.owned||exporting||pending||!!failed||placements.some(p=>!images.get(p.itemId)?.naturalWidth);retry.hidden=!failed;help.textContent=!item.owned?t('这款信纸需 '+item.price+' 金币，购买后可永久使用。','This stationery costs '+item.price+' coins and is yours forever.'):t('PNG 2400 × 1600 · 含已摆放贴纸 · 寄语最多 180 字','PNG 2400 × 1600 · Includes your stickers · Up to 180 characters');}
     async function commit(p){if(!isCurrent()){dialog.close();return;}pending=true;failed=null;render();status.textContent=t('正在保存贴纸…','Saving stickers…');try{if(!onStickerChange)throw Error('save-unavailable');await onStickerChange({...p});if(dead)return;status.textContent=t('贴纸已保存','Stickers saved');}catch{if(dead)return;failed={...p};status.textContent=t('贴纸尚未保存，请重试后导出。','Stickers have not saved. Retry before exporting.');}finally{pending=false;render();}}
     layer.addEventListener('pointerdown',e=>{const node=e.target.closest('[data-placement]');if(!node||pending||failed||e.button!==0)return;const p=placements.find(p=>p.id===node.dataset.placement);selected=p.id;drag={id:e.pointerId,p,x:e.clientX,y:e.clientY,px:p.x,py:p.y};node.setPointerCapture(e.pointerId);e.preventDefault();renderStickers();});
     layer.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const r=layer.getBoundingClientRect();drag.p.x=Math.max(0,Math.min(100,drag.px+(e.clientX-drag.x)/r.width*100));drag.p.y=Math.max(0,Math.min(100,drag.py+(e.clientY-drag.y)/r.height*100));renderStickers();});
     const finish=e=>{if(!drag||drag.id!==e.pointerId)return;const p=drag.p,moved=p.x!==drag.px||p.y!==drag.py;drag=null;if(moved)void commit(p);};layer.addEventListener('pointerup',finish);layer.addEventListener('pointercancel',finish);
     layer.addEventListener('keydown',e=>{const p=placements.find(p=>p.id===e.target.dataset.placement);if(!p||pending||failed||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();p.x=Math.max(0,Math.min(100,p.x+(e.key==='ArrowLeft'?-1:e.key==='ArrowRight'?1:0)));p.y=Math.max(0,Math.min(100,p.y+(e.key==='ArrowUp'?-1:e.key==='ArrowDown'?1:0)));void commit(p);});
     save.onclick=async()=>{if(!isCurrent()){dialog.close();return;}if(save.disabled)return;exporting=true;render();status.textContent=t('正在生成图片…','Preparing your image…');try{const output=doc.createElement('canvas');draw(output,state(placements));const blob=await new Promise((resolve,reject)=>output.toBlob(b=>b?resolve(b):reject(Error('png-export')),'image/png'));if(dead)return;const url=root.URL.createObjectURL(blob),a=el('a','',doc.body);a.href=url;a.download=filename(planet.name);a.click();a.remove();root.setTimeout(()=>root.URL.revokeObjectURL(url),60000);status.textContent=t('图片已生成，请在下载位置查看。','Image ready. Check your downloads.');}catch{if(!dead)status.textContent=t('导出失败，请重试。','Export failed. Please try again.');}finally{exporting=false;render();}};
-    const cleanup=()=>{if(dead)return;dead=true;root.clearInterval(scopeTimer);if(raf)root.cancelAnimationFrame(raf);for(const image of images.values()){image.onload=null;image.onerror=null;}images.clear();nodes.clear();dialog.remove();if(active===cleanup)active=null;previous?.focus({preventScroll:true});};const scopeTimer=root.setInterval(()=>{if(!isCurrent())cleanup();},500);active=cleanup;dialog.addEventListener('close',cleanup);dialog.showModal();close.focus();for(const p of placements)loadSticker(p.itemId);render();status.textContent=t('正在绘制你的星球…','Rendering your world…');
+    const cleanup=()=>{if(dead)return;dead=true;backgrounds.destroy();root.clearInterval(scopeTimer);if(raf)root.cancelAnimationFrame(raf);for(const image of images.values()){image.onload=null;image.onerror=null;}images.clear();nodes.clear();dialog.remove();if(active===cleanup)active=null;previous?.focus({preventScroll:true});};const scopeTimer=root.setInterval(()=>{if(!isCurrent())cleanup();},500);active=cleanup;dialog.addEventListener('close',cleanup);dialog.showModal();close.focus();for(const p of placements)loadSticker(p.itemId);ensureArt();status.textContent=t('正在绘制你的星球…','Rendering your world…');
     Promise.resolve().then(snapshot).then(result=>{if(dead)return;globe=result;if(!pending&&!failed)status.textContent='';render();}).catch(()=>{if(!dead)status.textContent=t('星球图片未能载入，请关闭后重试。','The world could not load. Close and try again.');});return cleanup;
   }
   function shop(host,onAction){
-    const doc=host.ownerDocument,previews=new Map();let state={},signature='',pending=false,dead=false,globe=null,loading=false;
+    const doc=host.ownerDocument,previews=new Map(),backgrounds=ART.loader(doc);let observer=null,generation=0;let state={},signature='',pending=false,dead=false,globe=null,loading=false;
     const example={id:'postcard-sample',name:'A world to keep',completedAt:Date.UTC(2026,8,24),taskCount:24,flowers:Array.from({length:24},(_,i)=>({taskId:'sample-'+i,plantKind:['wildflower','sunflower','lavender','apple','peach','cherry'][i%6]}))};
-    const render=()=>{if(dead)return;const en=state.language==='en',t=(zh,enText)=>en?enText:zh,items=state.postcards?.items||[],next=JSON.stringify([items,state.language,state.economy?.balance,state.busy,state.error,pending]);if(signature===next)return;signature=next;host.replaceChildren();
+    const render=()=>{if(dead)return;const en=state.language==='en',t=(zh,enText)=>en?enText:zh,items=state.postcards?.items||[],next=JSON.stringify([items,state.language,state.economy?.balance,state.busy,state.error,pending]);if(signature===next)return;signature=next;observer?.disconnect();const current=++generation;host.replaceChildren();
+      const paint=(canvas,item,key)=>backgrounds.load(item.id).then(background=>{if(dead||current!==generation)return;if(background){draw(canvas,{item,planet:{...example,name:t('每一份努力，都开成了花。','Every little effort, in bloom.')},globe,background,language:state.language},.3);canvas.dataset.artReady='true';}else{const retry=doc.createElement('button');retry.className='store-button postcard-art-retry';retry.textContent=t('重新载入预览','Reload preview');retry.onclick=()=>{retry.remove();backgrounds.load(item.id,true).then(()=>paint(canvas,item,key));};canvas.parentElement?.append(retry);}});
+      observer=new doc.defaultView.IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){observer.unobserve(entry.target);const canvas=entry.target;paint(canvas,items.find(i=>i.id===canvas.dataset.itemId),canvas.dataset.key);}},{rootMargin:'240px'});
       const el=(tag,cls,parent,copy)=>{const n=doc.createElement(tag);n.className=cls;if(copy!==undefined)n.textContent=copy;parent.append(n);return n;};
       el('h2','',host,t('把一颗星球，收藏在信纸上。','A little world, kept on paper.'));el('p','postcard-help',host,t('基础信纸免费。其他样式用金币购买，一次收藏，可为所有星球反复导出。下方为样式示意，制作时会换成你的星球。','The first style is free. Collect more with coins and export as often as you like. Sample worlds below become your own when you create a postcard.'));
       const grid=el('div','postcard-shop-grid',host);
       for(const item of items){const card=el('article','postcard-shop-card',grid),art=el('div','postcard-shop-art',card),key=item.id+':'+en+':'+!!globe;let thumbnail=previews.get(key);
-        if(!thumbnail){thumbnail=doc.createElement('canvas');draw(thumbnail,{item,planet:{...example,name:t('每一份努力，都开成了花。','Every little effort, in bloom.')},globe,language:state.language},.3);previews.set(key,thumbnail);}art.append(thumbnail);thumbnail.setAttribute('role','img');thumbnail.setAttribute('aria-label',item.name[en?1:0]);
+        if(!thumbnail){thumbnail=doc.createElement('canvas');draw(thumbnail,{item,planet:{...example,name:t('每一份努力，都开成了花。','Every little effort, in bloom.')},globe,language:state.language},.3);previews.set(key,thumbnail);}art.append(thumbnail);thumbnail.dataset.itemId=item.id;thumbnail.dataset.key=key;if(thumbnail.dataset.artReady!=='true')observer.observe(thumbnail);thumbnail.setAttribute('role','img');thumbnail.setAttribute('aria-label',item.name[en?1:0]);
         el('span','postcard-edition',card,EDITIONS[item.id].tag);el('h3','',card,item.name[en?1:0]);el('p','postcard-help',card,EDITIONS[item.id].subtitle[en?1:0]);el('p','postcard-shop-price',card,item.price===0?t('免费信纸 · 已拥有','Free stationery · Yours'):item.owned?t('已收藏 · 永久使用','Collected · Yours forever'):item.price+t(' 金币 · 永久使用',' coins · Yours forever'));
         const b=el('button','store-button',card,item.owned?t('去制作明信片 ↗','Create a postcard ↗'):t('购买样式 · ','Collect · ')+item.price);b.type='button';b.dataset.postcardBuy=item.id;b.disabled=pending||!!state.busy||!!state.error||!item.owned&&(state.economy?.balance||0)<item.price;
         if(!item.owned&&(state.economy?.balance||0)<item.price)el('p','postcard-help',card,t('还差 ','Earn ')+(item.price-(state.economy?.balance||0))+t(' 金币',' more coins'));
         b.onclick=async()=>{if(item.owned){onAction('open-planets');return;}if(pending)return;pending=true;render();try{await onAction('buy-postcard',{itemId:item.id});}catch{signature='';}finally{pending=false;render();}};
       }
     };
-    return{update(next){state=next;if(!host.hidden&&!loading&&!globe){loading=true;root.TracerGardenPlanetsView.snapshot(doc,example,650).then(result=>{if(dead)return;globe=result;previews.clear();signature='';render();}).catch(()=>{loading=false;});}render();},destroy(){dead=true;globe=null;previews.clear();host.replaceChildren();}};
+    return{update(next){state=next;if(!host.hidden&&!loading&&!globe){loading=true;root.TracerGardenPlanetsView.snapshot(doc,example,650).then(result=>{if(dead)return;globe=result;host.dataset.postcardWorld='ready';previews.clear();signature='';render();}).catch(()=>{loading=false;});}render();},destroy(){dead=true;observer?.disconnect();backgrounds.destroy();globe=null;previews.clear();host.replaceChildren();}};
   }
   root.TracerPostcards={open,shop,draw,filename,close:()=>active?.()};
 })(typeof window!=='undefined'?window:globalThis);

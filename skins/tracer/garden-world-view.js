@@ -27,7 +27,7 @@
     <g stroke="#bad19a" stroke-width="2" stroke-linecap="round" opacity=".75"><path d="m119 285-3-8m3 8 5-5m585 119-3-8m3 8 5-5m-395-57-3-8m3 8 5-5m541-56-3-8m3 8 5-5"/></g>
     <g class="garden-world-fireflies" fill="#ecdf9a"><circle cx="301" cy="247" r="2.5"/><circle cx="535" cy="175" r="2"/><circle cx="644" cy="287" r="2.5"/><circle cx="471" cy="423" r="2"/></g>
   </svg>`;
-  root.TracerGardenWorldView = function (host, plantArt, onAction) {
+  root.TracerGardenWorldView = function (host, plantArt, onAction, options={}) {
     const doc = host.ownerDocument, careArt=root.TracerGardenCareArt;
     const el = (tag, cls, parent) => { const node=doc.createElement(tag); node.className=cls; parent?.appendChild(node); return node; };
     const set = (node, value) => { if(node.textContent!==String(value))node.textContent=String(value); };
@@ -155,6 +155,7 @@
         selected=id;onAction?.('select-plant',id);inspect(last?.plots||[]);interact(rarity(last.plots.find(item=>item.projectId===id))==='normal'?'breeze':'greet');return;
       }
       const slot=slots.find(slot=>slot.node===node);if(!slot)return;
+      if(options.compact){if(node.dataset.projectId)onAction?.('select-plant',node.dataset.projectId);return;}
       if(!node.dataset.projectId){onAction?.('open-board');return;}
       selected=node.dataset.projectId;inspect(last?.plots||[]);interact(rarity(last.plots.find(item=>item.projectId===selected))==='normal'?'breeze':'greet');
     }
@@ -199,14 +200,14 @@
           clearTimeout(slot.timer);slot.timer=setTimeout(()=>{delete slot.node.dataset.celebrating;slot.celebration.textContent='';},4200);
         }
         slot.node.dataset.projectId=item?.projectId||'';slot.node.dataset.empty=String(!item);slot.node.dataset.activeFocus=String(!!item?.activeFocus);
-        if(signature!==slot.signature){slot.player?.destroy();slot.player=null;slot.art.replaceChildren();if(item){slot.player=doc.defaultView.TracerGardenPlantAnimation.create({document:doc,kind:item.plant,stage:item.stage,rare:rarity(item)!=='normal',shiny:rarity(item)==='shiny',label:species(item.plant),phase:index*470});slot.art.appendChild(slot.player.element);}else slot.art.innerHTML='<span class="garden-world-seed-plus">+</span>';slot.signature=signature;}
+        if(signature!==slot.signature){slot.player?.destroy();slot.player=null;slot.art.replaceChildren();if(item){slot.player=doc.defaultView.TracerGardenPlantAnimation.create({document:doc,kind:item.plant,stage:item.stage,animated:!options.compact,rare:rarity(item)!=='normal',shiny:rarity(item)==='shiny',label:species(item.plant),phase:index*470});slot.art.appendChild(slot.player.element);}else slot.art.innerHTML='<span class="garden-world-seed-plus">+</span>';slot.signature=signature;}
         slot.node.dataset.rarity=item?rarity(item):'normal';slot.player?.setAction(item?.activeFocus?'focus':'idle');
         if(celebrating.has(item?.projectId))slot.player?.play('celebrate');
         set(slot.label,item?item.name:tr('等待种子','A place for a seed'));
         slot.node.setAttribute('aria-label',item?(item.stage===0?tr('随机种子','Mystery seed'):species(item.plant))+' · '+item.name:tr('空花圃 '+(index+1)+'：前往任务，开始后自动播种','Empty plot '+(index+1)+': start a task to plant automatically'));
         slot.node.title='';
       });
-      renderPlants(allItems,celebrating);
+      if(!options.compact)renderPlants(allItems,celebrating);
       // Keep every task's committed baseline while the scenery turns its pages.
       if(!snapshot.error){const present=new Set(allItems.map(item=>item.projectId));for(const id of receipts.keys())if(!present.has(id))receipts.delete(id);for(const [id,value]of growth)receipts.set(id,value.receipt);}
       collectionTitle.hidden=true;badges.hidden=true;

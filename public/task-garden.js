@@ -190,7 +190,9 @@
   const find=id=>items.find(item=>item.id===id);
   const ledger=market=>market.collectibles||{purchases:[],equipped:{itemId:null,updatedAt:0},wish:{itemId:null,updatedAt:0}};
   function stats(seeds,at=Infinity){const rows=seeds.filter(s=>s.harvestedAt&&s.harvestedAt<=at);return{harvests:rows.length,species:new Set(rows.map(s=>s.plantKind)).size};}
-  const eligible=(item,progress)=>progress.harvests>=item.harvests&&progress.species>=item.species;
+  // Furniture is bought with coins from any supported activity. Harvest
+  // milestones remain historical catalogue metadata, not purchase gates.
+  const eligible=item=>!!item;
   function project(garden,balance){
     const saved=ledger(garden.market),progress=stats(garden.seeds),owned=new Set(saved.purchases.map(p=>p.itemId));
     const placements=layoutRows(garden.market).filter(p=>p.farmId===garden.market.equipped.farmId&&p.visible);

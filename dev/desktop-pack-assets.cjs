@@ -17,12 +17,17 @@ function omittedRuntime(file){return omittedArt(file)||/^desktop\/(pet|garden-tr
 function verifyAssets(root){
   const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
   for(const pattern of excludedPatterns)assert.ok(pkg.build.files.includes(pattern),'Packaging must exclude the retired character runtime: '+pattern);
-  const sources=new Set();
+  const sources=new Set(['skins/tracer/postcard-art.js','skins/tracer/postcard-world-layout.js','skins/tracer/postcards.js','skins/tracer/postcards.css']);
+  for(const art of Object.values(require('../skins/tracer/postcard-art').catalog))sources.add('skins/tracer'+art.src);
   const plants=require(path.join(root,'skins/tracer/garden-plant-atlas.js'));
   for(const [kind,plant] of Object.entries(plants))sources.add('skins/tracer'+(plant.src||'/garden-art/'+kind+'-v2.png'));
   for(const file of ['garden-regions.js','garden-plant-atlas.js','garden-plant-art.js','garden-plant-volume.js','garden-buildings-3d.js','garden-terrain-3d.js','garden-island-3d.js','garden-desktop.html','garden-desktop.js','garden-desktop.css'])sources.add('skins/tracer/'+file);
   sources.add('skins/tracer/garden-art/terrain-materials-v1.png');
   sources.add('skins/tracer/garden-art/architecture-materials-v1.png');
+  // The desktop miniature imports the same live scene and furniture as the app.
+  const desktopHtml=fs.readFileSync(path.join(root,'skins/tracer/garden-desktop.html'),'utf8');
+  for(const match of desktopHtml.matchAll(/(?:src|href)="\/(.*?\.(?:js|css))"/g))sources.add('skins/tracer/'+match[1]);
+  for(const item of require('../public/task-garden').collectibles({}).items)sources.add('skins/tracer/garden-art/collectible-'+item.id+'-six-v1.png');
   for(const region of Object.values(require('../skins/tracer/garden-regions')))sources.add('skins/tracer'+region.image);
   sources.add('skins/tracer/garden-art/region-landmarks-v1.png');
   for(const file of ['garden.js','garden-preload.js'])sources.add('desktop/'+file);

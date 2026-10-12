@@ -15,11 +15,31 @@ function fixture(){
     if(key.toUpperCase()===key)return key;
     return(...args)=>events.push([key,...args]);
   }});
-  const doc={createElement(){return{getContext(){return{drawImage(){},getImageData(x,y,w,h){return{data:new Uint8ClampedArray(w*h*4).fill(255)};}};}};},defaultView:{Image:class{set src(value){this.url=value;pending.push(this);}},async createImageBitmap(){const bitmap={closed:false,close(){this.closed=true;}};bitmaps.push(bitmap);return bitmap;}}};
+  const doc={createElement(){return{getContext(){return{drawImage(){},putImageData(){},getImageData(x,y,w,h){return{data:new Uint8ClampedArray(w*h*4).fill(255)};}};}};},defaultView:{Image:class{set src(value){this.url=value;pending.push(this);}},async createImageBitmap(){const bitmap={closed:false,close(){this.closed=true;}};bitmaps.push(bitmap);return bitmap;}}};
   const live=Live.create(gl,doc,Painted.assets),draw=f=>live.draw(f,{angle:0,x:0,y:0,z:0,seed:1},{right:[1,0,0],up:[0,1,0],normal:[0,0,1],view:new Float32Array(16),scale:.4,time:0,kind:0});
   return{gl,events,pending,bitmaps,live,draw};
 }
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
+
+test('closed fish volumes have no unpaired mesh edges, including concave outlines and cut-outs',()=>{
+  const w=96,h=64,pixels=new Uint8ClampedArray(w*h*4);
+  for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++){
+    const body=((x-39)/34)**2+((y-31)/23)**2<1,tail=x>61&&x<89&&Math.abs(y-30)<(x-61)*.72,cutout=x>22&&x<32&&y>22&&y<32;
+    if((body||tail)&&!cutout)pixels[(y*w+x)*4+3]=255;
+  }
+  for(const kind of[0,1,2,3,4,5]){
+    const mesh=Live.volumeMesh(pixels,w,h,kind),edges=new Map();
+    const key=i=>[mesh[i],mesh[i+1],mesh[i+2]].join(',');
+    for(let i=0;i<mesh.length;i+=18){const points=[key(i),key(i+6),key(i+12)];assert.equal(new Set(points).size,3,'no degenerate triangle');for(let j=0;j<3;j++){const a=points[j],b=points[(j+1)%3],id=a<b?a+'|'+b:b+'|'+a,row=edges.get(id)||{count:0,direction:0};row.count++;row.direction+=a<b?1:-1;edges.set(id,row);}}
+    assert(edges.size>1000);for(const edge of edges.values()){assert.equal(edge.count,2,'every edge is shared by two faces');assert.equal(edge.direction,0,'shared edges have opposite winding');}
+  }
+});
+
+test('seam colour bleed preserves source pixels and alpha while preventing black transparent texels',()=>{
+  const pixels=new Uint8ClampedArray(5*4);pixels.set([210,160,90,255],8);const before=new Uint8ClampedArray(pixels),out=Live.bleedColors(pixels,5,1);
+  assert.deepEqual(pixels,before);for(let i=0;i<5;i++){assert.deepEqual([...out.slice(i*4,i*4+3)],[210,160,90]);assert.equal(out[i*4+3],pixels[i*4+3]);}
+  assert.deepEqual(Live.bleedColors(new Uint8ClampedArray(16),2,2),new Uint8ClampedArray(16));
+});
 
 test('painted volume has a rounded torso and remains visible through a full three-dimensional turn',()=>{
   const w=96,h=64,pixels=new Uint8ClampedArray(w*h*4);

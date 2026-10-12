@@ -63,6 +63,20 @@ test('account lock clears visible plants and requires a new projection after unl
 test('native projection caps plants, strips fields and constrains display to a real region',t=>{
  const f=fixture(t);f.controller.show();f.update({garden:{farmId:'https://bad',total:1000000,plants:Array.from({length:30},(_,i)=>({id:'p'+i,title:'x'.repeat(500),kind:'apple',stage:900,canHarvest:true,secret:'hidden'}))}});const w=f.ready(),state=w.messages.filter(([n])=>n===PREFIX+'snapshot').at(-1)[1];assert.equal(state.garden.plants.length,6);assert.equal(state.garden.farmId,'meadow');assert.equal(state.garden.total,50000);assert.equal(state.garden.plants[0].title.length,200);assert.equal(state.garden.plants[0].stage,4);assert.equal(state.garden.plants[0].secret,undefined);f.main.destroy();
 });
+
+test('furniture projection follows saved purchase, layout, region and removal without forwarding arbitrary fields',t=>{
+ const G=require('../../public/task-garden'),M=require('../../skins/tracer/model');
+ let ws=M.emptyWorkspace();ws.taskGarden=G.empty();ws.taskGarden.market.testCredit={id:'desktop_layout',amount:50000,updatedAt:1};
+ assert(G.buyCollectible(ws,'reading_bench').ok);assert(G.layoutCollectible(ws,{itemId:'reading_bench',farmId:'meadow',visible:true,x:63,y:72,scale:1.4,flip:true,orientation:5}).ok);
+ ws=JSON.parse(JSON.stringify(ws));const placements=G.collectibles(ws).placements;
+ const f=fixture(t);f.controller.show();f.update({garden:{...f.garden,farmId:'meadow',placements,level:4}});const w=f.ready();
+ const latest=()=>w.messages.filter(([n])=>n===PREFIX+'snapshot').at(-1)[1].garden;
+ assert.deepEqual(latest().placements.map(({itemId,x,y,scale,flip,orientation})=>({itemId,x,y,scale,flip,orientation})),[{itemId:'reading_bench',x:63,y:72,scale:1.4,flip:true,orientation:5}]);assert.equal(latest().level,4);
+ f.update({garden:{...f.garden,placements:[{itemId:'reading_bench',visible:true,x:Infinity,y:-1,scale:999,orientation:-1,secret:'private'},{itemId:'reading_bench',visible:true},{itemId:'../bad',visible:true}]}});
+ assert.deepEqual(latest().placements,[{itemId:'reading_bench',visible:true,x:50,y:20,scale:1.8,orientation:5,flip:false}]);
+ G.layoutCollectible(ws,{itemId:'reading_bench',farmId:'meadow',visible:false});f.update({garden:{...f.garden,placements:G.collectibles(ws).placements}});assert.deepEqual(latest().placements,[]);
+ f.main.destroy();
+});
 test('resize and movement stay inside the current work area; closing main removes native handlers',t=>{
  const f=fixture(t,{enabled:true,x:100000,y:-999,scale:9},{x:-800,y:20,width:800,height:600});f.update();const w=f.ready();for(const scale of [.1,100,1]){f.command('resize',scale);const b=w.getBounds();assert(b.x>=-800&&b.y>=20&&b.x+b.width<=0&&b.y+b.height<=620);}
  f.command('drag-start',{screenX:w.bounds.x+20,screenY:w.bounds.y+20});f.command('drag-move',{screenX:100000,screenY:-100000});f.command('drag-end',{screenX:100000,screenY:-100000});assert(w.bounds.x+w.bounds.width<=0);assert(w.bounds.y>=20);f.main.destroy();assert(w.dead);for(const channel of ['update','show','hide','command','action'])assert.equal(f.ipcMain.listenerCount(PREFIX+channel),0);
